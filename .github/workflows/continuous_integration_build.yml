@@ -1,0 +1,23 @@
+name: continuous_integration_build
+on:
+  push:
+    branches: ["core"]
+  pull_request:
+    branches: ["core"]
+jobs:
+  continuous_integration_build:
+    runs-on: macos-latest
+    steps:
+      - name: continuous_integration:repository->checkout
+        uses: actions/checkout@v4
+        with:
+          path: zoe
+      - name: checkout_interrupt_handler
+        uses: actions/checkout@v4
+        with:
+          repository: alic3dev/interrupt_handler
+          path: interrupt_handler
+      - name: make_interrupt_handler
+        run: cd interrupt_handler && make
+      - name: make_zoe
+        run: cd zoe && make
