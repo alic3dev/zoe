@@ -16,30 +16,47 @@ unsigned char input_map_keydown[keycode_max_value + 1];
 CFMachPortRef mach_port_reference;
 CFRunLoopRef input_run_loop_reference;
 
-void handler_interrupt() {
-  CFRunLoopStop(input_run_loop_reference);
-}
+int input_initialize(
+  signed int id_process
+) {
+  for (
+    unsigned char index_keycode = 0;
+    index_keycode <= keycode_max_value;
+    ++index_keycode
+  ) {
+    input_map_keydown[
+      index_keycode
+    ] = 0;
+  }
 
-void* input_thread(void* _) {
-  CFRunLoopSourceRef run_loop_source_reference = CFMachPortCreateRunLoopSource(
-    kCFAllocatorDefault,
-    mach_port_reference,
-    0
+  CGEventMask mask_event = CGEventMaskBit(kCGEventKeyDown) | CGEventMaskBit(kCGEventKeyUp);
+
+  mach_port_reference = CGEventTapCreateForPid(
+    id_process,
+    kCGHeadInsertEventTap,
+    kCGEventTapOptionListenOnly,
+    mask_event,
+    tap_event,
+    stdout
   );
 
-  input_run_loop_reference = CFRunLoopGetCurrent();
+  if (mach_port_reference == (void*)0) {
+    fprintf(
+      stderr,
+      "failed_to_create_tap\n"
+    );
 
-  CFRunLoopAddSource(
-    input_run_loop_reference,
-    run_loop_source_reference,
-    kCFRunLoopCommonModes
+    return 1;
+  }
+
+  pthread_t pthread_cleanup;
+
+  return pthread_create(
+    &pthread_cleanup,
+    (void*)0,
+    input_thread,
+    (void*)0
   );
-
-  CFRunLoopRun();
-  
-  CFRelease(mach_port_reference);
-
-  return 0;
 }
 
 struct __CGEvent* tap_event(
@@ -66,45 +83,27 @@ struct __CGEvent* tap_event(
   return event;
 }
 
-int input_initialize() {
-  for (
-    unsigned char index_keycode = 0;
-    index_keycode <= keycode_max_value;
-    ++index_keycode
-  ) {
-    input_map_keydown[
-      index_keycode
-    ] = 0;
-  }
-
-  CGEventMask mask_event = CGEventMaskBit(kCGEventKeyDown) | CGEventMaskBit(kCGEventKeyUp);
-
-  mach_port_reference = CGEventTapCreate(
-    kCGAnnotatedSessionEventTap,
-    kCGHeadInsertEventTap,
-    kCGEventTapOptionListenOnly,
-    mask_event,
-    tap_event,
-    stdout
+void* input_thread(void* _) {
+  CFRunLoopSourceRef run_loop_source_reference = CFMachPortCreateRunLoopSource(
+    kCFAllocatorDefault,
+    mach_port_reference,
+    0
   );
 
-  if (mach_port_reference == (void*)0) {
-    fprintf(
-      stderr,
-      "failed_to_create_tap\n"
-    );
+  input_run_loop_reference = CFRunLoopGetCurrent();
 
-    return 1;
-  }
-
-  interrupt_handler_interrupt_function_add(handler_interrupt);
-
-  pthread_t pthread_cleanup;
-
-  return pthread_create(
-    &pthread_cleanup,
-    (void*)0,
-    input_thread,
-    (void*)0
+  CFRunLoopAddSource(
+    input_run_loop_reference,
+    run_loop_source_reference,
+    kCFRunLoopCommonModes
   );
+
+  CFRunLoopRun();
+
+  return 0;
+}
+
+void input_destroy() {
+  CFRunLoopStop(input_run_loop_reference);
+  CFRelease(mach_port_reference);
 }
