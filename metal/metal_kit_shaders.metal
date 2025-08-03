@@ -1,9 +1,11 @@
 #include <metal_kit_shader_types.h>
 
+
+#include <metal_stdlib>
+
 struct data_rasterizer {
   float4 position [[position]];
-
-  float3 color;
+  float2 position_texture;
 };
 
 struct data_index_mesh {
@@ -19,11 +21,25 @@ vertex data_rasterizer shader_vertex(
   data_rasterizer out;
 
   out.position = data_frame.objects[index_mesh.id].view_model_matrix_projection * positions[id_vertex];
-  out.color = data_frame.objects[index_mesh.id].color;
+  out.position_texture = float2(
+    positions[id_vertex].x > 0.0f ? 1.0f : 0.0f,
+    positions[id_vertex].y > 0.0f ? 1.0f : 0.0f
+  );
 
   return out;
 }
 
-fragment float4 shader_fragment(data_rasterizer in [[stage_in]]) {
-  return float4(in.color.rgb, 1.0f);
+fragment float4 shader_fragment(
+  data_rasterizer in [[stage_in]],
+  metal::texture2d<half> texture [[ texture(1) ]]
+) {
+  constexpr metal::sampler sampler_texture (
+    metal::mag_filter::linear,
+    metal::min_filter::linear
+  );
+
+  return float4(texture.sample(
+    sampler_texture,
+    in.position_texture
+  ));
 }
