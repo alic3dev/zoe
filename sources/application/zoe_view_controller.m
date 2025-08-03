@@ -1,6 +1,6 @@
-#import <zoe_view_controller.h>
+#import <application/zoe_view_controller.h>
 
-#import <zoe_view.h>
+#import <application/zoe_view.h>
 #import <zoe_renderer.h>
 
 @implementation zoe_view_controller {

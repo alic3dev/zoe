@@ -1,5 +1,6 @@
 #import <zoe.h>
 
+#include <application/zoe_application_delegate.h>
 #include <input.h>
 
 #include <interrupt_handler.h>
@@ -28,6 +29,9 @@ int main(
     terminate_on_signal
   );
 
+  NSApplication* application = [NSApplication sharedApplication];
+  application.delegate = [zoe_application_delegate alloc];
+  
   return NSApplicationMain(
     length_parameters,
     parameters

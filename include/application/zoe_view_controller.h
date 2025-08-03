@@ -1,5 +1,5 @@
-#ifndef __zoe_view_controller_h
-#define __zoe_view_controller_h
+#ifndef __application_zoe_view_controller_h
+#define __application_zoe_view_controller_h
 
 #import <zoe_renderer.h>
 
