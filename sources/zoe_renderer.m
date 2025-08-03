@@ -33,6 +33,7 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   id<MTLRenderPipelineState> state_pipeline;
   id<MTLRenderPipelineState> state_pipeline_no_render;
   id<MTLBuffer> vertices_icosahedron;
+  id<MTLTexture> texture;
   unsigned int frame;
 
   simd_float3 position_user;
@@ -174,6 +175,66 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 
   _position = 1.0;
 
+
+  unsigned short int height = 10;
+  unsigned short int width = 10;
+  unsigned short int pixels = height * width;
+
+  unsigned char* data_image = malloc(
+    sizeof(unsigned char) * pixels * 4
+  );
+
+  for (
+    unsigned short int y = 0;
+    y < height;
+    y++
+  ) {
+    for (
+      unsigned short int x = 0;
+      x < width;
+      x++
+    ) {
+      unsigned short int index = (
+        (y * width + x) * 4
+      );
+
+      float value = (float)(x + y) / (float)(height + width) * 255.0f;
+
+      data_image[index] = (x + y) % 2 == 1 ? value : 0;
+      data_image[index + 1] = (x + y) % 3 == 0 ? value : 0;
+      data_image[index + 2] = (x + y) % 2 == 0 ? value : 0;
+      data_image[index + 3] = 255;
+    }
+  }
+
+  MTLTextureDescriptor* descriptor_texture = [[MTLTextureDescriptor alloc] init];
+  descriptor_texture.pixelFormat = MTLPixelFormatBGRA8Unorm;
+  descriptor_texture.height = height;
+  descriptor_texture.width = width;
+
+  texture = [metal_kit_device newTextureWithDescriptor: descriptor_texture];
+
+  MTLRegion region_texture = {
+    {
+      .x = 0,
+      .y = 0,
+      .z = 0
+    },
+    {
+      .width = width,
+      .height = height,
+      .depth = 1
+    }
+  };
+
+  [texture replaceRegion: region_texture
+    mipmapLevel: 0
+    withBytes: data_image
+    bytesPerRow: width * 4
+  ];
+
+  free(data_image);
+
   return self;
 }
 
@@ -224,10 +285,10 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 
   MTLRenderPassDescriptor* descriptor_render_pass = metal_kit_view.currentRenderPassDescriptor;
   descriptor_render_pass.colorAttachments[0].clearColor = MTLClearColorMake(
-    1,
-    1,
-    1,
-    0.0f
+    0.003849f,
+    0.000324f,
+    0.018349f,
+    1.0f
   );
 
   descriptor_render_pass.visibilityResultBuffer = buffer_visibility[index_buffer_visibility_write];
@@ -341,6 +402,11 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 - (void) renderMainRenderPass {
   index_buffer_mesh_current = indices_icosahedron;
   index_index_mesh_current = length_index_icosahedron;
+
+  [encoder_render
+    setFragmentTexture: texture
+    atIndex: 1
+  ];
 
   [encoder_render
     setVertexBuffer: vertices_icosahedron
