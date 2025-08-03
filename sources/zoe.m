@@ -20,11 +20,7 @@ int main(
   NSApplication* application = [NSApplication sharedApplication];
   application.delegate = [zoe_application_delegate alloc];
   
-  int status_input_initialization = (
-    input_initialize(
-      [[NSRunningApplication currentApplication] processIdentifier]
-    )
-  );
+  int status_input_initialization = input_initialize();
 
   if (status_input_initialization != 0) {
     return status_input_initialization;

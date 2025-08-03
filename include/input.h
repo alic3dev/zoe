@@ -10,10 +10,12 @@
 
 extern unsigned char input_map_keydown[keycode_max_value + 1];
 
+extern pthread_t pthread_input_thread;
+
 extern CFMachPortRef mach_port_reference;
 extern CFRunLoopRef input_run_loop_reference;
 
-int input_initialize(signed int);
+int input_initialize();
 
 struct __CGEvent* tap_event(
   struct __CGEventTapProxy*,

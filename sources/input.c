@@ -13,12 +13,12 @@
 
 unsigned char input_map_keydown[keycode_max_value + 1];
 
+pthread_t pthread_input_thread;
+
 CFMachPortRef mach_port_reference;
 CFRunLoopRef input_run_loop_reference;
 
-int input_initialize(
-  signed int id_process
-) {
+int input_initialize() {
   for (
     unsigned char index_keycode = 0;
     index_keycode <= keycode_max_value;
@@ -32,7 +32,7 @@ int input_initialize(
   CGEventMask mask_event = CGEventMaskBit(kCGEventKeyDown) | CGEventMaskBit(kCGEventKeyUp);
 
   mach_port_reference = CGEventTapCreateForPid(
-    id_process,
+    getpid(),
     kCGHeadInsertEventTap,
     kCGEventTapOptionListenOnly,
     mask_event,
@@ -49,10 +49,8 @@ int input_initialize(
     return 1;
   }
 
-  pthread_t pthread_cleanup;
-
   return pthread_create(
-    &pthread_cleanup,
+    &pthread_input_thread,
     (void*)0,
     input_thread,
     (void*)0
@@ -100,10 +98,15 @@ void* input_thread(void* _) {
 
   CFRunLoopRun();
 
-  return 0;
+  return (void*)0;
 }
 
 void input_destroy() {
   CFRunLoopStop(input_run_loop_reference);
   CFRelease(mach_port_reference);
+
+  pthread_join(
+    pthread_input_thread,
+    (void*)0
+  );
 }
