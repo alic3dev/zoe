@@ -13,6 +13,8 @@ extern unsigned char input_map_keydown[keycode_max_value + 1];
 extern CFMachPortRef mach_port_reference;
 extern CFRunLoopRef input_run_loop_reference;
 
+int input_initialize(signed int);
+
 struct __CGEvent* tap_event(
   struct __CGEventTapProxy*,
   CGEventType,
@@ -22,6 +24,6 @@ struct __CGEvent* tap_event(
 
 void* input_thread(void*);
 
-int input_initialize();
+void input_destroy();
 
 #endif
