@@ -64,54 +64,33 @@ run: .always
 
 ${name}: ${file_output}
 
-${file_output}: ${files_objects_c} ${files_objects_objc} ${file_output_metal} ${files_storyboards_compiled} ${file_output_info_plist} ${directory_app_contents_macos}
+${file_output}: ${files_objects_c} ${files_objects_objc} ${file_output_metal} ${files_storyboards_compiled} ${file_output_info_plist}
+	mkdir -p ${directory_app_contents_macos}
 	${cc} ${c_flags_output} ${files_objects_c} ${files_objects_objc} ${file_interrupt_handler_library} -o ${file_output}
 
-${file_output_metal}: ${files_air} ${directory_app_contents_resources}
+${file_output_metal}: ${files_air}
+	mkdir -p ${directory_app_contents_resources}
 	${metal} ${metal_flags_output} ${files_air} -o ${file_output_metal}
 
-${directory_air}/%.air: ${directory_metal}/%.metal ${directory_air}
+${directory_air}/%.air: ${directory_metal}/%.metal
+	mkdir -p ${directory_air}
 	${metal} ${metal_flags} -c $< -o $@
 
-${directory_objects_c}/%.o: ${directory_sources}/%.c ${directory_objects_c}
-	if [[ ! -d ${dir $@} ]]; then printf "mkdir -p ${dir $@}\n" && mkdir -p "${dir $@}"; fi
+${directory_objects_c}/%.o: ${directory_sources}/%.c
+	mkdir -p "${dir $@}"
 	${cc} ${c_flags_c} -c $< -o $@
 
-${directory_objects_objc}/%.o: ${directory_sources}/%.m ${directory_objects_objc}
-	if [[ ! -d ${dir $@} ]]; then printf "mkdir -p ${dir $@}\n" && mkdir -p "${dir $@}"; fi
+${directory_objects_objc}/%.o: ${directory_sources}/%.m
+	mkdir -p "${dir $@}"
 	${cc} ${c_flags_objc} -c $< -o $@
 
-${directory_app_contents_resources}/%.storyboardc: ${directory_storyboards}/%.storyboard ${directory_app_contents_resources}
+${directory_app_contents_resources}/%.storyboardc: ${directory_storyboards}/%.storyboard
+	mkdir -p ${directory_app_contents_resources}
 	ibtool --module ${name} --target-device ${target_device} --minimum-deployment-target ${target_macos_version} --output-format human-readable-text $< --compilation-directory ${directory_app_contents_resources}	
 
-${file_output_info_plist}: ${file_info_plist} ${directory_app_contents}
-	cp ${file_info_plist} ${file_output_info_plist}
-
-directories: ${directory_air} ${directory_app_contents} ${directory_app_contents_macos} ${directory_app_contents_resources} ${directory_objects} ${directory_output}
-
-${directory_air}:
-	mkdir -p ${directory_air}
-
-${directory_app_contents}:
+${file_output_info_plist}: ${file_info_plist}
 	mkdir -p ${directory_app_contents}
-
-${directory_app_contents_macos}:
-	mkdir -p ${directory_app_contents_macos}
-
-${directory_app_contents_resources}:
-	mkdir -p ${directory_app_contents_resources}
-
-${directory_objects}:
-	mkdir -p ${directory_objects}
-
-${directory_objects_c}:
-	mkdir -p ${directory_objects_c}
-
-${directory_objects_objc}:
-	mkdir -p ${directory_objects_objc}
-
-${directory_output}:
-	mkdir -p ${directory_output}
+	cp ${file_info_plist} ${file_output_info_plist}
 
 clean_all: clean
 
