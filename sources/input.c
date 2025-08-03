@@ -1,5 +1,7 @@
 #include <input.h>
 
+#include <keycodes.h>
+
 #include <interrupt_handler.h>
 
 #include <pthread.h>
@@ -8,6 +10,8 @@
 
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreGraphics/CoreGraphics.h>
+
+unsigned char input_map_keydown[keycode_max_value + 1];
 
 CFMachPortRef mach_port_reference;
 CFRunLoopRef input_run_loop_reference;
@@ -44,33 +48,35 @@ struct __CGEvent* tap_event(
   struct __CGEvent *event,
   void* data_user
 ) {
-  if (type_event == kCGEventKeyDown) {
-    fprintf(
-      data_user,
-      "key_down: "
-    );
-  } else if (type_event == kCGEventKeyUp) {
-    fprintf(
-      data_user,
-      "key_up: "
-    );
-  }
-
   long long int code_key = CGEventGetIntegerValueField(
     event,
     kCGKeyboardEventKeycode
   );
 
-  fprintf(
-    data_user,
-    "%lli\n",
-    code_key
-  );
+  if (type_event == kCGEventKeyDown) {
+    input_map_keydown[
+      code_key
+    ] = 1;
+  } else if (type_event == kCGEventKeyUp) {
+    input_map_keydown[
+      code_key
+    ] = 0;
+  }
 
   return event;
 }
 
 int input_initialize() {
+  for (
+    unsigned char index_keycode = 0;
+    index_keycode <= keycode_max_value;
+    ++index_keycode
+  ) {
+    input_map_keydown[
+      index_keycode
+    ] = 0;
+  }
+
   CGEventMask mask_event = CGEventMaskBit(kCGEventKeyDown) | CGEventMaskBit(kCGEventKeyUp);
 
   mach_port_reference = CGEventTapCreate(
