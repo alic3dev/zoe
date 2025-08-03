@@ -1,4 +1,6 @@
 #import <zoe_renderer.h>
+#include <input.h>
+#include <keycodes.h>
 #import <metal_kit_shader_types.h>
 
 #include <MetalKit/MetalKit.h>
@@ -32,6 +34,9 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   id<MTLRenderPipelineState> state_pipeline_no_render;
   id<MTLBuffer> vertices_icosahedron;
   unsigned int frame;
+
+  simd_float3 position_user;
+  float speed_input;
 }
 
 - (nonnull instancetype) initWithMetalKitView: (nonnull MTKView*) metal_kit_view {
@@ -55,6 +60,14 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   metal_kit_view.depthStencilPixelFormat = MTLPixelFormatDepth32Float_Stencil8;
   metal_kit_view.colorPixelFormat = MTLPixelFormatBGRA8Unorm_sRGB;
   metal_kit_view.sampleCount = 1;
+
+  position_user = simd_make_float3(
+    0,
+    0,
+    0
+  );
+
+  speed_input = 0.1f;
 
   id<MTLLibrary> library_default = [metal_kit_device newDefaultLibrary];
   id<MTLFunction> function_vertex = [library_default newFunctionWithName: @"shader_vertex"];
@@ -117,6 +130,38 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 }
 
 - (void) drawInMTKView: (nonnull MTKView*) metal_kit_view {
+  if (
+    input_map_keydown[
+      keycode_up_arrow
+    ] == 1
+  ) {
+    position_user.y += speed_input;
+  }
+
+  if (
+    input_map_keydown[
+      keycode_down_arrow
+    ] == 1
+  ) {
+    position_user.y -= speed_input;
+  }
+
+  if (
+    input_map_keydown[
+      keycode_left_arrow
+    ] == 1
+  ) {
+    position_user.x -= speed_input;
+  }
+
+  if (
+    input_map_keydown[
+      keycode_right_arrow
+    ] == 1
+  ) {
+    position_user.x += speed_input;
+  }
+
   dispatch_semaphore_wait(
     semaphore_in_flight,
     DISPATCH_TIME_FOREVER
@@ -290,9 +335,9 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
         simd_float3 position = (
           center_camera + scale_grid * (
             simd_make_float3(
-              index_x,
-              index_y,
-              index_z
+              index_x + position_user.x,
+              index_y + position_user.y,
+              index_z + position_user.z
             ) - center_grid
           )
         );
