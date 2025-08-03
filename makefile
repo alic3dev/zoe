@@ -26,8 +26,9 @@ file_output=${directory_app_contents_macos}/${name}
 file_output_info_plist=${directory_app_contents}/Info.plist
 file_output_metal=${directory_app_contents_resources}/default.metallib
 
-files_sources_c=${wildcard ${directory_sources}/*.c}
-files_sources_objc=${wildcard ${directory_sources}/*.m}
+files_sources_c=${shell find ${directory_sources} -name "*.c"}
+files_sources_objc=${shell find ${directory_sources} -name "*.m"}
+
 files_objects_c=${patsubst ${directory_sources}/%.c,${directory_objects_c}/%.o,${files_sources_c}}
 files_objects_objc=${patsubst ${directory_sources}/%.m,${directory_objects_objc}/%.o,${files_sources_objc}}
 
@@ -73,9 +74,11 @@ ${directory_air}/%.air: ${directory_metal}/%.metal ${directory_air}
 	${metal} ${metal_flags} -c $< -o $@
 
 ${directory_objects_c}/%.o: ${directory_sources}/%.c ${directory_objects_c}
+	if [[ ! -d ${dir $@} ]]; then printf "mkdir -p ${dir $@}\n" && mkdir -p "${dir $@}"; fi
 	${cc} ${c_flags_c} -c $< -o $@
 
 ${directory_objects_objc}/%.o: ${directory_sources}/%.m ${directory_objects_objc}
+	if [[ ! -d ${dir $@} ]]; then printf "mkdir -p ${dir $@}\n" && mkdir -p "${dir $@}"; fi
 	${cc} ${c_flags_objc} -c $< -o $@
 
 ${directory_app_contents_resources}/%.storyboardc: ${directory_storyboards}/%.storyboard ${directory_app_contents_resources}

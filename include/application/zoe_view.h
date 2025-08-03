@@ -3,12 +3,6 @@
 
 #include <MetalKit/MetalKit.h>
 
-@interface zoe_NSResponder: NSResponder
-@end
-
-@interface zoe_window: NSWindow
-@end
-
 @interface zoe_view: MTKView
 @end
 
