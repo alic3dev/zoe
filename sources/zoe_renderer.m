@@ -42,21 +42,16 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 - (nonnull instancetype) initWithMetalKitView: (nonnull MTKView*) metal_kit_view {
   self = [super init];
 
-  if (self) {
-    metal_kit_device = metal_kit_view.device;
-
-    semaphore_in_flight = dispatch_semaphore_create(
-      max_buffers_in_flight
-    );
-
-    [self loadMetalWithView: metal_kit_view];
-    [self loadAssets];
+  if (!self) {
+    return self;
   }
 
-  return self;
-}
+  metal_kit_device = metal_kit_view.device;
 
-- (void) loadMetalWithView: (nonnull MTKView*) metal_kit_view {
+  semaphore_in_flight = dispatch_semaphore_create(
+    max_buffers_in_flight
+  );
+
   metal_kit_view.depthStencilPixelFormat = MTLPixelFormatDepth32Float_Stencil8;
   metal_kit_view.colorPixelFormat = MTLPixelFormatBGRA8Unorm_sRGB;
   metal_kit_view.sampleCount = 1;
@@ -127,6 +122,59 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
       options: MTLResourceStorageModeShared
     ];
   }
+
+  const float radius_sphere = 0.7;
+  const float animation_adjustment_factor = 4;
+  const float radius = animation_adjustment_factor * radius_sphere;
+
+  float segment = 0.3;
+
+  vector_float4 icosahedronVertices[] = {
+    { -segment, -segment, segment, 1.0 },
+    { segment, -segment, segment, 1.0 },
+    { -segment, -segment, -segment, 1.0 },
+    { segment, -segment, -segment, 1.0 },
+    { -segment, segment, segment, 1.0 },
+    { segment, segment, segment, 1.0 },
+    { -segment, segment, -segment, 1.0 },
+    { segment, segment, -segment, 1.0 },
+  };
+
+  uint32_t icosahedronIndices[] = {
+    0, 1, 2,
+    2, 1, 3,
+    4, 5, 6,
+    6, 5, 7,
+    6, 2, 0,
+    6, 0, 4,
+    2, 3, 6,
+    7, 6, 3,
+    7, 3, 1,
+    7, 1, 5,
+    0, 1, 4,
+    5, 4, 1,
+  };
+
+  length_index_icosahedron = (
+    sizeof(icosahedronIndices) /
+    sizeof(uint32_t)
+  );
+
+  vertices_icosahedron = [metal_kit_device
+    newBufferWithBytes: icosahedronVertices
+    length: sizeof(icosahedronVertices)
+    options: MTLResourceStorageModeShared
+  ];
+
+  indices_icosahedron = [metal_kit_device
+    newBufferWithBytes: icosahedronIndices
+    length: sizeof(icosahedronIndices)
+    options: MTLResourceStorageModeShared
+  ];
+
+  _position = 1.0;
+
+  return self;
 }
 
 - (void) drawInMTKView: (nonnull MTKView*) metal_kit_view {
@@ -174,25 +222,21 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 
   buffer_result_visibility_from_read = buffer_visibility[index_buffer_visibility_read].contents;
 
-  id<MTLCommandBuffer> commandBuffer = [command_queue commandBuffer];
-
-  const float reducer = 128.3478f;
-
-  MTLRenderPassDescriptor* renderPassDescriptor = metal_kit_view.currentRenderPassDescriptor;
-  renderPassDescriptor.depthAttachment.storeAction = MTLStoreActionDontCare;
-  renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(
+  MTLRenderPassDescriptor* descriptor_render_pass = metal_kit_view.currentRenderPassDescriptor;
+  descriptor_render_pass.colorAttachments[0].clearColor = MTLClearColorMake(
     1,
     1,
     1,
     0.0f
   );
 
-  renderPassDescriptor.visibilityResultBuffer = buffer_visibility[index_buffer_visibility_write];
+  descriptor_render_pass.visibilityResultBuffer = buffer_visibility[index_buffer_visibility_write];
 
-  encoder_render = [commandBuffer renderCommandEncoderWithDescriptor: renderPassDescriptor];
+  id<MTLCommandBuffer> command_buffer = [command_queue commandBuffer];
+  encoder_render = [command_buffer renderCommandEncoderWithDescriptor: descriptor_render_pass];
 
-  [encoder_render setRenderPipelineState:state_pipeline];
-  [encoder_render setDepthStencilState:depth_state];
+  [encoder_render setRenderPipelineState: state_pipeline];
+  [encoder_render setDepthStencilState: depth_state];
 
   [encoder_render
     setVertexBuffer: data_buffer_frame[index_data_buffer_frame]
@@ -207,7 +251,7 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 
   __block dispatch_semaphore_t block_semaphore = semaphore_in_flight;
 
-  [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> buffer) {
+  [command_buffer addCompletedHandler:^(id<MTLCommandBuffer> buffer) {
     self->index_buffer_visibility_read = (
       self->index_buffer_visibility_read + 1
     ) % length_buffers_visibility;
@@ -215,8 +259,8 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     dispatch_semaphore_signal(block_semaphore);
   }];
 
-  [commandBuffer presentDrawable: metal_kit_view.currentDrawable];
-  [commandBuffer commit];
+  [command_buffer presentDrawable: metal_kit_view.currentDrawable];
+  [command_buffer commit];
 }
 
 - (void) mtkView: (nonnull MTKView*) metal_kit_view drawableSizeWillChange: (CGSize) size {
@@ -224,82 +268,9 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   size_viewport.y = size.height;
 }
 
-- (void) loadAssets {
-  const float radius_sphere = 0.7;
-  const float animationAdjustmentFactor = 4;
-  const float icosahedronRadius = animationAdjustmentFactor * radius_sphere;
-
-  [self loadIcosahedronWithRadius: icosahedronRadius];
-
-  _position = 1.0;
-}
-
-- (void) loadIcosahedronWithRadius: (float) radius {
-  float segment = 0.3;
-
-  vector_float4 icosahedronVertices[] = {
-    { -segment, -segment, segment, 1.0 },
-    { segment, -segment, segment, 1.0 },
-    { -segment, -segment, -segment, 1.0 },
-    { segment, -segment, -segment, 1.0 },
-    { -segment, segment, segment, 1.0 },
-    { segment, segment, segment, 1.0 },
-    { -segment, segment, -segment, 1.0 },
-    { segment, segment, -segment, 1.0 },
-  };
-
-  uint32_t icosahedronIndices[] = {
-    0, 1, 2,
-    2, 1, 3,
-    4, 5, 6,
-    6, 5, 7,
-    6, 2, 0,
-    6, 0, 4,
-    2, 3, 6,
-    7, 6, 3,
-    7, 3, 1,
-    7, 1, 5,
-    0, 1, 4,
-    5, 4, 1,
-  };
-
-  length_index_icosahedron = (
-    sizeof(icosahedronIndices) /
-    sizeof(uint32_t)
-  );
-
-  vertices_icosahedron = [metal_kit_device
-    newBufferWithBytes: icosahedronVertices
-    length: sizeof(icosahedronVertices)
-    options: MTLResourceStorageModeShared
-  ];
-
-  indices_icosahedron = [metal_kit_device
-    newBufferWithBytes: icosahedronIndices
-    length: sizeof(icosahedronIndices)
-    options: MTLResourceStorageModeShared
-  ];
-}
-
-- (void) setMeshBuffers:
-  (id<MTLBuffer>) buffer_vertex
-  buffer_index: (id<MTLBuffer>) buffer_index
-  length_index: (unsigned int) length_index
-{
-  index_buffer_mesh_current = buffer_index;
-  index_index_mesh_current = length_index;
-
-  [encoder_render
-    setVertexBuffer: buffer_vertex
-    offset: 0
-    atIndex: metal_kit_vertex_input_index_positions
-  ];
-}
-
 - (void) updateOcclusionCulling {
   const unsigned int _frame = frame++;
   const float max_value = 3.33f;
-  const float reducer = 100.32f;
 
   if (frame >= UINT_MAX) {
     frame = 0;
@@ -368,10 +339,13 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 }
 
 - (void) renderMainRenderPass {
-  [self
-    setMeshBuffers: vertices_icosahedron
-    buffer_index: indices_icosahedron
-    length_index: length_index_icosahedron
+  index_buffer_mesh_current = indices_icosahedron;
+  index_index_mesh_current = length_index_icosahedron;
+
+  [encoder_render
+    setVertexBuffer: vertices_icosahedron
+    offset: 0
+    atIndex: metal_kit_vertex_input_index_positions
   ];
 
   for (
