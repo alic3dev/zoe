@@ -2,6 +2,7 @@
 
 #include <application/zoe_application_delegate.h>
 #include <input/map.h>
+#include <state_controller.h>
 #include <termination.h>
 
 #include <interrupt_handler.h>
@@ -19,6 +20,7 @@ int main(
   termination_initialize();
   interrupt_handler_initialize();
   input_maps_initialize();
+  state_controller_initialize();
 
   termination_on_function_add(state_controller_destroy);
   termination_on_function_add(interrupt_handler_destroy);
