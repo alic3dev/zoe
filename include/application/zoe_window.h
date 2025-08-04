@@ -7,6 +7,7 @@
 
 - (void) keyDown:(NSEvent *) event;
 - (void) keyUp:(NSEvent *) event;
+
 - (BOOL) canBecomeKeyWindow;
 
 @end

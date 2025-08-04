@@ -24,7 +24,6 @@ typedef enum {
 typedef struct {
   matrix_float4x4 view_model_matrix;
   matrix_float4x4 view_model_matrix_projection;
-  vector_float3 color;
 } metal_kit_data_frame_object;
 
 typedef struct {

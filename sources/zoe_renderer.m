@@ -1,6 +1,6 @@
 #import <zoe_renderer.h>
-#include <input.h>
-#include <keycodes.h>
+#include <input/map.h>
+#include <input/keycodes.h>
 #import <metal_kit_shader_types.h>
 
 #include <MetalKit/MetalKit.h>
@@ -174,7 +174,6 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   ];
 
   _position = 1.0;
-
 
   unsigned short int height = 10;
   unsigned short int width = 10;
@@ -436,7 +435,7 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 }
 
 - (void) drawableSizeWillChange: (CGSize) size {
-  float aspect = size.width / (float)size.height;
+  float aspect = size.width / (float) size.height;
   float nearZ = 0.1f;
   float farZ = 100.0f;
 

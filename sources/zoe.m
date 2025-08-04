@@ -1,6 +1,7 @@
 #import <zoe.h>
 
 #include <application/zoe_application_delegate.h>
+#include <input/map.h>
 
 #include <interrupt_handler.h>
 
@@ -15,6 +16,7 @@ int main(
   const char** parameters
 ) {
   interrupt_handler_initialize();
+  input_maps_initialize();
 
   NSApplication* application = [NSApplication sharedApplication];
   application.delegate = [zoe_application_delegate alloc];
