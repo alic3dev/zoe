@@ -1,6 +1,5 @@
 #include <metal_kit_shader_types.h>
 
-
 #include <metal_stdlib>
 
 struct data_rasterizer {
@@ -12,7 +11,7 @@ struct data_index_mesh {
   uint id;
 };
 
-vertex data_rasterizer shader_vertex(
+vertex data_rasterizer zoe_shader_vertex(
   const device vector_float4* positions [[buffer(metal_kit_vertex_input_index_positions)]],
   constant metal_kit_data_frame& data_frame [[buffer(metal_kit_vertex_input_index_frame_data)]],
   constant data_index_mesh& index_mesh [[buffer(metal_kit_vertex_input_index_mesh_index)]],
@@ -29,7 +28,7 @@ vertex data_rasterizer shader_vertex(
   return out;
 }
 
-fragment float4 shader_fragment(
+fragment float4 zoe_shader_fragment(
   data_rasterizer in [[stage_in]],
   metal::texture2d<half> texture [[ texture(1) ]]
 ) {

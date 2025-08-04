@@ -1,43 +1,55 @@
-#import <zoe_renderer.h>
-#include <input.h>
-#include <keycodes.h>
-#import <metal_kit_shader_types.h>
+#include <zoe_renderer.h>
+#include <input/map.h>
+#include <input/keycodes.h>
+#include <metal_kit_shader_types.h>
 
 #include <MetalKit/MetalKit.h>
 #include <simd/simd.h>
 
 static const unsigned int max_buffers_in_flight = 3;
-
 static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 
 @implementation zoe_renderer {
-  uint64_t* buffer_result_visibility_from_read;
+  dispatch_semaphore_t semaphore_in_flight;
+  
   id<MTLBuffer> buffer_visibility[length_buffers_visibility];
-  id<MTLCommandQueue> command_queue;
   id<MTLBuffer> data_buffer_frame[max_buffers_in_flight];
+  id<MTLBuffer> index_buffer_mesh_current;
+  id<MTLBuffer> indices_icosahedron;
+  id<MTLBuffer> vertices_icosahedron;
+
+  id<MTLCommandQueue> command_queue;
+
+  id<MTLDevice> metal_kit_device;
+
   id<MTLDepthStencilState> depth_state;
   id<MTLDepthStencilState> depth_state_writes_disable;
+
   id<MTLRenderCommandEncoder> encoder_render;
-  id<MTLBuffer> index_buffer_mesh_current;
-  unsigned int index_buffer_visibility_read;
-  unsigned int index_buffer_visibility_write;
-  uint8_t index_data_buffer_frame;
-  unsigned int index_index_mesh_current;
-  id<MTLBuffer> indices_icosahedron;
-  unsigned int length_index_icosahedron;
-  matrix_float4x4 matrix_projection;
-  MTLVertexDescriptor* metal_descriptor_vertex;
-  id<MTLDevice> metal_kit_device;
-  dispatch_semaphore_t semaphore_in_flight;
-  vector_uint2 size_viewport;
+
   id<MTLRenderPipelineState> state_pipeline;
   id<MTLRenderPipelineState> state_pipeline_no_render;
-  id<MTLBuffer> vertices_icosahedron;
+
   id<MTLTexture> texture;
-  unsigned int frame;
+
+  MTLVertexDescriptor* metal_descriptor_vertex;
+
+  matrix_float4x4 matrix_projection;
 
   simd_float3 position_user;
+
+  vector_uint2 size_viewport;
+
   float speed_input;
+
+  unsigned char index_data_buffer_frame;
+  uint64_t* buffer_result_visibility_from_read;
+  
+  unsigned int frame;
+  unsigned int index_buffer_visibility_read;
+  unsigned int index_buffer_visibility_write;
+  unsigned int index_index_mesh_current;
+  unsigned int length_index_icosahedron;
 }
 
 - (nonnull instancetype) initWithMetalKitView: (nonnull MTKView*) metal_kit_view {
@@ -66,8 +78,8 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   speed_input = 0.1f;
 
   id<MTLLibrary> library_default = [metal_kit_device newDefaultLibrary];
-  id<MTLFunction> function_vertex = [library_default newFunctionWithName: @"shader_vertex"];
-  id<MTLFunction> function_fragment = [library_default newFunctionWithName: @"shader_fragment"];
+  id<MTLFunction> function_vertex = [library_default newFunctionWithName: @"zoe_shader_vertex"];
+  id<MTLFunction> function_fragment = [library_default newFunctionWithName: @"zoe_shader_fragment"];
 
   MTLRenderPipelineDescriptor* descriptor_state_pipeline = [[MTLRenderPipelineDescriptor alloc] init];
   descriptor_state_pipeline.rasterSampleCount = metal_kit_view.sampleCount;
@@ -174,7 +186,6 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   ];
 
   _position = 1.0;
-
 
   unsigned short int height = 10;
   unsigned short int width = 10;
@@ -387,12 +398,6 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
           matrix_model_view
         );
 
-        data_frame->objects[index_object].color = simd_make_float3(
-          ((float)index_x + 1.0f) / (float)length_objects_x,
-          ((float)index_y + 1.0f) / (float)length_objects_y,
-          ((float)index_z + 1.0f) / (float)length_objects_z
-        );
-
         ++index_object;
       }
     }
@@ -436,7 +441,7 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 }
 
 - (void) drawableSizeWillChange: (CGSize) size {
-  float aspect = size.width / (float)size.height;
+  float aspect = size.width / (float) size.height;
   float nearZ = 0.1f;
   float farZ = 100.0f;
 
