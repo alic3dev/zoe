@@ -5,6 +5,8 @@
 
 #include <MetalKit/MetalKit.h>
 
+void zoe_view_controller_on_termination();
+
 @interface zoe_view_controller: NSViewController<MTKViewDelegate>
 @end
 

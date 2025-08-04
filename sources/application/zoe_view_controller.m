@@ -1,7 +1,13 @@
-#import <application/zoe_view_controller.h>
+#include <application/zoe_view_controller.h>
 
-#import <application/zoe_view.h>
-#import <zoe_renderer.h>
+#include <application/zoe_view.h>
+#include <termination.h>
+#include <zoe_renderer.h>
+
+void zoe_view_controller_on_termination() {
+}
+
+}
 
 @implementation zoe_view_controller {
   zoe_view* view;
@@ -22,6 +28,8 @@
   [renderer
     drawableSizeWillChange: view.bounds.size
   ];
+
+  termination_on_function_add(zoe_view_controller_on_termination);
 
   view.delegate = self;
 }
