@@ -19,7 +19,32 @@ vertex data_rasterizer zoe_shader_vertex(
 ) {
   data_rasterizer out;
 
+  /*
+  for (
+    int index_x = 0;
+    index_x < 4;
+    ++index_x
+  ) {
+    for (
+      int index_y = 0;
+      index_y < 4;
+      ++index_y
+    ) {
+      out.position = data_frame.objects[
+        index_mesh.id
+      ].view_model_matrix_projection[
+        index_x
+      ][
+        index_y
+      ] * positions[
+        id_vertex
+      ];
+    }
+  }
+  */
+
   out.position = data_frame.objects[index_mesh.id].view_model_matrix_projection * positions[id_vertex];
+
   out.position_texture = float2(
     positions[id_vertex].x > 0.0f ? 1.0f : 0.0f,
     positions[id_vertex].y > 0.0f ? 1.0f : 0.0f

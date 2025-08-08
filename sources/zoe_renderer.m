@@ -3,6 +3,8 @@
 #include <input/keycodes.h>
 #include <metal_kit_shader_types.h>
 
+#include <clic3.h>
+
 #include <MetalKit/MetalKit.h>
 #include <simd/simd.h>
 
@@ -17,6 +19,9 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   id<MTLBuffer> index_buffer_mesh_current;
   id<MTLBuffer> indices_icosahedron;
   id<MTLBuffer> vertices_icosahedron;
+
+  id<MTLBuffer> indices_ground;
+  id<MTLBuffer> vertices_ground;
 
   id<MTLCommandQueue> command_queue;
 
@@ -34,11 +39,12 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 
   MTLVertexDescriptor* metal_descriptor_vertex;
 
+  // clic3_matrix4x4_float matrix_projection;
   matrix_float4x4 matrix_projection;
+  
+  struct clic3_vector3_float position_user;
 
-  simd_float3 position_user;
-
-  vector_uint2 size_viewport;
+  struct clic3_vector3_unsigned_int size_viewport;
 
   float speed_input;
 
@@ -69,11 +75,9 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   metal_kit_view.colorPixelFormat = MTLPixelFormatBGRA8Unorm_sRGB;
   metal_kit_view.sampleCount = 1;
 
-  position_user = simd_make_float3(
-    0,
-    0,
-    0
-  );
+  position_user.x = 0.0f;
+  position_user.y = 0.0f;
+  position_user.z = 0.0f;
 
   speed_input = 0.1f;
 
@@ -136,21 +140,64 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     ];
   }
 
-  const float radius_sphere = 0.7;
-  const float animation_adjustment_factor = 4;
-  const float radius = animation_adjustment_factor * radius_sphere;
+  struct clic3_vector3_float size_ground_min = {
+    .x = -10.0f,
+    .y = 0.0f,
+    .z = -10.0f
+  };
 
-  float segment = 0.3;
+  // struct clic3_vector3_float size_ground_max = {
+  //   .x = 10.0f,
+  //   .y = 0.2345f,
+  //   .z = 10.0f
+  // };
+
+  // struct clic3_vector2_float range_ground = {
+  //   .x = size_ground_max.x - size_ground_min.x,
+  //   .y = size_ground_max.z - size_ground_min.z
+  // };
+
+  // unsigned char length_total_vertices_ground = 100;
+  // struct clic3_vector3_unsigned_char length_vertices_ground = {
+  //   .x = length_total_vertices_ground / 2,
+  //   .y = length_total_vertices_ground / 2
+  // };
+
+  // struct clic3_vector4_float _vertices_ground[length_total_vertices_ground] = {}
+
+  // for (
+  //   unsigned char index_x = size_ground_min.;
+  //   index_x < range_ground
+  // )
+
+  // uint32_t _indices_ground[length_total_vertices_ground] = {}
+
+  // vertices_ground = [metal_kit_device
+  //   newBufferWithBytes: icosahedronVertices
+  //   length: sizeof(vertices_ground)
+  //   options: MTLResourceStorageModeShared
+  // ];
+
+  // indices_icosahedron = [metal_kit_device
+  //   newBufferWithBytes: indices_icosahedron
+  //   length: sizeof(indices_icosahedron)
+  //   options: MTLResourceStorageModeShared
+  // ];
+
+  const float radius_sphere = 0.7f;
+  const float radius = 4.0f * radius_sphere;
+
+  float segment = 0.3f;
 
   vector_float4 icosahedronVertices[] = {
-    { -segment, -segment, segment, 1.0 },
-    { segment, -segment, segment, 1.0 },
-    { -segment, -segment, -segment, 1.0 },
-    { segment, -segment, -segment, 1.0 },
-    { -segment, segment, segment, 1.0 },
-    { segment, segment, segment, 1.0 },
-    { -segment, segment, -segment, 1.0 },
-    { segment, segment, -segment, 1.0 },
+    { -segment, -segment, segment, 1.0f },
+    { segment, -segment, segment, 1.0f },
+    { -segment, -segment, -segment, 1.0f },
+    { segment, -segment, -segment, 1.0f },
+    { -segment, segment, segment, 1.0f },
+    { segment, segment, segment, 1.0f },
+    { -segment, segment, -segment, 1.0f },
+    { segment, segment, -segment, 1.0f },
   };
 
   uint32_t icosahedronIndices[] = {
@@ -348,14 +395,22 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     frame = 0;
   }
 
-  const simd_float3 center_grid = simd_make_float3(
-    (float)(length_objects_x - 1) / 2.0f,
-    (float)(length_objects_y - 1) / 2.0f,
-    0.0f
-  );
+  const struct clic3_vector3_float center_grid = {
+    .x = (float)(length_objects_x - 1) / 2.0f,
+    .y = (float)(length_objects_y - 1) / 2.0f,
+    .z = 0.0f
+  };
 
-  const simd_float3 scale_grid = simd_make_float3(2.0f, 2.0f, -2.0f);
-  const simd_float3 center_camera = simd_make_float3(_position, 0.0f, -3.0f - (float) length_objects_x);
+  const struct clic3_vector3_float scale_grid = {
+    .x = 2.0f,
+    .y = 2.0f,
+    .z = -2.0f 
+  };
+  const struct clic3_vector3_float center_camera = {
+    .x = _position,
+    .y = 0.0f,
+    .z = -3.0f - (float) length_objects_x
+  };
 
   metal_kit_data_frame* data_frame = (data_buffer_frame[index_data_buffer_frame]).contents;
   unsigned int index_object = 0;
@@ -375,15 +430,11 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
         index_x < length_objects_x;
         ++index_x
       ) {
-        simd_float3 position = (
-          center_camera + scale_grid * (
-            simd_make_float3(
-              index_x + position_user.x,
-              index_y + position_user.y,
-              index_z + position_user.z
-            ) - center_grid
-          )
-        );
+        struct clic3_vector3_float position = {
+          .x = center_camera.x + ((index_x + position_user.x) * scale_grid.x) - center_grid.x,
+          .y = center_camera.y + ((index_y + position_user.y) * scale_grid.y) - center_grid.y,
+          .z = center_camera.z + ((index_z + position_user.z) * scale_grid.z) - center_grid.z
+        };
 
         matrix_float4x4 matrix_model_view = (matrix_float4x4) {{
           { 1, 0, 0, 0 },
@@ -397,6 +448,62 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
           matrix_projection,
           matrix_model_view
         );
+        // struct clic3_vector3_float position = {
+        //   .x = center_camera.x + ((index_x + position_user.x) * scale_grid.x) - center_grid.x,
+        //   .y = center_camera.y + ((index_y + position_user.y) * scale_grid.y) - center_grid.y,
+        //   .z = center_camera.z + ((index_z + position_user.z) * scale_grid.z) - center_grid.z
+        // };
+
+        // data_frame->objects[index_object].view_model_matrix[0][0] = 1;
+        // data_frame->objects[index_object].view_model_matrix[0][1] = 0;
+        // data_frame->objects[index_object].view_model_matrix[0][2] = 0;
+        // data_frame->objects[index_object].view_model_matrix[0][3] = 0;
+        
+        // data_frame->objects[index_object].view_model_matrix[1][0] = 0;
+        // data_frame->objects[index_object].view_model_matrix[1][1] = 1;
+        // data_frame->objects[index_object].view_model_matrix[1][2] = 0;
+        // data_frame->objects[index_object].view_model_matrix[1][3] = 0;
+
+        // data_frame->objects[index_object].view_model_matrix[2][0] = 0;
+        // data_frame->objects[index_object].view_model_matrix[2][1] = 0;
+        // data_frame->objects[index_object].view_model_matrix[2][2] = 1;
+        // data_frame->objects[index_object].view_model_matrix[2][3] = 0;
+
+        // data_frame->objects[index_object].view_model_matrix[3][0] = position.x;
+        // data_frame->objects[index_object].view_model_matrix[3][1] = position.y;
+        // data_frame->objects[index_object].view_model_matrix[3][2] = position.z;
+        // data_frame->objects[index_object].view_model_matrix[3][3] = 1.0f;
+
+        // for (
+        //   unsigned short int index_x = 0;
+        //   index_x < 4;
+        //   ++index_x
+        // ) {
+        //   for (
+        //     unsigned short int index_y = 0;
+        //     index_y < 4;
+        //     ++index_y
+        //   ) {
+        //     data_frame->objects[index_object].view_model_matrix_projection[
+        //       index_x
+        //     ][
+        //       index_y
+        //     ] = (
+        //       matrix_projection[
+        //         index_x
+        //       ][
+        //         index_y
+        //       ] *
+        //       data_frame->objects[
+        //         index_object
+        //       ].view_model_matrix[
+        //         index_x
+        //       ][
+        //         index_y
+        //       ]
+        //     );
+        //   }
+        // }
 
         ++index_object;
       }
@@ -445,7 +552,7 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   float nearZ = 0.1f;
   float farZ = 100.0f;
 
-  float ys = 1 / tanf(65.0f * (M_PI / 180.0f) * 0.5);
+  float ys = 1 / tanf(65.0f * (M_PI / 180.0f) * 0.5f);
   float xs = ys / aspect;
   float zs = farZ / (nearZ - farZ);
 
@@ -455,6 +562,26 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     { 0, 0, zs, -1 },
     { 0, 0, nearZ * zs, 0 }
   }};
+
+  // matrix_projection[0][0] = xs;
+  // matrix_projection[0][1] = 0.0f;
+  // matrix_projection[0][2] = 0.0f;
+  // matrix_projection[0][3] = 0.0f;
+
+  // matrix_projection[1][0] = 0.0f;
+  // matrix_projection[1][1] = ys;
+  // matrix_projection[1][2] = 0.0f;
+  // matrix_projection[1][3] = 0.0f;
+  
+  // matrix_projection[2][0] = 0.0f;
+  // matrix_projection[2][1] = 0.0f;
+  // matrix_projection[2][2] = zs;
+  // matrix_projection[2][3] = -1.0f;
+
+  // matrix_projection[3][0] = 0.0f;
+  // matrix_projection[3][1] = 0.0f;
+  // matrix_projection[3][2] = nearZ * zs;
+  // matrix_projection[3][3] = 0.0f;
 }
 
 @end
