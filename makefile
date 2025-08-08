@@ -1,17 +1,23 @@
 name=zoe
 
-directory_air=air
 directory_include=include
-directory_interrupt_handler=../interrupt_handler
-directory_interrupt_handler_include=${directory_interrupt_handler}/include
-directory_interrupt_handler_library=${directory_interrupt_handler}/library
-directory_metal=metal
 directory_objects=objects
 directory_objects_c=${directory_objects}/c
 directory_objects_objc=${directory_objects}/objc
 directory_output=output
 directory_sources=sources
 directory_storyboards=storyboards
+
+directory_clic3=../clic3
+directory_clic3_include=${directory_clic3}/include
+directory_clic3_library=${directory_clic3}/library
+
+directory_interrupt_handler=../interrupt_handler
+directory_interrupt_handler_include=${directory_interrupt_handler}/include
+directory_interrupt_handler_library=${directory_interrupt_handler}/library
+
+directory_metal=metal
+directory_air=air
 
 directory_app=${directory_output}/${name}.app
 directory_app_contents=${directory_app}/Contents
@@ -20,11 +26,15 @@ directory_app_contents_resources=${directory_app_contents}/Resources
 
 directory_macos_sdk=${shell xcrun --show-sdk-path}
 
-file_info_plist=Info.plist
+file_clic3_library=${directory_clic3_library}/clic3.o
 file_interrupt_handler_library=${directory_interrupt_handler_library}/interrupt_handler.o
+
+file_info_plist=Info.plist
 file_output=${directory_app_contents_macos}/${name}
 file_output_info_plist=${directory_app_contents}/Info.plist
 file_output_metal=${directory_app_contents_resources}/default.metallib
+
+files_libraries=${file_clic3_library} ${file_interrupt_handler_library}
 
 files_sources_c=${shell find ${directory_sources} -name "*.c"}
 files_sources_objc=${shell find ${directory_sources} -name "*.m"}
@@ -45,7 +55,7 @@ target_platform=arm64-apple-macos${target_macos_version}
 target_platform_metal=air64-apple-macos${target_macos_version_metal}
 
 cc=clang
-c_flags_common=-I${directory_include} -I${directory_interrupt_handler_include}
+c_flags_common=-I${directory_include} -I${directory_clic3_include} -I${directory_interrupt_handler_include}
 c_flags_platform=-target ${target_platform} -isysroot ${directory_macos_sdk}
 c_flags_c=${c_flags_platform} ${c_flags_common}
 c_flags_objc=${c_flags_platform} ${c_flags_common} -x objective-c -fmodules -DTARGET_MACOS -I${directory_include}
@@ -53,7 +63,7 @@ c_flags_output=${c_flags_platform} -framework Metal -framework MetalKit
 
 metal=xcrun -sdk macosx metal
 metal_flags_common=-target ${target_platform_metal}
-metal_flags=${metal_flags_common} -I${directory_include} -isysroot ${directory_macos_sdk}
+metal_flags=${metal_flags_common} -I${directory_include} -I${directory_clic3_include} -isysroot ${directory_macos_sdk}
 # -fmetal-math-mode\=fast -fmetal-math-fp32-functions\=fast
 metal_flags_output=${metal_flags_common}
 
@@ -66,7 +76,7 @@ ${name}: ${file_output}
 
 ${file_output}: ${files_objects_c} ${files_objects_objc} ${file_output_metal} ${files_storyboards_compiled} ${file_output_info_plist}
 	mkdir -p ${directory_app_contents_macos}
-	${cc} ${c_flags_output} ${files_objects_c} ${files_objects_objc} ${file_interrupt_handler_library} -o ${file_output}
+	${cc} ${c_flags_output} ${files_objects_c} ${files_objects_objc} ${files_libraries} -o ${file_output}
 
 ${file_output_metal}: ${files_air}
 	mkdir -p ${directory_app_contents_resources}

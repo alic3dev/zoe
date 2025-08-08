@@ -2,6 +2,7 @@
 #define __metal_kit_shader_types_h
 
 #include <simd/simd.h>
+// #include <clic3_matrix.h>
 
 #ifndef __METAL_VERSION__
 #define constant
@@ -24,6 +25,9 @@ typedef enum {
 typedef struct {
   matrix_float4x4 view_model_matrix;
   matrix_float4x4 view_model_matrix_projection;
+
+  // clic3_matrix4x4_float view_model_matrix;
+  // clic3_matrix4x4_float view_model_matrix_projection;
 } metal_kit_data_frame_object;
 
 typedef struct {
