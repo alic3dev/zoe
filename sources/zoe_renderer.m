@@ -200,7 +200,7 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     }
   }
 
-  uint32_t _indices_ground[length_total_vertices_ground] = {};
+  uint32_t _indices_ground[length_total_vertices_ground];
 
   index_vertex_ground = 0;
   for (
