@@ -23,10 +23,7 @@ typedef enum {
 } metal_kit_vertex_input_index;
 
 typedef struct {
-  matrix_float4x4 view_model_matrix;
   matrix_float4x4 view_model_matrix_projection;
-
-  // clic3_matrix4x4_float view_model_matrix;
   // clic3_matrix4x4_float view_model_matrix_projection;
 } metal_kit_data_frame_object;
 
