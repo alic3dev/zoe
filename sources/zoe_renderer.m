@@ -56,6 +56,7 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   unsigned int index_buffer_visibility_write;
   unsigned int length_index_icosahedron;
   unsigned int length_index_ground;
+  unsigned int length_total_vertices_ground;
 }
 
 - (nonnull instancetype) initWithMetalKitView: (nonnull MTKView*) metal_kit_view {
@@ -76,7 +77,7 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   metal_kit_view.sampleCount = 1;
 
   position_user.x = 0.0f;
-  position_user.y = 0.0f;
+  position_user.y = size_ground_max.y + (size_ground_max.y * 0.1f);
   position_user.z = 0.0f;
 
   speed_input = 0.1f;
@@ -140,58 +141,36 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     ];
   }
 
-  struct clic3_vector3_float size_ground_min = {
-    .x = -10.0f,
-    .y = 0.0f,
-    .z = -10.0f
-  };
-
-  struct clic3_vector3_float size_ground_max = {
-    .x = 10.0f,
-    .y = 0.2345f,
-    .z = 10.0f
-  };
-
-  struct clic3_vector3_float range_ground = {
-    .x = size_ground_max.x - size_ground_min.x,
-    .y = size_ground_max.y - size_ground_min.y,
-    .z = size_ground_max.z - size_ground_min.z
-  };
-
-  struct clic3_vector2_unsigned_char length_vertices_ground = {
-    .x = 10,
-    .y = 10
-  };
-
-  unsigned char length_total_vertices_ground = (
+  length_total_vertices_ground = (
     length_vertices_ground.x *
     length_vertices_ground.y
   );
 
   struct clic3_vector4_float _vertices_ground[length_total_vertices_ground];
+  
+  const struct clic3_vector2_float increment_ground = {
+    .x = range_ground.x / (float)(length_vertices_ground.x),
+    .y = range_ground.z / (float)(length_vertices_ground.y)
+  };
 
   unsigned int index_vertex_ground = 0;
   for (
-    float index_x = size_ground_min.x;
-    index_x < size_ground_max.x;
-    index_x = (
-      index_x + range_ground.x / (
-        (float) length_total_vertices_ground / 10.0f
-      )
-    )
+    unsigned int index_x = 0;
+    index_x < length_vertices_ground.x;
+    ++index_x
   ) {
     for (
-      float index_z = size_ground_min.z;
-      index_z < size_ground_max.z;
-      index_z = (
-        index_z + range_ground.z / (
-          (float) length_total_vertices_ground / 10.0f
-        )
-      )
+      unsigned int index_z = 0;
+      index_z < length_vertices_ground.y;
+      ++index_z
     ) {
-      _vertices_ground[index_vertex_ground].x = index_x;
+      _vertices_ground[index_vertex_ground].x = size_ground_min.x + (
+        index_x * increment_ground.x
+      );
       _vertices_ground[index_vertex_ground].y = size_ground_min.y + (float)(rand() % 1000) / 1000.0f * range_ground.y;
-      _vertices_ground[index_vertex_ground].z = index_z;
+      _vertices_ground[index_vertex_ground].z = size_ground_min.z + (
+        index_z * increment_ground.y
+      );
       _vertices_ground[index_vertex_ground].w = 1.0f;
 
       index_vertex_ground = (
@@ -200,31 +179,82 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     }
   }
 
-  uint32_t _indices_ground[length_total_vertices_ground];
+  uint32_t _indices_ground[(
+(
+    (length_vertices_ground.x - 1) *
+    (length_vertices_ground.y - 1)
+  ) * 6
+  )];
 
-  index_vertex_ground = 0;
+  unsigned int index_index_ground = 0;
   for (
-    float index_x = size_ground_min.x;
-    index_x < size_ground_max.x;
-    index_x = (
-      index_x + range_ground.x / (
-        (float) length_total_vertices_ground / 10.0f
-      )
-    )
+    unsigned char index_x = 0;
+    index_x < length_vertices_ground.x - 1;
+    ++index_x
   ) {
     for (
-      float index_z = size_ground_min.z;
-      index_z < size_ground_max.z;
-      index_z = (
-        index_z + range_ground.z / (
-          (float) length_total_vertices_ground / 10.0f
-        )
-      )
+      unsigned char index_z = 0;
+      index_z < length_vertices_ground.y - 1;
+      ++index_z
     ) {
-      _indices_ground[index_vertex_ground] = index_vertex_ground * 242 % 100;
+      _indices_ground[index_index_ground] = (
+        index_x * length_vertices_ground.y + (
+          index_z
+        )
+      );
 
-      index_vertex_ground = (
-        index_vertex_ground + 1
+      index_index_ground = (
+        index_index_ground + 1
+      );
+
+      _indices_ground[index_index_ground] = (
+        index_x * length_vertices_ground.y + (
+          index_z + 1
+        )
+      );
+
+      index_index_ground = (
+        index_index_ground + 1
+      );
+
+      _indices_ground[index_index_ground] = (
+        (index_x + 1) * length_vertices_ground.y + (
+          index_z
+        )
+      );
+
+      index_index_ground = (
+        index_index_ground + 1
+      );
+
+      _indices_ground[index_index_ground] = (
+        index_x * length_vertices_ground.y + (
+          index_z + 1
+        )
+      );
+
+      index_index_ground = (
+        index_index_ground + 1
+      );
+
+      _indices_ground[index_index_ground] = (
+        (index_x + 1) * length_vertices_ground.y + (
+          index_z
+        )
+      );
+
+      index_index_ground = (
+        index_index_ground + 1
+      );
+
+      _indices_ground[index_index_ground] = (
+        (index_x + 1) * length_vertices_ground.y + (
+          index_z + 1
+        )
+      );
+
+      index_index_ground = (
+        index_index_ground + 1
       );
     }
   }
@@ -236,7 +266,7 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 
   vertices_ground = [metal_kit_device
     newBufferWithBytes: _vertices_ground
-    length: sizeof(vertices_ground)
+    length: sizeof(_vertices_ground)
     options: MTLResourceStorageModeShared
   ];
 
@@ -316,11 +346,11 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
         (y * width + x) * 4
       );
 
-      float value = (float)(x + y) / (float)(height + width) * 255.0f;
+      float prog = (float)(x + y) / (float)(height + width);
 
-      data_image[index] = (x + y) % 2 == 1 ? value : 0;
-      data_image[index + 1] = (x + y) % 3 == 0 ? value : 0;
-      data_image[index + 2] = (x + y) % 2 == 0 ? value : 0;
+      data_image[index] = (float)(x) / (float)(width - 1) * 255;
+      data_image[index + 1] = (float)(y) / (float)(height - 1) * 255;
+      data_image[index + 2] = 255 - (float)(x * y) / (float)((height - 1) * (width - 1)) * 255;
       data_image[index + 3] = 255;
     }
   }
@@ -452,17 +482,32 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   const struct clic3_vector3_float center_grid = {
     .x = (float)(length_objects_x - 1) / 2.0f,
     .y = (float)(length_objects_y - 1) / 2.0f,
-    .z = (float)(length_objects_z - 1) * (_frame % 2 == 0 ? 2.0f : -2.0f)
+    .z = (float)(length_objects_z - 1) * 2.0f
   };
 
   const struct clic3_vector3_float scale_grid = {
     .x = 1.0f,
     .y = 1.0f,
-    .z = _frame % 2 == 0 ? 1.0f : -1.0f
+    .z = 1.0f
   };
 
   metal_kit_data_frame* data_frame = (data_buffer_frame[index_data_buffer_frame]).contents;
   unsigned int index_object = 0;
+
+  data_frame->objects[length_objects_xyz - 1].view_model_matrix_projection = matrix_multiply(
+    matrix_projection,
+    (matrix_float4x4) {{
+      { 1, 0, 0, 0 },
+      { 0, 1, 0, 0 },
+      { 0, 0, 1, 0 },
+      {
+        ((length_objects_x / 2) + position_user.x - center_grid.x) * scale_grid.x,
+        (position_user.y - center_grid.y) * scale_grid.y,
+        ((length_objects_z / 2) + position_user.z - center_grid.z) * scale_grid.z,
+        1
+      }
+    }}
+  );
 
   for (
     int index_z = 0;
@@ -504,6 +549,8 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 }
 
 - (void) renderMainRenderPass {
+  unsigned int index_object = length_objects_xyz - 1;
+
   [encoder_render
     setVertexBuffer: data_buffer_frame[index_data_buffer_frame]
     offset: 0
@@ -521,21 +568,19 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     atIndex: metal_kit_vertex_input_index_positions
   ];
 
-  unsigned int i = 0;
   [encoder_render
-    setVertexBytes: &i
+    setVertexBytes: &index_object
     length: sizeof(unsigned int)
     atIndex: metal_kit_vertex_input_index_mesh_index
   ];
   
   [encoder_render
-    drawIndexedPrimitives: MTLPrimitiveTypePoint
+    drawIndexedPrimitives: MTLPrimitiveTypeTriangle
     indexCount: length_index_ground
     indexType: MTLIndexTypeUInt32
     indexBuffer: indices_ground
     indexBufferOffset: 0
   ];
-
 
   [encoder_render
     setVertexBuffer: data_buffer_frame[index_data_buffer_frame]
@@ -555,8 +600,8 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   ];
 
   for (
-    unsigned int index_object = 0;
-    index_object < length_objects_xyz;
+    index_object = 0;
+    index_object < length_objects_xyz - 1;
     ++index_object
   ) {
     [encoder_render
@@ -590,26 +635,6 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     { 0, 0, zs, -1 },
     { 0, 0, nearZ * zs, 0 }
   }};
-
-  // matrix_projection[0][0] = xs;
-  // matrix_projection[0][1] = 0.0f;
-  // matrix_projection[0][2] = 0.0f;
-  // matrix_projection[0][3] = 0.0f;
-
-  // matrix_projection[1][0] = 0.0f;
-  // matrix_projection[1][1] = ys;
-  // matrix_projection[1][2] = 0.0f;
-  // matrix_projection[1][3] = 0.0f;
-  
-  // matrix_projection[2][0] = 0.0f;
-  // matrix_projection[2][1] = 0.0f;
-  // matrix_projection[2][2] = zs;
-  // matrix_projection[2][3] = -1.0f;
-
-  // matrix_projection[3][0] = 0.0f;
-  // matrix_projection[3][1] = 0.0f;
-  // matrix_projection[3][2] = nearZ * zs;
-  // matrix_projection[3][3] = 0.0f;
 }
 
 @end

@@ -23,10 +23,20 @@ vertex data_rasterizer zoe_shader_vertex(
 
   out.position = data_frame.objects[index_mesh.id].view_model_matrix_projection * positions[id_vertex];
 
-  out.position_texture = float2(
-    positions[id_vertex].x > 0.0f ? 1.0f : 0.0f,
-    positions[id_vertex].y > 0.0f ? 1.0f : 0.0f
-  );
+  if (
+    index_mesh.id == length_objects_xyz - 1
+  ) {
+    out.position_texture = float2(
+      (positions[id_vertex].x - size_ground_min.x) / range_ground.x,
+      (positions[id_vertex].z - size_ground_min.z) / range_ground.z
+    );
+
+  } else {
+    out.position_texture = float2(
+      0.0f,
+      0.0f
+    );
+  }
 
   out.id = index_mesh.id;
   out.point_size = 10.0f;
@@ -39,6 +49,19 @@ fragment float4 zoe_shader_fragment(
   metal::texture2d<half> texture [[ texture(1) ]]
 ) {
   float prog = ((float) in.id) / 343.0f;
+
+  if (in.id == length_objects_xyz - 1) {
+    constexpr metal::sampler sampler_texture (
+      metal::filter::linear, metal::mip_filter::linear
+      // metal::mag_filter::linear,
+      // metal::min_filter::linear
+    );
+
+    return float4(texture.sample(
+      sampler_texture,
+      in.position_texture
+    ));
+  }
 
   return float4(
     prog < 0.3f ? (
@@ -60,14 +83,4 @@ fragment float4 zoe_shader_fragment(
     ) : 0.0f,
     1.0f
   );
-  
-  constexpr metal::sampler sampler_texture (
-    metal::mag_filter::linear,
-    metal::min_filter::linear
-  );
-
-  return float4(texture.sample(
-    sampler_texture,
-    in.position_texture
-  ));
 }
