@@ -4,6 +4,7 @@
 
 struct data_rasterizer {
   float4 position [[position]];
+  float height;
   float point_size [[point_size]];
   float2 position_texture;
   uint id;
@@ -22,6 +23,7 @@ vertex data_rasterizer zoe_shader_vertex(
   data_rasterizer out;
 
   out.position = data_frame.objects[index_mesh.id].view_model_matrix_projection * positions[id_vertex];
+  out.height = 0.0f;
 
   if (
     index_mesh.id == length_objects_xyz - 1
@@ -31,6 +33,7 @@ vertex data_rasterizer zoe_shader_vertex(
       (positions[id_vertex].z - size_ground_min.z) / range_ground.z
     );
 
+    out.height = (positions[id_vertex].y - size_ground_min.y) / range_ground.y;
   } else {
     out.position_texture = float2(
       0.0f,
@@ -46,22 +49,32 @@ vertex data_rasterizer zoe_shader_vertex(
 
 fragment float4 zoe_shader_fragment(
   data_rasterizer in [[stage_in]],
-  metal::texture2d<half> texture [[ texture(1) ]]
+  metal::texture2d<half> texture [[ texture(0) ]]
 ) {
-  float prog = ((float) in.id) / 343.0f;
-
   if (in.id == length_objects_xyz - 1) {
-    constexpr metal::sampler sampler_texture (
-      metal::filter::linear, metal::mip_filter::linear
-      // metal::mag_filter::linear,
-      // metal::min_filter::linear
+    constexpr metal::sampler sampler_texture(
+      metal::filter::linear,
+      metal::mip_filter::linear
     );
 
-    return float4(texture.sample(
-      sampler_texture,
-      in.position_texture
-    ));
+    float4 texture_color = float4(
+      texture.sample(
+        sampler_texture,
+        in.position_texture
+      )
+    );
+
+    float brightness =  in.height;
+
+    return float4(
+      texture_color[0] * brightness,
+      texture_color[1] * brightness,
+      texture_color[2] * brightness,
+      texture_color[3]
+    );
   }
+
+  float prog = ((float) in.id) / 343.0f;
 
   return float4(
     prog < 0.3f ? (

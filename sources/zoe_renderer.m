@@ -77,7 +77,7 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   metal_kit_view.sampleCount = 1;
 
   position_user.x = 0.0f;
-  position_user.y = size_ground_max.y + (size_ground_max.y * 0.1f);
+  position_user.y = -(size_ground_max.y + (size_ground_max.y * 0.1f));
   position_user.z = 0.0f;
 
   speed_input = 0.1f;
@@ -147,7 +147,7 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   );
 
   struct clic3_vector4_float _vertices_ground[length_total_vertices_ground];
-  
+
   const struct clic3_vector2_float increment_ground = {
     .x = range_ground.x / (float)(length_vertices_ground.x),
     .y = range_ground.z / (float)(length_vertices_ground.y)
@@ -180,10 +180,10 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   }
 
   uint32_t _indices_ground[(
-(
-    (length_vertices_ground.x - 1) *
-    (length_vertices_ground.y - 1)
-  ) * 6
+    (
+      (length_vertices_ground.x - 1) *
+      (length_vertices_ground.y - 1)
+    ) * 6
   )];
 
   unsigned int index_index_ground = 0;
@@ -559,7 +559,7 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 
   [encoder_render
     setFragmentTexture: texture
-    atIndex: 1
+    atIndex: 0
   ];
 
   [encoder_render
@@ -586,11 +586,6 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     setVertexBuffer: data_buffer_frame[index_data_buffer_frame]
     offset: 0
     atIndex: metal_kit_vertex_input_index_frame_data
-  ];
-
-  [encoder_render
-    setFragmentTexture: texture
-    atIndex: 1
   ];
 
   [encoder_render
