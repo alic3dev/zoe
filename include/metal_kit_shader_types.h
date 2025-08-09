@@ -16,6 +16,9 @@
 #define size_ground_max_y 10.4345f
 #define size_ground_max_z 200.0f
 
+#define length_vertices_ground_x 100
+#define length_vertices_ground_y 100
+
 static constant const struct clic3_vector3_float size_ground_min = {
   .x = -200.0f,
   .y = 0.0f,
@@ -35,13 +38,8 @@ static constant const struct clic3_vector3_float range_ground = {
 };
 
 static constant const struct clic3_vector2_unsigned_int length_vertices_ground = {
-  .x = 100,
-  .y = 100
-};
-
-static constant const struct clic3_vector2_float increment_ground = {
-  .x = range_ground.x / (float)(length_vertices_ground.x),
-  .y = range_ground.z / (float)(length_vertices_ground.y)
+  .x = length_vertices_ground_x,
+  .y = length_vertices_ground_y
 };
 
 static constant const unsigned int length_objects_x = 7;

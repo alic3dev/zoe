@@ -147,6 +147,11 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   );
 
   struct clic3_vector4_float _vertices_ground[length_total_vertices_ground];
+  
+  const struct clic3_vector2_float increment_ground = {
+    .x = range_ground.x / (float)(length_vertices_ground.x),
+    .y = range_ground.z / (float)(length_vertices_ground.y)
+  };
 
   unsigned int index_vertex_ground = 0;
   for (
