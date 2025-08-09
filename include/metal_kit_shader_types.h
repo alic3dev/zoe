@@ -27,7 +27,7 @@ static constant const struct clic3_vector3_float size_ground_min = {
 
 static constant const struct clic3_vector3_float size_ground_max = {
   .x = 200.0f,
-  .y = 10.4345f,
+  .y = 10.0f,
   .z = 200.0f
 };
 
