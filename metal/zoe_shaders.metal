@@ -7,33 +7,35 @@ struct data_rasterizer {
   float height;
   float point_size [[point_size]];
   float2 position_texture;
-  uint id;
+  unsigned int id;
 };
 
 struct data_index_mesh {
-  uint id;
+  unsigned int id;
 };
 
 vertex data_rasterizer zoe_shader_vertex(
   const device vector_float4* positions [[buffer(metal_kit_vertex_input_index_positions)]],
   constant metal_kit_data_frame& data_frame [[buffer(metal_kit_vertex_input_index_frame_data)]],
   constant data_index_mesh& index_mesh [[buffer(metal_kit_vertex_input_index_mesh_index)]],
-  uint id_vertex [[vertex_id]]
+  unsigned int id_vertex [[vertex_id]]
 ) {
   data_rasterizer out;
 
-  out.position = data_frame.objects[index_mesh.id].view_model_matrix_projection * positions[id_vertex];
+  metal_kit_data_frame_object object = data_frame.objects[index_mesh.id];
+
+  out.position = object.view_model_matrix_projection * positions[id_vertex];
   out.height = 0.0f;
 
   if (
     index_mesh.id == length_objects_xyz - 1
   ) {
     out.position_texture = float2(
-      (positions[id_vertex].x - size_ground_min.x) / range_ground.x,
-      (positions[id_vertex].z - size_ground_min.z) / range_ground.z
+      (positions[id_vertex].x + (object.width / 2.0f)) / object.width,
+      (positions[id_vertex].z + (object.depth / 2.0f)) / object.depth
     );
 
-    out.height = (positions[id_vertex].y - size_ground_min.y) / range_ground.y;
+    out.height = positions[id_vertex].y / object.height;
   } else {
     out.position_texture = float2(
       0.0f,
@@ -64,10 +66,10 @@ fragment float4 zoe_shader_fragment(
       )
     );
 
-    float brightness =  in.height;
+    float brightness =  ((in.height * 0.9) + 0.1);
 
     return float4(
-      texture_color[0] * brightness,
+      1.0f,//texture_color[0] * brightness,
       texture_color[1] * brightness,
       texture_color[2] * brightness,
       texture_color[3]
