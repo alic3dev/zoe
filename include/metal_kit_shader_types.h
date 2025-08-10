@@ -8,40 +8,6 @@
 #define constant
 #endif
 
-#define size_ground_min_x -200.0f
-#define size_ground_min_y 0.0f
-#define size_ground_min_z -200.0f
-
-#define size_ground_max_x 200.0f
-#define size_ground_max_y 10.4345f
-#define size_ground_max_z 200.0f
-
-#define length_vertices_ground_x 100
-#define length_vertices_ground_y 100
-
-static constant const struct clic3_vector3_float size_ground_min = {
-  .x = -200.0f,
-  .y = 0.0f,
-  .z = -200.0f
-};
-
-static constant const struct clic3_vector3_float size_ground_max = {
-  .x = 200.0f,
-  .y = 10.0f,
-  .z = 200.0f
-};
-
-static constant const struct clic3_vector3_float range_ground = {
-  .x = size_ground_max_x - size_ground_min_x,
-  .y = size_ground_max_y - size_ground_min_y,
-  .z = size_ground_max_z - size_ground_min_z
-};
-
-static constant const struct clic3_vector2_unsigned_int length_vertices_ground = {
-  .x = length_vertices_ground_x,
-  .y = length_vertices_ground_y
-};
-
 static constant const unsigned int length_objects_x = 7;
 static constant const unsigned int length_objects_y = 7;
 static constant const unsigned int length_objects_z = 7;
@@ -58,7 +24,9 @@ typedef enum {
 
 typedef struct {
   matrix_float4x4 view_model_matrix_projection;
-  // clic3_matrix4x4_float view_model_matrix_projection;
+  float width;
+  float height;
+  float depth;
 } metal_kit_data_frame_object;
 
 typedef struct {

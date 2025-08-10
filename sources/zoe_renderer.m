@@ -1,6 +1,8 @@
 #include <zoe_renderer.h>
 #include <input/map.h>
 #include <input/keycodes.h>
+#include <mesh/mesh.h>
+#include <mesh/ground/mesh_ground.h>
 #include <metal_kit_shader_types.h>
 
 #include <clic3.h>
@@ -77,10 +79,10 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   metal_kit_view.sampleCount = 1;
 
   position_user.x = 0.0f;
-  position_user.y = -(size_ground_max.y + (size_ground_max.y * 0.1f));
+  position_user.y = -11.0f;
   position_user.z = 0.0f;
 
-  speed_input = 0.1f;
+  speed_input = 0.4f;
 
   id<MTLLibrary> library_default = [metal_kit_device newDefaultLibrary];
   id<MTLFunction> function_vertex = [library_default newFunctionWithName: @"zoe_shader_vertex"];
@@ -141,140 +143,30 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     ];
   }
 
-  length_total_vertices_ground = (
-    length_vertices_ground.x *
-    length_vertices_ground.y
+  struct mesh mesh_ground;
+
+  mesh_ground_initialize(
+    &mesh_ground,
+    200.0f,
+    10.0f,
+    200.0f
   );
 
-  struct clic3_vector4_float _vertices_ground[length_total_vertices_ground];
-
-  const struct clic3_vector2_float increment_ground = {
-    .x = range_ground.x / (float)(length_vertices_ground.x),
-    .y = range_ground.z / (float)(length_vertices_ground.y)
-  };
-
-  unsigned int index_vertex_ground = 0;
-  for (
-    unsigned int index_x = 0;
-    index_x < length_vertices_ground.x;
-    ++index_x
-  ) {
-    for (
-      unsigned int index_z = 0;
-      index_z < length_vertices_ground.y;
-      ++index_z
-    ) {
-      _vertices_ground[index_vertex_ground].x = size_ground_min.x + (
-        index_x * increment_ground.x
-      );
-      _vertices_ground[index_vertex_ground].y = size_ground_min.y + (float)(rand() % 1000) / 1000.0f * range_ground.y;
-      _vertices_ground[index_vertex_ground].z = size_ground_min.z + (
-        index_z * increment_ground.y
-      );
-      _vertices_ground[index_vertex_ground].w = 1.0f;
-
-      index_vertex_ground = (
-        index_vertex_ground + 1
-      );
-    }
-  }
-
-  uint32_t _indices_ground[(
-    (
-      (length_vertices_ground.x - 1) *
-      (length_vertices_ground.y - 1)
-    ) * 6
-  )];
-
-  unsigned int index_index_ground = 0;
-  for (
-    unsigned char index_x = 0;
-    index_x < length_vertices_ground.x - 1;
-    ++index_x
-  ) {
-    for (
-      unsigned char index_z = 0;
-      index_z < length_vertices_ground.y - 1;
-      ++index_z
-    ) {
-      _indices_ground[index_index_ground] = (
-        index_x * length_vertices_ground.y + (
-          index_z
-        )
-      );
-
-      index_index_ground = (
-        index_index_ground + 1
-      );
-
-      _indices_ground[index_index_ground] = (
-        index_x * length_vertices_ground.y + (
-          index_z + 1
-        )
-      );
-
-      index_index_ground = (
-        index_index_ground + 1
-      );
-
-      _indices_ground[index_index_ground] = (
-        (index_x + 1) * length_vertices_ground.y + (
-          index_z
-        )
-      );
-
-      index_index_ground = (
-        index_index_ground + 1
-      );
-
-      _indices_ground[index_index_ground] = (
-        index_x * length_vertices_ground.y + (
-          index_z + 1
-        )
-      );
-
-      index_index_ground = (
-        index_index_ground + 1
-      );
-
-      _indices_ground[index_index_ground] = (
-        (index_x + 1) * length_vertices_ground.y + (
-          index_z
-        )
-      );
-
-      index_index_ground = (
-        index_index_ground + 1
-      );
-
-      _indices_ground[index_index_ground] = (
-        (index_x + 1) * length_vertices_ground.y + (
-          index_z + 1
-        )
-      );
-
-      index_index_ground = (
-        index_index_ground + 1
-      );
-    }
-  }
-
-  length_index_ground = (
-    sizeof(_indices_ground) /
-    sizeof(uint32_t)
-  );
+  length_index_ground = mesh_ground.length_indices;
 
   vertices_ground = [metal_kit_device
-    newBufferWithBytes: _vertices_ground
-    length: sizeof(_vertices_ground)
+    newBufferWithBytes: mesh_ground.vertices
+    length: mesh_ground.length_vertices * sizeof(struct clic3_vector4_float)
     options: MTLResourceStorageModeShared
   ];
 
   indices_ground = [metal_kit_device
-    newBufferWithBytes: _indices_ground
-    length: sizeof(_indices_ground)
+    newBufferWithBytes: mesh_ground.indices
+    length: mesh_ground.length_indices * sizeof(unsigned int)
     options: MTLResourceStorageModeShared
   ];
+
+  mesh_destroy(&mesh_ground);
 
   const float radius_sphere = 0.7f;
   const float radius = 4.0f * radius_sphere;
@@ -392,7 +284,15 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
       keycode_up_arrow
     ] == 1
   ) {
-    position_user.y -= speed_input;
+    if (
+      input_map_keydown[
+        keycode_a
+      ] == 1
+    ) {
+      position_user.z -= speed_input;
+    } else {
+      position_user.y -= speed_input;
+    }
   }
 
   if (
@@ -400,7 +300,15 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
       keycode_down_arrow
     ] == 1
   ) {
-    position_user.y += speed_input;
+    if (
+      input_map_keydown[
+        keycode_a
+      ] == 1
+    ) {
+      position_user.z += speed_input;
+    } else {
+      position_user.y += speed_input;
+    }
   }
 
   if (
@@ -509,6 +417,10 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     }}
   );
 
+  data_frame->objects[length_objects_xyz - 1].width = 200.0f;
+  data_frame->objects[length_objects_xyz - 1].height = 10.0f;
+  data_frame->objects[length_objects_xyz - 1].depth = 200.0f;
+
   for (
     int index_z = 0;
     index_z < length_objects_z;
@@ -541,6 +453,10 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
           matrix_projection,
           matrix_model_view
         );
+
+        data_frame->objects[index_object].width = 1.0f;
+        data_frame->objects[index_object].height = 1.0f;
+        data_frame->objects[index_object].depth = 1.0f;
 
         ++index_object;
       }
@@ -601,7 +517,7 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   ) {
     [encoder_render
       setVertexBytes: &index_object
-      length: sizeof(uint32_t)
+      length: sizeof(unsigned int)
       atIndex: metal_kit_vertex_input_index_mesh_index
     ];
 

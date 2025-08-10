@@ -1,0 +1,157 @@
+#include <mesh/ground/mesh_ground.h>
+
+#include <mesh/mesh.h>
+
+#include <clic3.h>
+
+#include <stdlib.h>
+#include <stdio.h>
+
+const struct clic3_vector2_unsigned_int mesh_ground_length_vertices = {
+  .x = length_vertices_ground_x,
+  .y = length_vertices_ground_y
+};
+
+void mesh_ground_initialize(
+  struct mesh* mesh,
+  float width,
+  float height,
+  float depth
+) {
+  mesh_initialize(mesh);
+
+  mesh->length_vertices = (
+    mesh_ground_length_vertices.x *
+    mesh_ground_length_vertices.y
+  );
+
+  mesh->length_indices = (
+    (mesh_ground_length_vertices.x - 1) *
+    (mesh_ground_length_vertices.y - 1) *
+    6
+  );
+
+  mesh->vertices = realloc(
+    mesh->vertices,
+    sizeof(struct clic3_vector4_float) *
+    mesh->length_vertices
+  );
+
+  mesh->indices = realloc(
+    mesh->indices,
+    sizeof(unsigned int) *
+    mesh->length_indices
+  );
+
+  const struct clic3_vector2_float increment_ground = {
+    .x = width / (float)(mesh_ground_length_vertices.x),
+    .y = depth / (float)(mesh_ground_length_vertices.y)
+  };
+
+  unsigned int index_vertex_ground = 0;
+  for (
+    unsigned int index_x = 0;
+    index_x < mesh_ground_length_vertices.x;
+    ++index_x
+  ) {
+    for (
+      unsigned int index_z = 0;
+      index_z < mesh_ground_length_vertices.y;
+      ++index_z
+    ) {
+      mesh->vertices[index_vertex_ground].x = (
+        index_x * increment_ground.x
+      ) - (width / 2.0f);
+
+      mesh->vertices[index_vertex_ground].y = (
+        index_x > mesh_ground_length_vertices.x * 0.4 && index_x < mesh_ground_length_vertices.x * 0.6 &&
+        index_z > mesh_ground_length_vertices.y * 0.4 && index_z < mesh_ground_length_vertices.y * 0.6
+        ? 0.0f
+        : (float)(rand() % 1000) / 1000.0f * height
+      );
+
+      mesh->vertices[index_vertex_ground].z = (
+        index_z * increment_ground.y
+      ) - (depth / 2.0f);
+
+      mesh->vertices[index_vertex_ground].w = 1.0f;
+
+      index_vertex_ground = (
+        index_vertex_ground + 1
+      );
+    }
+  }
+
+  unsigned int index_index_ground = 0;
+  for (
+    unsigned char index_x = 0;
+    index_x < mesh_ground_length_vertices.x - 1;
+    ++index_x
+  ) {
+    for (
+      unsigned char index_z = 0;
+      index_z < mesh_ground_length_vertices.y - 1;
+      ++index_z
+    ) {
+      mesh->indices[index_index_ground] = (
+        index_x * mesh_ground_length_vertices.y + (
+          index_z
+        )
+      );
+
+      index_index_ground = (
+        index_index_ground + 1
+      );
+
+      mesh->indices[index_index_ground] = (
+        index_x * mesh_ground_length_vertices.y + (
+          index_z + 1
+        )
+      );
+
+      index_index_ground = (
+        index_index_ground + 1
+      );
+
+      mesh->indices[index_index_ground] = (
+        (index_x + 1) * mesh_ground_length_vertices.y + (
+          index_z
+        )
+      );
+
+      index_index_ground = (
+        index_index_ground + 1
+      );
+
+      mesh->indices[index_index_ground] = (
+        index_x * mesh_ground_length_vertices.y + (
+          index_z + 1
+        )
+      );
+
+      index_index_ground = (
+        index_index_ground + 1
+      );
+
+      mesh->indices[index_index_ground] = (
+        (index_x + 1) * mesh_ground_length_vertices.y + (
+          index_z
+        )
+      );
+
+      index_index_ground = (
+        index_index_ground + 1
+      );
+
+      mesh->indices[index_index_ground] = (
+        (index_x + 1) * mesh_ground_length_vertices.y + (
+          index_z + 1
+        )
+      );
+
+      index_index_ground = (
+        index_index_ground + 1
+      );
+    }
+  }
+}
