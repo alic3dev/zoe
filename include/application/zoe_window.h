@@ -5,8 +5,9 @@
 
 @interface zoe_window: NSWindow
 
-- (void) keyDown:(NSEvent *) event;
-- (void) keyUp:(NSEvent *) event;
+- (void) keyDown:(NSEvent*) event;
+- (void) keyUp:(NSEvent*) event;
+- (void) flagsChanged:(NSEvent*) event;
 
 - (BOOL) canBecomeKeyWindow;
 
