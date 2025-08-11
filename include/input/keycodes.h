@@ -53,6 +53,15 @@
 #define keycode_back_tick 50
 #define keycode_delete 51
 #define keycode_esc 53
+#define keycode_command_right 54
+#define keycode_command_left 55
+#define keycode_shift_left 56
+#define keycode_caps_lock 57
+#define keycode_option_left 58
+#define keycode_control 59
+#define keycode_shift_right 60
+#define keycode_option_right 61
+#define keycode_fn 63
 #define keycode_left_arrow 123
 #define keycode_right_arrow 124
 #define keycode_down_arrow 125

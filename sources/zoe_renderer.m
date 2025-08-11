@@ -286,10 +286,13 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   ) {
     if (
       input_map_keydown[
-        keycode_a
+        keycode_shift_left
+      ] == 1 ||
+      input_map_keydown[
+        keycode_shift_right
       ] == 1
     ) {
-      position_user.z -= speed_input;
+      position_user.z += speed_input;
     } else {
       position_user.y -= speed_input;
     }
@@ -302,10 +305,13 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   ) {
     if (
       input_map_keydown[
-        keycode_a
+        keycode_shift_left
+      ] == 1 ||
+      input_map_keydown[
+        keycode_shift_right
       ] == 1
     ) {
-      position_user.z += speed_input;
+      position_user.z -= speed_input;
     } else {
       position_user.y += speed_input;
     }
@@ -325,6 +331,34 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     ] == 1
   ) {
     position_user.x -= speed_input;
+  }
+
+  if (
+    input_map_keydown[
+      keycode_z
+    ] == 1
+  ) {
+    speed_input = (
+      speed_input - 0.125f
+    );
+
+    input_map_keydown[
+      keycode_z
+    ] = 0;
+  }
+
+  if (
+    input_map_keydown[
+      keycode_x
+    ] == 1
+  ) {
+    speed_input = (
+      speed_input + 0.125
+    );
+
+    input_map_keydown[
+      keycode_x
+    ] = 0;
   }
 
   dispatch_semaphore_wait(
