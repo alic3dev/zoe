@@ -2,7 +2,6 @@
 
 #include <application/zoe_application_delegate.h>
 #include <input/map.h>
-#include <paths.h>
 #include <state_controller.h>
 #include <termination.h>
 
@@ -18,10 +17,6 @@ int main(
   int length_parameters,
   const char** parameters
 ) {
-  paths_initialize(
-    (char*) parameters[0]
-  );
-
   termination_initialize();
   interrupt_handler_initialize();
   input_maps_initialize();
