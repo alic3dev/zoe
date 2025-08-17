@@ -10,6 +10,10 @@ void mesh_initialize(
   mesh->length_indices = 0;
   mesh->length_vertices = 0;
 
+  mesh->size.x = 0.0f;
+  mesh->size.y = 0.0f;
+  mesh->size.z = 0.0f;
+
   mesh->indices = malloc(
     sizeof(unsigned int) *
     mesh->length_indices
