@@ -8,6 +8,9 @@
 
 #include <interrupt_handler.h>
 
+#include <stdlib.h>
+#include <time.h>
+
 #import <Cocoa/Cocoa.h>
 
 void terminate_on_signal(int _) {
@@ -18,6 +21,8 @@ int main(
   int length_parameters,
   const char** parameters
 ) {
+  srand(time((void*)0));
+  
   paths_initialize(
     (char*) parameters[0]
   );
