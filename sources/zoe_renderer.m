@@ -4,6 +4,7 @@
 #include <mesh/mesh.h>
 #include <mesh/ground/mesh_ground.h>
 #include <metal_kit_shader_types.h>
+#include <termination.h>
 
 #include <clic3.h>
 
@@ -43,6 +44,8 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 
   // clic3_matrix4x4_float matrix_projection;
   matrix_float4x4 matrix_projection;
+
+  struct mesh mesh_ground;
   
   struct clic3_vector3_float position_user;
 
@@ -143,8 +146,6 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     ];
   }
 
-  struct mesh mesh_ground;
-
   mesh_ground_initialize(
     &mesh_ground,
     200.0f,
@@ -165,8 +166,6 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     length: mesh_ground.length_indices * sizeof(unsigned int)
     options: MTLResourceStorageModeShared
   ];
-
-  mesh_destroy(&mesh_ground);
 
   const float radius_sphere = 0.7f;
   const float radius = 4.0f * radius_sphere;
@@ -274,6 +273,11 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   ];
 
   free(data_image);
+
+  termination_on_function_add(
+    zoe_renderer_on_termination,
+    self
+  );
 
   return self;
 }
@@ -451,9 +455,9 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     }}
   );
 
-  data_frame->objects[length_objects_xyz - 1].width = 200.0f;
-  data_frame->objects[length_objects_xyz - 1].height = 10.0f;
-  data_frame->objects[length_objects_xyz - 1].depth = 200.0f;
+  data_frame->objects[length_objects_xyz - 1].width = mesh_ground.size.x;
+  data_frame->objects[length_objects_xyz - 1].height = mesh_ground.size.y;
+  data_frame->objects[length_objects_xyz - 1].depth = mesh_ground.size.z;
 
   for (
     int index_z = 0;
@@ -582,4 +586,16 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   }};
 }
 
+- (void) destroy {
+  mesh_destroy(&mesh_ground);
+}
+
 @end
+
+void zoe_renderer_on_termination(
+  void* _Nonnull reference
+) {
+  zoe_renderer* renderer = (zoe_renderer*) reference;
+
+  [renderer destroy];
+}
