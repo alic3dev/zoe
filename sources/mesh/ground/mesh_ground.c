@@ -20,6 +20,10 @@ void mesh_ground_initialize(
 ) {
   mesh_initialize(mesh);
 
+  mesh->size.x = width;
+  mesh->size.y = height;
+  mesh->size.z = depth;
+
   mesh->length_vertices = (
     mesh_ground_length_vertices.x *
     mesh_ground_length_vertices.y
