@@ -64,7 +64,7 @@ c_flags_common=-I${directory_include} -I${directory_clic3_include} -I${directory
 c_flags_platform=-target ${target_platform} -isysroot ${directory_macos_sdk}
 c_flags_c=${c_flags_platform} ${c_flags_common}
 c_flags_objc=${c_flags_platform} ${c_flags_common} -x objective-c -fmodules -DTARGET_MACOS -I${directory_include}
-c_flags_output=${c_flags_platform} -framework Metal -framework MetalKit
+c_flags_output=${c_flags_platform} -framework Metal -framework MetalKit -framework GameController
 
 metal=xcrun -sdk macosx metal
 metal_flags_common=-target ${target_platform_metal}

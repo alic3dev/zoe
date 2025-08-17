@@ -32,8 +32,8 @@ vertex data_rasterizer zoe_shader_vertex(
     index_mesh.id == length_objects_xyz - 1
   ) {
     out.position_texture = float2(
-      (positions[id_vertex].x + (object.width / 2.0f)) / (object.width / 100.0f),
-      (positions[id_vertex].z + (object.depth / 2.0f)) / (object.depth / 100.0f)
+      ((float)data_frame.frame / 1000.0f) + (positions[id_vertex].x + (object.width / 2.0f)) / (object.width / 10.0f) + (positions[id_vertex].y + (object.height / 2.0f)) / (object.height / 10.0f),
+      ((float)data_frame.frame / 1000.0f) + (positions[id_vertex].z + (object.depth / 2.0f)) / (object.depth / 10.0f) + (positions[id_vertex].y + (object.height / 2.0f)) / (object.height / 10.0f)
     );
 
     unsigned char z = 0;

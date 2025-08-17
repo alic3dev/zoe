@@ -11,6 +11,7 @@
 
 #include <stdlib.h>
 
+#include <GameController/GameController.h>
 #include <MetalKit/MetalKit.h>
 #include <simd/simd.h>
 
@@ -51,6 +52,7 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   struct mesh mesh_ground;
   
   struct clic3_vector3_float position_user;
+  struct clic3_vector3_float rotation_camera;
 
   struct clic3_vector3_unsigned_int size_viewport;
 
@@ -170,9 +172,6 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     options: MTLResourceStorageModeShared
   ];
 
-  const float radius_sphere = 0.7f;
-  const float radius = 4.0f * radius_sphere;
-
   float segment = 0.3f;
 
   vector_float4 icosahedronVertices[] = {
@@ -244,6 +243,226 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 }
 
 - (void) drawInMTKView: (nonnull MTKView*) metal_kit_view {
+  GCController* controller = [GCController current];
+  // TODO: GCDualSenseGamepad: Add DualSense specific functionality
+  GCExtendedGamepad* profile_controller = (
+    controller != (void*)0
+    ? (GCDualSenseGamepad*) [controller extendedGamepad]
+    : (void*)0
+  );
+
+  if (profile_controller != (void*)0) {
+    GCControllerButtonInput* trigger_left = [profile_controller leftTrigger];
+    GCControllerButtonInput* trigger_right = [profile_controller rightTrigger];
+
+    position_user.y = (
+      position_user.y + (
+        trigger_left.value + -trigger_right.value
+      ) * speed_input
+    );
+
+    GCControllerDirectionPad* thumbstick_right = [profile_controller rightThumbstick];
+    GCControllerAxisInput* input_axis_y_right = [thumbstick_right yAxis];
+    GCControllerAxisInput* input_axis_x_right = [thumbstick_right xAxis];
+
+    if (
+      input_axis_x_right.value >= 0.1f || 
+      input_axis_x_right.value <= -0.1f
+    ) {
+      rotation_camera.y = (
+        rotation_camera.y + (
+          input_axis_x_right.value *
+          speed_input / 10.0f
+        )
+      );
+    }
+
+    if (
+      input_axis_y_right.value >= 0.1f || 
+      input_axis_y_right.value <= -0.1f
+    ) {
+      rotation_camera.z = (
+        rotation_camera.z + (
+          input_axis_y_right.value *
+          speed_input / 10.0f
+        )
+      );
+    }
+
+    GCControllerDirectionPad* thumbstick_left = [profile_controller leftThumbstick];
+    GCControllerAxisInput* input_axis_y_left = [thumbstick_left yAxis];
+    GCControllerAxisInput* input_axis_x_left = [thumbstick_left xAxis];
+
+    float ratio_axis = fmod(
+      rotation_camera.y,
+      (M_PI * 2.0f)
+    ) / (M_PI * 2.0f);
+
+    float ratio_z = 0.0f;
+    float ratio_x = 0.0f;
+
+    // ...there's a better way to do this,
+    // I've done this before.
+    // Over and over
+    //
+    // Though, ignorance is bliss
+    // Of that I'm sure
+    // Over and over 
+
+    if (ratio_axis >= 0.0f) {
+      if (
+        ratio_axis <= 0.25f
+      ) {
+        ratio_z = (0.25f - ratio_axis) / 0.25f;
+        ratio_x = -(ratio_axis / 0.25f);
+      } else if (
+        ratio_axis >= 0.25f &&
+        ratio_axis <= 0.5f 
+      ) {
+        ratio_axis = ratio_axis - 0.25f;
+
+        ratio_z = -(ratio_axis / 0.25f);
+        ratio_x = -(0.25f - ratio_axis) / 0.25f;
+      } else if (
+        ratio_axis >= 0.5f &&
+        ratio_axis <= 0.75f 
+      ) {
+        ratio_axis = ratio_axis - 0.5f;
+
+        ratio_z = -(0.25f - ratio_axis) / 0.25f;
+        ratio_x = (ratio_axis / 0.25f);
+      } else {
+        ratio_axis = ratio_axis - 0.75f;
+
+        ratio_z = (ratio_axis / 0.25f);
+        ratio_x = (0.25f - ratio_axis) / 0.25f;
+      }
+    } else {
+      if (
+        ratio_axis >= -0.25f
+      ) {
+        ratio_z = (-0.25f - ratio_axis) / -0.25f;
+        ratio_x = -(ratio_axis / 0.25f);
+      } else if (
+        ratio_axis <= -0.25f &&
+        ratio_axis >= -0.5f
+      ) {
+        ratio_axis = ratio_axis + 0.25f;
+
+        ratio_z = -(ratio_axis / -0.25f);
+        ratio_x = -(-0.25f - ratio_axis) / 0.25f;
+      } else if (
+        ratio_axis <= -0.5f &&
+        ratio_axis >= -0.75f 
+      ) {
+        ratio_axis = ratio_axis + 0.5f;
+
+        ratio_z = -(-0.25f - ratio_axis) / -0.25f;
+        ratio_x = (ratio_axis / 0.25f);
+      } else {
+        ratio_axis = ratio_axis + 0.75f;
+
+        ratio_z = (ratio_axis / -0.25f);
+        ratio_x = (-0.25f - ratio_axis) / 0.25f;
+      }
+    }
+
+    position_user.z = (
+      position_user.z + (
+        input_axis_y_left.value *
+        speed_input *
+        ratio_z
+      ) 
+    );
+
+    position_user.x = (
+      position_user.x + (
+        input_axis_y_left.value *
+        speed_input *
+        ratio_x
+      )
+    );
+
+    ratio_axis = fmod(
+      rotation_camera.y,
+      (M_PI * 2.0f)
+    ) / (M_PI * 2.0f);
+
+    if (ratio_axis >= 0.0f) {
+      if (
+        ratio_axis <= 0.25f
+      ) {
+        ratio_z = -(ratio_axis / 0.25f);
+        ratio_x = -(0.25f - ratio_axis) / 0.25f;
+      } else if (
+        ratio_axis >= 0.25f &&
+        ratio_axis <= 0.5f 
+      ) {
+        ratio_axis = ratio_axis - 0.25f;
+
+        ratio_z = -(0.25f - ratio_axis) / 0.25f;
+        ratio_x = (ratio_axis / 0.25f);
+      } else if (
+        ratio_axis >= 0.5f &&
+        ratio_axis <= 0.75f 
+      ) {
+        ratio_axis = ratio_axis - 0.5f;
+
+        ratio_z = (ratio_axis / 0.25f);
+        ratio_x = (0.25f - ratio_axis) / 0.25f;
+      } else {
+        ratio_axis = ratio_axis - 0.75f;
+
+        ratio_z = (0.25f - ratio_axis) / 0.25f;
+        ratio_x = -(ratio_axis / 0.25f);
+      }
+    } else {
+      if (
+        ratio_axis >= -0.25f
+      ) {
+        ratio_z = -(ratio_axis / 0.25f);
+        ratio_x = -(-0.25f - ratio_axis) / -0.25f;
+      } else if (
+        ratio_axis <= -0.25f &&
+        ratio_axis >= -0.5f 
+      ) {
+        ratio_axis = ratio_axis + 0.25f;
+
+        ratio_z = -(-0.25f - ratio_axis) / 0.25f;
+        ratio_x = (ratio_axis / -0.25f);
+      } else if (
+        ratio_axis <= -0.5f &&
+        ratio_axis >= -0.75f 
+      ) {
+        ratio_axis = ratio_axis + 0.5f;
+
+        ratio_z = (ratio_axis / 0.25f);
+        ratio_x = (-0.25f - ratio_axis) / -0.25f;
+      } else {
+        ratio_axis = ratio_axis + 0.75f;
+
+        ratio_z = (-0.25f - ratio_axis) / 0.25f;
+        ratio_x = -(ratio_axis / -0.25f);
+      }
+    }
+
+    position_user.z = (
+      position_user.z + (
+        input_axis_x_left.value *
+        speed_input *
+        ratio_z
+      )
+    );
+
+    position_user.x = (
+      position_user.x + (
+        input_axis_x_left.value *
+        speed_input *
+        ratio_x
+      )
+    );
+  }
+
   if (
     input_map_keydown[
       keycode_up_arrow
@@ -380,9 +599,8 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 
 - (void) updateOcclusionCulling {
   const unsigned int _frame = frame++;
-  const float max_value = 3.33f;
 
-  if (frame >= UINT_MAX) {
+  if (frame + 1 >= UINT_MAX - 1) {
     frame = 0;
   }
 
@@ -399,10 +617,41 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   };
 
   metal_kit_data_frame* data_frame = (data_buffer_frame[index_data_buffer_frame]).contents;
+  data_frame->frame = _frame;
+
   unsigned int index_object = 0;
 
   data_frame->objects[length_objects_xyz - 1].view_model_matrix_projection = matrix_multiply(
     matrix_projection,
+    // matrix_multiply(
+    (
+      (matrix_float4x4) {{
+        { cos(rotation_camera.y), 0, -sin(rotation_camera.y), 0 },
+        { 0, 1, 0, 0 },
+        { sin(rotation_camera.y), 0, cos(rotation_camera.y), 0 },
+        {
+          1,
+          1,
+          1,
+          1
+        }
+      }}
+      // (matrix_float4x4) {{
+      //   { cos(rotation_camera.z), sin(rotation_camera.z), 0, 0 },
+      //   { -sin(rotation_camera.z), cos(rotation_camera.z), 0, 0 },
+      //   { 0, 0, 1, 0 },
+      //   {
+      //     1,
+      //     1,
+      //     1,
+      //     1
+      //   }
+      // }}
+    )
+  );
+
+  data_frame->objects[length_objects_xyz - 1].view_model_matrix_projection = matrix_multiply(
+    data_frame->objects[length_objects_xyz - 1].view_model_matrix_projection,
     (matrix_float4x4) {{
       { 1, 0, 0, 0 },
       { 0, 1, 0, 0 },
@@ -415,6 +664,14 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
       }
     }}
   );
+
+  // xAxisA = [cos(ang) ,sin(ang),0];  // 1 unit long
+  // yAxisA = [-sin(ang),cos(ang),0];  // 1 unit long
+  // zAxisA = [0        ,0       ,1];  // 1 unit long
+
+  data_frame->rotation_camera.x = rotation_camera.x;
+  data_frame->rotation_camera.y = rotation_camera.y;
+  data_frame->rotation_camera.z = rotation_camera.z;
 
   data_frame->objects[length_objects_xyz - 1].width = mesh_ground.size.x;
   data_frame->objects[length_objects_xyz - 1].height = mesh_ground.size.y;
@@ -450,6 +707,35 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 
         data_frame->objects[index_object].view_model_matrix_projection = matrix_multiply(
           matrix_projection,
+          // matrix_multiply(
+          (
+            (matrix_float4x4) {{
+              { cos(rotation_camera.y), 0, -sin(rotation_camera.y), 0 },
+              { 0, 1, 0, 0 },
+              { sin(rotation_camera.y), 0, cos(rotation_camera.y), 0 },
+              {
+                1,
+                1,
+                1,
+                1
+              }
+            }}
+            // (matrix_float4x4) {{
+            //   { cos(rotation_camera.z), sin(rotation_camera.z), 0, 0 },
+            //   { -sin(rotation_camera.z), cos(rotation_camera.z), 0, 0 },
+            //   { 0, 0, 1, 0 },
+            //   {
+            //     1,
+            //     1,
+            //     1,
+            //     1
+            //   }
+            // }}
+          )
+        );
+
+        data_frame->objects[index_object].view_model_matrix_projection = matrix_multiply(
+          data_frame->objects[index_object].view_model_matrix_projection,
           matrix_model_view
         );
 
@@ -537,7 +823,7 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   float nearZ = 0.1f;
   float farZ = 100.0f;
 
-  float ys = 1 / tanf(65.0f * (M_PI / 180.0f) * 0.5f);
+  float ys = 1 / tanf(90.0f * (M_PI / 180.0f) * 0.5f);
   float xs = ys / aspect;
   float zs = farZ / (nearZ - farZ);
 

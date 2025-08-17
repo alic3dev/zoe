@@ -23,6 +23,7 @@
 }
 
 - (void) flagsChanged:(NSEvent*) event {
+  // TODO: Find whatever flag determines if this is a keyup or keydown
   if (event.keyCode < input_map_keydown_length) {
     input_map_keydown[
       event.keyCode
