@@ -1,12 +1,12 @@
 #include <application/zoe_view_controller.h>
 
+#include <application/zoe_renderer.h>
 #include <application/zoe_view.h>
 #include <input/keycodes.h>
 #include <input/map.h>
 #include <menus/menu.h>
 #include <menus/menu_intro.h>
 #include <termination.h>
-#include <zoe_renderer.h>
 
 struct menu menu_intro;
 unsigned char menu_closing = 0;

@@ -1,7 +1,7 @@
 #ifndef __application_zoe_view_controller_h
 #define __application_zoe_view_controller_h
 
-#include <zoe_renderer.h>
+#include <menus/menu.h>
 
 #include <MetalKit/MetalKit.h>
 
