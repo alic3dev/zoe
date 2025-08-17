@@ -91,7 +91,10 @@ void on_exit() {
 
   menu_print(&menu_intro);
 
-  termination_on_function_add(zoe_view_controller_on_termination);
+  termination_on_function_add(
+    zoe_view_controller_on_termination,
+    (void*)0
+  );
 
   view.delegate = self;
 }

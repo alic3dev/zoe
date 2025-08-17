@@ -22,8 +22,18 @@ int main(
   input_maps_initialize();
   state_controller_initialize();
 
-  termination_on_function_add(state_controller_destroy);
-  termination_on_function_add(interrupt_handler_destroy);
+  termination_on_function_add(
+    state_controller_destroy,
+    (void*)0
+  );
+  termination_on_function_add(
+    interrupt_handler_destroy,
+    (void*)0
+  );
+  termination_on_function_add(
+    paths_destroy,
+    (void*)0
+  );
 
   NSApplication* application = [NSApplication sharedApplication];
   application.delegate = [zoe_application_delegate alloc];
