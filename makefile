@@ -7,6 +7,7 @@ directory_objects_objc=${directory_objects}/objc
 directory_output=output
 directory_sources=sources
 directory_storyboards=storyboards
+directory_textures=textures
 
 directory_clic3=../clic3
 directory_clic3_include=${directory_clic3}/include
@@ -23,6 +24,7 @@ directory_app=${directory_output}/${name}.app
 directory_app_contents=${directory_app}/Contents
 directory_app_contents_macos=${directory_app_contents}/MacOS
 directory_app_contents_resources=${directory_app_contents}/Resources
+directory_app_contents_resources_textures=${directory_app_contents_resources}/textures
 
 directory_macos_sdk=${shell xcrun --show-sdk-path}
 
@@ -47,6 +49,9 @@ files_air=${patsubst ${directory_metal}/%.metal,${directory_air}/%.air,${files_m
 
 files_storyboards=${wildcard ${directory_storyboards}/*.storyboard}
 files_storyboards_compiled=${patsubst ${directory_storyboards}/%.storyboard,${directory_app_contents_resources}/%.storyboardc,${files_storyboards}}
+
+files_textures=${wildcard ${directory_textures}/*}
+files_textures_resources=${patsubst ${directory_textures}/%,${directory_app_contents_resources_textures}/%,${files_textures}}
 
 target_device=mac
 target_macos_version=15.0
@@ -74,9 +79,13 @@ run: .always
 
 ${name}: ${file_output}
 
-${file_output}: ${files_objects_c} ${files_objects_objc} ${file_output_metal} ${files_storyboards_compiled} ${file_output_info_plist}
+${file_output}: ${files_objects_c} ${files_objects_objc} ${file_output_metal} ${files_storyboards_compiled} ${file_output_info_plist} ${files_textures_resources}
 	mkdir -p ${directory_app_contents_macos}
 	${cc} ${c_flags_output} ${files_objects_c} ${files_objects_objc} ${files_libraries} -o ${file_output}
+
+${directory_app_contents_resources_textures}/%: ${directory_textures}/%
+	mkdir -p ${directory_app_contents_resources_textures}
+	cp $< $@
 
 ${file_output_metal}: ${files_air}
 	mkdir -p ${directory_app_contents_resources}

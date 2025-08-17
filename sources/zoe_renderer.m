@@ -4,9 +4,12 @@
 #include <mesh/mesh.h>
 #include <mesh/ground/mesh_ground.h>
 #include <metal_kit_shader_types.h>
+#include <paths.h>
 #include <termination.h>
 
 #include <clic3.h>
+
+#include <stdlib.h>
 
 #include <MetalKit/MetalKit.h>
 #include <simd/simd.h>
@@ -215,64 +218,22 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     options: MTLResourceStorageModeShared
   ];
 
-  unsigned short int height = 10;
-  unsigned short int width = 10;
-  unsigned short int pixels = height * width;
+  MTKTextureLoader* texture_loader = [[MTKTextureLoader alloc] initWithDevice: metal_kit_device];
 
-  unsigned char* data_image = malloc(
-    sizeof(unsigned char) * pixels * 4
-  );
-
-  for (
-    unsigned short int y = 0;
-    y < height;
-    y++
-  ) {
-    for (
-      unsigned short int x = 0;
-      x < width;
-      x++
-    ) {
-      unsigned short int index = (
-        (y * width + x) * 4
-      );
-
-      float prog = (float)(x + y) / (float)(height + width);
-
-      data_image[index] = (float)(x) / (float)(width - 1) * 255;
-      data_image[index + 1] = (float)(y) / (float)(height - 1) * 255;
-      data_image[index + 2] = 255 - (float)(x * y) / (float)((height - 1) * (width - 1)) * 255;
-      data_image[index + 3] = 255;
-    }
-  }
-
-  MTLTextureDescriptor* descriptor_texture = [[MTLTextureDescriptor alloc] init];
-  descriptor_texture.pixelFormat = MTLPixelFormatBGRA8Unorm;
-  descriptor_texture.height = height;
-  descriptor_texture.width = width;
-
-  texture = [metal_kit_device newTextureWithDescriptor: descriptor_texture];
-
-  MTLRegion region_texture = {
-    {
-      .x = 0,
-      .y = 0,
-      .z = 0
-    },
-    {
-      .width = width,
-      .height = height,
-      .depth = 1
-    }
-  };
-
-  [texture replaceRegion: region_texture
-    mipmapLevel: 0
-    withBytes: data_image
-    bytesPerRow: width * 4
+  texture = [texture_loader
+    newTextureWithContentsOfURL: [NSURL
+      fileURLWithPath:@"splat.png"
+      isDirectory: 0
+      relativeToURL: [NSURL
+        fileURLWithPath:[NSString
+          stringWithUTF8String: paths.directory_textures
+        ]
+        isDirectory: 1
+      ]
+    ]
+    options: (void*)0
+    error: (void*)0
   ];
-
-  free(data_image);
 
   termination_on_function_add(
     zoe_renderer_on_termination,
@@ -495,6 +456,8 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
         data_frame->objects[index_object].width = 1.0f;
         data_frame->objects[index_object].height = 1.0f;
         data_frame->objects[index_object].depth = 1.0f;
+
+        data_frame->objects[index_object].noise = rand();
 
         ++index_object;
       }

@@ -27,6 +27,7 @@ typedef struct {
   float width;
   float height;
   float depth;
+  unsigned int noise;
 } metal_kit_data_frame_object;
 
 typedef struct {
