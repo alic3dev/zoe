@@ -1,4 +1,5 @@
-#include <zoe_renderer.h>
+#include <application/zoe_renderer.h>
+
 #include <input/map.h>
 #include <input/keycodes.h>
 #include <mesh/mesh.h>
