@@ -10,9 +10,12 @@
 - (nonnull instancetype) initWithMetalKitView: (nonnull MTKView*) metal_kit_view;
 - (void) drawInMTKView: (nonnull MTKView*) metal_kit_view;
 - (void) drawableSizeWillChange: (CGSize) size;
+- (void) destroy;
 
 @property (nonatomic) float position;
 
 @end
+
+void zoe_renderer_on_termination(void* _Nonnull);
 
 #endif
