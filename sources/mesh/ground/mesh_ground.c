@@ -68,9 +68,9 @@ void mesh_ground_initialize(
       ) - (mesh->size.x / 2.0f);
 
       mesh->vertices[index_vertex_ground].y = (
-        index_x > mesh_ground_length_vertices.x * 0.4 && index_x < mesh_ground_length_vertices.x * 0.6 &&
-        index_z > mesh_ground_length_vertices.y * 0.4 && index_z < mesh_ground_length_vertices.y * 0.6
-        ? 0.0f
+        index_x > mesh_ground_length_vertices.x * 0.1 && index_x < mesh_ground_length_vertices.x * 0.9 &&
+        index_z > mesh_ground_length_vertices.y * 0.1 && index_z < mesh_ground_length_vertices.y * 0.9
+        ? (float)(rand() % 1000) / 1000.0f * (mesh->size.y / 20.0f)
         : (float)(rand() % 1000) / 1000.0f * mesh->size.y
       );
 

@@ -32,8 +32,8 @@ vertex data_rasterizer zoe_shader_vertex(
     index_mesh.id == length_objects_xyz - 1
   ) {
     out.position_texture = float2(
-      ((float)data_frame.frame / 1000.0f) + (positions[id_vertex].x + (object.width / 2.0f)) / (object.width / 10.0f) + (positions[id_vertex].y + (object.height / 2.0f)) / (object.height / 10.0f),
-      ((float)data_frame.frame / 1000.0f) + (positions[id_vertex].z + (object.depth / 2.0f)) / (object.depth / 10.0f) + (positions[id_vertex].y + (object.height / 2.0f)) / (object.height / 10.0f)
+      ((float)data_frame.frame / 5000.0f) + (positions[id_vertex].x + (object.width / 2.0f)) / (object.width / 10.0f) + (positions[id_vertex].y + (object.height / 2.0f)) / (object.height / 10.0f),
+      ((float)data_frame.frame / 5000.0f) + (positions[id_vertex].z + (object.depth / 2.0f)) / (object.depth / 10.0f) + (positions[id_vertex].y + (object.height / 2.0f)) / (object.height / 10.0f)
     );
 
     unsigned char z = 0;
@@ -65,7 +65,11 @@ vertex data_rasterizer zoe_shader_vertex(
       );
     }
 
-    out.height = positions[id_vertex].y / object.height;
+    if (positions[id_vertex].y <= object.height / 20.0f) {
+      out.height = positions[id_vertex].y / (object.height / 20.0f) * 0.5f;
+    } else {
+      out.height = positions[id_vertex].y / object.height;
+    }
   } else {
     out.position_texture = float2(
       positions[id_vertex].x,
@@ -122,7 +126,7 @@ fragment float4 zoe_shader_fragment(
       )
     );
 
-    float brightness = ((in.height * 0.8f) + 0.2f) * 0.1f;
+    float brightness = ((in.height * 0.8f) + 0.1f) * 0.1f;
 
     return float4(
       texture_color[0] * brightness,
