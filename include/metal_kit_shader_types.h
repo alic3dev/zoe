@@ -32,6 +32,8 @@ typedef struct {
 
 typedef struct {
   metal_kit_data_frame_object objects[length_objects_xyz];
+  struct clic3_vector3_float rotation_camera;
+  unsigned int frame;
 } metal_kit_data_frame;
 
 #endif

@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#import <Cocoa/Cocoa.h>
+#include <Cocoa/Cocoa.h>
 
 void terminate_on_signal(int _) {
   [[NSApplication sharedApplication] terminate: 0];
