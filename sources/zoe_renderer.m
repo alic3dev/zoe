@@ -665,10 +665,6 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     }}
   );
 
-  // xAxisA = [cos(ang) ,sin(ang),0];  // 1 unit long
-  // yAxisA = [-sin(ang),cos(ang),0];  // 1 unit long
-  // zAxisA = [0        ,0       ,1];  // 1 unit long
-
   data_frame->rotation_camera.x = rotation_camera.x;
   data_frame->rotation_camera.y = rotation_camera.y;
   data_frame->rotation_camera.z = rotation_camera.z;
