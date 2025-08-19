@@ -5,9 +5,9 @@
 struct data_rasterizer {
   float4 position [[position]];
   float height;
-  float point_size [[point_size]];
   float2 position_texture;
   unsigned int id;
+  unsigned int id_texture [[user(id_texture)]];
   float noise;
 };
 
@@ -70,39 +70,17 @@ vertex data_rasterizer zoe_shader_vertex(
     } else {
       out.height = positions[id_vertex].y / object.height;
     }
+
+    out.id_texture = 0;
   } else {
-    out.position_texture = float2(
-      positions[id_vertex].x,
-      positions[id_vertex].z
-    );
+    out.id_texture = 1;
+    out.height = positions[id_vertex].y / object.height;
 
-    while (out.position_texture.x > 1.0f) {
-      out.position_texture.x = (
-        out.position_texture.x - 1.0f
-      );
-    }
-
-    while (out.position_texture.y > 1.0f) {
-      out.position_texture.y = (
-        out.position_texture.y - 1.0f
-      );
-    }
-
-    while (out.position_texture.x < 0.0f) {
-      out.position_texture.x = (
-        out.position_texture.x + 1.0f
-      );
-    }
-
-    while (out.position_texture.y < 0.0f) {
-      out.position_texture.y = (
-        out.position_texture.y + 1.0f
-      );
-    }
+    out.position_texture.y = id_vertex % 20 < 10 ? 1.0f : 0.0f;
+    out.position_texture.x = metal::fabs(positions[id_vertex].x + positions[id_vertex].z) / (object.width * 2.0f);
   }
 
   out.id = index_mesh.id;
-  out.point_size = 10.0f;
 
   out.noise = (float)(object.noise % 10000) / 10000.0f;
 
@@ -111,63 +89,36 @@ vertex data_rasterizer zoe_shader_vertex(
 
 fragment float4 zoe_shader_fragment(
   data_rasterizer in [[stage_in]],
-  metal::texture2d<half> texture [[ texture(0) ]]
+  metal::texture2d<half> texture_ground [[ texture(0) ]],
+  metal::texture2d<half> texture_tree [[ texture(1) ]]
 ) {
-  if (in.id == length_objects_xyz - 1) {
-    constexpr metal::sampler sampler_texture(
-      metal::filter::linear,
-      metal::mip_filter::linear
-    );
-
-    float4 texture_color = float4(
-      texture.sample(
-        sampler_texture,
-        in.position_texture
-      )
-    );
-
-    float brightness = ((in.height * 0.8f) + 0.1f) * 0.1f;
-
-    return float4(
-      texture_color[0] * brightness,
-      texture_color[1] * brightness,
-      texture_color[2] * brightness,
-      texture_color[3]
-    );
-  }
-
   constexpr metal::sampler sampler_texture(
     metal::filter::linear,
     metal::mip_filter::linear
   );
 
   float4 texture_color = float4(
-    texture.sample(
+    (in.id_texture == 0
+      ? texture_ground
+      : texture_tree
+    ).sample(
       sampler_texture,
       in.position_texture
     )
   );
 
-  float prog = in.noise;
+  float brightness;
+
+  if (in.id == length_objects_xyz - 1) {
+    brightness = ((in.height * 0.8f) + 0.1f) * 0.1f;
+  } else {
+    brightness = ((in.height * 0.8f) + 0.5f) * 0.1f;
+  }
 
   return float4(
-    texture_color[0] * (prog < 0.3f ? (
-      prog < 0.15f ? prog / 0.15f : (0.3f - prog) / 0.15f
-    ) : 0.0f),
-    texture_color[1] * (prog > 0.3f && prog < 0.6f ? (
-      (prog < 0.45f ? (
-        (prog - 0.3f) / 0.15f
-      ) : (
-        (0.6f - prog) / 0.15f
-      ))
-    ) : 0.0f),
-    texture_color[2] * (prog > 0.6f ? (
-      (prog < 0.75f ? (
-        (prog - 0.6f) / 0.15f
-      ) : (
-        (1.0f - prog) / 0.15f
-      ))
-    ) : 0.0f),
-    1.0f
+    texture_color[0] * brightness,
+    texture_color[1] * brightness,
+    texture_color[2] * brightness,
+    texture_color[3]
   );
 }
