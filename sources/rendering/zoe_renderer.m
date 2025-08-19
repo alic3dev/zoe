@@ -4,6 +4,7 @@
 #include <input/keycodes.h>
 #include <mesh/mesh.h>
 #include <mesh/ground/mesh_ground.h>
+#include <mesh/tree/mesh_tree.h>
 #include <metal_kit_shader_types.h>
 #include <paths.h>
 #include <scenes/scene.h>
@@ -34,6 +35,9 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   id<MTLBuffer> indices_ground;
   id<MTLBuffer> vertices_ground;
 
+  id<MTLBuffer> indices_tree;
+  id<MTLBuffer> vertices_tree;
+
   id<MTLCommandQueue> command_queue;
 
   id<MTLDevice> metal_kit_device;
@@ -47,12 +51,14 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   id<MTLRenderPipelineState> state_pipeline_no_render;
 
   id<MTLTexture> texture;
+  id<MTLTexture> texture_tree;
 
   MTLVertexDescriptor* metal_descriptor_vertex;
 
   matrix_float4x4 matrix_projection;
 
   struct mesh mesh_ground;
+  struct mesh mesh_tree;
 
   struct clic3_vector3_unsigned_int size_viewport;
 
@@ -63,7 +69,6 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   unsigned int index_buffer_visibility_read;
   unsigned int index_buffer_visibility_write;
   unsigned int length_index_icosahedron;
-  unsigned int length_index_ground;
   unsigned int length_total_vertices_ground;
 }
 
@@ -154,8 +159,6 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     200.0f
   );
 
-  length_index_ground = mesh_ground.length_indices;
-
   vertices_ground = [metal_kit_device
     newBufferWithBytes: mesh_ground.vertices
     length: mesh_ground.length_vertices * sizeof(struct clic3_vector4_float)
@@ -165,6 +168,24 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   indices_ground = [metal_kit_device
     newBufferWithBytes: mesh_ground.indices
     length: mesh_ground.length_indices * sizeof(unsigned int)
+    options: MTLResourceStorageModeShared
+  ];
+
+  mesh_tree_initialize(
+    &mesh_tree,
+    0.25f,
+    10.0f
+  );
+
+  vertices_tree = [metal_kit_device
+    newBufferWithBytes: mesh_tree.vertices
+    length: mesh_tree.length_vertices * sizeof(struct clic3_vector4_float)
+    options: MTLResourceStorageModeShared
+  ];
+
+  indices_tree = [metal_kit_device
+    newBufferWithBytes: mesh_tree.indices
+    length: mesh_tree.length_indices * sizeof(unsigned int)
     options: MTLResourceStorageModeShared
   ];
 
@@ -218,6 +239,21 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   texture = [texture_loader
     newTextureWithContentsOfURL: [NSURL
       fileURLWithPath:@"splat.png"
+      isDirectory: 0
+      relativeToURL: [NSURL
+        fileURLWithPath:[NSString
+          stringWithUTF8String: paths.directory_textures
+        ]
+        isDirectory: 1
+      ]
+    ]
+    options: (void*)0
+    error: (void*)0
+  ];
+
+  texture_tree = [texture_loader
+    newTextureWithContentsOfURL: [NSURL
+      fileURLWithPath:@"zoef.png"
       isDirectory: 0
       relativeToURL: [NSURL
         fileURLWithPath:[NSString
@@ -321,8 +357,6 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   metal_kit_data_frame* data_frame = (data_buffer_frame[index_data_buffer_frame]).contents;
   data_frame->frame = _frame;
 
-  unsigned int index_object = 0;
-
   data_frame->objects[length_objects_xyz - 1].view_model_matrix_projection = matrix_multiply(
     matrix_projection,
     // matrix_multiply(
@@ -367,13 +401,15 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     }}
   );
 
+  data_frame->objects[length_objects_xyz - 1].width = mesh_ground.size.x;
+  data_frame->objects[length_objects_xyz - 1].height = mesh_ground.size.y;
+  data_frame->objects[length_objects_xyz - 1].depth = mesh_ground.size.z;
+
   data_frame->rotation_camera.x = self->scene.player.rotation.x;
   data_frame->rotation_camera.y = self->scene.player.rotation.y;
   data_frame->rotation_camera.z = self->scene.player.rotation.z;
 
-  data_frame->objects[length_objects_xyz - 1].width = mesh_ground.size.x;
-  data_frame->objects[length_objects_xyz - 1].height = mesh_ground.size.y;
-  data_frame->objects[length_objects_xyz - 1].depth = mesh_ground.size.z;
+  unsigned int index_object = 0;
 
   for (
     int index_z = 0;
@@ -395,13 +431,6 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
           .y = ((index_y + self->scene.player.position.y - center_grid.y) * scale_grid.y),
           .z = ((index_z + self->scene.player.position.z - center_grid.z) * scale_grid.z)
         };
-
-        matrix_float4x4 matrix_model_view = (matrix_float4x4) {{
-          { 1, 0, 0, 0 },
-          { 0, 1, 0, 0 },
-          { 0, 0, 1, 0 },
-          { position.x, position.y, position.z, 1 }
-        }};
 
         data_frame->objects[index_object].view_model_matrix_projection = matrix_multiply(
           matrix_projection,
@@ -434,12 +463,22 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 
         data_frame->objects[index_object].view_model_matrix_projection = matrix_multiply(
           data_frame->objects[index_object].view_model_matrix_projection,
-          matrix_model_view
+          (matrix_float4x4) {{
+            { 1, 0, 0, 0 },
+            { 0, 1, 0, 0 },
+            { 0, 0, 1, 0 },
+            {
+              (((float)index_x / (float)length_objects_x) * mesh_ground.size.x - mesh_ground.size.z / 2.0f + self->scene.player.position.x - center_grid.x) * scale_grid.x,
+              (self->scene.player.position.y - center_grid.y) * scale_grid.y,
+              (((float)index_z / (float)length_objects_z) * mesh_ground.size.z - mesh_ground.size.z / 2.0f + self->scene.player.position.z - center_grid.z) * scale_grid.z,
+              1
+            }
+          }}
         );
 
-        data_frame->objects[index_object].width = 1.0f;
-        data_frame->objects[index_object].height = 1.0f;
-        data_frame->objects[index_object].depth = 1.0f;
+        data_frame->objects[index_object].width = mesh_tree.size.x;
+        data_frame->objects[index_object].height = mesh_tree.size.y;
+        data_frame->objects[index_object].depth = mesh_tree.size.z;
 
         data_frame->objects[index_object].noise = rand();
 
@@ -477,22 +516,10 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   
   [encoder_render
     drawIndexedPrimitives: MTLPrimitiveTypeTriangle
-    indexCount: length_index_ground
+    indexCount: self->mesh_ground.length_indices
     indexType: MTLIndexTypeUInt32
     indexBuffer: indices_ground
     indexBufferOffset: 0
-  ];
-
-  [encoder_render
-    setVertexBuffer: data_buffer_frame[index_data_buffer_frame]
-    offset: 0
-    atIndex: metal_kit_vertex_input_index_frame_data
-  ];
-
-  [encoder_render
-    setVertexBuffer: vertices_icosahedron
-    offset: 0
-    atIndex: metal_kit_vertex_input_index_positions
   ];
 
   for (
@@ -500,6 +527,37 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     index_object < length_objects_xyz - 1;
     ++index_object
   ) {
+    [encoder_render
+      setVertexBuffer: data_buffer_frame[index_data_buffer_frame]
+      offset: 0
+      atIndex: metal_kit_vertex_input_index_frame_data
+    ];
+
+    [encoder_render
+      setFragmentTexture: texture_tree
+      atIndex: 1
+    ];
+
+    [encoder_render
+      setVertexBuffer: vertices_tree
+      offset: 0
+      atIndex: metal_kit_vertex_input_index_positions
+    ];
+
+    [encoder_render
+      setVertexBytes: &index_object
+      length: sizeof(unsigned int)
+      atIndex: metal_kit_vertex_input_index_mesh_index
+    ];
+    
+    [encoder_render
+      drawIndexedPrimitives: MTLPrimitiveTypeTriangle
+      indexCount: self->mesh_tree.length_indices
+      indexType: MTLIndexTypeUInt32
+      indexBuffer: indices_tree
+      indexBufferOffset: 0
+    ];
+
     [encoder_render
       setVertexBytes: &index_object
       length: sizeof(unsigned int)
@@ -535,6 +593,7 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 
 - (void) destroy {
   mesh_destroy(&mesh_ground);
+  mesh_destroy(&mesh_tree);
 }
 
 @end
