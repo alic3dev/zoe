@@ -1,5 +1,6 @@
 #import <zoe.h>
 
+#include <application/zoe_application.h>
 #include <application/zoe_application_delegate.h>
 #include <input/map.h>
 #include <paths.h>
@@ -45,7 +46,7 @@ int main(
     (void*)0
   );
 
-  NSApplication* application = [NSApplication sharedApplication];
+  zoe_application* application = [zoe_application sharedApplication];
   application.delegate = [zoe_application_delegate alloc];
 
   interrupt_handler_interrupt_function_add(
