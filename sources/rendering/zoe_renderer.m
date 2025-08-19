@@ -1,4 +1,4 @@
-#include <application/zoe_renderer.h>
+#include <rendering/zoe_renderer.h>
 
 #include <input/map.h>
 #include <input/keycodes.h>
@@ -6,6 +6,7 @@
 #include <mesh/ground/mesh_ground.h>
 #include <metal_kit_shader_types.h>
 #include <paths.h>
+#include <scenes/scene.h>
 #include <termination.h>
 
 #include <clic3.h>
@@ -21,6 +22,8 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 
 @implementation zoe_renderer {
   dispatch_semaphore_t semaphore_in_flight;
+
+  struct scene scene;
   
   id<MTLBuffer> buffer_visibility[length_buffers_visibility];
   id<MTLBuffer> data_buffer_frame[max_buffers_in_flight];
@@ -47,18 +50,11 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 
   MTLVertexDescriptor* metal_descriptor_vertex;
 
-  // clic3_matrix4x4_float matrix_projection;
   matrix_float4x4 matrix_projection;
 
   struct mesh mesh_ground;
-  
-  struct clic3_vector3_float position_user;
-  struct clic3_vector3_float rotation_camera;
 
   struct clic3_vector3_unsigned_int size_viewport;
-
-  float speed_input;
-  float speed_input_rotation;
 
   unsigned char index_data_buffer_frame;
   uint64_t* buffer_result_visibility_from_read;
@@ -78,6 +74,10 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     return self;
   }
 
+  scene_initialize(
+    &self->scene
+  );
+
   metal_kit_device = metal_kit_view.device;
 
   semaphore_in_flight = dispatch_semaphore_create(
@@ -87,13 +87,6 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   metal_kit_view.depthStencilPixelFormat = MTLPixelFormatDepth32Float_Stencil8;
   metal_kit_view.colorPixelFormat = MTLPixelFormatBGRA8Unorm_sRGB;
   metal_kit_view.sampleCount = 1;
-
-  position_user.x = -1.0f;
-  position_user.y = -1.0f;
-  position_user.z = -10.0f;
-
-  speed_input = 0.2f;
-  speed_input_rotation = speed_input / 4.0f;
 
   id<MTLLibrary> library_default = [metal_kit_device newDefaultLibrary];
   id<MTLFunction> function_vertex = [library_default newFunctionWithName: @"zoe_shader_vertex"];
@@ -246,366 +239,13 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 }
 
 - (void) drawInMTKView: (nonnull MTKView*) metal_kit_view {
-  if (
-    input_map_keydown[
-      keycode_z
-    ] == 1
-  ) {
-    speed_input = (
-      speed_input / 2.0f
-    );
-  }
-
-  if (
-    input_map_keydown[
-      keycode_x
-    ] == 1
-  ) {
-    speed_input = (
-      speed_input * 2.0f
-    );
-  }
-
-  struct clic3_vector3_float movement = {
-    .x = 0.0f,
-    .y = 0.0f,
-    .z = 0.0f
-  };
-
-  struct clic3_vector2_float ratio_movement = {
-    .x = 0.0f,
-    .y = 0.0f
-  };
-
-  struct clic3_vector2_float ratio_movement_strafe = {
-    .x = 0.0f,
-    .y = 0.0f
-  };
+  scene_input_poll(
+    &self->scene
+  );
   
-  float ratio_axis = fmod(
-    rotation_camera.y,
-    (M_PI * 2.0f)
-  ) / (M_PI * 2.0f);
-
-  if (ratio_axis >= 0.0f) {
-    if (
-      ratio_axis <= 0.25f
-    ) {
-      ratio_movement.y = (0.25f - ratio_axis) / 0.25f;
-      ratio_movement.x = -(ratio_axis / 0.25f);
-    } else if (
-      ratio_axis >= 0.25f &&
-      ratio_axis <= 0.5f 
-    ) {
-      ratio_axis = ratio_axis - 0.25f;
-
-      ratio_movement.y = -(ratio_axis / 0.25f);
-      ratio_movement.x = -(0.25f - ratio_axis) / 0.25f;
-    } else if (
-      ratio_axis >= 0.5f &&
-      ratio_axis <= 0.75f 
-    ) {
-      ratio_axis = ratio_axis - 0.5f;
-
-      ratio_movement.y = -(0.25f - ratio_axis) / 0.25f;
-      ratio_movement.x = (ratio_axis / 0.25f);
-    } else {
-      ratio_axis = ratio_axis - 0.75f;
-
-      ratio_movement.y = (ratio_axis / 0.25f);
-      ratio_movement.x = (0.25f - ratio_axis) / 0.25f;
-    }
-  } else {
-    if (
-      ratio_axis >= -0.25f
-    ) {
-      ratio_movement.y = (-0.25f - ratio_axis) / -0.25f;
-      ratio_movement.x = -(ratio_axis / 0.25f);
-    } else if (
-      ratio_axis <= -0.25f &&
-      ratio_axis >= -0.5f
-    ) {
-      ratio_axis = ratio_axis + 0.25f;
-
-      ratio_movement.y = -(ratio_axis / -0.25f);
-      ratio_movement.x = -(-0.25f - ratio_axis) / 0.25f;
-    } else if (
-      ratio_axis <= -0.5f &&
-      ratio_axis >= -0.75f 
-    ) {
-      ratio_axis = ratio_axis + 0.5f;
-
-      ratio_movement.y = -(-0.25f - ratio_axis) / -0.25f;
-      ratio_movement.x = (ratio_axis / 0.25f);
-    } else {
-      ratio_axis = ratio_axis + 0.75f;
-
-      ratio_movement.y = (ratio_axis / -0.25f);
-      ratio_movement.x = (-0.25f - ratio_axis) / 0.25f;
-    }
-  }
-
-  ratio_axis = fmod(
-    rotation_camera.y,
-    (M_PI * 2.0f)
-  ) / (M_PI * 2.0f);
-
-  if (ratio_axis >= 0.0f) {
-    if (
-      ratio_axis <= 0.25f
-    ) {
-      ratio_movement_strafe.y = -(ratio_axis / 0.25f);
-      ratio_movement_strafe.x = -(0.25f - ratio_axis) / 0.25f;
-    } else if (
-      ratio_axis >= 0.25f &&
-      ratio_axis <= 0.5f 
-    ) {
-      ratio_axis = ratio_axis - 0.25f;
-
-      ratio_movement_strafe.y = -(0.25f - ratio_axis) / 0.25f;
-      ratio_movement_strafe.x = (ratio_axis / 0.25f);
-    } else if (
-      ratio_axis >= 0.5f &&
-      ratio_axis <= 0.75f 
-    ) {
-      ratio_axis = ratio_axis - 0.5f;
-
-      ratio_movement_strafe.y = (ratio_axis / 0.25f);
-      ratio_movement_strafe.x = (0.25f - ratio_axis) / 0.25f;
-    } else {
-      ratio_axis = ratio_axis - 0.75f;
-
-      ratio_movement_strafe.y = (0.25f - ratio_axis) / 0.25f;
-      ratio_movement_strafe.x = -(ratio_axis / 0.25f);
-    }
-  } else {
-    if (
-      ratio_axis >= -0.25f
-    ) {
-      ratio_movement_strafe.y = -(ratio_axis / 0.25f);
-      ratio_movement_strafe.x = -(-0.25f - ratio_axis) / -0.25f;
-    } else if (
-      ratio_axis <= -0.25f &&
-      ratio_axis >= -0.5f 
-    ) {
-      ratio_axis = ratio_axis + 0.25f;
-
-      ratio_movement_strafe.y = -(-0.25f - ratio_axis) / 0.25f;
-      ratio_movement_strafe.x = (ratio_axis / -0.25f);
-    } else if (
-      ratio_axis <= -0.5f &&
-      ratio_axis >= -0.75f 
-    ) {
-      ratio_axis = ratio_axis + 0.5f;
-
-      ratio_movement_strafe.y = (ratio_axis / 0.25f);
-      ratio_movement_strafe.x = (-0.25f - ratio_axis) / -0.25f;
-    } else {
-      ratio_axis = ratio_axis + 0.75f;
-
-      ratio_movement_strafe.y = (-0.25f - ratio_axis) / 0.25f;
-      ratio_movement_strafe.x = -(ratio_axis / -0.25f);
-    }
-  }
-
-  GCController* controller = [GCController current];
-  // TODO: GCDualSenseGamepad: Add DualSense specific functionality
-  GCExtendedGamepad* profile_controller = (
-    controller != (void*)0
-    ? (GCDualSenseGamepad*) [controller extendedGamepad]
-    : (void*)0
+  scene_poll(
+    &self->scene
   );
-
-  if (profile_controller != (void*)0) {
-    GCControllerButtonInput* trigger_left = [profile_controller leftTrigger];
-    GCControllerButtonInput* trigger_right = [profile_controller rightTrigger];
-
-    movement.y = (
-      trigger_left.value -
-      trigger_right.value
-    );
-
-    GCControllerDirectionPad* thumbstick_right = [profile_controller rightThumbstick];
-    GCControllerAxisInput* input_axis_y_right = [thumbstick_right yAxis];
-    GCControllerAxisInput* input_axis_x_right = [thumbstick_right xAxis];
-
-    if (
-      input_axis_x_right.value >= 0.1f || 
-      input_axis_x_right.value <= -0.1f
-    ) {
-      rotation_camera.y = (
-        rotation_camera.y + (
-          input_axis_x_right.value *
-          speed_input_rotation
-        )
-      );
-    }
-
-    if (
-      input_axis_y_right.value >= 0.1f || 
-      input_axis_y_right.value <= -0.1f
-    ) {
-      rotation_camera.z = (
-        rotation_camera.z + (
-          input_axis_y_right.value *
-          speed_input_rotation
-        )
-      );
-    }
-
-    GCControllerDirectionPad* thumbstick_left = [profile_controller leftThumbstick];
-    GCControllerAxisInput* input_axis_y_left = [thumbstick_left yAxis];
-    GCControllerAxisInput* input_axis_x_left = [thumbstick_left xAxis];
-
-    movement.x = (
-      (input_axis_y_left.value * ratio_movement.x) +
-      (input_axis_x_left.value * ratio_movement_strafe.x)
-    );
-    movement.z = (
-      (input_axis_y_left.value * ratio_movement.y) +
-      (input_axis_x_left.value * ratio_movement_strafe.y)
-    );
-  }
-
-  if ((
-      input_map_keydown[
-        keycode_down_arrow
-      ] == 1 ||
-      input_map_keydown[
-        keycode_up_arrow
-      ] == 1
-    ) && (
-      input_map_keydown[
-        keycode_shift_left
-      ] == 1 ||
-      input_map_keydown[
-        keycode_shift_right
-      ] == 1
-    )
-  ) {
-    movement.y = (
-      input_map_keydown[
-        keycode_down_arrow
-      ] +
-      -input_map_keydown[
-        keycode_up_arrow
-      ]
-    );
-  }
-
-  if (
-    input_map_keydown[
-      keycode_left_arrow
-    ] == 1 ||
-    input_map_keydown[
-      keycode_right_arrow
-    ] == 1 || ((
-        input_map_keydown[
-          keycode_down_arrow
-        ] == 1 || 
-        input_map_keydown[
-          keycode_up_arrow
-        ] == 1
-      ) && (
-        input_map_keydown[
-          keycode_shift_left
-        ] == 0 &&
-        input_map_keydown[
-          keycode_shift_right
-        ] == 0
-      )
-    )
-  ) {
-    movement.x = (
-      input_map_keydown[
-        keycode_up_arrow
-      ] * ratio_movement.x * !(input_map_keydown[
-        keycode_shift_left
-      ] ||
-      input_map_keydown[
-        keycode_shift_right
-      ]) +
-      -input_map_keydown[
-        keycode_down_arrow
-      ] * ratio_movement.x * !(input_map_keydown[
-        keycode_shift_left
-      ] ||
-      input_map_keydown[
-        keycode_shift_right
-      ]) +
-      input_map_keydown[
-        keycode_right_arrow
-      ] * ratio_movement_strafe.x +
-      -input_map_keydown[
-        keycode_left_arrow
-      ] * ratio_movement_strafe.x
-    );
-    movement.z = (
-      input_map_keydown[
-        keycode_up_arrow
-      ] * ratio_movement.y * !(input_map_keydown[
-        keycode_shift_left
-      ] ||
-      input_map_keydown[
-        keycode_shift_right
-      ]) +
-      -input_map_keydown[
-        keycode_down_arrow
-      ] * ratio_movement.y * !(input_map_keydown[
-        keycode_shift_left
-      ] ||
-      input_map_keydown[
-        keycode_shift_right
-      ]) +
-      input_map_keydown[
-        keycode_right_arrow
-      ] * ratio_movement_strafe.y + 
-      -input_map_keydown[
-        keycode_left_arrow
-      ] * ratio_movement_strafe.y
-    );
-  }
-
-  position_user.x = (
-    position_user.x + (
-      movement.x *
-      speed_input
-    )
-  );
-
-  position_user.y = (
-    position_user.y + (
-      movement.y *
-      speed_input
-    )
-  );
-
-  position_user.z = (
-    position_user.z + (
-      movement.z *
-      speed_input
-    )
-  );
-
-  if (
-    input_map_keydown[
-      keycode_z
-    ] == 1
-  ) {
-    speed_input = (
-      speed_input * 2.0f
-    );
-  }
-
-  if (
-    input_map_keydown[
-      keycode_x
-    ] == 1
-  ) {
-    speed_input = (
-      speed_input / 2.0f
-    );
-  }
 
   dispatch_semaphore_wait(
     semaphore_in_flight,
@@ -688,9 +328,9 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     // matrix_multiply(
     (
       (matrix_float4x4) {{
-        { cos(rotation_camera.y), 0, -sin(rotation_camera.y), 0 },
+        { cos(self->scene.player.rotation.y), 0, -sin(self->scene.player.rotation.y), 0 },
         { 0, 1, 0, 0 },
-        { sin(rotation_camera.y), 0, cos(rotation_camera.y), 0 },
+        { sin(self->scene.player.rotation.y), 0, cos(self->scene.player.rotation.y), 0 },
         {
           1,
           1,
@@ -719,17 +359,17 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
       { 0, 1, 0, 0 },
       { 0, 0, 1, 0 },
       {
-        ((length_objects_x / 2) + position_user.x - center_grid.x) * scale_grid.x,
-        (position_user.y - center_grid.y) * scale_grid.y,
-        ((length_objects_z / 2) + position_user.z - center_grid.z) * scale_grid.z,
+        ((length_objects_x / 2) + self->scene.player.position.x - center_grid.x) * scale_grid.x,
+        (self->scene.player.position.y - center_grid.y) * scale_grid.y,
+        ((length_objects_z / 2) + self->scene.player.position.z - center_grid.z) * scale_grid.z,
         1
       }
     }}
   );
 
-  data_frame->rotation_camera.x = rotation_camera.x;
-  data_frame->rotation_camera.y = rotation_camera.y;
-  data_frame->rotation_camera.z = rotation_camera.z;
+  data_frame->rotation_camera.x = self->scene.player.rotation.x;
+  data_frame->rotation_camera.y = self->scene.player.rotation.y;
+  data_frame->rotation_camera.z = self->scene.player.rotation.z;
 
   data_frame->objects[length_objects_xyz - 1].width = mesh_ground.size.x;
   data_frame->objects[length_objects_xyz - 1].height = mesh_ground.size.y;
@@ -751,9 +391,9 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
         ++index_x
       ) {
         struct clic3_vector3_float position = {
-          .x = ((index_x + position_user.x - center_grid.x) * scale_grid.x),
-          .y = ((index_y + position_user.y - center_grid.y) * scale_grid.y),
-          .z = ((index_z + position_user.z - center_grid.z) * scale_grid.z)
+          .x = ((index_x + self->scene.player.position.x - center_grid.x) * scale_grid.x),
+          .y = ((index_y + self->scene.player.position.y - center_grid.y) * scale_grid.y),
+          .z = ((index_z + self->scene.player.position.z - center_grid.z) * scale_grid.z)
         };
 
         matrix_float4x4 matrix_model_view = (matrix_float4x4) {{
@@ -768,9 +408,9 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
           // matrix_multiply(
           (
             (matrix_float4x4) {{
-              { cos(rotation_camera.y), 0, -sin(rotation_camera.y), 0 },
+              { cos(self->scene.player.rotation.y), 0, -sin(self->scene.player.rotation.y), 0 },
               { 0, 1, 0, 0 },
-              { sin(rotation_camera.y), 0, cos(rotation_camera.y), 0 },
+              { sin(self->scene.player.rotation.y), 0, cos(self->scene.player.rotation.y), 0 },
               {
                 1,
                 1,

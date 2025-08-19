@@ -16,6 +16,7 @@
         <application
           id="application-menu"
           sceneMemberID="viewController"
+          customClass="zoe_application"
         >
           <menu
             id="menu-core"
