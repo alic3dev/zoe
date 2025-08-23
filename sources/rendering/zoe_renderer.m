@@ -18,59 +18,10 @@
 #include <MetalKit/MetalKit.h>
 #include <simd/simd.h>
 
-static const unsigned int max_buffers_in_flight = 3;
-static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
+extern const unsigned int max_buffers_in_flight;
+extern const unsigned int length_buffers_visibility;
 
-struct object {
-  struct mesh mesh;
-  id<MTLBuffer> data;
-  id<MTLBuffer> indices;
-  id<MTLBuffer> vertices;
-  id<MTLTexture>* texture;
-  struct clic3_vector3_float position;
-};
-
-@implementation zoe_renderer {
-  dispatch_semaphore_t semaphore_in_flight;
-
-  struct scene scene;
-  struct object objects[total_length_objects];
-  struct object object_ground;
-
-  unsigned short int iterator_id;
-
-  unsigned short int length_objects;
-  
-  id<MTLBuffer> buffer_visibility[length_buffers_visibility];
-  id<MTLBuffer> data_buffer_frame[max_buffers_in_flight];
-  id<MTLBuffer> index_buffer_mesh_current;
-
-  id<MTLCommandQueue> command_queue;
-
-  id<MTLDevice> metal_kit_device;
-
-  id<MTLDepthStencilState> depth_state;
-  id<MTLDepthStencilState> depth_state_writes_disable;
-
-  id<MTLRenderCommandEncoder> encoder_render;
-
-  id<MTLRenderPipelineState> state_pipeline;
-  id<MTLRenderPipelineState> state_pipeline_no_render;
-
-  id<MTLTexture> texture_ground;
-  id<MTLTexture> texture_tree;
-
-  matrix_float4x4 matrix_projection;
-
-  struct clic3_vector3_unsigned_int size_viewport;
-
-  unsigned char index_data_buffer_frame;
-  uint64_t* buffer_result_visibility_from_read;
-  
-  unsigned int frame;
-  unsigned int index_buffer_visibility_read;
-  unsigned int index_buffer_visibility_write;
-}
+@implementation zoe_renderer
 
 - (nonnull instancetype) initWithMetalKitView: (nonnull MTKView*) metal_kit_view {
   self = [super init];
@@ -198,14 +149,10 @@ struct object {
 
   mesh_ground_initialize(
     &object_ground.mesh,
-    200.0f,
-    10.0f,
-    200.0f
+    2000.0f,
+    500.0f,
+    2000.0f
   );
-
-  object_ground.position.x = 0.0f;
-  object_ground.position.y = -(object_ground.mesh.size.y / 2.0f);
-  object_ground.position.z = 0.0f;
 
   object_ground.vertices = [metal_kit_device
     newBufferWithBytes: object_ground.mesh.vertices
@@ -224,7 +171,7 @@ struct object {
     options: MTLResourceStorageModeShared
   ];
 
-  object_ground.texture = &texture_tree;
+  object_ground.texture = texture_tree;
 
   metal_kit_data_frame_object* data = object_ground.data.contents;
   data->id = iterator_id++;
@@ -237,15 +184,15 @@ struct object {
   ) {
     mesh_tree_initialize(
       &(self->objects[index_object].mesh),
-      0.25f,
-      10.0f
+      1.0f,
+      250.0f
     );
 
     self->objects[index_object].position.x = -(self->objects[index_object].mesh.size.x / 2.0f) + (
       (((float)(rand() % 10000) / 5000.0f) - 1.0f) * 0.7f *
       (self->objects[index_object].mesh.size.x - (object_ground.mesh.size.x / 2.0f))
     );
-    self->objects[index_object].position.y = -(object_ground.mesh.size.y / 2.0f);
+
     self->objects[index_object].position.z = -(self->objects[index_object].mesh.size.z / 2.0f) + (
       (((float)(rand() % 10000) / 5000.0f) - 1.0f) * 0.7f *
       (object_ground.mesh.size.z - (object_ground.mesh.size.z / 2.0f))
@@ -273,14 +220,17 @@ struct object {
     data->id = iterator_id++;
     data->mode_texture = mode_texture_default;
 
-    self->objects[index_object].texture = &self->texture_tree;
-    
+    self->objects[index_object].texture = self->texture_tree;
   }
 
   termination_on_function_add(
     zoe_renderer_on_termination,
     self
   );
+
+  self->scene.player.position.x = 0;
+  self->scene.player.position.y = -5;
+  self->scene.player.position.z = 0;
 
   return self;
 }
@@ -305,9 +255,9 @@ struct object {
 
   MTLRenderPassDescriptor* descriptor_render_pass = metal_kit_view.currentRenderPassDescriptor;
   descriptor_render_pass.colorAttachments[0].clearColor = MTLClearColorMake(
-    0.012849f,
-    0.000324f,
-    0.008349f,
+    0.6084f,
+    0.6524f,
+    0.8349f,
     1.0f
   );
 
@@ -423,7 +373,7 @@ struct object {
   ];
 
   [encoder_render
-    setFragmentTexture: *object->texture
+    setFragmentTexture: object->texture
     atIndex: 0
   ];
 
