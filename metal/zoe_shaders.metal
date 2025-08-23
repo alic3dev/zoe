@@ -2,38 +2,35 @@
 
 #include <metal_stdlib>
 
+#include <clic3_vector.h>
+
 struct data_rasterizer {
   float4 position [[position]];
   float height;
   float2 position_texture;
-  unsigned int id;
-  unsigned int id_texture [[user(id_texture)]];
+  unsigned char mode_texture;
   float noise;
 };
 
-struct data_index_mesh {
-  unsigned int id;
-};
-
 vertex data_rasterizer zoe_shader_vertex(
-  const device vector_float4* positions [[buffer(metal_kit_vertex_input_index_positions)]],
+  const device simd_float4* positions [[buffer(metal_kit_vertex_input_index_positions)]],
   constant metal_kit_data_frame& data_frame [[buffer(metal_kit_vertex_input_index_frame_data)]],
-  constant data_index_mesh& index_mesh [[buffer(metal_kit_vertex_input_index_mesh_index)]],
+  constant metal_kit_data_frame_object& data [[buffer(metal_kit_vertex_input_index_data)]],
   unsigned int id_vertex [[vertex_id]]
 ) {
   data_rasterizer out;
 
-  metal_kit_data_frame_object object = data_frame.objects[index_mesh.id];
-
-  out.position = object.view_model_matrix_projection * positions[id_vertex];
+  out.position = data.view_model_matrix_projection * positions[id_vertex];
   out.height = 0.0f;
+  out.mode_texture = data.mode_texture;
+  out.noise = (float)(data.noise % 10000) / 10000.0f;
 
   if (
-    index_mesh.id == length_objects_xyz - 1
+    data.mode_texture == mode_texture_ground
   ) {
     out.position_texture = float2(
-      ((float)data_frame.frame / 5000.0f) + (positions[id_vertex].x + (object.width / 2.0f)) / (object.width / 10.0f) + (positions[id_vertex].y + (object.height / 2.0f)) / (object.height / 10.0f),
-      ((float)data_frame.frame / 5000.0f) + (positions[id_vertex].z + (object.depth / 2.0f)) / (object.depth / 10.0f) + (positions[id_vertex].y + (object.height / 2.0f)) / (object.height / 10.0f)
+      ((float)data_frame.frame / 5000.0f) + (positions[id_vertex].x + (data.width / 2.0f)) / (data.width / 10.0f) + (positions[id_vertex].y + (data.height / 2.0f)) / (data.height / 10.0f),
+      ((float)data_frame.frame / 5000.0f) + (positions[id_vertex].z + (data.depth / 2.0f)) / (data.depth / 10.0f) + (positions[id_vertex].y + (data.height / 2.0f)) / (data.height / 10.0f)
     );
 
     unsigned char z = 0;
@@ -65,32 +62,31 @@ vertex data_rasterizer zoe_shader_vertex(
       );
     }
 
-    if (positions[id_vertex].y <= object.height / 20.0f) {
-      out.height = positions[id_vertex].y / (object.height / 20.0f) * 0.5f;
+    if (positions[id_vertex].y <= data.height / 20.0f) {
+      out.height = positions[id_vertex].y / (data.height / 20.0f) * 0.5f;
     } else {
-      out.height = positions[id_vertex].y / object.height;
+      out.height = positions[id_vertex].y / data.height;
     }
-
-    out.id_texture = 0;
   } else {
-    out.id_texture = 1;
-    out.height = positions[id_vertex].y / object.height;
+    out.height = positions[id_vertex].y / data.height;
 
-    out.position_texture.y = id_vertex % 20 < 10 ? 1.0f : 0.0f;
-    out.position_texture.x = metal::fabs(positions[id_vertex].x + positions[id_vertex].z) / (object.width * 2.0f);
+    
+
+    if (positions[id_vertex].x > data.width || positions[id_vertex].z > data.depth) {
+      out.position_texture.y = id_vertex % 2 == 0 ? 1.0f : 0.0f;
+      out.position_texture.x = (float)((unsigned short int)(metal::fabs(positions[id_vertex].x + positions[id_vertex].z) * 10000.0f) % 74) / 74.0f;
+    } else {
+      out.position_texture.y = id_vertex % 20 < 10 ? 1.0f : 0.0f;
+      out.position_texture.x = metal::fabs(positions[id_vertex].x + positions[id_vertex].z) / (data.width * 2.0f);
+    }
   }
-
-  out.id = index_mesh.id;
-
-  out.noise = (float)(object.noise % 10000) / 10000.0f;
 
   return out;
 }
 
 fragment float4 zoe_shader_fragment(
   data_rasterizer in [[stage_in]],
-  metal::texture2d<half> texture_ground [[ texture(0) ]],
-  metal::texture2d<half> texture_tree [[ texture(1) ]]
+  metal::texture2d<half> texture [[ texture(0) ]]
 ) {
   constexpr metal::sampler sampler_texture(
     metal::filter::linear,
@@ -98,10 +94,7 @@ fragment float4 zoe_shader_fragment(
   );
 
   float4 texture_color = float4(
-    (in.id_texture == 0
-      ? texture_ground
-      : texture_tree
-    ).sample(
+    texture.sample(
       sampler_texture,
       in.position_texture
     )
@@ -109,7 +102,7 @@ fragment float4 zoe_shader_fragment(
 
   float brightness;
 
-  if (in.id == length_objects_xyz - 1) {
+  if (in.mode_texture == mode_texture_ground) {
     brightness = ((in.height * 0.8f) + 0.1f) * 0.1f;
   } else {
     brightness = ((in.height * 0.8f) + 0.5f) * 0.1f;

@@ -12,8 +12,6 @@
 - (void) drawableSizeWillChange: (CGSize) size;
 - (void) destroy;
 
-@property (nonatomic) float position;
-
 @end
 
 void zoe_renderer_on_termination(void* _Nonnull);

@@ -21,22 +21,29 @@
 static const unsigned int max_buffers_in_flight = 3;
 static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 
+struct object {
+  struct mesh mesh;
+  id<MTLBuffer> data;
+  id<MTLBuffer> indices;
+  id<MTLBuffer> vertices;
+  id<MTLTexture>* texture;
+  struct clic3_vector3_float position;
+};
+
 @implementation zoe_renderer {
   dispatch_semaphore_t semaphore_in_flight;
 
   struct scene scene;
+  struct object objects[total_length_objects];
+  struct object object_ground;
+
+  unsigned short int iterator_id;
+
+  unsigned short int length_objects;
   
   id<MTLBuffer> buffer_visibility[length_buffers_visibility];
   id<MTLBuffer> data_buffer_frame[max_buffers_in_flight];
   id<MTLBuffer> index_buffer_mesh_current;
-  id<MTLBuffer> indices_icosahedron;
-  id<MTLBuffer> vertices_icosahedron;
-
-  id<MTLBuffer> indices_ground;
-  id<MTLBuffer> vertices_ground;
-
-  id<MTLBuffer> indices_tree;
-  id<MTLBuffer> vertices_tree;
 
   id<MTLCommandQueue> command_queue;
 
@@ -50,15 +57,10 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   id<MTLRenderPipelineState> state_pipeline;
   id<MTLRenderPipelineState> state_pipeline_no_render;
 
-  id<MTLTexture> texture;
+  id<MTLTexture> texture_ground;
   id<MTLTexture> texture_tree;
 
-  MTLVertexDescriptor* metal_descriptor_vertex;
-
   matrix_float4x4 matrix_projection;
-
-  struct mesh mesh_ground;
-  struct mesh mesh_tree;
 
   struct clic3_vector3_unsigned_int size_viewport;
 
@@ -68,8 +70,6 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   unsigned int frame;
   unsigned int index_buffer_visibility_read;
   unsigned int index_buffer_visibility_write;
-  unsigned int length_index_icosahedron;
-  unsigned int length_total_vertices_ground;
 }
 
 - (nonnull instancetype) initWithMetalKitView: (nonnull MTKView*) metal_kit_view {
@@ -79,8 +79,20 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     return self;
   }
 
+  self->iterator_id = 0;
+
+  self->length_objects = total_length_objects;
+
   scene_initialize(
     &self->scene
+  );
+
+  self->scene.player.speed_movement = (
+    self->scene.player.speed_movement * 4.0f
+  );
+
+  self->scene.player.speed_rotation = (
+    self->scene.player.speed_rotation * 4.0f
   );
 
   metal_kit_device = metal_kit_view.device;
@@ -147,96 +159,14 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     buffer_visibility[
       index_buffer
     ] = [metal_kit_device
-      newBufferWithLength: length_objects_xyz * sizeof(uint64_t)
+      newBufferWithLength: self->length_objects * sizeof(uint64_t)
       options: MTLResourceStorageModeShared
     ];
   }
 
-  mesh_ground_initialize(
-    &mesh_ground,
-    200.0f,
-    10.0f,
-    200.0f
-  );
-
-  vertices_ground = [metal_kit_device
-    newBufferWithBytes: mesh_ground.vertices
-    length: mesh_ground.length_vertices * sizeof(struct clic3_vector4_float)
-    options: MTLResourceStorageModeShared
-  ];
-
-  indices_ground = [metal_kit_device
-    newBufferWithBytes: mesh_ground.indices
-    length: mesh_ground.length_indices * sizeof(unsigned int)
-    options: MTLResourceStorageModeShared
-  ];
-
-  mesh_tree_initialize(
-    &mesh_tree,
-    0.25f,
-    10.0f
-  );
-
-  vertices_tree = [metal_kit_device
-    newBufferWithBytes: mesh_tree.vertices
-    length: mesh_tree.length_vertices * sizeof(struct clic3_vector4_float)
-    options: MTLResourceStorageModeShared
-  ];
-
-  indices_tree = [metal_kit_device
-    newBufferWithBytes: mesh_tree.indices
-    length: mesh_tree.length_indices * sizeof(unsigned int)
-    options: MTLResourceStorageModeShared
-  ];
-
-  float segment = 0.3f;
-
-  vector_float4 icosahedronVertices[] = {
-    { -segment, -segment, segment, 1.0f },
-    { segment, -segment, segment, 1.0f },
-    { -segment, -segment, -segment, 1.0f },
-    { segment, -segment, -segment, 1.0f },
-    { -segment, segment, segment, 1.0f },
-    { segment, segment, segment, 1.0f },
-    { -segment, segment, -segment, 1.0f },
-    { segment, segment, -segment, 1.0f },
-  };
-
-  uint32_t icosahedronIndices[] = {
-    0, 1, 2,
-    2, 1, 3,
-    4, 5, 6,
-    6, 5, 7,
-    6, 2, 0,
-    6, 0, 4,
-    2, 3, 6,
-    7, 6, 3,
-    7, 3, 1,
-    7, 1, 5,
-    0, 1, 4,
-    5, 4, 1,
-  };
-
-  length_index_icosahedron = (
-    sizeof(icosahedronIndices) /
-    sizeof(uint32_t)
-  );
-
-  vertices_icosahedron = [metal_kit_device
-    newBufferWithBytes: icosahedronVertices
-    length: sizeof(icosahedronVertices)
-    options: MTLResourceStorageModeShared
-  ];
-
-  indices_icosahedron = [metal_kit_device
-    newBufferWithBytes: icosahedronIndices
-    length: sizeof(icosahedronIndices)
-    options: MTLResourceStorageModeShared
-  ];
-
   MTKTextureLoader* texture_loader = [[MTKTextureLoader alloc] initWithDevice: metal_kit_device];
 
-  texture = [texture_loader
+  texture_ground = [texture_loader
     newTextureWithContentsOfURL: [NSURL
       fileURLWithPath:@"splat.png"
       isDirectory: 0
@@ -266,6 +196,87 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
     error: (void*)0
   ];
 
+  mesh_ground_initialize(
+    &object_ground.mesh,
+    200.0f,
+    10.0f,
+    200.0f
+  );
+
+  object_ground.position.x = 0.0f;
+  object_ground.position.y = -(object_ground.mesh.size.y / 2.0f);
+  object_ground.position.z = 0.0f;
+
+  object_ground.vertices = [metal_kit_device
+    newBufferWithBytes: object_ground.mesh.vertices
+    length: object_ground.mesh.length_vertices * sizeof(struct clic3_vector4_float)
+    options: MTLResourceStorageModeShared
+  ];
+
+  object_ground.indices = [metal_kit_device
+    newBufferWithBytes: object_ground.mesh.indices
+    length: object_ground.mesh.length_indices * sizeof(unsigned int)
+    options: MTLResourceStorageModeShared
+  ];
+
+  object_ground.data = [metal_kit_device
+    newBufferWithLength: sizeof(metal_kit_data_frame_object)
+    options: MTLResourceStorageModeShared
+  ];
+
+  object_ground.texture = &texture_tree;
+
+  metal_kit_data_frame_object* data = object_ground.data.contents;
+  data->id = iterator_id++;
+  data->mode_texture = mode_texture_ground;
+
+  for (
+    unsigned short int index_object = 0;
+    index_object < self->length_objects;
+    ++index_object
+  ) {
+    mesh_tree_initialize(
+      &(self->objects[index_object].mesh),
+      0.25f,
+      10.0f
+    );
+
+    self->objects[index_object].position.x = -(self->objects[index_object].mesh.size.x / 2.0f) + (
+      (((float)(rand() % 10000) / 5000.0f) - 1.0f) * 0.7f *
+      (self->objects[index_object].mesh.size.x - (object_ground.mesh.size.x / 2.0f))
+    );
+    self->objects[index_object].position.y = -(object_ground.mesh.size.y / 2.0f);
+    self->objects[index_object].position.z = -(self->objects[index_object].mesh.size.z / 2.0f) + (
+      (((float)(rand() % 10000) / 5000.0f) - 1.0f) * 0.7f *
+      (object_ground.mesh.size.z - (object_ground.mesh.size.z / 2.0f))
+    );
+
+    self->objects[index_object].vertices = [metal_kit_device
+      newBufferWithBytes: self->objects[index_object].mesh.vertices
+      length: self->objects[index_object].mesh.length_vertices * sizeof(struct clic3_vector4_float)
+      options: MTLResourceStorageModeShared
+    ];
+
+    self->objects[index_object].indices = [metal_kit_device
+      newBufferWithBytes: self->objects[index_object].mesh.indices
+      length: self->objects[index_object].mesh.length_indices * sizeof(unsigned int)
+      options: MTLResourceStorageModePrivate
+    ];
+
+    self->objects[index_object].data = [metal_kit_device
+      newBufferWithLength: sizeof(metal_kit_data_frame_object)
+      options: MTLResourceStorageModeShared
+    ];
+
+    data = self->objects[index_object].data.contents;
+    
+    data->id = iterator_id++;
+    data->mode_texture = mode_texture_default;
+
+    self->objects[index_object].texture = &self->texture_tree;
+    
+  }
+
   termination_on_function_add(
     zoe_renderer_on_termination,
     self
@@ -289,11 +300,8 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   );
 
   index_data_buffer_frame = (index_data_buffer_frame + 1) % max_buffers_in_flight;
-  index_buffer_visibility_write = (
-    index_buffer_visibility_write + 1
-  ) % length_buffers_visibility;
 
-  buffer_result_visibility_from_read = buffer_visibility[index_buffer_visibility_read].contents;
+  id<MTLCommandBuffer> command_buffer = [command_queue commandBuffer];
 
   MTLRenderPassDescriptor* descriptor_render_pass = metal_kit_view.currentRenderPassDescriptor;
   descriptor_render_pass.colorAttachments[0].clearColor = MTLClearColorMake(
@@ -305,14 +313,13 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 
   descriptor_render_pass.visibilityResultBuffer = buffer_visibility[index_buffer_visibility_write];
 
-  id<MTLCommandBuffer> command_buffer = [command_queue commandBuffer];
   encoder_render = [command_buffer renderCommandEncoderWithDescriptor: descriptor_render_pass];
 
   [encoder_render setRenderPipelineState: state_pipeline];
   [encoder_render setDepthStencilState: depth_state];
 
-  [self updateOcclusionCulling];
-  [self renderMainRenderPass];
+  [self poll];
+  [self render];
 
   [encoder_render endEncoding];
 
@@ -335,31 +342,17 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   size_viewport.y = size.height;
 }
 
-- (void) updateOcclusionCulling {
-  const unsigned int _frame = frame++;
+- (void) poll_object: (struct object*) object {
+  metal_kit_data_frame_object* data = object->data.contents;
 
-  if (frame + 1 >= UINT_MAX - 1) {
-    frame = 0;
-  }
-
-  const struct clic3_vector3_float center_grid = {
-    .x = (float)(length_objects_x - 1) / 2.0f,
-    .y = (float)(length_objects_y - 1) / 2.0f,
-    .z = (float)(length_objects_z - 1) * 2.0f
+  struct clic3_vector3_float position = {
+    .x = object->position.x + self->scene.player.position.x,
+    .y = object->position.y + self->scene.player.position.y,
+    .z = object->position.z + self->scene.player.position.z
   };
 
-  const struct clic3_vector3_float scale_grid = {
-    .x = 1.0f,
-    .y = 1.0f,
-    .z = 1.0f
-  };
-
-  metal_kit_data_frame* data_frame = (data_buffer_frame[index_data_buffer_frame]).contents;
-  data_frame->frame = _frame;
-
-  data_frame->objects[length_objects_xyz - 1].view_model_matrix_projection = matrix_multiply(
+  data->view_model_matrix_projection = matrix_multiply(
     matrix_projection,
-    // matrix_multiply(
     (
       (matrix_float4x4) {{
         { cos(self->scene.player.rotation.y), 0, -sin(self->scene.player.rotation.y), 0 },
@@ -372,125 +365,57 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
           1
         }
       }}
-      // (matrix_float4x4) {{
-      //   { cos(rotation_camera.z), sin(rotation_camera.z), 0, 0 },
-      //   { -sin(rotation_camera.z), cos(rotation_camera.z), 0, 0 },
-      //   { 0, 0, 1, 0 },
-      //   {
-      //     1,
-      //     1,
-      //     1,
-      //     1
-      //   }
-      // }}
     )
   );
 
-  data_frame->objects[length_objects_xyz - 1].view_model_matrix_projection = matrix_multiply(
-    data_frame->objects[length_objects_xyz - 1].view_model_matrix_projection,
+  data->view_model_matrix_projection = matrix_multiply(
+    data->view_model_matrix_projection,
     (matrix_float4x4) {{
       { 1, 0, 0, 0 },
       { 0, 1, 0, 0 },
       { 0, 0, 1, 0 },
       {
-        ((length_objects_x / 2) + self->scene.player.position.x - center_grid.x) * scale_grid.x,
-        (self->scene.player.position.y - center_grid.y) * scale_grid.y,
-        ((length_objects_z / 2) + self->scene.player.position.z - center_grid.z) * scale_grid.z,
+        position.x,
+        position.y,
+        position.z,
         1
       }
     }}
   );
 
-  data_frame->objects[length_objects_xyz - 1].width = mesh_ground.size.x;
-  data_frame->objects[length_objects_xyz - 1].height = mesh_ground.size.y;
-  data_frame->objects[length_objects_xyz - 1].depth = mesh_ground.size.z;
+  data->width = object->mesh.size.x;
+  data->height = object->mesh.size.y;
+  data->depth = object->mesh.size.z;
+
+  data->noise = rand();
+}
+
+- (void) poll {
+  const unsigned int _frame = frame++;
+
+  if (frame + 1 >= UINT_MAX - 1) {
+    frame = 0;
+  }
+
+  metal_kit_data_frame* data_frame = (data_buffer_frame[index_data_buffer_frame]).contents;
+  data_frame->frame = _frame;
 
   data_frame->rotation_camera.x = self->scene.player.rotation.x;
   data_frame->rotation_camera.y = self->scene.player.rotation.y;
   data_frame->rotation_camera.z = self->scene.player.rotation.z;
 
-  unsigned int index_object = 0;
+  [self poll_object: &self->object_ground];
 
   for (
-    int index_z = 0;
-    index_z < length_objects_z;
-    ++index_z
+    unsigned short int index_object = 0;
+    index_object < self->length_objects;
+    ++index_object
   ) {
-    for (
-      int index_y = 0;
-      index_y < length_objects_y;
-      ++index_y
-    ) {
-      for (
-        int index_x = 0;
-        index_x < length_objects_x;
-        ++index_x
-      ) {
-        struct clic3_vector3_float position = {
-          .x = ((index_x + self->scene.player.position.x - center_grid.x) * scale_grid.x),
-          .y = ((index_y + self->scene.player.position.y - center_grid.y) * scale_grid.y),
-          .z = ((index_z + self->scene.player.position.z - center_grid.z) * scale_grid.z)
-        };
-
-        data_frame->objects[index_object].view_model_matrix_projection = matrix_multiply(
-          matrix_projection,
-          // matrix_multiply(
-          (
-            (matrix_float4x4) {{
-              { cos(self->scene.player.rotation.y), 0, -sin(self->scene.player.rotation.y), 0 },
-              { 0, 1, 0, 0 },
-              { sin(self->scene.player.rotation.y), 0, cos(self->scene.player.rotation.y), 0 },
-              {
-                1,
-                1,
-                1,
-                1
-              }
-            }}
-            // (matrix_float4x4) {{
-            //   { cos(rotation_camera.z), sin(rotation_camera.z), 0, 0 },
-            //   { -sin(rotation_camera.z), cos(rotation_camera.z), 0, 0 },
-            //   { 0, 0, 1, 0 },
-            //   {
-            //     1,
-            //     1,
-            //     1,
-            //     1
-            //   }
-            // }}
-          )
-        );
-
-        data_frame->objects[index_object].view_model_matrix_projection = matrix_multiply(
-          data_frame->objects[index_object].view_model_matrix_projection,
-          (matrix_float4x4) {{
-            { 1, 0, 0, 0 },
-            { 0, 1, 0, 0 },
-            { 0, 0, 1, 0 },
-            {
-              (((float)index_x / (float)length_objects_x) * mesh_ground.size.x - mesh_ground.size.z / 2.0f + self->scene.player.position.x - center_grid.x) * scale_grid.x,
-              (self->scene.player.position.y - center_grid.y) * scale_grid.y,
-              (((float)index_z / (float)length_objects_z) * mesh_ground.size.z - mesh_ground.size.z / 2.0f + self->scene.player.position.z - center_grid.z) * scale_grid.z,
-              1
-            }
-          }}
-        );
-
-        data_frame->objects[index_object].width = mesh_tree.size.x;
-        data_frame->objects[index_object].height = mesh_tree.size.y;
-        data_frame->objects[index_object].depth = mesh_tree.size.z;
-
-        data_frame->objects[index_object].noise = rand();
-
-        ++index_object;
-      }
-    }
+    [self poll_object: &self->objects[index_object]];
   }
 }
 
-- (void) renderMainRenderPass {
-  unsigned int index_object = length_objects_xyz - 1;
-
+- (void) render_object: (struct object*) object {
   [encoder_render
     setVertexBuffer: data_buffer_frame[index_data_buffer_frame]
     offset: 0
@@ -498,79 +423,40 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   ];
 
   [encoder_render
-    setFragmentTexture: texture
+    setFragmentTexture: *object->texture
     atIndex: 0
   ];
 
   [encoder_render
-    setVertexBuffer: vertices_ground
+    setVertexBuffer: object->vertices
     offset: 0
     atIndex: metal_kit_vertex_input_index_positions
   ];
-
+  
   [encoder_render
-    setVertexBytes: &index_object
-    length: sizeof(unsigned int)
-    atIndex: metal_kit_vertex_input_index_mesh_index
+    setVertexBuffer: object->data
+    offset: 0
+    atIndex: metal_kit_vertex_input_index_data
   ];
   
   [encoder_render
     drawIndexedPrimitives: MTLPrimitiveTypeTriangle
-    indexCount: self->mesh_ground.length_indices
+    indexCount: object->mesh.length_indices
     indexType: MTLIndexTypeUInt32
-    indexBuffer: indices_ground
+    indexBuffer: object->indices
     indexBufferOffset: 0
   ];
+}
+
+- (void) render {
+  [self render_object: &object_ground];
 
   for (
-    index_object = 0;
-    index_object < length_objects_xyz - 1;
+    unsigned short int index_object = 0;
+    index_object < self->length_objects;
     ++index_object
   ) {
-    [encoder_render
-      setVertexBuffer: data_buffer_frame[index_data_buffer_frame]
-      offset: 0
-      atIndex: metal_kit_vertex_input_index_frame_data
-    ];
-
-    [encoder_render
-      setFragmentTexture: texture_tree
-      atIndex: 1
-    ];
-
-    [encoder_render
-      setVertexBuffer: vertices_tree
-      offset: 0
-      atIndex: metal_kit_vertex_input_index_positions
-    ];
-
-    [encoder_render
-      setVertexBytes: &index_object
-      length: sizeof(unsigned int)
-      atIndex: metal_kit_vertex_input_index_mesh_index
-    ];
-    
-    [encoder_render
-      drawIndexedPrimitives: MTLPrimitiveTypeTriangle
-      indexCount: self->mesh_tree.length_indices
-      indexType: MTLIndexTypeUInt32
-      indexBuffer: indices_tree
-      indexBufferOffset: 0
-    ];
-
-    [encoder_render
-      setVertexBytes: &index_object
-      length: sizeof(unsigned int)
-      atIndex: metal_kit_vertex_input_index_mesh_index
-    ];
-
-    [encoder_render
-      drawIndexedPrimitives: MTLPrimitiveTypeTriangle
-      indexCount: length_index_icosahedron
-      indexType: MTLIndexTypeUInt32
-      indexBuffer: indices_icosahedron
-      indexBufferOffset: 0
-    ];
+    [self render_object: &self->objects[index_object]];
   }
 }
 
@@ -592,8 +478,15 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
 }
 
 - (void) destroy {
-  mesh_destroy(&mesh_ground);
-  mesh_destroy(&mesh_tree);
+  for (
+    unsigned short int index_object = 0;
+    index_object < self->length_objects;
+    ++index_object
+  ) {
+    mesh_destroy(
+      &self->objects[index_object].mesh
+    );
+  }
 }
 
 @end
