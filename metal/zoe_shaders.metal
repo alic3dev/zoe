@@ -70,14 +70,42 @@ vertex data_rasterizer zoe_shader_vertex(
   } else {
     out.height = positions[id_vertex].y / data.height;
 
-    
+    if (data.id % 2 == 0) {
+      if (positions[id_vertex].x > data.width || positions[id_vertex].z > data.depth) {
+        out.position_texture.y = 0.0f;
+        out.position_texture.x = metal::fmod(
+          (float)((unsigned short int)(metal::fabs(positions[id_vertex].x + positions[id_vertex].z) * 10000.0f) % 74) / 74.0f + data.id / 100.0f + ((float)data_frame.frame / 10000.0f),
+          1.0f
+        );
+      } else {
+        out.position_texture.y = id_vertex % 20 < 10 ? 1.0f : 0.0f;
+        out.position_texture.x = metal::fmod(
+          metal::fabs(positions[id_vertex].x + positions[id_vertex].z) / (data.width * 2.0f) + ((float)data_frame.frame / 10000.0f),
+          2.0f
+        );
 
-    if (positions[id_vertex].x > data.width || positions[id_vertex].z > data.depth) {
-      out.position_texture.y = id_vertex % 2 == 0 ? 1.0f : 0.0f;
-      out.position_texture.x = (float)((unsigned short int)(metal::fabs(positions[id_vertex].x + positions[id_vertex].z) * 10000.0f) % 74) / 74.0f;
+        if (out.position_texture.x > 1.0f) {
+          out.position_texture.x = 1.0f - (out.position_texture.x - 1.0f);
+        }
+      }
     } else {
-      out.position_texture.y = id_vertex % 20 < 10 ? 1.0f : 0.0f;
-      out.position_texture.x = metal::fabs(positions[id_vertex].x + positions[id_vertex].z) / (data.width * 2.0f);
+      if (positions[id_vertex].x > data.width || positions[id_vertex].z > data.depth) {
+        out.position_texture.x = 0.0f;
+        out.position_texture.y = metal::fmod(
+          (float)((unsigned short int)(metal::fabs(positions[id_vertex].x + positions[id_vertex].z) * 10000.0f) % 74) / 74.0f + data.id / 100.0f + ((float)data_frame.frame / 10000.0f),
+          1.0f
+        );
+      } else {
+        out.position_texture.x = id_vertex % 20 < 10 ? 1.0f : 0.0f;
+        out.position_texture.y = metal::fmod(
+          metal::fabs(positions[id_vertex].x + positions[id_vertex].z) / (data.width * 2.0f) + ((float)data_frame.frame / 10000.0f),
+          2.0f
+        );
+
+        if (out.position_texture.y > 1.0f) {
+          out.position_texture.y = 1.0f - (out.position_texture.y - 1.0f);
+        }
+      }
     }
   }
 
@@ -103,9 +131,9 @@ fragment float4 zoe_shader_fragment(
   float brightness;
 
   if (in.mode_texture == mode_texture_ground) {
-    brightness = ((in.height * 0.8f) + 0.1f) * 0.1f;
+    brightness = ((in.height * 0.8f) + 0.2f) * 1.0f;
   } else {
-    brightness = ((in.height * 0.8f) + 0.5f) * 0.1f;
+    brightness = ((in.height * 0.8f) + 0.2f) * 1.0f;
   }
 
   return float4(
