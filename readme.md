@@ -1,9 +1,8 @@
 # zoe
 
-<img width="2652" height="1532" alt="Screenshot 2025-08-08 at 21 28 41" src="https://github.com/user-attachments/assets/fa17f486-79a1-426c-9ce8-f3a1d48e4271" />
-<img width="2652" height="1532" alt="Screenshot 2025-08-08 at 21 27 19" src="https://github.com/user-attachments/assets/2ddfcb01-cf6c-4e46-9d5c-1d0609182017" />
-<img width="2652" height="1532" alt="Screenshot 2025-08-08 at 21 27 19" src="https://github.com/user-attachments/assets/2ddfcb01-cf6c-4e46-9d5c-1d0609182017" />
-<img width="2652" height="1532" alt="Screenshot 2025-08-08 at 21 28 41" src="https://github.com/user-attachments/assets/fa17f486-79a1-426c-9ce8-f3a1d48e4271" />
+<img width="2822" height="1756" alt="0" src="https://github.com/user-attachments/assets/c7974510-1e9d-4201-9777-741c5da755b6" />
+<img width="2824" height="1760" alt="1" src="https://github.com/user-attachments/assets/05cecfc4-9227-47de-86c1-8128397db9dc" />
+<img width="2824" height="1754" alt="2" src="https://github.com/user-attachments/assets/5ca9e5e7-16a5-415d-9d04-f66506e1736e" />
 
 ## copyright | copyleft
 
