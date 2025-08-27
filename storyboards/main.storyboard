@@ -147,8 +147,8 @@
           >
             <rect
               key="frame"
-              width="1280"
-              height="720"
+              width="1920"
+              height="1199"
             />
           </view>
         </viewController>

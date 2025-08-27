@@ -2,6 +2,7 @@
 
 #include <application/zoe_application.h>
 #include <application/zoe_application_delegate.h>
+#include <input/cursor.h>
 #include <input/map.h>
 #include <paths.h>
 #include <state_controller.h>
@@ -30,6 +31,7 @@ int main(
 
   termination_initialize();
   interrupt_handler_initialize();
+  input_cursor_initialize();
   input_maps_initialize();
   state_controller_initialize();
 

@@ -1,6 +1,7 @@
 #include <player.h>
 
 #include <input/controller.h>
+#include <input/cursor.h>
 #include <input/keycodes.h>
 #include <input/map.h>
 
@@ -22,20 +23,68 @@ void player_initialize(
 void player_input_poll(
   struct player* player
 ) {
+  struct controller_state controller_state;
+
+  controller_poll(
+    &controller_state
+  );
+
+  float speed_original = player->speed_movement;
+
   if (
-    input_map_keydown[
-      keycode_z
-    ] == 1
+    controller_state.available == 1 &&
+    controller_state.trigger_left >= 0.1f &&
+    controller_state.thumbstick_button_left == 0.0f
+  ) {
+    player->speed_movement = (
+      player->speed_movement *
+      controller_state.trigger_left +
+      1.0f
+    );
+  } else if (
+    controller_state.available == 1 &&
+    controller_state.trigger_left < 0.1f &&
+    controller_state.thumbstick_button_left >= 0.1f
   ) {
     player->speed_movement = (
       player->speed_movement / 2.0f
     );
-  }
-
-  if (
-    input_map_keydown[
-      keycode_x
-    ] == 1
+  } else if (
+    (
+      input_map_keydown[
+        keycode_option_right
+      ] == 1 ||
+      input_map_keydown[
+        keycode_control
+      ] == 1
+    )  && (
+      input_map_keydown[
+        keycode_shift_left
+      ] == 0 &&
+      input_map_keydown[
+        keycode_shift_right
+      ] == 0
+    )
+  ) {
+    player->speed_movement = (
+      player->speed_movement / 2.0f
+    );
+  } else if (
+    (
+      input_map_keydown[
+        keycode_option_right
+      ] == 0 &&
+      input_map_keydown[
+        keycode_control
+      ] == 0
+    ) && (
+      input_map_keydown[
+        keycode_shift_left
+      ] == 1 ||
+      input_map_keydown[
+        keycode_shift_right
+      ] == 1 
+    )
   ) {
     player->speed_movement = (
       player->speed_movement * 2.0f
@@ -57,6 +106,23 @@ void player_input_poll(
     .x = 0.0f,
     .y = 0.0f
   };
+
+  player->rotation.y = (
+    player->rotation.y + (
+      input_delta_cursor.x / 50.0f *
+      player->speed_rotation
+    )
+  );
+
+  player->rotation.z = (
+    player->rotation.z + (
+      input_delta_cursor.y / 50.0f *
+      player->speed_rotation
+    )
+  );
+
+  input_delta_cursor.x = 0;
+  input_delta_cursor.y = 0;
   
   float ratio_axis = fmod(
     player->rotation.y,
@@ -134,7 +200,7 @@ void player_input_poll(
       ratio_movement_strafe.x = -(0.25f - ratio_axis) / 0.25f;
     } else if (
       ratio_axis >= 0.25f &&
-      ratio_axis <= 0.5f 
+      ratio_axis <= 0.5f
     ) {
       ratio_axis = ratio_axis - 0.25f;
 
@@ -142,7 +208,7 @@ void player_input_poll(
       ratio_movement_strafe.x = (ratio_axis / 0.25f);
     } else if (
       ratio_axis >= 0.5f &&
-      ratio_axis <= 0.75f 
+      ratio_axis <= 0.75f
     ) {
       ratio_axis = ratio_axis - 0.5f;
 
@@ -162,7 +228,7 @@ void player_input_poll(
       ratio_movement_strafe.x = -(-0.25f - ratio_axis) / -0.25f;
     } else if (
       ratio_axis <= -0.25f &&
-      ratio_axis >= -0.5f 
+      ratio_axis >= -0.5f
     ) {
       ratio_axis = ratio_axis + 0.25f;
 
@@ -170,7 +236,7 @@ void player_input_poll(
       ratio_movement_strafe.x = (ratio_axis / -0.25f);
     } else if (
       ratio_axis <= -0.5f &&
-      ratio_axis >= -0.75f 
+      ratio_axis >= -0.75f
     ) {
       ratio_axis = ratio_axis + 0.5f;
 
@@ -184,18 +250,7 @@ void player_input_poll(
     }
   }
 
-  struct controller_state controller_state;
-
-  controller_poll(
-    &controller_state
-  );
-
   if (controller_state.available == 1) {
-    movement.y = (
-      controller_state.trigger_left -
-      controller_state.trigger_right
-    );
-
     if (
       controller_state.input_axis_x_right >= 0.1f || 
       controller_state.input_axis_x_right <= -0.1f
@@ -231,30 +286,40 @@ void player_input_poll(
     );
   }
 
-  if ((
-      input_map_keydown[
-        keycode_down_arrow
-      ] == 1 ||
-      input_map_keydown[
-        keycode_up_arrow
-      ] == 1
-    ) && (
-      input_map_keydown[
-        keycode_shift_left
-      ] == 1 ||
-      input_map_keydown[
-        keycode_shift_right
-      ] == 1
-    )
+  if (
+    input_map_keydown[
+      keycode_q
+    ] == 1 ||
+    input_map_keydown[
+      keycode_e
+    ] == 1 ||
+    input_map_keydown[
+      keycode_period
+    ] == 1 ||
+    input_map_keydown[
+      keycode_slash
+    ] == 1
   ) {
     movement.y = (
       input_map_keydown[
-        keycode_down_arrow
+        keycode_q
       ] +
       -input_map_keydown[
-        keycode_up_arrow
+        keycode_e
+      ] + 
+      input_map_keydown[
+        keycode_period
+      ] +
+      -input_map_keydown[
+        keycode_slash
       ]
     );
+
+    if (movement.y > 1.0f) {
+      movement.y = 1.0f;
+    } else if (movement.y < -1.0f) {
+      movement.y = -1.0f;
+    }
   }
 
   if (
@@ -263,70 +328,88 @@ void player_input_poll(
     ] == 1 ||
     input_map_keydown[
       keycode_right_arrow
-    ] == 1 || ((
-        input_map_keydown[
-          keycode_down_arrow
-        ] == 1 || 
-        input_map_keydown[
-          keycode_up_arrow
-        ] == 1
-      ) && (
-        input_map_keydown[
-          keycode_shift_left
-        ] == 0 &&
-        input_map_keydown[
-          keycode_shift_right
-        ] == 0
-      )
-    )
+    ] == 1 ||
+    input_map_keydown[
+      keycode_a
+    ] == 1 ||
+    input_map_keydown[
+      keycode_d
+    ] == 1  ||
+    input_map_keydown[
+      keycode_down_arrow
+    ] == 1 || 
+    input_map_keydown[
+      keycode_up_arrow
+    ] == 1 || 
+    input_map_keydown[
+      keycode_s
+    ] == 1 ||
+    input_map_keydown[
+      keycode_w
+    ] == 1
   ) {
     movement.x = (
-      input_map_keydown[
-        keycode_up_arrow
-      ] * ratio_movement.x * !(input_map_keydown[
-        keycode_shift_left
-      ] ||
-      input_map_keydown[
-        keycode_shift_right
-      ]) +
-      -input_map_keydown[
-        keycode_down_arrow
-      ] * ratio_movement.x * !(input_map_keydown[
-        keycode_shift_left
-      ] ||
-      input_map_keydown[
-        keycode_shift_right
-      ]) +
-      input_map_keydown[
-        keycode_right_arrow
-      ] * ratio_movement_strafe.x +
-      -input_map_keydown[
-        keycode_left_arrow
-      ] * ratio_movement_strafe.x
+      (
+        input_map_keydown[
+          keycode_up_arrow
+        ] || input_map_keydown[
+          keycode_w
+        ]
+      ) * ratio_movement.x +
+      -(
+        input_map_keydown[
+          keycode_down_arrow
+        ] || 
+        input_map_keydown[
+          keycode_s
+        ]
+      ) * ratio_movement.x +
+      (
+        input_map_keydown[
+          keycode_right_arrow
+        ] || input_map_keydown[
+          keycode_d
+        ]
+      ) * ratio_movement_strafe.x +
+      -(
+        input_map_keydown[
+          keycode_left_arrow
+        ] || input_map_keydown[
+          keycode_a
+        ]
+      ) * ratio_movement_strafe.x
     );
+
     movement.z = (
-      input_map_keydown[
-        keycode_up_arrow
-      ] * ratio_movement.y * !(input_map_keydown[
-        keycode_shift_left
-      ] ||
-      input_map_keydown[
-        keycode_shift_right
-      ]) +
-      -input_map_keydown[
-        keycode_down_arrow
-      ] * ratio_movement.y * !(input_map_keydown[
-        keycode_shift_left
-      ] ||
-      input_map_keydown[
-        keycode_shift_right
-      ]) +
-      input_map_keydown[
-        keycode_right_arrow
-      ] * ratio_movement_strafe.y + 
-      -input_map_keydown[
-        keycode_left_arrow
-      ] * ratio_movement_strafe.y
+      (
+        input_map_keydown[
+          keycode_up_arrow
+        ] || input_map_keydown[
+          keycode_w
+        ]
+      ) * ratio_movement.y +
+      -(
+        input_map_keydown[
+          keycode_down_arrow
+        ] || input_map_keydown[
+          keycode_s
+        ]
+      ) * ratio_movement.y +
+      (
+        input_map_keydown[
+          keycode_right_arrow
+        ] || 
+        input_map_keydown[
+          keycode_d
+        ]
+      ) * ratio_movement_strafe.y + 
+      -(
+        input_map_keydown[
+          keycode_left_arrow
+        ] || input_map_keydown[
+          keycode_a
+        ]
+      ) * ratio_movement_strafe.y
     );
   }
 
@@ -351,25 +434,7 @@ void player_input_poll(
     )
   );
 
-  if (
-    input_map_keydown[
-      keycode_z
-    ] == 1
-  ) {
-    player->speed_movement = (
-      player->speed_movement * 2.0f
-    );
-  }
-
-  if (
-    input_map_keydown[
-      keycode_x
-    ] == 1
-  ) {
-    player->speed_movement = (
-      player->speed_movement / 2.0f
-    );
-  }
+  player->speed_movement = speed_original;
 }
 
 void player_poll(

@@ -35,6 +35,9 @@ void controller_poll(
     controller_state->input_axis_x_right = input_axis_x_right.value;
     controller_state->input_axis_y_right = input_axis_y_right.value;
 
+    controller_state->thumbstick_button_left = [profile_controller leftThumbstickButton].value;
+    controller_state->thumbstick_button_right = [profile_controller rightThumbstickButton].value;
+
     controller_state->available = 1;
   } else {
     controller_state->trigger_left = 0.0f;
@@ -45,6 +48,9 @@ void controller_poll(
 
     controller_state->input_axis_x_right = 0.0f;
     controller_state->input_axis_y_right = 0.0f;
+
+    controller_state->thumbstick_button_left = 0.0f;
+    controller_state->thumbstick_button_right = 0.0f;
 
     controller_state->available = 0;
   }

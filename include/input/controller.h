@@ -11,6 +11,9 @@ struct controller_state {
   float input_axis_x_right;
   float input_axis_y_right;
 
+  float thumbstick_button_left;
+  float thumbstick_button_right;
+
   unsigned char available;
 };
 
