@@ -18,6 +18,10 @@ void player_initialize(
   player->speed_rotation = (
     player->speed_movement / 4.0f
   );
+
+  player->velocity.x = 0.0f;
+  player->velocity.y = 0.0f;
+  player->velocity.z = 0.0f;
 }
 
 void player_input_poll(
@@ -413,6 +417,15 @@ void player_input_poll(
     );
   }
 
+  if (
+    input_map_keydown[
+      keycode_space
+    ] == 1 &&
+    player->velocity.y == 0.0f
+  ) {
+    player->velocity.y = -(speed_original / 1.25f);
+  }
+
   player->position.x = (
     player->position.x + (
       movement.x *
@@ -424,7 +437,7 @@ void player_input_poll(
     player->position.y + (
       movement.y *
       player->speed_movement
-    )
+    ) + player->velocity.y
   );
 
   player->position.z = (
@@ -433,6 +446,19 @@ void player_input_poll(
       player->speed_movement
     )
   );
+
+  if (player->position.y < -10.0f) {
+    player->velocity.y = (
+      player->velocity.y + (
+        speed_original / 50.0f
+      )
+    );
+  }
+
+  if (player->position.y > -10.0f) {
+    player->position.y = -10.0f;
+    player->velocity.y = 0.0f;
+  }
 
   player->speed_movement = speed_original;
 }
