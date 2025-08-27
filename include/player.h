@@ -6,6 +6,7 @@
 struct player {
   struct clic3_vector3_float position;
   struct clic3_vector3_float rotation;
+  struct clic3_vector3_float velocity;
 
   float speed_movement;
   float speed_rotation;
