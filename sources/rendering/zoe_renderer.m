@@ -229,7 +229,7 @@ extern const unsigned int length_buffers_visibility;
   );
 
   self->scene.player.position.x = 0;
-  self->scene.player.position.y = -5;
+  self->scene.player.position.y = -10;
   self->scene.player.position.z = 0;
 
   return self;
