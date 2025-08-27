@@ -23,6 +23,7 @@ typedef enum {
 
 typedef struct {
   matrix_float4x4 view_model_matrix_projection;
+  struct clic3_vector3_float position;
   float width;
   float height;
   float depth;
@@ -34,6 +35,7 @@ typedef struct {
 typedef struct {
   struct clic3_vector3_float rotation_camera;
   unsigned int frame;
+  struct clic3_vector3_float position_player;
 } metal_kit_data_frame;
 
 #endif

@@ -119,7 +119,7 @@ extern const unsigned int length_buffers_visibility;
 
   texture_ground = [texture_loader
     newTextureWithContentsOfURL: [NSURL
-      fileURLWithPath:@"splat.png"
+      fileURLWithPath:@"0028.png"
       isDirectory: 0
       relativeToURL: [NSURL
         fileURLWithPath:[NSString
@@ -171,7 +171,7 @@ extern const unsigned int length_buffers_visibility;
     options: MTLResourceStorageModeShared
   ];
 
-  object_ground.texture = texture_tree;
+  object_ground.texture = texture_ground;
 
   metal_kit_data_frame_object* data = object_ground.data.contents;
   data->id = iterator_id++;
@@ -255,9 +255,9 @@ extern const unsigned int length_buffers_visibility;
 
   MTLRenderPassDescriptor* descriptor_render_pass = metal_kit_view.currentRenderPassDescriptor;
   descriptor_render_pass.colorAttachments[0].clearColor = MTLClearColorMake(
-    0.6084f,
-    0.6524f,
-    0.8349f,
+    0.0324f,
+    0.0424f,
+    0.0649f,
     1.0f
   );
 
@@ -300,6 +300,10 @@ extern const unsigned int length_buffers_visibility;
     .y = object->position.y + self->scene.player.position.y,
     .z = object->position.z + self->scene.player.position.z
   };
+
+  data->position.x = object->position.x;
+  data->position.y = object->position.y;
+  data->position.z = object->position.z;
 
   data->view_model_matrix_projection = matrix_multiply(
     matrix_projection,
@@ -354,6 +358,10 @@ extern const unsigned int length_buffers_visibility;
   data_frame->rotation_camera.y = self->scene.player.rotation.y;
   data_frame->rotation_camera.z = self->scene.player.rotation.z;
 
+  data_frame->position_player.x = self->scene.player.position.x;
+  data_frame->position_player.y = self->scene.player.position.y;
+  data_frame->position_player.z = self->scene.player.position.z;
+
   [self poll_object: &self->object_ground];
 
   for (
@@ -375,6 +383,11 @@ extern const unsigned int length_buffers_visibility;
   [encoder_render
     setFragmentTexture: object->texture
     atIndex: 0
+  ];
+
+  [encoder_render
+    setFragmentTexture: texture_tree
+    atIndex: 1
   ];
 
   [encoder_render
