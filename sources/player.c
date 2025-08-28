@@ -125,6 +125,32 @@ void player_input_poll(
     )
   );
 
+  if (controller_state.available == 1) {
+    if (
+      controller_state.input_axis_x_right >= 0.1f || 
+      controller_state.input_axis_x_right <= -0.1f
+    ) {
+      player->rotation.y = (
+        player->rotation.y + (
+          controller_state.input_axis_x_right *
+          player->speed_rotation
+        )
+      );
+    }
+
+    if (
+      controller_state.input_axis_y_right >= 0.1f || 
+      controller_state.input_axis_y_right <= -0.1f
+    ) {
+      player->rotation.x = (
+        player->rotation.x + (
+          -controller_state.input_axis_y_right *
+          player->speed_rotation
+        )
+      );
+    }
+  }
+
   if (
     player->rotation.x > M_PI / 2.0f
   ) {
@@ -265,30 +291,6 @@ void player_input_poll(
   }
 
   if (controller_state.available == 1) {
-    if (
-      controller_state.input_axis_x_right >= 0.1f || 
-      controller_state.input_axis_x_right <= -0.1f
-    ) {
-      player->rotation.y = (
-        player->rotation.y + (
-          controller_state.input_axis_x_right *
-          player->speed_rotation
-        )
-      );
-    }
-
-    if (
-      controller_state.input_axis_y_right >= 0.1f || 
-      controller_state.input_axis_y_right <= -0.1f
-    ) {
-      player->rotation.z = (
-        player->rotation.z + (
-          controller_state.input_axis_y_right *
-          player->speed_rotation
-        )
-      );
-    }
-
     movement.x = (
       (controller_state.input_axis_y_left * ratio_movement.x) +
       (controller_state.input_axis_x_left * ratio_movement_strafe.x)
