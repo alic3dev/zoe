@@ -14,6 +14,11 @@ struct controller_state {
   float thumbstick_button_left;
   float thumbstick_button_right;
 
+  float button_cross;
+  float button_circle;
+  float button_square;
+  float button_triangle;
+
   unsigned char available;
 };
 

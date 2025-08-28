@@ -430,9 +430,12 @@ void player_input_poll(
   }
 
   if (
-    input_map_keydown[
+    (input_map_keydown[
       keycode_space
-    ] == 1 &&
+    ] == 1 ||(
+      controller_state.available == 1 &&
+      controller_state.button_cross >= 0.1f
+    )) &&
     player->velocity.y == 0.0f
   ) {
     player->velocity.y = -(speed_original / 1.25f);
