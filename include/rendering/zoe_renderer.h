@@ -8,12 +8,15 @@
 
 #include <MetalKit/MetalKit.h>
 
+#include <pthread.h>
 
-static const unsigned int max_buffers_in_flight = 3;
-static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
+static const unsigned int count_max_frames = 5;
+static const unsigned int length_buffers_visibility = count_max_frames + 1;
 
 @interface zoe_renderer : NSObject<MTKViewDelegate> {
-  dispatch_semaphore_t semaphore_in_flight;
+  signed char completed_frames;
+
+  pthread_mutex_t mutex_frame;
 
   struct scene scene;
   struct object objects[total_length_objects];
@@ -24,7 +27,7 @@ static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
   unsigned short int length_objects;
   
   id<MTLBuffer> buffer_visibility[length_buffers_visibility];
-  id<MTLBuffer> data_buffer_frame[max_buffers_in_flight];
+  id<MTLBuffer> data_buffer_frame[count_max_frames];
   id<MTLBuffer> index_buffer_mesh_current;
 
   id<MTLCommandQueue> command_queue;

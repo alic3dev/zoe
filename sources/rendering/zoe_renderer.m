@@ -19,9 +19,6 @@
 #include <MetalKit/MetalKit.h>
 #include <simd/simd.h>
 
-extern const unsigned int max_buffers_in_flight;
-extern const unsigned int length_buffers_visibility;
-
 @implementation zoe_renderer
 
 - (nonnull instancetype) initWithMetalKitView: (nonnull MTKView*) metal_kit_view {
@@ -30,6 +27,13 @@ extern const unsigned int length_buffers_visibility;
   if (!self) {
     return self;
   }
+
+  self->completed_frames = count_max_frames;
+
+  pthread_mutex_init(
+    &self->mutex_frame,
+    (void*)0
+  );
 
   self->iterator_id = 0;
 
@@ -48,10 +52,6 @@ extern const unsigned int length_buffers_visibility;
   );
 
   metal_kit_device = metal_kit_view.device;
-
-  semaphore_in_flight = dispatch_semaphore_create(
-    max_buffers_in_flight
-  );
 
   metal_kit_view.depthStencilPixelFormat = MTLPixelFormatDepth32Float_Stencil8;
   metal_kit_view.colorPixelFormat = MTLPixelFormatBGRA8Unorm_sRGB;
@@ -90,7 +90,7 @@ extern const unsigned int length_buffers_visibility;
 
   for (
     unsigned int index_buffer = 0;
-    index_buffer < max_buffers_in_flight;
+    index_buffer < count_max_frames;
     ++index_buffer
   ) {
     data_buffer_frame[
@@ -245,12 +245,17 @@ extern const unsigned int length_buffers_visibility;
     &self->scene
   );
 
-  dispatch_semaphore_wait(
-    semaphore_in_flight,
-    DISPATCH_TIME_FOREVER
+  self->completed_frames = (
+    self->completed_frames - 1
   );
 
-  index_data_buffer_frame = (index_data_buffer_frame + 1) % max_buffers_in_flight;
+  if (self->completed_frames <= 0) {
+    pthread_mutex_lock(
+      &self->mutex_frame
+    );
+  }
+
+  index_data_buffer_frame = (index_data_buffer_frame + 1) % count_max_frames;
 
   id<MTLCommandBuffer> command_buffer = [command_queue commandBuffer];
 
@@ -274,14 +279,20 @@ extern const unsigned int length_buffers_visibility;
 
   [encoder_render endEncoding];
 
-  __block dispatch_semaphore_t block_semaphore = semaphore_in_flight;
-
   [command_buffer addCompletedHandler:^(id<MTLCommandBuffer> buffer) {
     self->index_buffer_visibility_read = (
       self->index_buffer_visibility_read + 1
     ) % length_buffers_visibility;
 
-    dispatch_semaphore_signal(block_semaphore);
+    self->completed_frames = (
+      self->completed_frames + 1
+    );
+
+    if (completed_frames == 0 || completed_frames == 1) {
+      pthread_mutex_unlock(
+        &self->mutex_frame
+      );
+    }
   }];
 
   [command_buffer presentDrawable: metal_kit_view.currentDrawable];
