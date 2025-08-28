@@ -11,10 +11,10 @@ void player_initialize(
   struct player* player
 ) {
   player->position.x = 0.0f;
-  player->position.y = 0.0f;
+  player->position.y = -10.0f;
   player->position.z = 0.0f;
 
-  player->speed_movement = 0.2f;
+  player->speed_movement = 0.8f;
   player->speed_rotation = (
     player->speed_movement / 4.0f
   );

@@ -4,6 +4,8 @@
 
 #include <clic3_vector.h>
 
+constant float brightness_maximum = 1.0f;
+
 struct data_rasterizer {
   float4 position [[position]];
   float distance;
@@ -143,9 +145,9 @@ fragment float4 zoe_shader_fragment(
   float brightness;
 
   if (in.mode_texture == mode_texture_ground) {
-    brightness = ((in.height * 0.8f) + 0.075f) * 0.1f;
+    brightness = ((in.height * 0.8f) + 0.075f) * brightness_maximum;
   } else {
-    brightness = ((in.height * 0.8f) + 0.075f) * 0.08f;
+    brightness = ((in.height * 0.8f) + 0.075f) * (brightness_maximum * 0.8f);
   }
 
   brightness = brightness * metal::fmax(

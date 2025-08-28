@@ -4,19 +4,14 @@
 #include <mesh/mesh.h>
 #include <metal_kit_shader_types.h>
 #include <object.h>
+#include <rendering/rendering_properties.h>
 #include <scenes/scene.h>
 
 #include <MetalKit/MetalKit.h>
 
-#include <pthread.h>
-
-static const unsigned int count_max_frames = 5;
-static const unsigned int length_buffers_visibility = count_max_frames + 1;
 
 @interface zoe_renderer : NSObject<MTKViewDelegate> {
-  signed char completed_frames;
-
-  pthread_mutex_t mutex_frame;
+  struct rendering_properties rendering_properties;
 
   struct scene scene;
   struct object objects[total_length_objects];
@@ -45,14 +40,9 @@ static const unsigned int length_buffers_visibility = count_max_frames + 1;
   id<MTLTexture> texture_ground;
   id<MTLTexture> texture_tree;
 
-  matrix_float4x4 matrix_projection;
-
-  struct clic3_vector3_unsigned_int size_viewport;
-
   unsigned char index_data_buffer_frame;
   uint64_t* buffer_result_visibility_from_read;
   
-  unsigned int frame;
   unsigned int index_buffer_visibility_read;
   unsigned int index_buffer_visibility_write;
 }

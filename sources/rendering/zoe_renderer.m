@@ -8,6 +8,7 @@
 #include <metal_kit_shader_types.h>
 #include <object.h>
 #include <paths.h>
+#include <rendering/camera/camera.h>
 #include <scenes/scene.h>
 #include <termination.h>
 
@@ -28,27 +29,15 @@
     return self;
   }
 
-  self->completed_frames = count_max_frames;
-
-  pthread_mutex_init(
-    &self->mutex_frame,
-    (void*)0
+  rendering_properties_initialize(
+    &self->rendering_properties
   );
 
   self->iterator_id = 0;
-
   self->length_objects = total_length_objects;
 
   scene_initialize(
     &self->scene
-  );
-
-  self->scene.player.speed_movement = (
-    self->scene.player.speed_movement * 4.0f
-  );
-
-  self->scene.player.speed_rotation = (
-    self->scene.player.speed_rotation * 4.0f
   );
 
   metal_kit_device = metal_kit_view.device;
@@ -189,14 +178,18 @@
       250.0f
     );
 
-    self->objects[index_object].position.x = -(self->objects[index_object].mesh.size.x / 2.0f) + (
-      (((float)(rand() % 10000) / 5000.0f) - 1.0f) * 0.7f *
-      (self->objects[index_object].mesh.size.x - (object_ground.mesh.size.x / 2.0f))
+    self->objects[index_object].position.x = (
+      -(self->objects[index_object].mesh.size.x / 2.0f) + (
+        (((float)(rand() % 10000) / 5000.0f) - 1.0f) * 0.7f *
+        (self->objects[index_object].mesh.size.x - (object_ground.mesh.size.x / 2.0f))
+      )
     );
 
-    self->objects[index_object].position.z = -(self->objects[index_object].mesh.size.z / 2.0f) + (
-      (((float)(rand() % 10000) / 5000.0f) - 1.0f) * 0.7f *
-      (object_ground.mesh.size.z - (object_ground.mesh.size.z / 2.0f))
+    self->objects[index_object].position.z = (
+      -(self->objects[index_object].mesh.size.z / 2.0f) + (
+        (((float)(rand() % 10000) / 5000.0f) - 1.0f) * 0.7f *
+        (object_ground.mesh.size.z - (object_ground.mesh.size.z / 2.0f))
+      )
     );
 
     self->objects[index_object].vertices = [metal_kit_device
@@ -229,10 +222,6 @@
     self
   );
 
-  self->scene.player.position.x = 0;
-  self->scene.player.position.y = -10;
-  self->scene.player.position.z = 0;
-
   return self;
 }
 
@@ -245,13 +234,15 @@
     &self->scene
   );
 
-  self->completed_frames = (
-    self->completed_frames - 1
+  self->rendering_properties.count_completed_frames = (
+    self->rendering_properties.count_completed_frames - 1
   );
 
-  if (self->completed_frames <= 0) {
+  if (
+    self->rendering_properties.count_completed_frames <= 0
+  ) {
     pthread_mutex_lock(
-      &self->mutex_frame
+      &self->rendering_properties.mutex_frame
     );
   }
 
@@ -284,24 +275,22 @@
       self->index_buffer_visibility_read + 1
     ) % length_buffers_visibility;
 
-    self->completed_frames = (
-      self->completed_frames + 1
+    self->rendering_properties.count_completed_frames = (
+      self->rendering_properties.count_completed_frames + 1
     );
 
-    if (completed_frames == 0 || completed_frames == 1) {
+    if (
+      self->rendering_properties.count_completed_frames == 0 ||
+      self->rendering_properties.count_completed_frames == 1
+    ) {
       pthread_mutex_unlock(
-        &self->mutex_frame
+        &self->rendering_properties.mutex_frame
       );
     }
   }];
 
   [command_buffer presentDrawable: metal_kit_view.currentDrawable];
   [command_buffer commit];
-}
-
-- (void) mtkView: (nonnull MTKView*) metal_kit_view drawableSizeWillChange: (CGSize) size {
-  size_viewport.x = size.width;
-  size_viewport.y = size.height;
 }
 
 - (void) poll_object: (struct object*) object {
@@ -318,7 +307,7 @@
   data->position.z = object->position.z;
 
   data->view_model_matrix_projection = matrix_multiply(
-    matrix_projection,
+    self->rendering_properties.camera.matrix_viewport_projection,
     (
       (matrix_float4x4) {{
         { 1, 0, 0, 0 },
@@ -374,10 +363,14 @@
 }
 
 - (void) poll {
-  const unsigned int _frame = frame++;
+  const unsigned int _frame = (
+    self->rendering_properties.frame++
+  );
 
-  if (frame + 1 >= UINT_MAX - 1) {
-    frame = 0;
+  if (
+    self->rendering_properties.frame + 1 >= UINT_MAX - 1
+  ) {
+    self->rendering_properties.frame = 0;
   }
 
   metal_kit_data_frame* data_frame = (data_buffer_frame[index_data_buffer_frame]).contents;
@@ -452,24 +445,22 @@
   }
 }
 
+- (void) mtkView: (nonnull MTKView*) metal_kit_view drawableSizeWillChange: (CGSize) size {}
+
 - (void) drawableSizeWillChange: (CGSize) size {
-  float aspect = size.width / (float) size.height;
-  float nearZ = 0.001f;
-  float farZ = 10000.0f;
-
-  float ys = 1 / tanf(90.0f * (M_PI / 180.0f) * 0.5f);
-  float xs = ys / aspect;
-  float zs = farZ / (nearZ - farZ);
-
-  matrix_projection = (matrix_float4x4) {{
-    { xs, 0, 0, 0 },
-    { 0,  ys, 0, 0 },
-    { 0, 0, zs, -1 },
-    { 0, 0, nearZ * zs, 0 }
-  }};
+  camera_ratio_aspect_set(
+    &self->rendering_properties.camera, (
+      (float) size.width /
+      (float) size.height
+    )
+  );
 }
 
 - (void) destroy {
+  rendering_properties_destory(
+    &self->rendering_properties
+  );
+
   for (
     unsigned short int index_object = 0;
     index_object < self->length_objects;
