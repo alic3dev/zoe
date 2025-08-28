@@ -118,12 +118,22 @@ void player_input_poll(
     )
   );
 
-  player->rotation.z = (
-    player->rotation.z + (
+  player->rotation.x = (
+    player->rotation.x + (
       input_delta_cursor.y / 50.0f *
       player->speed_rotation
     )
   );
+
+  if (
+    player->rotation.x > M_PI / 2.0f
+  ) {
+    player->rotation.x = M_PI / 2.0f;
+  } else if (
+    player->rotation.x < -M_PI / 2.0f
+  ) {
+    player->rotation.x = -M_PI / 2.0f;
+  }
 
   input_delta_cursor.x = 0;
   input_delta_cursor.y = 0;

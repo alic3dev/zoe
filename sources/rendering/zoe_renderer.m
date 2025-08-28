@@ -321,6 +321,23 @@
     matrix_projection,
     (
       (matrix_float4x4) {{
+        { 1, 0, 0, 0 },
+        { 0, cos(self->scene.player.rotation.x), sin(self->scene.player.rotation.x), 0 },
+        { 0, -sin(self->scene.player.rotation.x), cos(self->scene.player.rotation.x), 0 },
+        {
+          1,
+          1,
+          1,
+          1
+        }
+      }}
+    )
+  );
+
+  data->view_model_matrix_projection = matrix_multiply(
+    data->view_model_matrix_projection,
+    (
+      (matrix_float4x4) {{
         { cos(self->scene.player.rotation.y), 0, -sin(self->scene.player.rotation.y), 0 },
         { 0, 1, 0, 0 },
         { sin(self->scene.player.rotation.y), 0, cos(self->scene.player.rotation.y), 0 },
