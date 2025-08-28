@@ -3,6 +3,7 @@
 
 #include <mesh/mesh.h>
 #include <metal_kit_shader_types.h>
+#include <object.h>
 #include <scenes/scene.h>
 
 #include <MetalKit/MetalKit.h>
@@ -10,15 +11,6 @@
 
 static const unsigned int max_buffers_in_flight = 3;
 static const unsigned int length_buffers_visibility = max_buffers_in_flight + 1;
-
-struct object {
-  struct mesh mesh;
-  _Nonnull id<MTLBuffer> data;
-  _Nonnull id<MTLBuffer> indices;
-  _Nonnull id<MTLBuffer> vertices;
-  _Nonnull id<MTLTexture> texture;
-  struct clic3_vector3_float position;
-};
 
 @interface zoe_renderer : NSObject<MTKViewDelegate> {
   dispatch_semaphore_t semaphore_in_flight;

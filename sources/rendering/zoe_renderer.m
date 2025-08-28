@@ -6,6 +6,7 @@
 #include <mesh/ground/mesh_ground.h>
 #include <mesh/tree/mesh_tree.h>
 #include <metal_kit_shader_types.h>
+#include <object.h>
 #include <paths.h>
 #include <scenes/scene.h>
 #include <termination.h>
@@ -446,8 +447,8 @@ extern const unsigned int length_buffers_visibility;
     index_object < self->length_objects;
     ++index_object
   ) {
-    mesh_destroy(
-      &self->objects[index_object].mesh
+    object_destroy(
+      &self->objects[index_object]
     );
   }
 }
