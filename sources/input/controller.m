@@ -38,6 +38,11 @@ void controller_poll(
     controller_state->thumbstick_button_left = [profile_controller leftThumbstickButton].value;
     controller_state->thumbstick_button_right = [profile_controller rightThumbstickButton].value;
 
+    controller_state->button_cross = [profile_controller buttonA].value;
+    controller_state->button_circle = [profile_controller buttonB].value;
+    controller_state->button_square = [profile_controller buttonX].value;
+    controller_state->button_triangle = [profile_controller buttonY].value;
+
     controller_state->available = 1;
   } else {
     controller_state->trigger_left = 0.0f;
