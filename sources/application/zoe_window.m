@@ -18,8 +18,11 @@
 }
 
 - (void) mouseDown:(NSEvent *) event {
-  locked_cursor = 1;
-  [NSCursor hide];
+  if (locked_cursor != 1) {
+    locked_cursor = 1;
+    [NSCursor hide];
+    [self center_mouse];
+  }
 }
 
 - (void) mouseMoved: (NSEvent*) event {
@@ -36,16 +39,20 @@
       event.deltaY
     );
 
-    CGRect rect = [self contentLayoutRect];
-    CGPoint point_mouse = {
-      .x = rect.origin.x + (rect.size.width / 2),
-      .y = rect.origin.y + (rect.size.height / 2)
-    };
-
-    CGWarpMouseCursorPosition(
-      point_mouse
-    );
+    [self center_mouse];
   }
+}
+
+- (void) center_mouse {
+  CGRect rect = [self contentLayoutRect];
+  CGPoint point_mouse = {
+    .x = rect.origin.x + (rect.size.width / 2),
+    .y = rect.origin.y + (rect.size.height / 2)
+  };
+
+  CGWarpMouseCursorPosition(
+    point_mouse
+  );
 }
 
 - (void) keyUp: (NSEvent*) event {

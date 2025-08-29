@@ -13,6 +13,8 @@
 - (void) mouseMoved: (NSEvent*) event;
 - (void) flagsChanged:(NSEvent*) event;
 
+- (void) center_mouse;
+
 - (BOOL) canBecomeKeyWindow;
 
 @end
