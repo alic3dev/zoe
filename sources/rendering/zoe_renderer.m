@@ -7,9 +7,8 @@
 #include <mesh/tree/mesh_tree.h>
 #include <metal_kit_shader_types.h>
 #include <object.h>
-#include <paths.h>
 #include <rendering/camera/camera.h>
-#include <scenes/scene.h>
+#include <scenes/scene_menu_main.h>
 #include <termination.h>
 
 #include <clic3.h>
@@ -29,18 +28,16 @@
     return self;
   }
 
+  metal_kit_device = metal_kit_view.device;
+
   rendering_properties_initialize(
     &self->rendering_properties
   );
 
-  self->iterator_id = 0;
-  self->length_objects = total_length_objects;
-
-  scene_initialize(
-    &self->scene
+  scene_menu_main_initialize(
+    &self->scene,
+    metal_kit_device
   );
-
-  metal_kit_device = metal_kit_view.device;
 
   metal_kit_view.depthStencilPixelFormat = MTLPixelFormatDepth32Float_Stencil8;
   metal_kit_view.colorPixelFormat = MTLPixelFormatBGRA8Unorm_sRGB;
@@ -100,121 +97,9 @@
     buffer_visibility[
       index_buffer
     ] = [metal_kit_device
-      newBufferWithLength: self->length_objects * sizeof(uint64_t)
+      newBufferWithLength: self->scene.length_objects * sizeof(uint64_t) // TODO: This should update with scene changes
       options: MTLResourceStorageModeShared
     ];
-  }
-
-  MTKTextureLoader* texture_loader = [[MTKTextureLoader alloc] initWithDevice: metal_kit_device];
-
-  texture_ground = [texture_loader
-    newTextureWithContentsOfURL: [NSURL
-      fileURLWithPath:@"0028.png"
-      isDirectory: 0
-      relativeToURL: [NSURL
-        fileURLWithPath:[NSString
-          stringWithUTF8String: paths.directory_textures
-        ]
-        isDirectory: 1
-      ]
-    ]
-    options: (void*)0
-    error: (void*)0
-  ];
-
-  texture_tree = [texture_loader
-    newTextureWithContentsOfURL: [NSURL
-      fileURLWithPath:@"zoef.png"
-      isDirectory: 0
-      relativeToURL: [NSURL
-        fileURLWithPath:[NSString
-          stringWithUTF8String: paths.directory_textures
-        ]
-        isDirectory: 1
-      ]
-    ]
-    options: (void*)0
-    error: (void*)0
-  ];
-
-  mesh_ground_initialize(
-    &object_ground.mesh,
-    2000.0f,
-    500.0f,
-    2000.0f
-  );
-
-  object_ground.vertices = [metal_kit_device
-    newBufferWithBytes: object_ground.mesh.vertices
-    length: object_ground.mesh.length_vertices * sizeof(struct clic3_vector4_float)
-    options: MTLResourceStorageModeShared
-  ];
-
-  object_ground.indices = [metal_kit_device
-    newBufferWithBytes: object_ground.mesh.indices
-    length: object_ground.mesh.length_indices * sizeof(unsigned int)
-    options: MTLResourceStorageModeShared
-  ];
-
-  object_ground.data = [metal_kit_device
-    newBufferWithLength: sizeof(metal_kit_data_frame_object)
-    options: MTLResourceStorageModeShared
-  ];
-
-  object_ground.texture = texture_ground;
-
-  metal_kit_data_frame_object* data = object_ground.data.contents;
-  data->id = iterator_id++;
-  data->mode_texture = mode_texture_ground;
-
-  for (
-    unsigned short int index_object = 0;
-    index_object < self->length_objects;
-    ++index_object
-  ) {
-    mesh_tree_initialize(
-      &(self->objects[index_object].mesh),
-      1.0f,
-      250.0f
-    );
-
-    self->objects[index_object].position.x = (
-      -(self->objects[index_object].mesh.size.x / 2.0f) + (
-        (((float)(rand() % 10000) / 5000.0f) - 1.0f) * 0.7f *
-        (self->objects[index_object].mesh.size.x - (object_ground.mesh.size.x / 2.0f))
-      )
-    );
-
-    self->objects[index_object].position.z = (
-      -(self->objects[index_object].mesh.size.z / 2.0f) + (
-        (((float)(rand() % 10000) / 5000.0f) - 1.0f) * 0.7f *
-        (object_ground.mesh.size.z - (object_ground.mesh.size.z / 2.0f))
-      )
-    );
-
-    self->objects[index_object].vertices = [metal_kit_device
-      newBufferWithBytes: self->objects[index_object].mesh.vertices
-      length: self->objects[index_object].mesh.length_vertices * sizeof(struct clic3_vector4_float)
-      options: MTLResourceStorageModeShared
-    ];
-
-    self->objects[index_object].indices = [metal_kit_device
-      newBufferWithBytes: self->objects[index_object].mesh.indices
-      length: self->objects[index_object].mesh.length_indices * sizeof(unsigned int)
-      options: MTLResourceStorageModePrivate
-    ];
-
-    self->objects[index_object].data = [metal_kit_device
-      newBufferWithLength: sizeof(metal_kit_data_frame_object)
-      options: MTLResourceStorageModeShared
-    ];
-
-    data = self->objects[index_object].data.contents;
-    
-    data->id = iterator_id++;
-    data->mode_texture = mode_texture_default;
-
-    self->objects[index_object].texture = self->texture_tree;
   }
 
   termination_on_function_add(
@@ -384,14 +269,16 @@
   data_frame->position_player.y = self->scene.player.position.y;
   data_frame->position_player.z = self->scene.player.position.z;
 
-  [self poll_object: &self->object_ground];
+  scene_poll(
+    &self->scene
+  );
 
   for (
     unsigned short int index_object = 0;
-    index_object < self->length_objects;
+    index_object < self->scene.length_objects;
     ++index_object
   ) {
-    [self poll_object: &self->objects[index_object]];
+    [self poll_object: self->scene.objects[index_object]];
   }
 }
 
@@ -407,10 +294,14 @@
     atIndex: 0
   ];
 
-  [encoder_render
-    setFragmentTexture: texture_tree
-    atIndex: 1
-  ];
+  if (
+    object->texture_secondary != (void*)0
+  ) {
+    [encoder_render
+      setFragmentTexture: object->texture_secondary
+      atIndex: 1
+    ];
+  }
 
   [encoder_render
     setVertexBuffer: object->vertices
@@ -434,14 +325,12 @@
 }
 
 - (void) render {
-  [self render_object: &object_ground];
-
   for (
     unsigned short int index_object = 0;
-    index_object < self->length_objects;
+    index_object < self->scene.length_objects;
     ++index_object
   ) {
-    [self render_object: &self->objects[index_object]];
+    [self render_object: self->scene.objects[index_object]];
   }
 }
 
@@ -457,19 +346,13 @@
 }
 
 - (void) destroy {
+  scene_destroy(
+    &self->scene
+  );
+
   rendering_properties_destory(
     &self->rendering_properties
   );
-
-  for (
-    unsigned short int index_object = 0;
-    index_object < self->length_objects;
-    ++index_object
-  ) {
-    object_destroy(
-      &self->objects[index_object]
-    );
-  }
 }
 
 @end

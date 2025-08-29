@@ -14,12 +14,8 @@
   struct rendering_properties rendering_properties;
 
   struct scene scene;
-  struct object objects[total_length_objects];
-  struct object object_ground;
 
-  unsigned short int iterator_id;
-
-  unsigned short int length_objects;
+  id<MTLDevice> metal_kit_device;
   
   id<MTLBuffer> buffer_visibility[length_buffers_visibility];
   id<MTLBuffer> data_buffer_frame[count_max_frames];
@@ -27,18 +23,13 @@
 
   id<MTLCommandQueue> command_queue;
 
-  id<MTLDevice> metal_kit_device;
-
-  id<MTLDepthStencilState> depth_state;
-  id<MTLDepthStencilState> depth_state_writes_disable;
-
   id<MTLRenderCommandEncoder> encoder_render;
 
   id<MTLRenderPipelineState> state_pipeline;
   id<MTLRenderPipelineState> state_pipeline_no_render;
 
-  id<MTLTexture> texture_ground;
-  id<MTLTexture> texture_tree;
+  id<MTLDepthStencilState> depth_state;
+  id<MTLDepthStencilState> depth_state_writes_disable;
 
   unsigned char index_data_buffer_frame;
   uint64_t* buffer_result_visibility_from_read;

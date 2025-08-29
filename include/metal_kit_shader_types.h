@@ -8,8 +8,6 @@
 #define constant
 #endif
 
-static constant const  unsigned short int total_length_objects = 500;
-
 enum mode_texture {
   mode_texture_default,
   mode_texture_ground
