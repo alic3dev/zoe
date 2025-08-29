@@ -1,5 +1,6 @@
 #include <scenes/scene.h>
 
+#include <input/cursor.h>
 #include <object.h>
 #include <player.h>
 
@@ -19,17 +20,27 @@ void scene_initialize(
     scene->length_objects
   );
 
-  scene->type = scene_type_game;
+  scene->type = scene_type_unknown;
+  scene->id = scene_id_unknown;
 
   scene->player.position.x = 0.0f;
   scene->player.position.y = 0.0f;
   scene->player.position.z = 0.0f;
+
+  scene->player.rotation.x = 0.0f;
+  scene->player.rotation.y = 0.0f;
+  scene->player.rotation.z = 0.0f;
+
+  input_delta_cursor.x = 0.0f;
+  input_delta_cursor.y = 0.0f;
 
   scene->poll = scene_poll_default;
   scene->input_poll = scene_input_poll_default;
   scene->destroy = scene_destroy_default;
 
   scene->loading = 0;
+
+  scene->data = (void*)0;
 }
 
 void scene_input_poll(

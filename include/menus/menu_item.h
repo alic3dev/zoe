@@ -13,14 +13,12 @@ enum menu_item_type {
 
 enum menu_item_action {
   menu_item_action_none,
-  menu_item_action_start,
-  menu_item_action_exit
+  menu_item_action_select
 };
 
 struct menu_item {
   enum menu_item_type type;
   enum menu_item_action action;
-  menu_item_on_action on_action;
   void* data;
 };
 
@@ -28,16 +26,7 @@ void menu_item_initialize(
   struct menu_item*,
   enum menu_item_type,
   enum menu_item_action,
-  menu_item_on_action,
   void*
-);
-
-void menu_item_select(
-  struct menu_item*
-);
-
-void menu_item_on_action_none(
-  struct menu_item*
 );
 
 #endif

@@ -1,17 +1,16 @@
 #include <scenes/scene_menu_main.h>
 
+#include <input/keycodes.h>
+#include <input/map.h>
+#include <menus/menu.h>
+#include <menus/menu_intro.h>
 #include <mesh/ground/mesh_ground.h>
 #include <mesh/tree/mesh_tree.h>
 #include <metal_kit_shader_types.h>
 #include <object.h>
 #include <paths.h>
 #include <scenes/scene.h>
-
-void scene_menu_main_data_initialize(
-  struct scene* scene
-) {
-  scene->data = (void*)0;
-}
+#include <scenes/scene_controller.h>
 
 void scene_menu_main_initialize(
   struct scene* scene,
@@ -22,9 +21,26 @@ void scene_menu_main_initialize(
     metal_kit_device
   );
 
-  scene->type = scene_type_menu;
+  scene->poll = scene_menu_main_poll;
+  scene->input_poll = scene_menu_main_input_poll;
+  scene->destroy = scene_menu_main_destroy;
 
-  scene->length_objects = 501;
+  scene->data = malloc(
+    sizeof(struct menu)
+  );
+
+  struct menu* menu = scene->data;
+
+  menu_intro_initialize(
+    menu
+  );
+
+  menu_print(menu);
+
+  scene->type = scene_type_menu;
+  scene->id = scene_id_menu_main;
+
+  scene->length_objects = 2;
   scene->objects = realloc(
     scene->objects,
     sizeof(struct object*) *
@@ -86,6 +102,8 @@ void scene_menu_main_initialize(
     2000.0f
   );
 
+  scene->objects[0]->position.y = -10.0f;
+
   scene->objects[0]->vertices = [metal_kit_device
     newBufferWithBytes: scene->objects[0]->mesh.vertices
     length: scene->objects[0]->mesh.length_vertices * sizeof(struct clic3_vector4_float)
@@ -117,62 +135,165 @@ void scene_menu_main_initialize(
   data->id = iterator_id++;
   data->mode_texture = mode_texture_ground;
 
-  for (
-    unsigned short int index_object = 1;
-    index_object < scene->length_objects;
-    ++index_object
+  scene->objects[1] = malloc(
+    sizeof(struct object)
+  );
+
+  mesh_tree_initialize(
+    &(scene->objects[1]->mesh),
+    1.0f,
+    66.6f
+  );
+
+  scene->objects[1]->position.x = (
+    -(scene->objects[1]->mesh.size.x)
+  );
+
+  scene->objects[1]->position.y = -10.0f;
+
+  scene->objects[1]->vertices = [metal_kit_device
+    newBufferWithBytes: scene->objects[1]->mesh.vertices
+    length: scene->objects[1]->mesh.length_vertices * sizeof(struct clic3_vector4_float)
+    options: MTLResourceStorageModeShared
+  ];
+
+  scene->objects[1]->indices = [metal_kit_device
+    newBufferWithBytes: scene->objects[1]->mesh.indices
+    length: (
+      sizeof(unsigned int) *
+      scene->objects[1]->mesh.length_indices
+    )
+    options: MTLResourceStorageModePrivate
+  ];
+
+  scene->objects[1]->data = [metal_kit_device
+    newBufferWithLength: sizeof(metal_kit_data_frame_object)
+    options: MTLResourceStorageModeShared
+  ];
+
+  data = scene->objects[1]->data.contents;
+  
+  data->id = iterator_id++;
+  data->mode_texture = mode_texture_default;
+
+  scene->objects[1]->texture = scene->textures[
+    textures_scene_menu_main_tree
+  ];
+
+  scene->player.position.y = (
+    6.66f
+  );
+
+  scene->player.position.z = (
+    -50.0f
+  );
+
+  scene->player.rotation.x = -0.666f;
+}
+
+void scene_menu_main_poll(
+  struct scene* scene
+) {
+  struct menu* menu = (struct menu*) scene->data;
+
+  if (
+    menu->index_selected != -1 &&
+    menu->handled == 0
   ) {
-    scene->objects[index_object] = malloc(
-      sizeof(struct object)
+    menu->handled = 1;
+
+    switch (menu->index_selected) {
+      case 0:
+        printf("STARTING\n");
+        scene_controller_scene_change(
+          scene_id_intro_forest
+        );
+        break;
+      case 1:
+        printf("EXITING\n");
+        [[NSApplication sharedApplication] terminate: 0];
+        break;
+    }
+  }
+}
+
+void scene_menu_main_input_poll(
+  struct scene* scene
+) {
+  struct menu* menu = (struct menu*) scene->data;
+
+  if (menu->index_selected != -1) {
+    return;
+  }
+
+  if (
+    input_map_keydown[
+      keycode_space
+    ] == 1
+  ) {
+    menu_select(
+      menu
     );
 
-    mesh_tree_initialize(
-      &(scene->objects[index_object]->mesh),
-      1.0f,
-      250.0f
+    return;
+  }
+
+  if (
+    input_map_keydown[
+      keycode_up_arrow
+    ] == 1
+  ) {
+    menu_previous(
+      menu
     );
+  }
 
-    scene->objects[index_object]->position.x = (
-      -(scene->objects[index_object]->mesh.size.x / 2.0f) + (
-        (((float)(rand() % 10000) / 5000.0f) - 1.0f) * 0.7f *
-        (scene->objects[index_object]->mesh.size.x - (scene->objects[0]->mesh.size.x / 2.0f))
-      )
+  if (
+    input_map_keydown[
+      keycode_down_arrow
+    ] == 1
+  ) {
+    menu_next(
+      menu
     );
+  }
+}
 
-    scene->objects[index_object]->position.z = (
-      -(scene->objects[index_object]->mesh.size.z / 2.0f) + (
-        (((float)(rand() % 10000) / 5000.0f) - 1.0f) * 0.7f *
-        (scene->objects[0]->mesh.size.z - (scene->objects[0]->mesh.size.z / 2.0f))
-      )
-    );
+void scene_menu_main_destroy(
+  struct scene* scene
+) {
+  menu_destroy(
+    (struct menu*) scene->data
+  );
 
-    scene->objects[index_object]->vertices = [metal_kit_device
-      newBufferWithBytes: scene->objects[index_object]->mesh.vertices
-      length: scene->objects[index_object]->mesh.length_vertices * sizeof(struct clic3_vector4_float)
-      options: MTLResourceStorageModeShared
-    ];
+  scene_destroy_default(scene);
+}
 
-    scene->objects[index_object]->indices = [metal_kit_device
-      newBufferWithBytes: scene->objects[index_object]->mesh.indices
-      length: (
-        sizeof(unsigned int) *
-        scene->objects[index_object]->mesh.length_indices
-      )
-      options: MTLResourceStorageModePrivate
-    ];
+void menu_print(
+  struct menu* menu
+) {
+  printf("\e[H\e[2J\e[3J");
 
-    scene->objects[index_object]->data = [metal_kit_device
-      newBufferWithLength: sizeof(metal_kit_data_frame_object)
-      options: MTLResourceStorageModeShared
-    ];
-
-    metal_kit_data_frame_object* data = scene->objects[index_object]->data.contents;
-    
-    data->id = iterator_id++;
-    data->mode_texture = mode_texture_default;
-
-    scene->objects[index_object]->texture = scene->textures[
-      textures_scene_menu_main_tree
-    ];
+  switch(
+    menu->index_current
+  ) {
+    case 0:
+      printf(
+        "> start\n"
+        "  exit\n"
+      );
+      break;
+    case 1:
+      printf(
+        "  start\n"
+        "> exit\n"
+      );
+      break;
+    default:
+      printf(
+        "  start\n"
+        "  exit\n"
+      );
+      break;
   }
 }

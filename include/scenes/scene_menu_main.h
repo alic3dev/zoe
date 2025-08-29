@@ -1,6 +1,7 @@
 #ifndef __scenes_scene_menu_main_h
 #define __scenes_scene_menu_main_h
 
+#include <menus/menu.h>
 #include <scenes/scene.h>
 
 enum textures_scene_menu_main {
@@ -8,9 +9,31 @@ enum textures_scene_menu_main {
   textures_scene_menu_main_tree = 1
 };
 
+struct scene_menu_main_data {
+  struct menu menu;
+  unsigned char menu_closing;
+};
+
 void scene_menu_main_initialize(
   struct scene*,
   id<MTLDevice>
+);
+
+void scene_menu_main_poll(
+  struct scene*
+);
+
+
+void scene_menu_main_input_poll(
+  struct scene*
+);
+
+void scene_menu_main_destroy(
+  struct scene*
+);
+
+void menu_print(
+  struct menu*
 );
 
 #endif
