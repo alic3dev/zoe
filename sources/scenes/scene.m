@@ -19,7 +19,8 @@ void scene_initialize(
     scene->length_objects
   );
 
-  scene->type = scene_type_game;
+  scene->type = scene_type_unknown;
+  scene->id = scene_id_unknown;
 
   scene->player.position.x = 0.0f;
   scene->player.position.y = 0.0f;
@@ -30,6 +31,8 @@ void scene_initialize(
   scene->destroy = scene_destroy_default;
 
   scene->loading = 0;
+
+  scene->data = (void*)0;
 }
 
 void scene_input_poll(

@@ -11,7 +11,7 @@ void player_initialize(
   struct player* player
 ) {
   player->position.x = 0.0f;
-  player->position.y = -10.0f;
+  player->position.y = 0.0f;
   player->position.z = 0.0f;
 
   player->speed_movement = 0.8f;
@@ -462,7 +462,7 @@ void player_input_poll(
     )
   );
 
-  if (player->position.y < -10.0f) {
+  if (player->position.y < 0.0f) {
     player->velocity.y = (
       player->velocity.y + (
         speed_original / 50.0f
@@ -470,8 +470,8 @@ void player_input_poll(
     );
   }
 
-  if (player->position.y > -10.0f) {
-    player->position.y = -10.0f;
+  if (player->position.y > 0.0f) {
+    player->position.y = 0.0f;
     player->velocity.y = 0.0f;
   }
 

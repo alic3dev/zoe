@@ -11,8 +11,15 @@ typedef void (*function_scene_input_poll)(struct scene*);
 typedef void (*function_scene_destroy)(struct scene*);
 
 enum scene_type {
+  scene_type_unknown,
   scene_type_menu,
   scene_type_game
+};
+
+enum scene_id {
+  scene_id_unknown,
+  scene_id_menu_main,
+  scene_id_intro_forest
 };
 
 struct scene {
@@ -20,6 +27,7 @@ struct scene {
 
   struct player player;
   enum scene_type type;
+  enum scene_id id;
 
   struct object** objects;
   unsigned short int length_objects;

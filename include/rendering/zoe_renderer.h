@@ -39,6 +39,9 @@
 }
 
 - (nonnull instancetype) initWithMetalKitView: (nonnull MTKView*) metal_kit_view;
+
+- (void) on_scene_change: (enum scene_id) scene_id;
+
 - (void) drawInMTKView: (nonnull MTKView*) metal_kit_view;
 
 - (void) mtkView: (nonnull MTKView*) metal_kit_view drawableSizeWillChange: (CGSize) size;
@@ -54,6 +57,10 @@
 
 @end
 
+void zoe_renderer_on_scene_change(
+  enum scene_id,
+  void* _Nonnull
+);
 void zoe_renderer_on_termination(void* _Nonnull);
 
 #endif

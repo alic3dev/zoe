@@ -8,7 +8,9 @@
 #include <metal_kit_shader_types.h>
 #include <object.h>
 #include <rendering/camera/camera.h>
+#include <scenes/scene_controller.h>
 #include <scenes/scene_menu_main.h>
+#include <scenes/scene_intro_forest.h>
 #include <termination.h>
 
 #include <clic3.h>
@@ -107,7 +109,36 @@
     self
   );
 
+  scene_controller_on_scene_change_add(
+    zoe_renderer_on_scene_change,
+    self
+  );
+
   return self;
+}
+
+- (void) on_scene_change: (enum scene_id) scene_id {
+  scene_destroy(
+    &self->scene
+  );
+
+  switch (
+    scene_id
+  ) {
+    case scene_id_unknown:
+    case scene_id_menu_main:
+      scene_menu_main_initialize(
+        &self->scene,
+        metal_kit_device
+      );
+      break;
+    case scene_id_intro_forest:
+      scene_intro_forest_initialize(
+        &self->scene,
+        self->metal_kit_device
+      );
+      break;
+  }
 }
 
 - (void) drawInMTKView: (nonnull MTKView*) metal_kit_view {
@@ -356,6 +387,15 @@
 }
 
 @end
+
+void zoe_renderer_on_scene_change(
+  enum scene_id scene_id,
+  void* _Nonnull reference
+) {
+  zoe_renderer* renderer = (zoe_renderer*) reference;
+
+  [renderer on_scene_change: scene_id];
+}
 
 void zoe_renderer_on_termination(
   void* _Nonnull reference

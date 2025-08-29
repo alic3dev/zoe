@@ -4,7 +4,7 @@
 #include <application/zoe_application_delegate.h>
 #include <input/input.h>
 #include <paths.h>
-#include <state_controller.h>
+#include <scenes/scene_controller.h>
 #include <termination.h>
 
 #include <interrupt_handler.h>
@@ -31,10 +31,10 @@ int main(
   termination_initialize();
   interrupt_handler_initialize();
   input_initialize();
-  state_controller_initialize();
+  scene_controller_initialize();
 
   termination_on_function_add(
-    state_controller_destroy,
+    scene_controller_destroy,
     (void*)0
   );
   termination_on_function_add(
