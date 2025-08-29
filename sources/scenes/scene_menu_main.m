@@ -1,5 +1,6 @@
 #include <scenes/scene_menu_main.h>
 
+#include <debug/log.h>
 #include <input/keycodes.h>
 #include <input/map.h>
 #include <menus/menu.h>
@@ -206,13 +207,15 @@ void scene_menu_main_poll(
 
     switch (menu->index_selected) {
       case 0:
-        printf("STARTING\n");
+        debug_log("STARTING\n");
+
         scene_controller_scene_change(
           scene_id_intro_forest
         );
         break;
       case 1:
-        printf("EXITING\n");
+        debug_log("EXITING\n");
+        
         [[NSApplication sharedApplication] terminate: 0];
         break;
     }
@@ -242,25 +245,25 @@ void scene_menu_main_destroy(
 void menu_print(
   struct menu* menu
 ) {
-  printf("\e[H\e[2J\e[3J");
+  debug_log("\e[H\e[2J\e[3J");
 
   switch(
     menu->index_current
   ) {
     case 0:
-      printf(
+      debug_log(
         "> start\n"
         "  exit\n"
       );
       break;
     case 1:
-      printf(
+      debug_log(
         "  start\n"
         "> exit\n"
       );
       break;
     default:
-      printf(
+      debug_log(
         "  start\n"
         "  exit\n"
       );
