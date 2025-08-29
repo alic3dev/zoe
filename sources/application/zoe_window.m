@@ -20,12 +20,18 @@
 - (void) mouseDown:(NSEvent *) event {
   if (locked_cursor != 1) {
     locked_cursor = 1;
+    moved_after_lock = 0;
     [NSCursor hide];
     [self center_mouse];
   }
 }
 
 - (void) mouseMoved: (NSEvent*) event {
+  if (moved_after_lock == 0) {
+    moved_after_lock = 1;
+    return;
+  }
+
   if (
     locked_cursor == 1
   ) {

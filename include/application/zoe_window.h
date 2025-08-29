@@ -5,6 +5,7 @@
 
 @interface zoe_window: NSWindow {
   unsigned char locked_cursor;
+  unsigned char moved_after_lock;
 }
 
 - (void) keyDown:(NSEvent*) event;
