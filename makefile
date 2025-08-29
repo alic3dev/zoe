@@ -9,6 +9,10 @@ directory_sources=sources
 directory_storyboards=storyboards
 directory_textures=textures
 
+directory_cer0=../cer0
+directory_cer0_include=${directory_cer0}/include
+directory_cer0_library=${directory_cer0}/library
+
 directory_clic3=../clic3
 directory_clic3_include=${directory_clic3}/include
 directory_clic3_library=${directory_clic3}/library
@@ -28,6 +32,7 @@ directory_app_contents_resources_textures=${directory_app_contents_resources}/te
 
 directory_macos_sdk=${shell xcrun --show-sdk-path}
 
+file_cer0_library=${directory_cer0_library}/cer0.o
 file_clic3_library=${directory_clic3_library}/clic3.o
 file_interrupt_handler_library=${directory_interrupt_handler_library}/interrupt_handler.o
 
@@ -36,7 +41,7 @@ file_output=${directory_app_contents_macos}/${name}
 file_output_info_plist=${directory_app_contents}/Info.plist
 file_output_metal=${directory_app_contents_resources}/default.metallib
 
-files_libraries=${file_clic3_library} ${file_interrupt_handler_library}
+files_libraries=${file_cer0_library} ${file_clic3_library} ${file_interrupt_handler_library}
 
 files_sources_c=${shell find ${directory_sources} -name "*.c"}
 files_sources_objc=${shell find ${directory_sources} -name "*.m"}
@@ -60,11 +65,11 @@ target_platform=arm64-apple-macos${target_macos_version}
 target_platform_metal=air64-apple-macos${target_macos_version_metal}
 
 cc=clang
-c_flags_common=-I${directory_include} -I${directory_clic3_include} -I${directory_interrupt_handler_include}
+c_flags_common=-I${directory_include} -I${directory_cer0_include} -I${directory_clic3_include} -I${directory_interrupt_handler_include}
 c_flags_platform=-target ${target_platform} -isysroot ${directory_macos_sdk}
 c_flags_c=${c_flags_platform} ${c_flags_common}
 c_flags_objc=${c_flags_platform} ${c_flags_common} -x objective-c -fmodules -DTARGET_MACOS -I${directory_include}
-c_flags_output=${c_flags_platform} -framework Metal -framework MetalKit -framework GameController
+c_flags_output=${c_flags_platform} -framework Metal -framework MetalKit -framework GameController -framework CoreAudio
 
 metal=xcrun -sdk macosx metal
 metal_flags_common=-target ${target_platform_metal}
