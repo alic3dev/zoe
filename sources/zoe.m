@@ -2,6 +2,7 @@
 
 #include <application/zoe_application.h>
 #include <application/zoe_application_delegate.h>
+#include <audio/audio.h>
 #include <input/input.h>
 #include <paths.h>
 #include <scenes/scene_controller.h>
@@ -15,6 +16,8 @@
 #include <Cocoa/Cocoa.h>
 
 void terminate_on_signal(int _) {
+  audio_destroy();
+  
   [[NSApplication sharedApplication] terminate: 0];
 }
 
@@ -32,6 +35,7 @@ int main(
   interrupt_handler_initialize();
   input_initialize();
   scene_controller_initialize();
+  audio_initialize();
 
   termination_on_function_add(
     scene_controller_destroy,
