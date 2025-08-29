@@ -2,6 +2,9 @@
 #define __menus_menu_h
 
 #include <menus/menu_item.h>
+#include <utilities/stopwatch.h>
+
+#define milliseconds_menu_input_delay 200
 
 struct menu;
 
@@ -15,6 +18,8 @@ struct menu {
   struct menu_item* items;
 
   unsigned char wrap;
+
+  struct stopwatch stopwatch_input;
 };
 
 void menu_initialize(
@@ -26,6 +31,10 @@ void menu_item_add(
   enum menu_item_type,
   enum menu_item_action,
   void*
+);
+
+void menu_poll_input(
+  struct menu*
 );
 
 void menu_select(

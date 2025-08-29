@@ -1,5 +1,6 @@
 #include <rendering/zoe_renderer.h>
 
+#include <input/controller.h>
 #include <input/map.h>
 #include <input/keycodes.h>
 #include <mesh/mesh.h>
@@ -142,7 +143,7 @@
 }
 
 - (void) drawInMTKView: (nonnull MTKView*) metal_kit_view {
-  scene_input_poll(
+  scene_poll_input(
     &self->scene
   );
   
@@ -288,6 +289,8 @@
   ) {
     self->rendering_properties.frame = 0;
   }
+
+  controller_poll();
 
   metal_kit_data_frame* data_frame = (data_buffer_frame[index_data_buffer_frame]).contents;
   data_frame->frame = _frame;

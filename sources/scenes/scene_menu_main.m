@@ -22,7 +22,7 @@ void scene_menu_main_initialize(
   );
 
   scene->poll = scene_menu_main_poll;
-  scene->input_poll = scene_menu_main_input_poll;
+  scene->poll_input = scene_menu_main_poll_input;
   scene->destroy = scene_menu_main_destroy;
 
   scene->data = malloc(
@@ -196,6 +196,8 @@ void scene_menu_main_poll(
 ) {
   struct menu* menu = (struct menu*) scene->data;
 
+  menu_print(menu);
+
   if (
     menu->index_selected != -1 &&
     menu->handled == 0
@@ -217,46 +219,14 @@ void scene_menu_main_poll(
   }
 }
 
-void scene_menu_main_input_poll(
+void scene_menu_main_poll_input(
   struct scene* scene
 ) {
   struct menu* menu = (struct menu*) scene->data;
 
-  if (menu->index_selected != -1) {
-    return;
-  }
-
-  if (
-    input_map_keydown[
-      keycode_space
-    ] == 1
-  ) {
-    menu_select(
-      menu
-    );
-
-    return;
-  }
-
-  if (
-    input_map_keydown[
-      keycode_up_arrow
-    ] == 1
-  ) {
-    menu_previous(
-      menu
-    );
-  }
-
-  if (
-    input_map_keydown[
-      keycode_down_arrow
-    ] == 1
-  ) {
-    menu_next(
-      menu
-    );
-  }
+  menu_poll_input(
+    menu
+  );
 }
 
 void scene_menu_main_destroy(

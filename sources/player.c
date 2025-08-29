@@ -24,15 +24,9 @@ void player_initialize(
   player->velocity.z = 0.0f;
 }
 
-void player_input_poll(
+void player_poll_input(
   struct player* player
 ) {
-  struct controller_state controller_state;
-
-  controller_poll(
-    &controller_state
-  );
-
   float speed_original = player->speed_movement;
 
   if (
@@ -139,12 +133,12 @@ void player_input_poll(
     }
 
     if (
-      controller_state.input_axis_y_right >= 0.1f || 
-      controller_state.input_axis_y_right <= -0.1f
+      controller_state.thumbstick_axis_y_right >= 0.1f || 
+      controller_state.thumbstick_axis_y_right <= -0.1f
     ) {
       player->rotation.x = (
         player->rotation.x + (
-          -controller_state.input_axis_y_right *
+          -controller_state.thumbstick_axis_y_right *
           player->speed_rotation
         )
       );
@@ -292,13 +286,13 @@ void player_input_poll(
 
   if (controller_state.available == 1) {
     movement.x = (
-      (controller_state.input_axis_y_left * ratio_movement.x) +
-      (controller_state.input_axis_x_left * ratio_movement_strafe.x)
+      (controller_state.thumbstick_axis_y_left * ratio_movement.x) +
+      (controller_state.thumbstick_axis_x_left * ratio_movement_strafe.x)
     );
 
     movement.z = (
-      (controller_state.input_axis_y_left * ratio_movement.y) +
-      (controller_state.input_axis_x_left * ratio_movement_strafe.y)
+      (controller_state.thumbstick_axis_y_left * ratio_movement.y) +
+      (controller_state.thumbstick_axis_x_left * ratio_movement_strafe.y)
     );
   }
 
