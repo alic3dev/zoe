@@ -35,7 +35,7 @@ void scene_initialize(
   input_delta_cursor.y = 0.0f;
 
   scene->poll = scene_poll_default;
-  scene->input_poll = scene_input_poll_default;
+  scene->poll_input = scene_poll_input_default;
   scene->destroy = scene_destroy_default;
 
   scene->loading = 0;
@@ -43,10 +43,10 @@ void scene_initialize(
   scene->data = (void*)0;
 }
 
-void scene_input_poll(
+void scene_poll_input(
   struct scene* scene
 ) {
-  scene->input_poll(
+  scene->poll_input(
     scene
   );
 }
@@ -67,10 +67,10 @@ void scene_destroy(
   );
 }
 
-void scene_input_poll_default(
+void scene_poll_input_default(
   struct scene* scene
 ) {
-  player_input_poll(
+  player_poll_input(
     &scene->player
   );
 }

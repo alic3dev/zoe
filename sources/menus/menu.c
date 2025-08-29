@@ -1,8 +1,12 @@
 #include <menus/menu.h>
 
+#include <input/controller.h>
+#include <input/keycodes.h>
+#include <input/map.h>
 #include <menus/menu_item.h>
 
 #include <stdlib.h>
+#include <sys/time.h>
 
 void menu_initialize(
   struct menu* menu
@@ -18,7 +22,80 @@ void menu_initialize(
   menu->index_selected = -1;
   menu->handled = 0;
 
-  menu->wrap = 0;
+  menu->wrap = 1;
+
+  stopwatch_start(
+    &menu->stopwatch_input
+  );
+}
+
+void menu_poll_input(
+  struct menu* menu
+) {
+  if (
+    menu->index_selected != -1
+  ) {
+    return;
+  }
+
+  if (
+    input_map_keydown[
+      keycode_space
+    ] == 1 ||
+    controller_state.button_cross > 0.0f
+  ) {
+    menu_select(
+      menu
+    );
+
+    return;
+  }
+
+  unsigned long int delta = stopwatch_elapsed(
+    &menu->stopwatch_input
+  );
+
+  if (
+    delta < milliseconds_menu_input_delay
+  ) {
+    return;
+  }
+
+  unsigned char had_input = 0;
+
+  if (
+    input_map_keydown[
+      keycode_up_arrow
+    ] == 1 || 
+    controller_state.button_directional_pad_up > 0.0f ||
+    controller_state.thumbstick_axis_y_left > 0.1f
+  ) {
+    had_input = 1;
+
+    menu_previous(
+      menu
+    );
+  } else if (
+    input_map_keydown[
+      keycode_down_arrow
+    ] == 1 || 
+    controller_state.button_directional_pad_down > 0.0f ||
+    controller_state.thumbstick_axis_y_left < -0.1f
+  ) {
+    had_input = 1;
+
+    menu_next(
+      menu
+    );
+  }
+
+  if (
+    had_input == 1
+  ) {
+    stopwatch_start(
+      &menu->stopwatch_input
+    );
+  }
 }
 
 void menu_item_add(

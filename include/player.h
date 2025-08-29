@@ -16,7 +16,7 @@ void player_initialize(
   struct player*
 );
 
-void player_input_poll(
+void player_poll_input(
   struct player*
 );
 

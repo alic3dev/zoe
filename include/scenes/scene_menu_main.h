@@ -23,8 +23,7 @@ void scene_menu_main_poll(
   struct scene*
 );
 
-
-void scene_menu_main_input_poll(
+void scene_menu_main_poll_input(
   struct scene*
 );
 

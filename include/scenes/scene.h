@@ -7,7 +7,7 @@
 struct scene;
 
 typedef void (*function_scene_poll)(struct scene*);
-typedef void (*function_scene_input_poll)(struct scene*);
+typedef void (*function_scene_poll_input)(struct scene*);
 typedef void (*function_scene_destroy)(struct scene*);
 
 enum scene_type {
@@ -38,7 +38,7 @@ struct scene {
   unsigned char loading;
 
   function_scene_poll poll;
-  function_scene_input_poll input_poll;
+  function_scene_poll_input poll_input;
   function_scene_destroy destroy;
 
   void* data;
@@ -49,7 +49,7 @@ void scene_initialize(
   id<MTLDevice>
 );
 
-void scene_input_poll(
+void scene_poll_input(
   struct scene*
 );
 
@@ -61,7 +61,7 @@ void scene_destroy(
   struct scene*
 );
 
-void scene_input_poll_default(
+void scene_poll_input_default(
   struct scene*
 );
 
