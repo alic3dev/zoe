@@ -1,5 +1,6 @@
 #include <scenes/scene.h>
 
+#include <input/cursor.h>
 #include <object.h>
 #include <player.h>
 
@@ -25,6 +26,13 @@ void scene_initialize(
   scene->player.position.x = 0.0f;
   scene->player.position.y = 0.0f;
   scene->player.position.z = 0.0f;
+
+  scene->player.rotation.x = 0.0f;
+  scene->player.rotation.y = 0.0f;
+  scene->player.rotation.z = 0.0f;
+
+  input_delta_cursor.x = 0.0f;
+  input_delta_cursor.y = 0.0f;
 
   scene->poll = scene_poll_default;
   scene->input_poll = scene_input_poll_default;

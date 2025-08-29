@@ -142,24 +142,14 @@ void scene_menu_main_initialize(
   mesh_tree_initialize(
     &(scene->objects[1]->mesh),
     1.0f,
-    250.0f
+    66.6f
   );
 
   scene->objects[1]->position.x = (
-    -(scene->objects[1]->mesh.size.x / 2.0f) + (
-      (((float)(rand() % 10000) / 5000.0f) - 1.0f) * 0.7f *
-      (scene->objects[1]->mesh.size.x - (scene->objects[0]->mesh.size.x / 2.0f))
-    )
+    -(scene->objects[1]->mesh.size.x)
   );
 
   scene->objects[1]->position.y = -10.0f;
-
-  scene->objects[1]->position.z = (
-    -(scene->objects[1]->mesh.size.z / 2.0f) + (
-      (((float)(rand() % 10000) / 5000.0f) - 1.0f) * 0.7f *
-      (scene->objects[0]->mesh.size.z - (scene->objects[0]->mesh.size.z / 2.0f))
-    )
-  );
 
   scene->objects[1]->vertices = [metal_kit_device
     newBufferWithBytes: scene->objects[1]->mesh.vertices
@@ -189,6 +179,16 @@ void scene_menu_main_initialize(
   scene->objects[1]->texture = scene->textures[
     textures_scene_menu_main_tree
   ];
+
+  scene->player.position.y = (
+    6.66f
+  );
+
+  scene->player.position.z = (
+    -50.0f
+  );
+
+  scene->player.rotation.x = -0.666f;
 }
 
 void scene_menu_main_poll(
