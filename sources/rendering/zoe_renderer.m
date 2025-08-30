@@ -14,6 +14,7 @@
 #include <scenes/scene_menu_main.h>
 #include <scenes/scene_intro_forest.h>
 #include <termination.h>
+#include <utilities/time.h>
 
 #include <clic3.h>
 
@@ -289,12 +290,16 @@
 - (void) poll: (unsigned int) _frame {
   controller_poll();
 
+  unsigned long int time = time_milliseconds_get();
+
   scene_poll_input(
-    &self->scene
+    &self->scene,
+    time
   );
   
   scene_poll(
-    &self->scene
+    &self->scene,
+    time
   );
 
   metal_kit_data_frame* data_frame = (data_buffer_frame[index_data_buffer_frame]).contents;
