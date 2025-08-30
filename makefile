@@ -17,7 +17,6 @@ directory_include=include
 directory_objects_c=${directory_objects}/c
 directory_objects_objc=${directory_objects}/objc
 directory_sources=sources
-directory_storyboards=storyboards
 directory_textures=textures
 
 directory_cer0=../cer0
@@ -62,9 +61,6 @@ files_objects_objc=${patsubst ${directory_sources}/%.m,${directory_objects_objc}
 
 files_metal=${wildcard ${directory_metal}/*.metal}
 files_air=${patsubst ${directory_metal}/%.metal,${directory_air}/%.air,${files_metal}}
-
-files_storyboards=${wildcard ${directory_storyboards}/*.storyboard}
-files_storyboards_compiled=${patsubst ${directory_storyboards}/%.storyboard,${directory_app_contents_resources}/%.storyboardc,${files_storyboards}}
 
 files_textures=${wildcard ${directory_textures}/*}
 files_textures_resources=${patsubst ${directory_textures}/%,${directory_app_contents_resources_textures}/%,${files_textures}}
@@ -116,7 +112,7 @@ run: .always
 
 ${name}: ${file_output}
 
-${file_output}: ${files_objects_c} ${files_objects_objc} ${file_output_metal} ${files_storyboards_compiled} ${file_output_info_plist} ${files_textures_resources}
+${file_output}: ${files_objects_c} ${files_objects_objc} ${file_output_metal} ${file_output_info_plist} ${files_textures_resources}
 	mkdir -p ${directory_app_contents_macos}
 	${cc} ${c_flags_output} ${files_objects_c} ${files_objects_objc} ${files_libraries} -o ${file_output}
 ifneq (${debug}, 1)
@@ -142,10 +138,6 @@ ${directory_objects_c}/%.o: ${directory_sources}/%.c
 ${directory_objects_objc}/%.o: ${directory_sources}/%.m
 	mkdir -p "${dir $@}"
 	${cc} ${c_flags_objc} -c $< -o $@
-
-${directory_app_contents_resources}/%.storyboardc: ${directory_storyboards}/%.storyboard
-	mkdir -p ${directory_app_contents_resources}
-	ibtool --module ${name} --target-device ${target_device} --minimum-deployment-target ${target_macos_version} --output-format human-readable-text $< --compilation-directory ${directory_app_contents_resources}	
 
 ${file_output_info_plist}: ${file_info_plist}
 	mkdir -p ${directory_app_contents}
