@@ -74,7 +74,11 @@ c_flags_output=${c_flags_platform} -framework Metal -framework MetalKit -framewo
 metal=xcrun -sdk macosx metal
 metal_flags_common=-target ${target_platform_metal}
 metal_flags=${metal_flags_common} -I${directory_include} -I${directory_clic3_include} -isysroot ${directory_macos_sdk}
-# -fmetal-math-mode\=fast -fmetal-math-fp32-functions\=fast
+
+ifneq (${disable_metal_fast_options}, 1)
+	metal_flags:=${metal_flags} -fmetal-math-mode\=fast -fmetal-math-fp32-functions\=fast
+endif
+
 metal_flags_output=${metal_flags_common}
 
 all: ${name}
