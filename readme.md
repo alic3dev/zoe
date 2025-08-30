@@ -38,6 +38,12 @@ make
 debug=1 make
 ```
 
+#### disable_metal_fast_options
+
+```zsh
+disable_metal_fast_options=1 make
+```
+
 ### clean
 
 ```zsh
