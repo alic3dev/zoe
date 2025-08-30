@@ -55,6 +55,10 @@ void scene_poll_input(
 ) {
   scene->time_input_previous = scene->time;
   scene->time_input = time;
+  scene->time_input_delta = scene->time_input_previous == 0 ? 0 : (
+    scene->time_input -
+    scene->time_input_previous
+  );
 
   scene->poll_input(
     scene
@@ -67,6 +71,10 @@ void scene_poll(
 ) {
   scene->time_previous = scene->time;
   scene->time = time;
+  scene->time_delta = scene->time_previous == 0 ? 0 : (
+    scene->time -
+    scene->time_previous
+  );
 
   scene->poll(
     scene

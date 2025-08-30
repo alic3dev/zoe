@@ -4,7 +4,7 @@
 
 #include <clic3_vector.h>
 
-constant float brightness_maximum = 1.0f;
+constant float brightness_maximum = 0.1f;
 
 struct data_rasterizer {
   float4 position [[position]];
@@ -70,23 +70,25 @@ vertex data_rasterizer zoe_shader_vertex(
       out.position_texture.x = (
         out.position_texture.x - 1.0f
       );
-      z = z + 1;
+
+      z = z == 0 ? 1 : 0;
     }
 
     while (out.position_texture.y > 1.0f) {
       out.position_texture.y = (
         out.position_texture.y - 1.0f
       );
-      x = x + 1;
+
+      x = x == 0 ? 1 : 0;
     }
 
-    if (z % 2 != 0) {
+    if (z == 1) {
       out.position_texture.x = 1.0f - (
         out.position_texture.x
       );
     }
 
-    if (x % 2 != 0) {
+    if (x == 1) {
       out.position_texture.y = 1.0f - (
         out.position_texture.y
       );
