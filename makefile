@@ -96,6 +96,9 @@ else
 	c_flags_output:=${c_flags_output} -O3
 endif
 
+strip=strip
+strip_flags=-x
+
 metal=xcrun -sdk macosx metal
 metal_flags_common=-target ${target_platform_metal}
 metal_flags=${metal_flags_common} -I${directory_include} -I${directory_clic3_include} -isysroot ${directory_macos_sdk}
@@ -116,6 +119,9 @@ ${name}: ${file_output}
 ${file_output}: ${files_objects_c} ${files_objects_objc} ${file_output_metal} ${files_storyboards_compiled} ${file_output_info_plist} ${files_textures_resources}
 	mkdir -p ${directory_app_contents_macos}
 	${cc} ${c_flags_output} ${files_objects_c} ${files_objects_objc} ${files_libraries} -o ${file_output}
+ifneq (${debug}, 1)
+	${strip} ${strip_flags} ${file_output}
+endif
 
 ${directory_app_contents_resources_textures}/%: ${directory_textures}/%
 	mkdir -p ${directory_app_contents_resources_textures}
