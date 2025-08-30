@@ -1,10 +1,21 @@
 name=zoe
 
+directory_objects_base=objects
+directory_output_base=output
+
+directory_objects=${directory_objects_base}/release
+
+ifeq (${debug}, 1)
+	name:=${name}_debug
+	directory_objects=${directory_objects_base}/debug
+	directory_output=${directory_output_base}/debug
+else
+	directory_output=${directory_output_base}/release
+endif
+
 directory_include=include
-directory_objects=objects
 directory_objects_c=${directory_objects}/c
 directory_objects_objc=${directory_objects}/objc
-directory_output=output
 directory_sources=sources
 directory_storyboards=storyboards
 directory_textures=textures
@@ -65,11 +76,25 @@ target_platform=arm64-apple-macos${target_macos_version}
 target_platform_metal=air64-apple-macos${target_macos_version_metal}
 
 cc=clang
-c_flags_common=-I${directory_include} -I${directory_cer0_include} -I${directory_clic3_include} -I${directory_interrupt_handler_include}
+c_flags_includes=-I${directory_include} -I${directory_cer0_include} -I${directory_clic3_include} -I${directory_interrupt_handler_include}
 c_flags_platform=-target ${target_platform} -isysroot ${directory_macos_sdk}
-c_flags_c=${c_flags_platform} ${c_flags_common}
-c_flags_objc=${c_flags_platform} ${c_flags_common} -x objective-c -fmodules -DTARGET_MACOS -I${directory_include}
+
+c_flags_objc_debug=-O0 -g -v
+c_flags_debug=-${c_flags_objc_debug} -da -Q
+
+c_flags_c=${c_flags_platform} ${c_flags_includes}
+c_flags_objc=${c_flags_platform} ${c_flags_includes} -x objective-c -fmodules -DTARGET_MACOS
 c_flags_output=${c_flags_platform} -framework Metal -framework MetalKit -framework GameController -framework CoreAudio
+
+ifeq (${debug}, 1)
+	c_flags_c:=${c_flags_c} ${c_flags_debug}
+	c_flags_objc:=${c_flags_objc} ${c_flags_objc_debug}
+	c_flags_output:=${c_flags_output} ${c_flags_objc_debug}
+else
+	c_flags_c:=${c_flags_c} -O3
+	c_flags_objc:=${c_flags_objc} -O3
+	c_flags_output:=${c_flags_output} -O3
+endif
 
 metal=xcrun -sdk macosx metal
 metal_flags_common=-target ${target_platform_metal}
@@ -124,9 +149,9 @@ clean_air:
 	-rm -r ${directory_air}
 
 clean_objects:
-	-rm -r ${directory_objects}
+	-rm -r ${directory_objects_base}
 
 clean_output:
-	-rm -r ${directory_output}
+	-rm -r ${directory_output_base}
 
 .always:
