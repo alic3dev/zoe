@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 
-enum debug_log_level debug_log_level = debug_log_level_none;
+enum debug_log_level debug_log_level = debug_log_level_error;
 
 void debug_log(
   char* buffer_output
