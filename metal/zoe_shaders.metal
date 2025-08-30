@@ -4,7 +4,7 @@
 
 #include <clic3_vector.h>
 
-constant float brightness_maximum = 1.0f;
+constant float brightness_maximum = 0.1f;
 
 struct data_rasterizer {
   float4 position [[position]];
