@@ -105,9 +105,9 @@ void scene_menu_main_initialize(
 
   mesh_ground_initialize(
     &scene->objects[0]->mesh,
-    2000.0f,
-    500.0f,
-    2000.0f
+    666.0f,
+    6666.6f,
+    200.0f
   );
 
   scene->objects[0]->position.y = -10.0f;
