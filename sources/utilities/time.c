@@ -10,7 +10,8 @@ unsigned long int time_milliseconds_get() {
     (void*)0
   );
 
-  return time_microseconds_to_milliseconds(
-    time_seconds_to_microseconds(timeval.tv_sec) + timeval.tv_usec
+  return (
+    time_seconds_to_milliseconds(timeval.tv_sec) +
+    time_microseconds_to_milliseconds(timeval.tv_usec)
   );
 }
