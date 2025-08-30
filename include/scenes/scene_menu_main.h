@@ -4,6 +4,8 @@
 #include <menus/menu.h>
 #include <scenes/scene.h>
 
+#include <CoreAudio/CoreAudio.h>
+
 enum textures_scene_menu_main {
   textures_scene_menu_main_ground = 0,
   textures_scene_menu_main_tree = 1
@@ -33,6 +35,16 @@ void scene_menu_main_destroy(
 
 void menu_print(
   struct menu*
+);
+
+OSStatus scene_menu_main_io_proc(
+  AudioObjectID,
+  const AudioTimeStamp*,
+  const AudioBufferList*,
+  const AudioTimeStamp*,
+  AudioBufferList*,
+  const AudioTimeStamp*,
+  void*
 );
 
 #endif

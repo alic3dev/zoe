@@ -5,9 +5,26 @@
 
 #include <CoreAudio/CoreAudio.h>
 
+struct audio_data;
+
 extern struct cer0_audio_output audio_output;
+extern struct audio_data audio_data;
+
+struct audio_data {
+  cer0_audio_output_io_proc* io_procs;
+  unsigned char length_io_procs;
+};
 
 void audio_initialize();
+
+void audio_io_proc_add(
+  cer0_audio_output_io_proc
+);
+
+unsigned char audio_io_proc_remove(
+  cer0_audio_output_io_proc
+);
+
 void audio_destroy();
 
 OSStatus audio_output_io_proc(
