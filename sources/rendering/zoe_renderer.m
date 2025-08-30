@@ -313,10 +313,6 @@
   data_frame->position_player.y = self->scene.player.position.y;
   data_frame->position_player.z = self->scene.player.position.z;
 
-  scene_poll(
-    &self->scene
-  );
-
   for (
     unsigned short int index_object = 0;
     index_object < self->scene.length_objects;
