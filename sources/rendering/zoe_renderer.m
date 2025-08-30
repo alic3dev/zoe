@@ -1,5 +1,6 @@
 #include <rendering/zoe_renderer.h>
 
+#include <audio/audio.h>
 #include <input/controller.h>
 #include <input/map.h>
 #include <input/keycodes.h>
@@ -143,13 +144,19 @@
 }
 
 - (void) drawInMTKView: (nonnull MTKView*) metal_kit_view {
-  scene_poll_input(
-    &self->scene
+  const unsigned int _frame = (
+    self->rendering_properties.frame++
   );
-  
-  scene_poll(
-    &self->scene
-  );
+
+  if (_frame == 0) {
+    audio_data.muted = 0;
+  }
+
+  if (
+    self->rendering_properties.frame + 1 >= UINT_MAX - 1
+  ) {
+    self->rendering_properties.frame = 1;
+  }
 
   self->rendering_properties.count_completed_frames = (
     self->rendering_properties.count_completed_frames - 1
@@ -182,7 +189,7 @@
   [encoder_render setRenderPipelineState: state_pipeline];
   [encoder_render setDepthStencilState: depth_state];
 
-  [self poll];
+  [self poll: _frame];
   [self render];
 
   [encoder_render endEncoding];
@@ -279,18 +286,16 @@
   data->noise = rand();
 }
 
-- (void) poll {
-  const unsigned int _frame = (
-    self->rendering_properties.frame++
-  );
-
-  if (
-    self->rendering_properties.frame + 1 >= UINT_MAX - 1
-  ) {
-    self->rendering_properties.frame = 0;
-  }
-
+- (void) poll: (unsigned int) _frame {
   controller_poll();
+
+  scene_poll_input(
+    &self->scene
+  );
+  
+  scene_poll(
+    &self->scene
+  );
 
   metal_kit_data_frame* data_frame = (data_buffer_frame[index_data_buffer_frame]).contents;
   data_frame->frame = _frame;

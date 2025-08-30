@@ -15,6 +15,8 @@ struct audio_data {
   unsigned char length_io_procs;
 
   float volume;
+
+  unsigned char muted;
 };
 
 void audio_initialize();
