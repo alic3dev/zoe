@@ -1,5 +1,6 @@
 #include <scenes/scene_intro_forest.h>
 
+#include <audio/audio.h>
 #include <mesh/ground/mesh_ground.h>
 #include <mesh/tree/mesh_tree.h>
 #include <metal_kit_shader_types.h>
@@ -17,6 +18,10 @@ void scene_intro_forest_initialize(
   struct scene* scene,
   id<MTLDevice> metal_kit_device
 ) {
+  audio_io_proc_add(
+    scene_intro_forest_io_proc
+  );
+
   scene_initialize(
     scene,
     metal_kit_device
@@ -24,6 +29,8 @@ void scene_intro_forest_initialize(
 
   scene->type = scene_type_game;
   scene->id = scene_id_intro_forest;
+
+  scene->destroy = scene_intro_forest_destroy;
 
   scene->length_objects = 501;
   scene->objects = realloc(
@@ -180,4 +187,55 @@ void scene_intro_forest_initialize(
       textures_scene_intro_forest_tree
     ];
   }
+}
+
+
+void scene_intro_forest_destroy(
+  struct scene* scene
+) {
+  audio_io_proc_remove(
+    scene_intro_forest_io_proc
+  );
+
+  scene_destroy_default(scene);
+}
+
+OSStatus scene_intro_forest_io_proc(
+  AudioObjectID id_audio_object,
+  const AudioTimeStamp* time_stamp_audio,
+  const AudioBufferList* list_buffer_audio_in,
+  const AudioTimeStamp* time_stamp_audio_in,
+  AudioBufferList* list_buffer_audio_out,
+  const AudioTimeStamp* time_stamp_audio_out,
+  void* data
+) {
+  for (
+    unsigned long int index_buffer = 0;
+    index_buffer < list_buffer_audio_out->mNumberBuffers;
+    ++index_buffer
+  ) {
+    AudioBuffer audio_buffer_current = list_buffer_audio_out->mBuffers[index_buffer];
+
+    float* buffer_out = audio_buffer_current.mData;
+    unsigned long int size_buffer_out = audio_buffer_current.mDataByteSize / sizeof(float);
+    unsigned long int count_channel_out = audio_buffer_current.mNumberChannels;
+
+    unsigned long int channel = index_buffer % count_channel_out;
+    
+    for (
+      unsigned long int index_buffer_out = 0;
+      index_buffer_out < size_buffer_out;
+      ++index_buffer_out
+    ) {
+      if (index_buffer == 0) {
+        buffer_out[index_buffer_out] = ((float) (rand() % 10000)) / 100000.0f;
+      } else {
+        buffer_out[index_buffer_out] = ((float*) list_buffer_audio_out->mBuffers[
+          0
+        ].mData)[index_buffer_out];
+      }
+    }
+  }
+
+  return 0;
 }
