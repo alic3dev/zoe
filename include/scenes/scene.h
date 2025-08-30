@@ -39,9 +39,11 @@ struct scene {
 
   unsigned long int time;
   unsigned long int time_previous;
+  unsigned long int time_delta;
 
   unsigned long int time_input;
   unsigned long int time_input_previous;
+  unsigned long int time_input_delta;
 
   function_scene_poll poll;
   function_scene_poll_input poll_input;
