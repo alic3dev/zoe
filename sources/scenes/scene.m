@@ -38,22 +38,36 @@ void scene_initialize(
   scene->poll_input = scene_poll_input_default;
   scene->destroy = scene_destroy_default;
 
+  scene->time = 0;
+  scene->time_previous = 0;
+
+  scene->time_input = 0;
+  scene->time_input_previous = 0;
+
   scene->loading = 0;
 
   scene->data = (void*)0;
 }
 
 void scene_poll_input(
-  struct scene* scene
+  struct scene* scene,
+  unsigned long int time
 ) {
+  scene->time_input_previous = scene->time;
+  scene->time_input = time;
+
   scene->poll_input(
     scene
   );
 }
 
 void scene_poll(
-  struct scene* scene
+  struct scene* scene,
+  unsigned long int time
 ) {
+  scene->time_previous = scene->time;
+  scene->time = time;
+
   scene->poll(
     scene
   );

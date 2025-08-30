@@ -15,15 +15,7 @@ void stopwatch_start(
 unsigned long int stopwatch_elapsed(
   struct stopwatch* stopwatch
 ) {
-  struct timeval timeval_current;
-
-  gettimeofday(
-    &timeval_current,
-    (void*)0
-  );
-
-  return time_microseconds_to_milliseconds(
-    (time_seconds_to_microseconds(timeval_current.tv_sec) + timeval_current.tv_usec) -
+  return time_milliseconds_get() - time_microseconds_to_milliseconds(
     (time_seconds_to_microseconds(stopwatch->timeval.tv_sec) + stopwatch->timeval.tv_usec)
   );
 }

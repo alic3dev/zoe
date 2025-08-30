@@ -37,6 +37,12 @@ struct scene {
 
   unsigned char loading;
 
+  unsigned long int time;
+  unsigned long int time_previous;
+
+  unsigned long int time_input;
+  unsigned long int time_input_previous;
+
   function_scene_poll poll;
   function_scene_poll_input poll_input;
   function_scene_destroy destroy;
@@ -50,11 +56,13 @@ void scene_initialize(
 );
 
 void scene_poll_input(
-  struct scene*
+  struct scene*,
+  unsigned long int
 );
 
 void scene_poll(
-  struct scene*
+  struct scene*,
+  unsigned long int
 );
 
 void scene_destroy(
