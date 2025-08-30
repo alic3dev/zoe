@@ -16,13 +16,14 @@ void audio_initialize() {
     audio_data.length_io_procs
   );
 
+  audio_data.volume = 0.2f;
+
   cer0_audio_output_initialize(
     &audio_output,
     audio_output_io_proc,
     (void*)0
   );
 }
-
 
 void audio_io_proc_add(
   cer0_audio_output_io_proc io_proc
@@ -115,38 +116,6 @@ OSStatus audio_output_io_proc(
   const AudioTimeStamp* time_stamp_audio_out,
   void* data
 ) {
-  if (
-    audio_data.length_io_procs == 0
-  ) {
-    for (
-      unsigned long int index_buffer = 0;
-      index_buffer < list_buffer_audio_out->mNumberBuffers;
-      ++index_buffer
-    ) {
-      AudioBuffer audio_buffer_current = list_buffer_audio_out->mBuffers[index_buffer];
-
-      float* buffer_out = audio_buffer_current.mData;
-      unsigned long int size_buffer_out = audio_buffer_current.mDataByteSize / sizeof(float);
-      unsigned long int count_channel_out = audio_buffer_current.mNumberChannels;
-      
-      for (
-        unsigned long int index_buffer_out = 0;
-        index_buffer_out < size_buffer_out;
-        ++index_buffer_out
-      ) {
-        unsigned long int channel = index_buffer % count_channel_out;
-
-        if (channel == 0) {
-          buffer_out[index_buffer_out] = 0.0f;
-        } else {
-          buffer_out[index_buffer_out] = 0.0f;
-        }
-      }
-    }
-    
-    return 0;
-  }
-
   for (
     unsigned char index_io_proc = 0;
     index_io_proc < audio_data.length_io_procs;
@@ -166,6 +135,28 @@ OSStatus audio_output_io_proc(
 
     if (status_io_proc != 0) {
       return status_io_proc;
+    }
+  }
+
+  for (
+    unsigned long int index_buffer = 0;
+    index_buffer < list_buffer_audio_out->mNumberBuffers;
+    ++index_buffer
+  ) {
+    AudioBuffer audio_buffer_current = list_buffer_audio_out->mBuffers[index_buffer];
+
+    float* buffer_out = audio_buffer_current.mData;
+    unsigned long int size_buffer_out = audio_buffer_current.mDataByteSize / sizeof(float);
+    unsigned long int count_channel_out = audio_buffer_current.mNumberChannels;
+
+    unsigned long int channel = index_buffer % count_channel_out;
+    
+    for (
+      unsigned long int index_buffer_out = 0;
+      index_buffer_out < size_buffer_out;
+      ++index_buffer_out
+    ) {
+      buffer_out[index_buffer_out] = buffer_out[index_buffer_out] * audio_data.volume;
     }
   }
 

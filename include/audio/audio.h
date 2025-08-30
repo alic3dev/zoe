@@ -13,6 +13,8 @@ extern struct audio_data audio_data;
 struct audio_data {
   cer0_audio_output_io_proc* io_procs;
   unsigned char length_io_procs;
+
+  float volume;
 };
 
 void audio_initialize();
