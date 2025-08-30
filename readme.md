@@ -32,6 +32,19 @@
 make
 ```
 
+#### options
+
+- `debug=1`:adds->{`debugging_symbols`}:disables->{`optimizations`};
+- `disable_metal_fast_options=1`:disables->{`metal`::`fast_modes `};
+
+```zsh
+debug=1 make
+: or
+disable_metal_fast_options=1 make
+: or
+debug=1 disable_metal_fast_options=1 make
+```
+
 ### clean
 
 ```zsh

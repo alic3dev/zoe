@@ -36,4 +36,4 @@ jobs:
       - name: make_interrupt_handler
         run: cd interrupt_handler && make
       - name: make_zoe
-        run: cd zoe && make
+        run: cd zoe && disable_metal_fast_options=1 make
