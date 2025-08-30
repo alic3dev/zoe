@@ -16,6 +16,7 @@ void audio_initialize() {
     audio_data.length_io_procs
   );
 
+  audio_data.muted = 1;
   audio_data.volume = 0.2f;
 
   cer0_audio_output_initialize(
@@ -116,6 +117,10 @@ OSStatus audio_output_io_proc(
   const AudioTimeStamp* time_stamp_audio_out,
   void* data
 ) {
+  if (audio_data.muted == 1) {
+    return 0;
+  }
+  
   for (
     unsigned char index_io_proc = 0;
     index_io_proc < audio_data.length_io_procs;

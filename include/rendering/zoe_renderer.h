@@ -47,7 +47,7 @@
 - (void) mtkView: (nonnull MTKView*) metal_kit_view drawableSizeWillChange: (CGSize) size;
 - (void) drawableSizeWillChange: (CGSize) size;
 
-- (void) poll;
+- (void) poll: (unsigned int) _frame;
 - (void) poll_object: (nonnull struct object*) object;
 
 - (void) render;
