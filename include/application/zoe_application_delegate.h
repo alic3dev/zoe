@@ -5,6 +5,7 @@
 
 @interface zoe_application_delegate: NSObject<NSApplicationDelegate>
 
+- (void) applicationDidFinishLaunching:(NSNotification *) notification;
 - (void) applicationWillTerminate:(NSNotification*) notification;
 
 @end

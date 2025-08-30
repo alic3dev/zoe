@@ -50,15 +50,12 @@ int main(
     (void*)0
   );
 
-  zoe_application* application = [zoe_application sharedApplication];
-  application.delegate = [zoe_application_delegate alloc];
+  zoe_application* zoe_application_main = [zoe_application sharedApplication];
+  zoe_application_main.delegate = [zoe_application_delegate alloc];
 
   interrupt_handler_interrupt_function_add(
     terminate_on_signal
   );
   
-  return NSApplicationMain(
-    length_parameters,
-    parameters
-  );
+  [zoe_application_main run];
 }
