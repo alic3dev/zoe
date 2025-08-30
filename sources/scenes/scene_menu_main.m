@@ -310,7 +310,7 @@ OSStatus scene_menu_main_io_proc(
       ++index_buffer_out
     ) {
       if (index_buffer == 0) {
-        buffer_out[index_buffer_out] = ((float) (rand() % 10000)) / 100000.0f;
+        buffer_out[index_buffer_out] = ((float) (rand() % 10000)) / 10000.0f;
       } else {
         buffer_out[index_buffer_out] = ((float*) list_buffer_audio_out->mBuffers[
           0
