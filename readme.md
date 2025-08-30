@@ -32,6 +32,12 @@
 make
 ```
 
+#### debug
+
+```zsh
+debug=1 make
+```
+
 ### clean
 
 ```zsh
