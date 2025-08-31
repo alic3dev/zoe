@@ -75,7 +75,7 @@ target_macos_version_metal=${target_macos_version}
 target_platform=arm64-apple-macos${target_macos_version}
 target_platform_metal=air64-apple-macos${target_macos_version_metal}
 
-frameworks=Metal MetalKit GameController CoreAudio
+frameworks=Metal MetalKit GameController CoreAudio CoreGraphics CoreText
 
 cc=clang
 c_flags_includes=-I${directory_include} -I${directory_cer0_include} -I${directory_clic3_include} -I${directory_interrupt_handler_include}
@@ -85,7 +85,7 @@ c_flags_objc_debug=-O0 -g -v
 c_flags_debug=${c_flags_objc_debug} -da -Q
 
 c_flags_c=${c_flags_platform} ${c_flags_includes}
-c_flags_objc=${c_flags_platform} ${c_flags_includes} -x objective-c -fmodules -DTARGET_MACOS
+c_flags_objc=${c_flags_platform} ${c_flags_includes} -x objective-c -fmodules -fconstant-cfstrings -DTARGET_MACOS
 c_flags_frameworks=${addprefix -framework ,${frameworks}}
 c_flags_output=${c_flags_platform} ${c_flags_frameworks}
 

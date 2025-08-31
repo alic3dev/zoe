@@ -7,6 +7,7 @@
 #include <paths.h>
 #include <scenes/scene_controller.h>
 #include <termination.h>
+#include <text/text.h>
 #include <utilities/time.h>
 
 #include <interrupt_handler.h>
@@ -30,6 +31,7 @@ int main(
   input_initialize();
   scene_controller_initialize();
   audio_initialize();
+  text_initialize();
 
   termination_on_function_add(
     scene_controller_destroy,
@@ -48,6 +50,11 @@ int main(
 
   termination_on_function_add(
     audio_destroy,
+    (void*)0
+  );
+
+  termination_on_function_add(
+    text_destroy,
     (void*)0
   );
 
