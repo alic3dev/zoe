@@ -16,6 +16,8 @@
 - `metalkit`
 - `gamecontroller`
 - `coreaudio`
+- `coregraphics`
+- `coretext`
 
 ## development
 
