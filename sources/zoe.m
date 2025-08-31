@@ -16,8 +16,6 @@
 #include <Cocoa/Cocoa.h>
 
 void terminate_on_signal(int _) {
-  audio_destroy();
-  
   [[NSApplication sharedApplication] terminate: 0];
 }
 
@@ -41,12 +39,19 @@ int main(
     scene_controller_destroy,
     (void*)0
   );
+  
   termination_on_function_add(
     interrupt_handler_destroy,
     (void*)0
   );
+
   termination_on_function_add(
     paths_destroy,
+    (void*)0
+  );
+
+  termination_on_function_add(
+    audio_destroy,
     (void*)0
   );
 
