@@ -4,6 +4,8 @@
 #include <object.h>
 #include <player.h>
 
+#include <MetalKit/MetalKit.h>
+
 struct scene;
 
 typedef void (*function_scene_poll)(struct scene*);

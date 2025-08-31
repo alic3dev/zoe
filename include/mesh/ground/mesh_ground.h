@@ -3,6 +3,8 @@
 
 #include <mesh/mesh.h>
 
+#include <clic3_vector.h>
+
 #define length_vertices_ground_x 100
 #define length_vertices_ground_y 100
 

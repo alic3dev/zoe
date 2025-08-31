@@ -1,8 +1,9 @@
 #ifndef __metal_kit_shader_types_h
 #define __metal_kit_shader_types_h
 
-#include <simd/simd.h>
 #include <clic3_vector.h>
+
+#include <simd/simd.h>
 
 #ifndef __METAL_VERSION__
 #define constant

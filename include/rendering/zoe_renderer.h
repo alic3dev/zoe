@@ -1,14 +1,11 @@
 #ifndef __zoe_renderer_h
 #define __zoe_renderer_h
 
-#include <mesh/mesh.h>
-#include <metal_kit_shader_types.h>
 #include <object.h>
 #include <rendering/rendering_properties.h>
 #include <scenes/scene.h>
 
 #include <MetalKit/MetalKit.h>
-
 
 @interface zoe_renderer : NSObject<MTKViewDelegate> {
   struct rendering_properties rendering_properties;

@@ -1,4 +1,4 @@
-#import <zoe.h>
+#include <zoe.h>
 
 #include <application/zoe_application.h>
 #include <application/zoe_application_delegate.h>
@@ -7,13 +7,9 @@
 #include <paths.h>
 #include <scenes/scene_controller.h>
 #include <termination.h>
+#include <utilities/time.h>
 
 #include <interrupt_handler.h>
-
-#include <stdlib.h>
-#include <time.h>
-
-#include <Cocoa/Cocoa.h>
 
 void terminate_on_signal(int _) {
   [[NSApplication sharedApplication] terminate: 0];
@@ -23,7 +19,7 @@ int main(
   int length_parameters,
   const char** parameters
 ) {
-  srand(time((void*)0));
+  srand(time_milliseconds_get() % UINT_MAX);
   
   paths_initialize(
     (char*) parameters[0]

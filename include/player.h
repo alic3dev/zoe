@@ -1,7 +1,7 @@
 #ifndef __player_h
 #define __player_h
 
-#include <clic3.h>
+#include <clic3_vector.h>
 
 struct player {
   struct clic3_vector3_float position;

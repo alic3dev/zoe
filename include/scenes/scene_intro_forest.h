@@ -4,6 +4,7 @@
 #include <scenes/scene.h>
 
 #include <CoreAudio/CoreAudio.h>
+#include <MetalKit/MetalKit.h>
 
 enum textures_scene_intro_forest {
   textures_scene_intro_forest_ground = 0,

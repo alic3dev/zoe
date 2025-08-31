@@ -1,11 +1,7 @@
 #include <application/zoe_view_controller.h>
 
 #include <application/zoe_view.h>
-#include <input/keycodes.h>
-#include <input/map.h>
-#include <menus/menu.h>
 #include <rendering/zoe_renderer.h>
-#include <termination.h>
 
 @implementation zoe_view_controller {
   zoe_view* view;
