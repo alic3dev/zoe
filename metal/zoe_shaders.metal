@@ -2,8 +2,6 @@
 
 #include <metal_stdlib>
 
-#include <clic3_vector.h>
-
 constant float brightness_maximum = 0.1f;
 
 struct data_rasterizer {

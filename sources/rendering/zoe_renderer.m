@@ -5,8 +5,6 @@
 #include <input/map.h>
 #include <input/keycodes.h>
 #include <mesh/mesh.h>
-#include <mesh/ground/mesh_ground.h>
-#include <mesh/tree/mesh_tree.h>
 #include <metal_kit_shader_types.h>
 #include <object.h>
 #include <rendering/camera/camera.h>
@@ -18,11 +16,7 @@
 
 #include <clic3.h>
 
-#include <stdlib.h>
-
-#include <GameController/GameController.h>
 #include <MetalKit/MetalKit.h>
-#include <simd/simd.h>
 
 @implementation zoe_renderer
 

@@ -1,7 +1,7 @@
 #ifndef __mesh_h
 #define __mesh_h
 
-#include <clic3.h>
+#include <clic3_vector.h>
 
 struct mesh {
   unsigned int* indices;

@@ -2,6 +2,8 @@
 
 #include <math.h>
 
+#include <simd/simd.h>
+
 void camera_initialize(
   struct camera* camera
 ) {

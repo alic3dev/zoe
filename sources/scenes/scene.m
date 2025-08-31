@@ -4,6 +4,8 @@
 #include <object.h>
 #include <player.h>
 
+#include <stdlib.h>
+
 void scene_initialize(
   struct scene* scene,
   id<MTLDevice> metal_kit_device

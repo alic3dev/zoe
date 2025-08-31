@@ -5,6 +5,7 @@
 #include <scenes/scene.h>
 
 #include <CoreAudio/CoreAudio.h>
+#include <MetalKit/MetalKit.h>
 
 enum textures_scene_menu_main {
   textures_scene_menu_main_ground = 0,

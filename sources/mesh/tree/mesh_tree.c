@@ -6,7 +6,6 @@
 
 #include <math.h>
 #include <stdlib.h>
-#include <stdio.h>
 
 void mesh_tree_initialize(
   struct mesh* mesh,
@@ -106,25 +105,6 @@ void mesh_tree_initialize(
     }
   }
 
-  // 0 1 8
-  // 1 8 9
-
-  // 1 2 9
-  // 1 9 10
-
-  // 7 0 8
-  // 7 8 15
-
-  //    8 9
-  // 15     10
-  //  14     11
-  //    13 12
-
-  //    0 1
-  //  7     2
-  //   6     3
-  //     5 4
-
   unsigned char count_branches = (rand() % 30) + 10;
 
   float radius_branch_tenth = (radius / 2.0f) / 10.0f;
@@ -137,7 +117,6 @@ void mesh_tree_initialize(
       length_vertices_radius_branch + 1
     );
   }
-
 
   for (
     unsigned char index_branch = 0;
@@ -172,7 +151,10 @@ void mesh_tree_initialize(
       mesh->length_indices
     );
 
-    float angle = ((float)(rand() % 10000) / 10000.0f) * M_PI * 2.0f;// (float)index_segment_radius / (float)length_vertices_radius * M_PI * 2.0f;
+    float angle = (
+      ((float)(rand() % 10000) / 10000.0f) *
+      M_PI * 2.0f
+    );
 
     struct clic3_vector3_float position_joint_branch = {
       .x = 0.0f,
@@ -234,11 +216,11 @@ void mesh_tree_initialize(
       } 
 
       position_joint_branch.x = (
-        cos(angle) * (length * ((float)(index_joint_branch + 1) / ((float)(joints_branch))))
+        cosf(angle) * (length * ((float)(index_joint_branch + 1) / ((float)(joints_branch))))
       );
 
       position_joint_branch.z = (
-        sin(angle) * (length * ((float)(index_joint_branch + 1) / ((float)(joints_branch))))
+        sinf(angle) * (length * ((float)(index_joint_branch + 1) / ((float)(joints_branch))))
       );
 
       mesh->vertices[index_vertex + 2].x = position_joint_branch.x;

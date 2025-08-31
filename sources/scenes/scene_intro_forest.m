@@ -8,6 +8,8 @@
 #include <paths.h>
 #include <scenes/scene.h>
 
+#include <stdlib.h>
+
 void scene_intro_forest_data_initialize(
   struct scene* scene
 ) {
