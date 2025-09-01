@@ -19,6 +19,18 @@
 - `coregraphics`
 - `coretext`
 
+## configuration
+
+- path->{`~/.config/zoe`};
+- parameter:name->{value}
+- - `audio:volume`: `float`
+
+### example
+
+```
+audio:volume->{0.27};
+```
+
 ## development
 
 ### prerequisites

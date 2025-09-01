@@ -5,7 +5,7 @@
 #include <mesh/tree/mesh_tree.h>
 #include <metal_kit_shader_types.h>
 #include <object.h>
-#include <paths.h>
+#include <paths/paths.h>
 #include <scenes/scene.h>
 
 #include <stdlib.h>
