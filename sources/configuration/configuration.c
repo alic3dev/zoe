@@ -244,9 +244,7 @@ unsigned char configuration_load() {
               }
             }
 
-            printf("%f\n", audio_volume);
-
-            audio_data.volume = audio_volume;
+            configuration.audio.volume = audio_volume;
             
             break;
           }
@@ -278,6 +276,10 @@ unsigned char configuration_load() {
   fclose(file_configuration);
 
   return status_configuration_load;
+}
+
+void configuration_values_set() {
+  audio_data.volume = configuration.audio.volume;
 }
 
 void configuration_destroy() {}

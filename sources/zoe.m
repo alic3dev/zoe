@@ -29,13 +29,6 @@ int main(
     (char*) parameters[0]
   );
 
-  termination_initialize();
-  interrupt_handler_initialize();
-  input_initialize();
-  scene_controller_initialize();
-  audio_initialize();
-  text_initialize();
-
   unsigned char status_configuration_load = (
     configuration_load()
   );
@@ -47,6 +40,15 @@ int main(
     [[NSApplication sharedApplication] terminate: 0];
     return status_configuration_load;
   }
+
+  termination_initialize();
+  interrupt_handler_initialize();
+  input_initialize();
+  scene_controller_initialize();
+  audio_initialize();
+  text_initialize();
+
+  configuration_values_set();
 
   termination_on_function_add(
     scene_controller_destroy,

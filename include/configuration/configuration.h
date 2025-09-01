@@ -10,7 +10,11 @@ struct configuration {
 extern struct configuration configuration;
 
 void configuration_initialize();
+
 unsigned char configuration_load();
+
+void configuration_values_set();
+
 void configuration_destroy();
 
 #endif
