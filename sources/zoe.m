@@ -3,14 +3,17 @@
 #include <application/zoe_application.h>
 #include <application/zoe_application_delegate.h>
 #include <audio/audio.h>
+#include <configuration/configuration.h>
 #include <input/input.h>
-#include <paths.h>
+#include <paths/paths.h>
 #include <scenes/scene_controller.h>
 #include <termination.h>
 #include <text/text.h>
 #include <utilities/time.h>
 
 #include <interrupt_handler.h>
+
+#include <limits.h>
 
 void terminate_on_signal(int _) {
   [[NSApplication sharedApplication] terminate: 0];
@@ -32,6 +35,18 @@ int main(
   scene_controller_initialize();
   audio_initialize();
   text_initialize();
+
+  unsigned char status_configuration_load = (
+    configuration_load()
+  );
+
+  if (
+    status_configuration_load != 0
+  ) {
+    paths_destroy();
+    [[NSApplication sharedApplication] terminate: 0];
+    return status_configuration_load;
+  }
 
   termination_on_function_add(
     scene_controller_destroy,
@@ -55,6 +70,11 @@ int main(
 
   termination_on_function_add(
     text_destroy,
+    (void*)0
+  );
+
+  termination_on_function_add(
+    configuration_destroy,
     (void*)0
   );
 
