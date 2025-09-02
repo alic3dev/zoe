@@ -15,6 +15,8 @@
 
 #include <limits.h>
 
+#include <AppKit/AppKit.h>
+
 void terminate_on_signal(int _) {
   [[NSApplication sharedApplication] terminate: 0];
 }

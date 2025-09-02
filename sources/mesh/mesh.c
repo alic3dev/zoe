@@ -23,6 +23,10 @@ void mesh_initialize(
     sizeof(struct clic3_vector4_float) *
     mesh->length_vertices
   );
+
+  mesh->positioning = mesh_positioning_normal;
+
+  mesh->data = (void*)0;
 }
 
 void mesh_destroy(

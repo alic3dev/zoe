@@ -3,6 +3,11 @@
 
 #include <clic3_vector.h>
 
+enum mesh_positioning {
+  mesh_positioning_normal,
+  mesh_positioning_static
+};
+
 struct mesh {
   unsigned int* indices;
   struct clic3_vector4_float* vertices;
@@ -10,6 +15,8 @@ struct mesh {
 
   unsigned int length_indices;
   unsigned int length_vertices;
+
+  enum mesh_positioning positioning;
 
   void* data;
 };
