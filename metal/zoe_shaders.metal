@@ -25,7 +25,7 @@ vertex data_rasterizer zoe_shader_vertex(
   out.position = data.view_model_matrix_projection * positions[id_vertex];
   out.height = 0.0f;
   out.mode_texture = data.mode_texture;
-  out.noise = (float)(data.noise % 10000) / 10000.0f;
+  out.noise = (float)(data.noise % 10001) / 10000.0f;
 
   if (
     data.mode_texture == mode_texture_ground
@@ -161,7 +161,12 @@ fragment float4 zoe_shader_fragment(
   float brightness;
 
   if (in.mode_texture == mode_texture_text) {
-    brightness = 1.0f;
+    return float4(
+      texture_color[0] * in.noise,
+      texture_color[1] * in.noise,
+      texture_color[2] * in.noise,
+      texture_color[3]
+    );
   } else {
     if (in.mode_texture == mode_texture_ground) {
       brightness = ((in.height * 0.8f) + 0.075f) * brightness_maximum;

@@ -45,12 +45,10 @@ void scene_menu_main_initialize(
     menu
   );
 
-  menu_print(menu);
-
   scene->type = scene_type_menu;
   scene->id = scene_id_menu_main;
 
-  scene->length_objects = 3;
+  scene->length_objects = 5;
   scene->objects = realloc(
     scene->objects,
     sizeof(struct object*) *
@@ -61,7 +59,7 @@ void scene_menu_main_initialize(
     sizeof(struct object)
   );
 
-  scene->length_textures = 3;
+  scene->length_textures = 5;
   scene->textures = malloc(
     sizeof(id<MTLTexture>) *
     scene->length_textures
@@ -229,9 +227,98 @@ void scene_menu_main_initialize(
   
   data->id = iterator_id++;
   data->mode_texture = mode_texture_text;
+  data->noise = 10000;
 
   scene->objects[2]->texture = scene->textures[
     textures_scene_menu_main_title
+  ];
+
+  scene->objects[3] = malloc(
+    sizeof(struct object)
+  );
+
+  scene->textures[
+    textures_scene_menu_main_menu_enter
+  ] = text_mesh_with_texture_initialize(
+    metal_kit_device,
+    &scene->objects[3]->mesh,
+    "enter",
+    font_reference_monospace
+  ); // TODO: Check for null
+
+  scene->objects[3]->vertices = [metal_kit_device
+    newBufferWithBytes: scene->objects[3]->mesh.vertices
+    length: scene->objects[3]->mesh.length_vertices * sizeof(struct clic3_vector4_float)
+    options: MTLResourceStorageModeShared
+  ];
+
+  scene->objects[3]->indices = [metal_kit_device
+    newBufferWithBytes: scene->objects[3]->mesh.indices
+    length: (
+      sizeof(unsigned int) *
+      scene->objects[3]->mesh.length_indices
+    )
+    options: MTLResourceStorageModePrivate
+  ];
+
+  scene->objects[3]->data = [metal_kit_device
+    newBufferWithLength: sizeof(metal_kit_data_frame_object)
+    options: MTLResourceStorageModeShared
+  ];
+
+  scene->objects[3]->position.y = -scene->objects[3]->mesh.size.y * 6.0;
+
+  data = scene->objects[3]->data.contents;
+  
+  data->id = iterator_id++;
+  data->mode_texture = mode_texture_text;
+
+  scene->objects[3]->texture = scene->textures[
+    textures_scene_menu_main_menu_enter
+  ];
+
+  scene->objects[4] = malloc(
+    sizeof(struct object)
+  );
+
+  scene->textures[
+    textures_scene_menu_main_menu_exit
+  ] = text_mesh_with_texture_initialize(
+    metal_kit_device,
+    &scene->objects[4]->mesh,
+    "exit",
+    font_reference_monospace
+  ); // TODO: Check for null
+
+  scene->objects[4]->vertices = [metal_kit_device
+    newBufferWithBytes: scene->objects[4]->mesh.vertices
+    length: scene->objects[4]->mesh.length_vertices * sizeof(struct clic3_vector4_float)
+    options: MTLResourceStorageModeShared
+  ];
+
+  scene->objects[4]->indices = [metal_kit_device
+    newBufferWithBytes: scene->objects[4]->mesh.indices
+    length: (
+      sizeof(unsigned int) *
+      scene->objects[4]->mesh.length_indices
+    )
+    options: MTLResourceStorageModePrivate
+  ];
+
+  scene->objects[4]->data = [metal_kit_device
+    newBufferWithLength: sizeof(metal_kit_data_frame_object)
+    options: MTLResourceStorageModeShared
+  ];
+
+  scene->objects[4]->position.y = -scene->objects[4]->mesh.size.y * 10.0f;
+
+  data = scene->objects[4]->data.contents;
+  
+  data->id = iterator_id++;
+  data->mode_texture = mode_texture_text;
+
+  scene->objects[4]->texture = scene->textures[
+    textures_scene_menu_main_menu_exit
   ];
 
   scene->player.position.y = (
@@ -259,7 +346,22 @@ void scene_menu_main_poll(
 
   struct menu* menu = (struct menu*) scene->data;
 
-  menu_print(menu);
+  switch (menu->index_current) {
+    case 0: {
+      metal_kit_data_frame_object* data = scene->objects[3]->data.contents;
+      data->noise = 1600 + (rand() % 666);
+      data = scene->objects[4]->data.contents;
+      data->noise = 10000;
+      break;
+    }
+    case 1: {
+      metal_kit_data_frame_object* data = scene->objects[4]->data.contents;
+      data->noise = 1600 + (rand() % 666);
+      data = scene->objects[3]->data.contents;
+      data->noise = 10000;
+      break;
+    }
+  }
 
   if (
     menu->index_selected != -1 &&
@@ -306,35 +408,6 @@ void scene_menu_main_destroy(
   );
 
   scene_destroy_default(scene);
-}
-
-void menu_print(
-  struct menu* menu
-) {
-  debug_log("\e[H\e[2J\e[3J");
-
-  switch(
-    menu->index_current
-  ) {
-    case 0:
-      debug_log(
-        "> start\n"
-        "  exit\n"
-      );
-      break;
-    case 1:
-      debug_log(
-        "  start\n"
-        "> exit\n"
-      );
-      break;
-    default:
-      debug_log(
-        "  start\n"
-        "  exit\n"
-      );
-      break;
-  }
 }
 
 OSStatus scene_menu_main_io_proc(
