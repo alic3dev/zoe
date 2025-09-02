@@ -15,7 +15,8 @@ void stopwatch_start(
 unsigned long int stopwatch_elapsed(
   struct stopwatch* stopwatch
 ) {
-  return time_milliseconds_get() - time_microseconds_to_milliseconds(
-    (time_seconds_to_microseconds(stopwatch->timeval.tv_sec) + stopwatch->timeval.tv_usec)
+  return time_milliseconds_get() - (
+    time_seconds_to_milliseconds(stopwatch->timeval.tv_sec) +
+    time_microseconds_to_milliseconds(stopwatch->timeval.tv_usec)
   );
 }
