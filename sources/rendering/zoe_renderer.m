@@ -16,6 +16,8 @@
 
 #include <clic3.h>
 
+#include <limits.h>
+
 #include <MetalKit/MetalKit.h>
 
 @implementation zoe_renderer
@@ -51,6 +53,14 @@
   descriptor_state_pipeline.vertexFunction = function_vertex;
   descriptor_state_pipeline.fragmentFunction = function_fragment;
   descriptor_state_pipeline.colorAttachments[0].pixelFormat = metal_kit_view.colorPixelFormat;
+  descriptor_state_pipeline.colorAttachments[0].blendingEnabled = 1;
+  descriptor_state_pipeline.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
+  descriptor_state_pipeline.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
+  descriptor_state_pipeline.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
+  descriptor_state_pipeline.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
+  descriptor_state_pipeline.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+  descriptor_state_pipeline.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+
   descriptor_state_pipeline.depthAttachmentPixelFormat = metal_kit_view.depthStencilPixelFormat;
   descriptor_state_pipeline.stencilAttachmentPixelFormat = metal_kit_view.depthStencilPixelFormat;
 
@@ -215,64 +225,78 @@
 - (void) poll_object: (struct object*) object {
   metal_kit_data_frame_object* data = object->data.contents;
 
-  struct clic3_vector3_float position = {
-    .x = object->position.x + self->scene.player.position.x,
-    .y = object->position.y + self->scene.player.position.y,
-    .z = object->position.z + self->scene.player.position.z
-  };
-
   data->position.x = object->position.x;
   data->position.y = object->position.y;
   data->position.z = object->position.z;
 
-  data->view_model_matrix_projection = matrix_multiply(
-    self->rendering_properties.camera.matrix_viewport_projection,
-    (
+  if (object->mesh.positioning == mesh_positioning_normal) {
+    struct clic3_vector3_float position = {
+      .x = object->position.x + self->scene.player.position.x,
+      .y = object->position.y + self->scene.player.position.y,
+      .z = object->position.z + self->scene.player.position.z
+    };
+
+    data->view_model_matrix_projection = matrix_multiply(
+      self->rendering_properties.camera.matrix_viewport_projection,
+      (
+        (matrix_float4x4) {{
+          { 1, 0, 0, 0 },
+          { 0, cos(self->scene.player.rotation.x), sin(self->scene.player.rotation.x), 0 },
+          { 0, -sin(self->scene.player.rotation.x), cos(self->scene.player.rotation.x), 0 },
+          {
+            1,
+            1,
+            1,
+            1
+          }
+        }}
+      )
+    );
+
+    data->view_model_matrix_projection = matrix_multiply(
+      data->view_model_matrix_projection,
+      (
+        (matrix_float4x4) {{
+          { cos(self->scene.player.rotation.y), 0, -sin(self->scene.player.rotation.y), 0 },
+          { 0, 1, 0, 0 },
+          { sin(self->scene.player.rotation.y), 0, cos(self->scene.player.rotation.y), 0 },
+          {
+            1,
+            1,
+            1,
+            1
+          }
+        }}
+      )
+    );
+
+    data->view_model_matrix_projection = matrix_multiply(
+      data->view_model_matrix_projection,
       (matrix_float4x4) {{
         { 1, 0, 0, 0 },
-        { 0, cos(self->scene.player.rotation.x), sin(self->scene.player.rotation.x), 0 },
-        { 0, -sin(self->scene.player.rotation.x), cos(self->scene.player.rotation.x), 0 },
-        {
-          1,
-          1,
-          1,
-          1
-        }
-      }}
-    )
-  );
-
-  data->view_model_matrix_projection = matrix_multiply(
-    data->view_model_matrix_projection,
-    (
-      (matrix_float4x4) {{
-        { cos(self->scene.player.rotation.y), 0, -sin(self->scene.player.rotation.y), 0 },
         { 0, 1, 0, 0 },
-        { sin(self->scene.player.rotation.y), 0, cos(self->scene.player.rotation.y), 0 },
+        { 0, 0, 1, 0 },
         {
-          1,
-          1,
-          1,
+          position.x,
+          position.y,
+          position.z,
           1
         }
       }}
-    )
-  );
-
-  data->view_model_matrix_projection = matrix_multiply(
-    data->view_model_matrix_projection,
-    (matrix_float4x4) {{
+    );
+  } else {
+    data->view_model_matrix_projection = (matrix_float4x4) {{
       { 1, 0, 0, 0 },
       { 0, 1, 0, 0 },
       { 0, 0, 1, 0 },
       {
-        position.x,
-        position.y,
-        position.z,
+        object->position.x,
+        object->position.y,
+        object->position.z,
         1
       }
-    }}
-  );
+    }};
+  }
 
   data->width = object->mesh.size.x;
   data->height = object->mesh.size.y;

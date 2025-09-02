@@ -97,6 +97,22 @@ vertex data_rasterizer zoe_shader_vertex(
     } else {
       out.height = (positions[id_vertex].y / data.height) * 0.4;
     }
+  } else if (
+    data.mode_texture == mode_texture_text
+  ) {
+    out.index_texture = 0;
+
+    out.position_texture.x = (
+      id_vertex == 0 || id_vertex == 3
+      ? 0
+      : 1
+    );
+
+    out.position_texture.y = (
+      id_vertex == 0 || id_vertex == 1
+      ? 1
+      : 0
+    );
   } else {
     out.index_texture = 0;
     out.height = positions[id_vertex].y / data.height;
@@ -144,19 +160,23 @@ fragment float4 zoe_shader_fragment(
 
   float brightness;
 
-  if (in.mode_texture == mode_texture_ground) {
-    brightness = ((in.height * 0.8f) + 0.075f) * brightness_maximum;
+  if (in.mode_texture == mode_texture_text) {
+    brightness = 1.0f;
   } else {
-    brightness = ((in.height * 0.8f) + 0.075f) * (brightness_maximum * 0.8f);
-  }
+    if (in.mode_texture == mode_texture_ground) {
+      brightness = ((in.height * 0.8f) + 0.075f) * brightness_maximum;
+    } else {
+      brightness = ((in.height * 0.8f) + 0.075f) * (brightness_maximum * 0.8f);
+    }
 
-  brightness = brightness * metal::fmax(
-    metal::fmin(
-      100.0f / in.distance,
-      1.0f
-    ),
-    0.0f
-  );
+    brightness = brightness * metal::fmax(
+      metal::fmin(
+        100.0f / in.distance,
+        1.0f
+      ),
+      0.0f
+    );
+  }
 
   return float4(
     texture_color[0] * brightness,

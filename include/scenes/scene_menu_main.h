@@ -9,7 +9,8 @@
 
 enum textures_scene_menu_main {
   textures_scene_menu_main_ground = 0,
-  textures_scene_menu_main_tree = 1
+  textures_scene_menu_main_tree = 1,
+  textures_scene_menu_main_title = 2
 };
 
 struct scene_menu_main_data {

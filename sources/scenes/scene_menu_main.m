@@ -5,14 +5,16 @@
 #include <input/keycodes.h>
 #include <input/map.h>
 #include <menus/menu.h>
-#include <menus/menu_intro.h>
+#include <menus/menu_main.h>
 #include <mesh/ground/mesh_ground.h>
+#include <mesh/mesh_text.h>
 #include <mesh/tree/mesh_tree.h>
 #include <metal_kit_shader_types.h>
 #include <object.h>
 #include <paths/paths.h>
 #include <scenes/scene.h>
 #include <scenes/scene_controller.h>
+#include <text/text.h>
 
 #include <CoreAudio/CoreAudio.h>
 
@@ -39,7 +41,7 @@ void scene_menu_main_initialize(
 
   struct menu* menu = scene->data;
 
-  menu_intro_initialize(
+  menu_main_initialize(
     menu
   );
 
@@ -48,7 +50,7 @@ void scene_menu_main_initialize(
   scene->type = scene_type_menu;
   scene->id = scene_id_menu_main;
 
-  scene->length_objects = 2;
+  scene->length_objects = 3;
   scene->objects = realloc(
     scene->objects,
     sizeof(struct object*) *
@@ -59,7 +61,7 @@ void scene_menu_main_initialize(
     sizeof(struct object)
   );
 
-  scene->length_textures = 2;
+  scene->length_textures = 3;
   scene->textures = malloc(
     sizeof(id<MTLTexture>) *
     scene->length_textures
@@ -186,6 +188,50 @@ void scene_menu_main_initialize(
 
   scene->objects[1]->texture = scene->textures[
     textures_scene_menu_main_tree
+  ];
+
+  scene->objects[2] = malloc(
+    sizeof(struct object)
+  );
+
+  scene->textures[
+    textures_scene_menu_main_title
+  ] = text_mesh_with_texture_initialize(
+    metal_kit_device,
+    &scene->objects[2]->mesh,
+    "zoe",
+    font_reference_monospace
+  ); // TODO: Check for null
+
+  scene->objects[2]->vertices = [metal_kit_device
+    newBufferWithBytes: scene->objects[2]->mesh.vertices
+    length: scene->objects[2]->mesh.length_vertices * sizeof(struct clic3_vector4_float)
+    options: MTLResourceStorageModeShared
+  ];
+
+  scene->objects[2]->indices = [metal_kit_device
+    newBufferWithBytes: scene->objects[2]->mesh.indices
+    length: (
+      sizeof(unsigned int) *
+      scene->objects[2]->mesh.length_indices
+    )
+    options: MTLResourceStorageModePrivate
+  ];
+
+  scene->objects[2]->data = [metal_kit_device
+    newBufferWithLength: sizeof(metal_kit_data_frame_object)
+    options: MTLResourceStorageModeShared
+  ];
+
+  scene->objects[2]->position.y = 0.5f - (scene->objects[2]->mesh.size.y / 4.0f);
+
+  data = scene->objects[2]->data.contents;
+  
+  data->id = iterator_id++;
+  data->mode_texture = mode_texture_text;
+
+  scene->objects[2]->texture = scene->textures[
+    textures_scene_menu_main_title
   ];
 
   scene->player.position.y = (

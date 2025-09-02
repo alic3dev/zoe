@@ -1,11 +1,13 @@
 #include <text/text.h>
 
 #include <debug/log.h>
+#include <mesh/mesh_text.h>
 
 #include <clic3_char_arrays.h>
 
 #include <CoreGraphics/CoreGraphics.h>
 #include <CoreText/CoreText.h>
+#include <MetalKit/MetalKit.h>
 
 CTFontRef font_reference_monospace = (void*)0;
 CGColorSpaceRef font_color_space = (void*)0;
@@ -66,7 +68,7 @@ CGGlyph* text_glyphs_encode(
     font,
     characters_unicode,
     glyphs,
-    4
+    length_characters
   );
 
   if (!status_glyphs) {
@@ -141,7 +143,7 @@ struct text_image* text_render(
     ++index_glyph
   ) {
     positions_glyphs[index_glyph].x = text_image->size.x;
-    positions_glyphs[index_glyph].y = 5;
+    positions_glyphs[index_glyph].y = 15;
 
     text_image->size.x = (
       text_image->size.x +
@@ -159,11 +161,29 @@ struct text_image* text_render(
   }
 
   text_image->size.x = text_image->size.x + 5;
-  text_image->size.y = text_image->size.y + 10;
+  text_image->size.y = text_image->size.y + 15;
 
-  text_image->data = malloc(
+  unsigned int length_text_image_data = (
     4 * (text_image->size.x) * (text_image->size.y)
   );
+
+  text_image->data = malloc(
+    sizeof(unsigned char) *
+    length_text_image_data
+  );
+
+  for (
+    unsigned int index_pixel = 0;
+    index_pixel < length_text_image_data;
+    index_pixel = index_pixel + 4
+  ) {
+    unsigned char value = 0;
+
+    text_image->data[index_pixel] = value;
+    text_image->data[index_pixel + 1] = value;
+    text_image->data[index_pixel + 2] = value;
+    text_image->data[index_pixel + 3] = value;
+  }
 
   CGContextRef context_bitmap = CGBitmapContextCreate(
     text_image->data,
@@ -199,7 +219,97 @@ struct text_image* text_render(
 
   free(glyphs);
 
+  for (
+    unsigned int index_pixel = 0;
+    index_pixel < length_text_image_data;
+    index_pixel = index_pixel + 4
+  ) {
+    unsigned char value = text_image->data[index_pixel];
+
+    text_image->data[index_pixel + 1] = value;
+    text_image->data[index_pixel + 2] = value;
+    text_image->data[index_pixel + 3] = value;
+  }
+
   return text_image;
+}
+
+
+id<MTLTexture> text_texture_render(
+  id<MTLDevice> metal_kit_device,
+  struct text_image* text_image
+) {
+  MTLTextureDescriptor* texture_descriptor = [[MTLTextureDescriptor alloc] init];
+
+  texture_descriptor.pixelFormat = MTLPixelFormatBGRA8Unorm;
+
+  texture_descriptor.width = text_image->size.x;
+  texture_descriptor.height = text_image->size.y;
+
+  id<MTLTexture> texture = [metal_kit_device
+    newTextureWithDescriptor: texture_descriptor
+  ];
+
+  [texture_descriptor release];
+
+  MTLRegion region = {
+    {0, 0, 0},
+    {text_image->size.x, text_image->size.y, 1}
+  };
+
+  [texture
+    replaceRegion: region
+    mipmapLevel: 0
+    withBytes: text_image->data
+    bytesPerRow: 4 * (text_image->size.x)
+  ];
+
+  return texture;
+}
+
+id<MTLTexture> text_mesh_with_texture_initialize(
+  id<MTLDevice> metal_kit_device,
+  struct mesh* mesh,
+  char* characters,
+  CTFontRef font
+) {
+  struct text_image* text_image = text_render(
+    characters,
+    font
+  );
+  
+  if (
+    text_image == (void*)0
+  ) {
+    debug_log_error(
+      "failed_to_render_text_image\n"
+    );
+
+    return (void*)0;
+  }
+
+  mesh_text_initialize(
+    mesh,
+    text_image->size.x,
+    text_image->size.y,
+    0.001f
+  );
+
+  id<MTLTexture> texture = text_texture_render(
+    metal_kit_device,
+    text_image
+  );
+
+  text_image_destroy(text_image);
+
+  return texture;
+}
+
+void text_image_destroy(
+  struct text_image* text_image
+) {
+  free(text_image->data);
+  free(text_image);
 }
 
 void text_destroy() {

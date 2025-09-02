@@ -1,9 +1,9 @@
-#include <menus/menu_intro.h>
+#include <menus/menu_main.h>
 
 #include <menus/menu.h>
 #include <menus/menu_item.h>
 
-void menu_intro_initialize(
+void menu_main_initialize(
   struct menu* menu
 ) {
   menu_initialize(menu);
