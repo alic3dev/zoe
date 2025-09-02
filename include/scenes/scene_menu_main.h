@@ -10,7 +10,9 @@
 enum textures_scene_menu_main {
   textures_scene_menu_main_ground = 0,
   textures_scene_menu_main_tree = 1,
-  textures_scene_menu_main_title = 2
+  textures_scene_menu_main_title = 2,
+  textures_scene_menu_main_menu_enter = 3,
+  textures_scene_menu_main_menu_exit = 4
 };
 
 struct scene_menu_main_data {
@@ -33,10 +35,6 @@ void scene_menu_main_poll_input(
 
 void scene_menu_main_destroy(
   struct scene*
-);
-
-void menu_print(
-  struct menu*
 );
 
 OSStatus scene_menu_main_io_proc(
