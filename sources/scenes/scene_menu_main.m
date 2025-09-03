@@ -18,6 +18,8 @@
 
 #include <CoreAudio/CoreAudio.h>
 
+const unsigned long int scene_menu_main_time_scene_transition = 333;
+
 void scene_menu_main_initialize(
   struct scene* scene,
   id<MTLDevice> metal_kit_device
@@ -36,13 +38,15 @@ void scene_menu_main_initialize(
   scene->destroy = scene_menu_main_destroy;
 
   scene->data = malloc(
-    sizeof(struct menu)
+    sizeof(struct scene_menu_main_data)
   );
 
-  struct menu* menu = scene->data;
+  struct scene_menu_main_data* data = (struct scene_menu_main_data*) scene->data;
+
+  data->time_started = 0;
 
   menu_main_initialize(
-    menu
+    &data->menu
   );
 
   scene->type = scene_type_menu;
@@ -139,9 +143,9 @@ void scene_menu_main_initialize(
 
   unsigned short int iterator_id = 0;
 
-  metal_kit_data_frame_object* data = scene->objects[0]->data.contents;
-  data->id = iterator_id++;
-  data->mode_texture = mode_texture_ground;
+  metal_kit_data_frame_object* data_object = scene->objects[0]->data.contents;
+  data_object->id = iterator_id++;
+  data_object->mode_texture = mode_texture_ground;
 
   scene->objects[1] = malloc(
     sizeof(struct object)
@@ -179,10 +183,10 @@ void scene_menu_main_initialize(
     options: MTLResourceStorageModeShared
   ];
 
-  data = scene->objects[1]->data.contents;
+  data_object = scene->objects[1]->data.contents;
   
-  data->id = iterator_id++;
-  data->mode_texture = mode_texture_default;
+  data_object->id = iterator_id++;
+  data_object->mode_texture = mode_texture_default;
 
   scene->objects[1]->texture = scene->textures[
     textures_scene_menu_main_tree
@@ -223,11 +227,11 @@ void scene_menu_main_initialize(
 
   scene->objects[2]->position.y = 0.5f - (scene->objects[2]->mesh.size.y / 4.0f);
 
-  data = scene->objects[2]->data.contents;
+  data_object = scene->objects[2]->data.contents;
   
-  data->id = iterator_id++;
-  data->mode_texture = mode_texture_text;
-  data->noise = 10000;
+  data_object->id = iterator_id++;
+  data_object->mode_texture = mode_texture_text;
+  data_object->noise = 10000;
 
   scene->objects[2]->texture = scene->textures[
     textures_scene_menu_main_title
@@ -268,10 +272,10 @@ void scene_menu_main_initialize(
 
   scene->objects[3]->position.y = -scene->objects[3]->mesh.size.y * 6.0;
 
-  data = scene->objects[3]->data.contents;
+  data_object = scene->objects[3]->data.contents;
   
-  data->id = iterator_id++;
-  data->mode_texture = mode_texture_text;
+  data_object->id = iterator_id++;
+  data_object->mode_texture = mode_texture_text;
 
   scene->objects[3]->texture = scene->textures[
     textures_scene_menu_main_menu_enter
@@ -312,10 +316,10 @@ void scene_menu_main_initialize(
 
   scene->objects[4]->position.y = -scene->objects[4]->mesh.size.y * 10.0f;
 
-  data = scene->objects[4]->data.contents;
+  data_object = scene->objects[4]->data.contents;
   
-  data->id = iterator_id++;
-  data->mode_texture = mode_texture_text;
+  data_object->id = iterator_id++;
+  data_object->mode_texture = mode_texture_text;
 
   scene->objects[4]->texture = scene->textures[
     textures_scene_menu_main_menu_exit
@@ -344,26 +348,53 @@ void scene_menu_main_poll(
     -0.666f
   );
 
-  struct menu* menu = (struct menu*) scene->data;
+  struct scene_menu_main_data* data = (struct scene_menu_main_data*) scene->data;
+
+  struct menu* menu = &data->menu;
 
   switch (menu->index_current) {
     case 0: {
-      metal_kit_data_frame_object* data = scene->objects[3]->data.contents;
-      data->noise = 1600 + (rand() % 666);
-      data = scene->objects[4]->data.contents;
-      data->noise = 10000;
+      metal_kit_data_frame_object* data_object = scene->objects[3]->data.contents;
+      data_object->noise = 1600 + (rand() % 666);
+      data_object = scene->objects[4]->data.contents;
+      data_object->noise = 10000;
       break;
     }
     case 1: {
-      metal_kit_data_frame_object* data = scene->objects[4]->data.contents;
-      data->noise = 1600 + (rand() % 666);
-      data = scene->objects[3]->data.contents;
-      data->noise = 10000;
+      metal_kit_data_frame_object* data_object = scene->objects[4]->data.contents;
+      data_object->noise = 1600 + (rand() % 666);
+      data_object = scene->objects[3]->data.contents;
+      data_object->noise = 10000;
       break;
     }
   }
 
   if (
+    data->time_started != 0
+  ) {
+    unsigned long int time_delta = (
+      scene->time - 
+      data->time_started
+    );
+
+    if (
+      time_delta >= scene_menu_main_time_scene_transition
+    ) {
+      scene->rendering_properties.brightness = 0.0f;
+      scene->rendering_properties.brightness_text = 0.0f;
+
+      scene_controller_scene_change(
+        scene_id_intro_forest
+      );
+    } else {
+      float brightness = (
+        (float) (scene_menu_main_time_scene_transition - time_delta) / (float) scene_menu_main_time_scene_transition
+      );
+
+      scene->rendering_properties.brightness = brightness;
+      scene->rendering_properties.brightness_text = brightness;
+    }
+  } else if (
     menu->index_selected != -1 &&
     menu->handled == 0
   ) {
@@ -373,9 +404,7 @@ void scene_menu_main_poll(
       case 0:
         debug_log("STARTING\n");
 
-        scene_controller_scene_change(
-          scene_id_intro_forest
-        );
+        data->time_started = scene->time;
         break;
       case 1:
         debug_log("EXITING\n");
@@ -389,7 +418,7 @@ void scene_menu_main_poll(
 void scene_menu_main_poll_input(
   struct scene* scene
 ) {
-  struct menu* menu = (struct menu*) scene->data;
+  struct menu* menu = &(((struct scene_menu_main_data*) scene->data)->menu);
 
   menu_poll_input(
     menu
@@ -404,7 +433,7 @@ void scene_menu_main_destroy(
   );
 
   menu_destroy(
-    (struct menu*) scene->data
+    &((struct scene_menu_main_data*) scene->data)->menu
   );
 
   scene_destroy_default(scene);

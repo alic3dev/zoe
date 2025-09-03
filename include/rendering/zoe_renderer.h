@@ -14,7 +14,6 @@
 
   id<MTLDevice> metal_kit_device;
   
-  id<MTLBuffer> buffer_visibility[length_buffers_visibility];
   id<MTLBuffer> data_buffer_frame[count_max_frames];
   id<MTLBuffer> index_buffer_mesh_current;
 
@@ -29,10 +28,6 @@
   id<MTLDepthStencilState> depth_state_writes_disable;
 
   unsigned char index_data_buffer_frame;
-  uint64_t* buffer_result_visibility_from_read;
-  
-  unsigned int index_buffer_visibility_read;
-  unsigned int index_buffer_visibility_write;
 }
 
 - (nonnull instancetype) initWithMetalKitView: (nonnull MTKView*) metal_kit_view;

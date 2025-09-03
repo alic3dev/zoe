@@ -12,6 +12,8 @@ struct data_rasterizer {
   unsigned char mode_texture;
   unsigned char index_texture;
   float noise;
+  float brightness;
+  float brightness_text;
 };
 
 vertex data_rasterizer zoe_shader_vertex(
@@ -134,6 +136,9 @@ vertex data_rasterizer zoe_shader_vertex(
     metal::fabs((data.position.z + positions[id_vertex].z) + data_frame.position_player.z)
   );
 
+  out.brightness = data_frame.brightness;
+  out.brightness_text = data_frame.brightness_text;
+
   return out;
 }
 
@@ -159,19 +164,20 @@ fragment float4 zoe_shader_fragment(
   );
 
   float brightness;
+  float brightness_total = brightness_maximum * in.brightness;
 
   if (in.mode_texture == mode_texture_text) {
     return float4(
-      texture_color[0] * in.noise,
-      texture_color[1] * in.noise,
-      texture_color[2] * in.noise,
+      texture_color[0] * in.noise * in.brightness_text,
+      texture_color[1] * in.noise * in.brightness_text,
+      texture_color[2] * in.noise * in.brightness_text,
       texture_color[3]
     );
   } else {
     if (in.mode_texture == mode_texture_ground) {
-      brightness = ((in.height * 0.8f) + 0.075f) * brightness_maximum;
+      brightness = ((in.height * 0.8f) + 0.075f) * brightness_total;
     } else {
-      brightness = ((in.height * 0.8f) + 0.075f) * (brightness_maximum * 0.8f);
+      brightness = ((in.height * 0.8f) + 0.075f) * (brightness_total * 0.8f);
     }
 
     brightness = brightness * metal::fmax(

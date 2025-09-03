@@ -24,6 +24,11 @@ enum scene_id {
   scene_id_intro_forest
 };
 
+struct scene_rendering_properties {
+  float brightness;
+  float brightness_text;
+};
+
 struct scene {
   id<MTLDevice> metal_kit_device;
 
@@ -50,6 +55,8 @@ struct scene {
   function_scene_poll poll;
   function_scene_poll_input poll_input;
   function_scene_destroy destroy;
+
+  struct scene_rendering_properties rendering_properties;
 
   void* data;
 };
