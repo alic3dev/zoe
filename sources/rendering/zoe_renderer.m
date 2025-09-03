@@ -98,19 +98,6 @@
 
   command_queue = [metal_kit_device newCommandQueue];
 
-  for (
-    unsigned int index_buffer = 0;
-    index_buffer < length_buffers_visibility;
-    ++index_buffer
-  ) {
-    buffer_visibility[
-      index_buffer
-    ] = [metal_kit_device
-      newBufferWithLength: self->scene.length_objects * sizeof(uint64_t) // TODO: This should update with scene changes
-      options: MTLResourceStorageModeShared
-    ];
-  }
-
   termination_on_function_add(
     zoe_renderer_on_termination,
     self
@@ -187,8 +174,6 @@
     1.0f
   );
 
-  descriptor_render_pass.visibilityResultBuffer = buffer_visibility[index_buffer_visibility_write];
-
   encoder_render = [command_buffer renderCommandEncoderWithDescriptor: descriptor_render_pass];
 
   [encoder_render setRenderPipelineState: state_pipeline];
@@ -200,10 +185,6 @@
   [encoder_render endEncoding];
 
   [command_buffer addCompletedHandler:^(id<MTLCommandBuffer> buffer) {
-    self->index_buffer_visibility_read = (
-      self->index_buffer_visibility_read + 1
-    ) % length_buffers_visibility;
-
     self->rendering_properties.count_completed_frames = (
       self->rendering_properties.count_completed_frames + 1
     );
@@ -332,6 +313,9 @@
   data_frame->position_player.x = self->scene.player.position.x;
   data_frame->position_player.y = self->scene.player.position.y;
   data_frame->position_player.z = self->scene.player.position.z;
+
+  data_frame->brightness = self->scene.rendering_properties.brightness;
+  data_frame->brightness_text = self->scene.rendering_properties.brightness_text;
 
   for (
     unsigned short int index_object = 0;

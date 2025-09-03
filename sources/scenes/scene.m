@@ -48,6 +48,9 @@ void scene_initialize(
 
   scene->loading = 0;
 
+  scene->rendering_properties.brightness = 1.0f;
+  scene->rendering_properties.brightness_text = 1.0f;
+
   scene->data = (void*)0;
 }
 
