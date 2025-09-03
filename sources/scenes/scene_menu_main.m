@@ -18,7 +18,7 @@
 
 #include <CoreAudio/CoreAudio.h>
 
-const unsigned long int scene_menu_main_time_scene_transition = 666;
+const unsigned long int scene_menu_main_time_scene_transition = 333;
 
 void scene_menu_main_initialize(
   struct scene* scene,
