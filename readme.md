@@ -24,6 +24,8 @@
 - path->{`~/.config/zoe`};
 - parameter:name->{value}
 - - `audio:volume`: `float`
+- - `rendering_properties:brightness`: `float`
+- - `rendering_properties:brightness_text`: `float`
 
 ### example
 

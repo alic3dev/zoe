@@ -14,6 +14,9 @@ struct rendering_properties {
   unsigned int frame;
   signed char count_completed_frames;
   pthread_mutex_t mutex_frame;
+
+  float brightness;
+  float brightness_text;
 };
 
 void rendering_properties_initialize(

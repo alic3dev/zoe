@@ -14,7 +14,14 @@
 struct configuration configuration;
 
 void configuration_initialize() {
-  configuration.audio.volume = 0.2f;
+  configuration.audio.volume = configuration_default_audio_volume;
+
+  configuration.rendering_properties.brightness = (
+    configuration_default_rendering_properties_brightness
+  );
+  configuration.rendering_properties.brightness_text = (
+    configuration_default_rendering_properties_brightness_text
+  );
 }
 
 unsigned char configuration_load() {
@@ -139,8 +146,10 @@ unsigned char configuration_load() {
 
         int index_parameter = clic3_char_arrays_within(
           buffer_parameter,
-          1,
-          "audio:volume"
+          3,
+          "audio:volume",
+          "rendering_properties:brightness",
+          "rendering_properties:brightness_text"
         );
 
         if (
@@ -170,81 +179,47 @@ unsigned char configuration_load() {
 
         switch (index_parameter) {
           case 0: {
-            float audio_volume = atof(
-              buffer_value
+            float audio_volume = configuration_value_float_parse(
+              buffer_parameter,
+              buffer_value,
+              length_buffer_value
             );
 
-            if (
-              audio_volume == 0.0f
-            ) {
-              unsigned char decimal_point_passed = 0;
-              unsigned char valid_parameter = 1;
-
-              for (
-                unsigned short int index_buffer_value = 0;
-                index_buffer_value < length_buffer_value;
-                ++index_buffer_value
-              ) {
-                if (
-                  buffer_value[
-                    index_buffer_value
-                  ] == '.'
-                ) {
-                  if (decimal_point_passed == 1) {
-                    valid_parameter = 0;
-                    break;
-                  }
-
-                  decimal_point_passed = 1;
-                } else if (
-                  buffer_value[
-                    index_buffer_value
-                  ] != '0'
-                ) {
-                  valid_parameter = 0;
-                  break;
-                }
-              }
-
-              if (
-                valid_parameter == 0
-              ) {
-                char* message_debug_log_error_prefix = clic3_char_arrays_concatenate(
-                  "invalid_configuration_value->{",
-                  buffer_parameter
-                );
-
-                char* message_debug_log_error_split = clic3_char_arrays_concatenate(
-                  message_debug_log_error_prefix,
-                  ":"
-                );
-
-                char* message_debug_log_error_value = clic3_char_arrays_concatenate(
-                  message_debug_log_error_split,
-                  buffer_value
-                );
-
-                char* message_debug_log_error = clic3_char_arrays_concatenate(
-                  message_debug_log_error_value,
-                  "};\n"
-                );
-
-                debug_log_error(
-                  message_debug_log_error
-                );
-
-                free(message_debug_log_error_prefix);
-                free(message_debug_log_error_split);
-                free(message_debug_log_error_value);
-                free(message_debug_log_error);
-
-                status_configuration_load = 1;
-
-                break;
-              }
+            if (audio_volume >= 0.0f) {
+              configuration.audio.volume = audio_volume;
+            } else {
+              status_configuration_load = 1;
             }
+            
+            break;
+          }
+          case 1: {
+            float rendering_brightness = configuration_value_float_parse(
+              buffer_parameter,
+              buffer_value,
+              length_buffer_value
+            );
 
-            configuration.audio.volume = audio_volume;
+            if (rendering_brightness >= 0.0f) {
+              configuration.rendering_properties.brightness = rendering_brightness;
+            } else {
+              status_configuration_load = 1;
+            }
+            
+            break;
+          }
+          case 2: {
+            float rendering_brightness_text = configuration_value_float_parse(
+              buffer_parameter,
+              buffer_value,
+              length_buffer_value
+            );
+
+            if (rendering_brightness_text >= 0.0f) {
+              configuration.rendering_properties.brightness_text = rendering_brightness_text;
+            } else {
+              status_configuration_load = 1;
+            }
             
             break;
           }
@@ -276,6 +251,86 @@ unsigned char configuration_load() {
   fclose(file_configuration);
 
   return status_configuration_load;
+}
+
+float configuration_value_float_parse(
+  char* parameter,
+  char* value,
+  unsigned short int length_value
+) {
+  float value_float = atof(
+    value
+  );
+
+  if (
+    value_float == 0.0f
+  ) {
+    unsigned char decimal_point_passed = 0;
+    unsigned char valid_parameter = 1;
+
+    for (
+      unsigned short int index_value = 0;
+      index_value < length_value;
+      ++index_value
+    ) {
+      if (
+        value[
+          index_value
+        ] == '.'
+      ) {
+        if (decimal_point_passed == 1) {
+          valid_parameter = 0;
+          break;
+        }
+
+        decimal_point_passed = 1;
+      } else if (
+        value[
+          index_value
+        ] != '0'
+      ) {
+        valid_parameter = 0;
+        break;
+      }
+    }
+
+    if (
+      valid_parameter == 0
+    ) {
+      char* message_debug_log_error_prefix = clic3_char_arrays_concatenate(
+        "invalid_configuration_value->{",
+        parameter
+      );
+
+      char* message_debug_log_error_split = clic3_char_arrays_concatenate(
+        message_debug_log_error_prefix,
+        ":"
+      );
+
+      char* message_debug_log_error_value = clic3_char_arrays_concatenate(
+        message_debug_log_error_split,
+        value
+      );
+
+      char* message_debug_log_error = clic3_char_arrays_concatenate(
+        message_debug_log_error_value,
+        "};\n"
+      );
+
+      debug_log_error(
+        message_debug_log_error
+      );
+
+      free(message_debug_log_error_prefix);
+      free(message_debug_log_error_split);
+      free(message_debug_log_error_value);
+      free(message_debug_log_error);
+
+      return -1.0f;
+    }
+  }
+
+  return value_float;
 }
 
 void configuration_values_set() {

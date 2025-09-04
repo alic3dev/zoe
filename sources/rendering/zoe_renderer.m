@@ -1,6 +1,7 @@
 #include <rendering/zoe_renderer.h>
 
 #include <audio/audio.h>
+#include <configuration/configuration.h>
 #include <input/controller.h>
 #include <input/map.h>
 #include <input/keycodes.h>
@@ -33,6 +34,13 @@
 
   rendering_properties_initialize(
     &self->rendering_properties
+  );
+
+  self->rendering_properties.brightness = (
+    configuration.rendering_properties.brightness
+  );
+  self->rendering_properties.brightness_text = (
+    configuration.rendering_properties.brightness_text
   );
 
   scene_menu_main_initialize(
@@ -314,8 +322,14 @@
   data_frame->position_player.y = self->scene.player.position.y;
   data_frame->position_player.z = self->scene.player.position.z;
 
-  data_frame->brightness = self->scene.rendering_properties.brightness;
-  data_frame->brightness_text = self->scene.rendering_properties.brightness_text;
+  data_frame->brightness = (
+    self->scene.rendering_properties.brightness *
+    self->rendering_properties.brightness
+  );
+  data_frame->brightness_text = (
+    self->scene.rendering_properties.brightness_text *
+    self->rendering_properties.brightness_text
+  );
 
   for (
     unsigned short int index_object = 0;
