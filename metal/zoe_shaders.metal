@@ -2,8 +2,6 @@
 
 #include <metal_stdlib>
 
-constant float brightness_maximum = 0.1f;
-
 struct data_rasterizer {
   float4 position [[position]];
   float distance;
@@ -163,8 +161,7 @@ fragment float4 zoe_shader_fragment(
     )
   );
 
-  float brightness;
-  float brightness_total = brightness_maximum * in.brightness;
+  float brightness = in.brightness;
 
   if (in.mode_texture == mode_texture_text) {
     return float4(
@@ -175,9 +172,9 @@ fragment float4 zoe_shader_fragment(
     );
   } else {
     if (in.mode_texture == mode_texture_ground) {
-      brightness = ((in.height * 0.8f) + 0.075f) * brightness_total;
+      brightness = ((in.height * 0.8f) + 0.075f) * brightness;
     } else {
-      brightness = ((in.height * 0.8f) + 0.075f) * (brightness_total * 0.8f);
+      brightness = ((in.height * 0.8f) + 0.075f) * (brightness * 0.8f);
     }
 
     brightness = brightness * metal::fmax(
