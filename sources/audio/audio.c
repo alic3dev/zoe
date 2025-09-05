@@ -152,9 +152,6 @@ OSStatus audio_output_io_proc(
 
     float* buffer_out = audio_buffer_current.mData;
     unsigned long int size_buffer_out = audio_buffer_current.mDataByteSize / sizeof(float);
-    unsigned long int count_channel_out = audio_buffer_current.mNumberChannels;
-
-    unsigned long int channel = index_buffer % count_channel_out;
     
     for (
       unsigned long int index_buffer_out = 0;
