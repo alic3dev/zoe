@@ -227,7 +227,7 @@ OSStatus scene_intro_forest_io_proc(
       index_buffer_out < size_buffer_out;
       ++index_buffer_out
     ) {
-      unsigned long int channel = index_buffer % index_buffer_out;
+      unsigned long int channel = index_buffer_out % count_channel_out;
 
       if (channel == 0) {
         buffer_out[index_buffer_out] = ((float) (rand() % 10000)) / 100000.0f;
