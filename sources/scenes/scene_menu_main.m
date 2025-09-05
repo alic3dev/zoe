@@ -458,20 +458,18 @@ OSStatus scene_menu_main_io_proc(
     float* buffer_out = audio_buffer_current.mData;
     unsigned long int size_buffer_out = audio_buffer_current.mDataByteSize / sizeof(float);
     unsigned long int count_channel_out = audio_buffer_current.mNumberChannels;
-
-    unsigned long int channel = index_buffer % count_channel_out;
     
     for (
       unsigned long int index_buffer_out = 0;
       index_buffer_out < size_buffer_out;
       ++index_buffer_out
     ) {
+      unsigned long int channel = index_buffer_out % count_channel_out;
+
       if (index_buffer == 0) {
         buffer_out[index_buffer_out] = ((float) (rand() % 10000)) / 10000.0f;
       } else {
-        buffer_out[index_buffer_out] = ((float*) list_buffer_audio_out->mBuffers[
-          0
-        ].mData)[index_buffer_out];
+        buffer_out[index_buffer_out] = buffer_out[index_buffer_out - channel];
       }
     }
   }
