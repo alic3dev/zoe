@@ -33,6 +33,7 @@ void scene_intro_forest_initialize(
   scene->type = scene_type_game;
   scene->id = scene_id_intro_forest;
 
+  scene->poll = scene_intro_forest_poll;
   scene->destroy = scene_intro_forest_destroy;
 
   scene->length_objects = 502;
@@ -244,6 +245,24 @@ void scene_intro_forest_initialize(
       textures_scene_intro_forest_tree
     ];
   }
+}
+
+void scene_intro_forest_poll(
+  struct scene* scene
+) {
+  scene_poll_default(scene);
+
+  scene->objects[0]->position.x = (
+    -scene->player.position.x - 1.0f
+  );
+
+  scene->objects[0]->position.y = (
+    -7.2f
+  );
+
+  scene->objects[0]->position.z = (
+    -scene->player.position.z + 1.0f
+  );
 }
 
 

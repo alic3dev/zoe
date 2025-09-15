@@ -17,6 +17,10 @@ void scene_intro_forest_initialize(
   id<MTLDevice>
 );
 
+void scene_intro_forest_poll(
+  struct scene*
+);
+
 void scene_intro_forest_destroy(
   struct scene*
 );
