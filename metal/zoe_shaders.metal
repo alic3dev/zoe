@@ -98,6 +98,23 @@ vertex data_rasterizer zoe_shader_vertex(
       out.height = (positions[id_vertex].y / data.height) * 0.4;
     }
   } else if (
+    data.mode_texture == mode_texture_player
+  ) {
+    out.index_texture = 0;
+
+    if (id_vertex == 0) {
+      out.position_texture.x = 0.5f;
+      out.position_texture.y = metal::fabs(1.0f - (float)(data_frame.frame % 221) / 110.0f);
+    } else {
+      out.position_texture.x = (float) ((id_vertex - 1)) / 6.0f;
+      
+      if (out.position_texture.x > 1.0f) {
+        out.position_texture.x = 1.0f - (out.position_texture.x - 1.0f);
+      }
+
+      out.position_texture.y = metal::fabs(((float)(data_frame.frame % 667) / 333.0f) - 1.0f);
+    }
+  } else if (
     data.mode_texture == mode_texture_text
   ) {
     out.index_texture = 0;
@@ -168,6 +185,13 @@ fragment float4 zoe_shader_fragment(
       texture_color[0] * in.noise * in.brightness_text,
       texture_color[1] * in.noise * in.brightness_text,
       texture_color[2] * in.noise * in.brightness_text,
+      texture_color[3]
+    );
+  } else if (in.mode_texture == mode_texture_player) {
+    return float4(
+      texture_color[0] * brightness * 0.02f,
+      texture_color[1] * brightness * 0.019f,
+      texture_color[2] * brightness * 0.02f,
       texture_color[3]
     );
   } else {
