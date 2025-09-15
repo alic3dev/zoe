@@ -45,7 +45,7 @@ void scene_intro_forest_initialize(
     sizeof(struct object)
   );
 
-  scene->length_textures = 2;
+  scene->length_textures = 3;
   scene->textures = malloc(
     sizeof(id<MTLTexture>) *
     scene->length_textures
@@ -75,6 +75,23 @@ void scene_intro_forest_initialize(
   ] = [texture_loader
     newTextureWithContentsOfURL: [NSURL
       fileURLWithPath:@"zoef.png"
+      isDirectory: 0
+      relativeToURL: [NSURL
+        fileURLWithPath:[NSString
+          stringWithUTF8String: paths.directory_textures
+        ]
+        isDirectory: 1
+      ]
+    ]
+    options: (void*)0
+    error: (void*)0
+  ];
+
+  scene->textures[
+    textures_scene_intro_forest_player
+  ] = [texture_loader
+    newTextureWithContentsOfURL: [NSURL
+      fileURLWithPath:@"d.jpeg"
       isDirectory: 0
       relativeToURL: [NSURL
         fileURLWithPath:[NSString
