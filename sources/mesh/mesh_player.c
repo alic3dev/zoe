@@ -20,12 +20,6 @@ const struct clic3_vector3_float mesh_player_size_half = {
   .z = mesh_player_size.z / 2.0f
 };
 
-const struct clic3_vector3_float mesh_player_size_quarter = {
-  .x = 0,//mesh_player_size_half.x / 2.0f,
-  .y = 0,//mesh_player_size_half.y / 2.0f,
-  .z = 0//mesh_player_size_half.z / 2.0f
-};
-
 void mesh_player_initialize(
   struct mesh* mesh
 ) {
