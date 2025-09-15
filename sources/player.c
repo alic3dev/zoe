@@ -167,57 +167,57 @@ void player_poll_input(
     if (
       ratio_axis <= 0.25f
     ) {
-      ratio_movement.y = (0.25f - ratio_axis) / 0.25f;
-      ratio_movement.x = -(ratio_axis / 0.25f);
+      ratio_movement.y = -(0.25f - ratio_axis) / 0.25f;
+      ratio_movement.x = (ratio_axis / 0.25f);
     } else if (
       ratio_axis >= 0.25f &&
       ratio_axis <= 0.5f 
     ) {
       ratio_axis = ratio_axis - 0.25f;
 
-      ratio_movement.y = -(ratio_axis / 0.25f);
-      ratio_movement.x = -(0.25f - ratio_axis) / 0.25f;
+      ratio_movement.y = (ratio_axis / 0.25f);
+      ratio_movement.x = (0.25f - ratio_axis) / 0.25f;
     } else if (
       ratio_axis >= 0.5f &&
       ratio_axis <= 0.75f 
     ) {
       ratio_axis = ratio_axis - 0.5f;
 
-      ratio_movement.y = -(0.25f - ratio_axis) / 0.25f;
-      ratio_movement.x = (ratio_axis / 0.25f);
+      ratio_movement.y = (0.25f - ratio_axis) / 0.25f;
+      ratio_movement.x = -(ratio_axis / 0.25f);
     } else {
       ratio_axis = ratio_axis - 0.75f;
 
-      ratio_movement.y = (ratio_axis / 0.25f);
-      ratio_movement.x = (0.25f - ratio_axis) / 0.25f;
+      ratio_movement.y = -(ratio_axis / 0.25f);
+      ratio_movement.x = -(0.25f - ratio_axis) / 0.25f;
     }
   } else {
     if (
       ratio_axis >= -0.25f
     ) {
-      ratio_movement.y = (-0.25f - ratio_axis) / -0.25f;
-      ratio_movement.x = -(ratio_axis / 0.25f);
+      ratio_movement.y = -(-0.25f - ratio_axis) / -0.25f;
+      ratio_movement.x = (ratio_axis / 0.25f);
     } else if (
       ratio_axis <= -0.25f &&
       ratio_axis >= -0.5f
     ) {
       ratio_axis = ratio_axis + 0.25f;
 
-      ratio_movement.y = -(ratio_axis / -0.25f);
-      ratio_movement.x = -(-0.25f - ratio_axis) / 0.25f;
+      ratio_movement.y = (ratio_axis / -0.25f);
+      ratio_movement.x = (-0.25f - ratio_axis) / 0.25f;
     } else if (
       ratio_axis <= -0.5f &&
       ratio_axis >= -0.75f 
     ) {
       ratio_axis = ratio_axis + 0.5f;
 
-      ratio_movement.y = -(-0.25f - ratio_axis) / -0.25f;
-      ratio_movement.x = (ratio_axis / 0.25f);
+      ratio_movement.y = (-0.25f - ratio_axis) / -0.25f;
+      ratio_movement.x = -(ratio_axis / 0.25f);
     } else {
       ratio_axis = ratio_axis + 0.75f;
 
-      ratio_movement.y = (ratio_axis / -0.25f);
-      ratio_movement.x = (-0.25f - ratio_axis) / 0.25f;
+      ratio_movement.y = -(ratio_axis / -0.25f);
+      ratio_movement.x = -(-0.25f - ratio_axis) / 0.25f;
     }
   }
 
@@ -230,57 +230,57 @@ void player_poll_input(
     if (
       ratio_axis <= 0.25f
     ) {
-      ratio_movement_strafe.y = -(ratio_axis / 0.25f);
-      ratio_movement_strafe.x = -(0.25f - ratio_axis) / 0.25f;
+      ratio_movement_strafe.y = (ratio_axis / 0.25f);
+      ratio_movement_strafe.x = (0.25f - ratio_axis) / 0.25f;
     } else if (
       ratio_axis >= 0.25f &&
       ratio_axis <= 0.5f
     ) {
       ratio_axis = ratio_axis - 0.25f;
 
-      ratio_movement_strafe.y = -(0.25f - ratio_axis) / 0.25f;
-      ratio_movement_strafe.x = (ratio_axis / 0.25f);
+      ratio_movement_strafe.y = (0.25f - ratio_axis) / 0.25f;
+      ratio_movement_strafe.x = -(ratio_axis / 0.25f);
     } else if (
       ratio_axis >= 0.5f &&
       ratio_axis <= 0.75f
     ) {
       ratio_axis = ratio_axis - 0.5f;
 
-      ratio_movement_strafe.y = (ratio_axis / 0.25f);
-      ratio_movement_strafe.x = (0.25f - ratio_axis) / 0.25f;
+      ratio_movement_strafe.y = -(ratio_axis / 0.25f);
+      ratio_movement_strafe.x = -(0.25f - ratio_axis) / 0.25f;
     } else {
       ratio_axis = ratio_axis - 0.75f;
 
-      ratio_movement_strafe.y = (0.25f - ratio_axis) / 0.25f;
-      ratio_movement_strafe.x = -(ratio_axis / 0.25f);
+      ratio_movement_strafe.y = -(0.25f - ratio_axis) / 0.25f;
+      ratio_movement_strafe.x = (ratio_axis / 0.25f);
     }
   } else {
     if (
       ratio_axis >= -0.25f
     ) {
-      ratio_movement_strafe.y = -(ratio_axis / 0.25f);
-      ratio_movement_strafe.x = -(-0.25f - ratio_axis) / -0.25f;
+      ratio_movement_strafe.y = (ratio_axis / 0.25f);
+      ratio_movement_strafe.x = (-0.25f - ratio_axis) / -0.25f;
     } else if (
       ratio_axis <= -0.25f &&
       ratio_axis >= -0.5f
     ) {
       ratio_axis = ratio_axis + 0.25f;
 
-      ratio_movement_strafe.y = -(-0.25f - ratio_axis) / 0.25f;
-      ratio_movement_strafe.x = (ratio_axis / -0.25f);
+      ratio_movement_strafe.y = (-0.25f - ratio_axis) / 0.25f;
+      ratio_movement_strafe.x = -(ratio_axis / -0.25f);
     } else if (
       ratio_axis <= -0.5f &&
       ratio_axis >= -0.75f
     ) {
       ratio_axis = ratio_axis + 0.5f;
 
-      ratio_movement_strafe.y = (ratio_axis / 0.25f);
-      ratio_movement_strafe.x = (-0.25f - ratio_axis) / -0.25f;
+      ratio_movement_strafe.y = -(ratio_axis / 0.25f);
+      ratio_movement_strafe.x = -(-0.25f - ratio_axis) / -0.25f;
     } else {
       ratio_axis = ratio_axis + 0.75f;
 
-      ratio_movement_strafe.y = (-0.25f - ratio_axis) / 0.25f;
-      ratio_movement_strafe.x = -(ratio_axis / -0.25f);
+      ratio_movement_strafe.y = -(-0.25f - ratio_axis) / 0.25f;
+      ratio_movement_strafe.x = (ratio_axis / -0.25f);
     }
   }
 
@@ -311,16 +311,16 @@ void player_poll_input(
     ] == 1
   ) {
     movement.y = (
-      input_map_keydown[
+      -input_map_keydown[
         keycode_q
       ] +
-      -input_map_keydown[
+      input_map_keydown[
         keycode_e
       ] + 
-      input_map_keydown[
+      -input_map_keydown[
         keycode_period
       ] +
-      -input_map_keydown[
+      input_map_keydown[
         keycode_slash
       ]
     );
@@ -432,7 +432,7 @@ void player_poll_input(
     )) &&
     player->velocity.y == 0.0f
   ) {
-    player->velocity.y = -(speed_original / 1.25f);
+    player->velocity.y = speed_original / 1.25f;
   }
 
   player->position.x = (
@@ -456,15 +456,15 @@ void player_poll_input(
     )
   );
 
-  if (player->position.y < 0.0f) {
+  if (player->position.y > 0.0f) {
     player->velocity.y = (
-      player->velocity.y + (
+      player->velocity.y - (
         speed_original / 50.0f
       )
     );
   }
 
-  if (player->position.y > 0.0f) {
+  if (player->position.y < 0.0f) {
     player->position.y = 0.0f;
     player->velocity.y = 0.0f;
   }
