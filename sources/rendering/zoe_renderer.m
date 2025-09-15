@@ -218,7 +218,10 @@
   data->position.y = object->position.y;
   data->position.z = object->position.z;
 
-  if (object->mesh.positioning == mesh_positioning_normal) {
+  if (
+    object->mesh.positioning == mesh_positioning_normal ||
+    object->mesh.positioning == mesh_positioning_player
+  ) {
     struct clic3_vector3_float position = {
       .x = object->position.x + self->scene.player.position.x,
       .y = object->position.y + self->scene.player.position.y,
@@ -242,22 +245,24 @@
       )
     );
 
-    data->view_model_matrix_projection = matrix_multiply(
-      data->view_model_matrix_projection,
-      (
-        (matrix_float4x4) {{
-          { cos(self->scene.player.rotation.y), 0, -sin(self->scene.player.rotation.y), 0 },
-          { 0, 1, 0, 0 },
-          { sin(self->scene.player.rotation.y), 0, cos(self->scene.player.rotation.y), 0 },
-          {
-            1,
-            1,
-            1,
-            1
-          }
-        }}
-      )
-    );
+    if (object->mesh.positioning != mesh_positioning_player) {
+      data->view_model_matrix_projection = matrix_multiply(
+        data->view_model_matrix_projection,
+        (
+          (matrix_float4x4) {{
+            { cos(self->scene.player.rotation.y), 0, -sin(self->scene.player.rotation.y), 0 },
+            { 0, 1, 0, 0 },
+            { sin(self->scene.player.rotation.y), 0, cos(self->scene.player.rotation.y), 0 },
+            {
+              1,
+              1,
+              1,
+              1
+            }
+          }}
+        )
+      );
+    }
 
     data->view_model_matrix_projection = matrix_multiply(
       data->view_model_matrix_projection,
