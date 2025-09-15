@@ -223,9 +223,9 @@
     object->mesh.positioning == mesh_positioning_player
   ) {
     struct clic3_vector3_float position = {
-      .x = object->position.x + self->scene.player.position.x,
-      .y = object->position.y + self->scene.player.position.y,
-      .z = object->position.z + self->scene.player.position.z
+      .x = object->position.x - self->scene.player.position.x,
+      .y = object->position.y - self->scene.player.position.y,
+      .z = object->position.z - self->scene.player.position.z
     };
 
     data->view_model_matrix_projection = matrix_multiply(
