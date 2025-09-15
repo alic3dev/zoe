@@ -97,7 +97,7 @@ void scene_intro_forest_initialize(
     textures_scene_intro_forest_player
   ] = [texture_loader
     newTextureWithContentsOfURL: [NSURL
-      fileURLWithPath:@"d.jpeg"
+      fileURLWithPath:@"zoef.png"
       isDirectory: 0
       relativeToURL: [NSURL
         fileURLWithPath:[NSString
