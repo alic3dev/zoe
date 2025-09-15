@@ -12,7 +12,8 @@
 enum mode_texture {
   mode_texture_default,
   mode_texture_ground,
-  mode_texture_text
+  mode_texture_player,
+  mode_texture_text,
 };
 
 typedef enum {
