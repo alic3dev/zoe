@@ -2,6 +2,7 @@
 
 #include <audio/audio.h>
 #include <mesh/ground/mesh_ground.h>
+#include <mesh/mesh_player.h>
 #include <mesh/tree/mesh_tree.h>
 #include <metal_kit_shader_types.h>
 #include <object.h>
@@ -34,7 +35,7 @@ void scene_intro_forest_initialize(
 
   scene->destroy = scene_intro_forest_destroy;
 
-  scene->length_objects = 501;
+  scene->length_objects = 502;
   scene->objects = realloc(
     scene->objects,
     sizeof(struct object*) *
@@ -42,6 +43,10 @@ void scene_intro_forest_initialize(
   );
 
   scene->objects[0] = malloc(
+    sizeof(struct object)
+  );
+
+  scene->objects[1] = malloc(
     sizeof(struct object)
   );
 
@@ -106,14 +111,13 @@ void scene_intro_forest_initialize(
 
   [texture_loader release];
 
-  mesh_ground_initialize(
-    &scene->objects[0]->mesh,
-    2000.0f,
-    500.0f,
-    2000.0f
+  mesh_player_initialize(
+    &scene->objects[0]->mesh
   );
 
-  scene->objects[0]->position.y = -10.0f;
+  scene->objects[0]->position.y = (
+    -7.2f
+  );
 
   scene->objects[0]->vertices = [metal_kit_device
     newBufferWithBytes: scene->objects[0]->mesh.vertices
@@ -133,21 +137,55 @@ void scene_intro_forest_initialize(
   ];
 
   scene->objects[0]->texture = scene->textures[
-    textures_scene_intro_forest_ground
-  ];
-
-  scene->objects[0]->texture_secondary = scene->textures[
-    textures_scene_intro_forest_tree
+    textures_scene_intro_forest_player
   ];
 
   unsigned short int iterator_id = 0;
 
   metal_kit_data_frame_object* data = scene->objects[0]->data.contents;
   data->id = iterator_id++;
+  data->mode_texture = mode_texture_player;
+
+  mesh_ground_initialize(
+    &scene->objects[1]->mesh,
+    2000.0f,
+    500.0f,
+    2000.0f
+  );
+
+  scene->objects[1]->position.y = -10.0f;
+
+  scene->objects[1]->vertices = [metal_kit_device
+    newBufferWithBytes: scene->objects[1]->mesh.vertices
+    length: scene->objects[1]->mesh.length_vertices * sizeof(struct clic3_vector4_float)
+    options: MTLResourceStorageModeShared
+  ];
+
+  scene->objects[1]->indices = [metal_kit_device
+    newBufferWithBytes: scene->objects[1]->mesh.indices
+    length: scene->objects[1]->mesh.length_indices * sizeof(unsigned int)
+    options: MTLResourceStorageModeShared
+  ];
+
+  scene->objects[1]->data = [metal_kit_device
+    newBufferWithLength: sizeof(metal_kit_data_frame_object)
+    options: MTLResourceStorageModeShared
+  ];
+
+  scene->objects[1]->texture = scene->textures[
+    textures_scene_intro_forest_ground
+  ];
+
+  scene->objects[1]->texture_secondary = scene->textures[
+    textures_scene_intro_forest_tree
+  ];
+
+  data = scene->objects[1]->data.contents;
+  data->id = iterator_id++;
   data->mode_texture = mode_texture_ground;
 
   for (
-    unsigned short int index_object = 1;
+    unsigned short int index_object = 2;
     index_object < scene->length_objects;
     ++index_object
   ) {
@@ -164,7 +202,7 @@ void scene_intro_forest_initialize(
     scene->objects[index_object]->position.x = (
       -(scene->objects[index_object]->mesh.size.x / 2.0f) + (
         (((float)(rand() % 10000) / 5000.0f) - 1.0f) * 0.7f *
-        (scene->objects[index_object]->mesh.size.x - (scene->objects[0]->mesh.size.x / 2.0f))
+        (scene->objects[index_object]->mesh.size.x - (scene->objects[1]->mesh.size.x / 2.0f))
       )
     );
 
@@ -173,7 +211,7 @@ void scene_intro_forest_initialize(
     scene->objects[index_object]->position.z = (
       -(scene->objects[index_object]->mesh.size.z / 2.0f) + (
         (((float)(rand() % 10000) / 5000.0f) - 1.0f) * 0.7f *
-        (scene->objects[0]->mesh.size.z - (scene->objects[0]->mesh.size.z / 2.0f))
+        (scene->objects[1]->mesh.size.z - (scene->objects[1]->mesh.size.z / 2.0f))
       )
     );
 
