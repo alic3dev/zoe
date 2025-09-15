@@ -111,7 +111,7 @@ void scene_menu_main_initialize(
     &scene->objects[0]->mesh,
     666.0f,
     6666.6f,
-    200.0f
+    666.0f
   );
 
   scene->objects[0]->position.y = -10.0f;
@@ -146,6 +146,7 @@ void scene_menu_main_initialize(
   metal_kit_data_frame_object* data_object = scene->objects[0]->data.contents;
   data_object->id = iterator_id++;
   data_object->mode_texture = mode_texture_ground;
+  data_object->noise = 666;
 
   scene->objects[1] = malloc(
     sizeof(struct object)
@@ -187,6 +188,7 @@ void scene_menu_main_initialize(
   
   data_object->id = iterator_id++;
   data_object->mode_texture = mode_texture_default;
+  data_object->noise = 666;
 
   scene->objects[1]->texture = scene->textures[
     textures_scene_menu_main_tree
@@ -326,11 +328,11 @@ void scene_menu_main_initialize(
   ];
 
   scene->player.position.y = (
-    6.66f
+    -6.66f
   );
 
   scene->player.position.z = (
-    -50.0f
+    100.0f
   );
 
   scene->player.rotation.x = -0.6f;

@@ -145,14 +145,35 @@ vertex data_rasterizer zoe_shader_vertex(
     }
   }
 
-  out.distance = (
-    metal::fabs((data.position.x + positions[id_vertex].x) + data_frame.position_player.x) + 
-    metal::fabs((data.position.y + positions[id_vertex].y) + data_frame.position_player.y) + 
-    metal::fabs((data.position.z + positions[id_vertex].z) + data_frame.position_player.z)
-  );
-
   out.brightness = data_frame.brightness;
   out.brightness_text = data_frame.brightness_text;
+
+  if (data.noise == 666) {
+    out.distance = (
+      metal::fabs((data.position.x + positions[id_vertex].x)) + 
+      metal::fabs((data.position.y + positions[id_vertex].y) - 60.0f) + 
+      metal::fabs((data.position.z + positions[id_vertex].z))
+    );
+
+    if (
+      (data.position.x + positions[id_vertex].x) < 50 &&
+      (data.position.x + positions[id_vertex].x) > -50 &&
+      (data.position.z + positions[id_vertex].z) < 50 &&
+      (data.position.z + positions[id_vertex].z) > -50
+    ) {
+      out.distance = out.distance * 5;
+    } else {
+      out.distance = out.distance * 7;
+    }
+    
+    out.height = 1.0f;
+  } else {
+    out.distance = (
+      metal::fabs((data.position.x + positions[id_vertex].x) + data_frame.position_player.x) + 
+      metal::fabs((data.position.y + positions[id_vertex].y) + data_frame.position_player.y) + 
+      metal::fabs((data.position.z + positions[id_vertex].z) + data_frame.position_player.z)
+    );
+  }
 
   return out;
 }

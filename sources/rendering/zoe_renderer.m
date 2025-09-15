@@ -295,10 +295,6 @@
   data->width = object->mesh.size.x;
   data->height = object->mesh.size.y;
   data->depth = object->mesh.size.z;
-
-  if (data->mode_texture != mode_texture_text) {
-    data->noise = rand();
-  }
 }
 
 - (void) poll: (unsigned int) _frame {
