@@ -2,6 +2,7 @@
 
 #include <audio/audio.h>
 #include <mesh/ground/mesh_ground.h>
+#include <mesh/mesh_player.h>
 #include <mesh/tree/mesh_tree.h>
 #include <metal_kit_shader_types.h>
 #include <object.h>
@@ -32,9 +33,10 @@ void scene_intro_forest_initialize(
   scene->type = scene_type_game;
   scene->id = scene_id_intro_forest;
 
+  scene->poll = scene_intro_forest_poll;
   scene->destroy = scene_intro_forest_destroy;
 
-  scene->length_objects = 501;
+  scene->length_objects = 502;
   scene->objects = realloc(
     scene->objects,
     sizeof(struct object*) *
@@ -45,7 +47,11 @@ void scene_intro_forest_initialize(
     sizeof(struct object)
   );
 
-  scene->length_textures = 2;
+  scene->objects[1] = malloc(
+    sizeof(struct object)
+  );
+
+  scene->length_textures = 3;
   scene->textures = malloc(
     sizeof(id<MTLTexture>) *
     scene->length_textures
@@ -87,16 +93,32 @@ void scene_intro_forest_initialize(
     error: (void*)0
   ];
 
+  scene->textures[
+    textures_scene_intro_forest_player
+  ] = [texture_loader
+    newTextureWithContentsOfURL: [NSURL
+      fileURLWithPath:@"zoef.png"
+      isDirectory: 0
+      relativeToURL: [NSURL
+        fileURLWithPath:[NSString
+          stringWithUTF8String: paths.directory_textures
+        ]
+        isDirectory: 1
+      ]
+    ]
+    options: (void*)0
+    error: (void*)0
+  ];
+
   [texture_loader release];
 
-  mesh_ground_initialize(
-    &scene->objects[0]->mesh,
-    2000.0f,
-    500.0f,
-    2000.0f
+  mesh_player_initialize(
+    &scene->objects[0]->mesh
   );
 
-  scene->objects[0]->position.y = -10.0f;
+  scene->objects[0]->position.y = (
+    -7.2f
+  );
 
   scene->objects[0]->vertices = [metal_kit_device
     newBufferWithBytes: scene->objects[0]->mesh.vertices
@@ -116,21 +138,55 @@ void scene_intro_forest_initialize(
   ];
 
   scene->objects[0]->texture = scene->textures[
-    textures_scene_intro_forest_ground
-  ];
-
-  scene->objects[0]->texture_secondary = scene->textures[
-    textures_scene_intro_forest_tree
+    textures_scene_intro_forest_player
   ];
 
   unsigned short int iterator_id = 0;
 
   metal_kit_data_frame_object* data = scene->objects[0]->data.contents;
   data->id = iterator_id++;
+  data->mode_texture = mode_texture_player;
+
+  mesh_ground_initialize(
+    &scene->objects[1]->mesh,
+    2000.0f,
+    500.0f,
+    2000.0f
+  );
+
+  scene->objects[1]->position.y = -10.0f;
+
+  scene->objects[1]->vertices = [metal_kit_device
+    newBufferWithBytes: scene->objects[1]->mesh.vertices
+    length: scene->objects[1]->mesh.length_vertices * sizeof(struct clic3_vector4_float)
+    options: MTLResourceStorageModeShared
+  ];
+
+  scene->objects[1]->indices = [metal_kit_device
+    newBufferWithBytes: scene->objects[1]->mesh.indices
+    length: scene->objects[1]->mesh.length_indices * sizeof(unsigned int)
+    options: MTLResourceStorageModeShared
+  ];
+
+  scene->objects[1]->data = [metal_kit_device
+    newBufferWithLength: sizeof(metal_kit_data_frame_object)
+    options: MTLResourceStorageModeShared
+  ];
+
+  scene->objects[1]->texture = scene->textures[
+    textures_scene_intro_forest_ground
+  ];
+
+  scene->objects[1]->texture_secondary = scene->textures[
+    textures_scene_intro_forest_tree
+  ];
+
+  data = scene->objects[1]->data.contents;
+  data->id = iterator_id++;
   data->mode_texture = mode_texture_ground;
 
   for (
-    unsigned short int index_object = 1;
+    unsigned short int index_object = 2;
     index_object < scene->length_objects;
     ++index_object
   ) {
@@ -147,7 +203,7 @@ void scene_intro_forest_initialize(
     scene->objects[index_object]->position.x = (
       -(scene->objects[index_object]->mesh.size.x / 2.0f) + (
         (((float)(rand() % 10000) / 5000.0f) - 1.0f) * 0.7f *
-        (scene->objects[index_object]->mesh.size.x - (scene->objects[0]->mesh.size.x / 2.0f))
+        (scene->objects[index_object]->mesh.size.x - (scene->objects[1]->mesh.size.x / 2.0f))
       )
     );
 
@@ -156,7 +212,7 @@ void scene_intro_forest_initialize(
     scene->objects[index_object]->position.z = (
       -(scene->objects[index_object]->mesh.size.z / 2.0f) + (
         (((float)(rand() % 10000) / 5000.0f) - 1.0f) * 0.7f *
-        (scene->objects[0]->mesh.size.z - (scene->objects[0]->mesh.size.z / 2.0f))
+        (scene->objects[1]->mesh.size.z - (scene->objects[1]->mesh.size.z / 2.0f))
       )
     );
 
@@ -189,6 +245,24 @@ void scene_intro_forest_initialize(
       textures_scene_intro_forest_tree
     ];
   }
+}
+
+void scene_intro_forest_poll(
+  struct scene* scene
+) {
+  scene_poll_default(scene);
+
+  scene->objects[0]->position.x = (
+    -scene->player.position.x - 1.0f
+  );
+
+  scene->objects[0]->position.y = (
+    -7.2f
+  );
+
+  scene->objects[0]->position.z = (
+    -scene->player.position.z + 1.0f
+  );
 }
 
 

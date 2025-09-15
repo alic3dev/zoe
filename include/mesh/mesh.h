@@ -4,8 +4,9 @@
 #include <clic3_vector.h>
 
 enum mesh_positioning {
-  mesh_positioning_normal,
-  mesh_positioning_static
+  mesh_positioning_normal = 0,
+  mesh_positioning_player = 1,
+  mesh_positioning_static = 2
 };
 
 struct mesh {

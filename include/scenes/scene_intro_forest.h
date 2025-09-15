@@ -8,12 +8,17 @@
 
 enum textures_scene_intro_forest {
   textures_scene_intro_forest_ground = 0,
-  textures_scene_intro_forest_tree = 1
+  textures_scene_intro_forest_tree = 1,
+  textures_scene_intro_forest_player = 2
 };
 
 void scene_intro_forest_initialize(
   struct scene*,
   id<MTLDevice>
+);
+
+void scene_intro_forest_poll(
+  struct scene*
 );
 
 void scene_intro_forest_destroy(
