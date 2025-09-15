@@ -258,76 +258,47 @@ float configuration_value_float_parse(
   char* value,
   unsigned short int length_value
 ) {
-  float value_float = atof(
-    value
+  float value_float;
+
+  unsigned char valid_parameter = clic3_char_array_to_float(
+    value,
+    &value_float
   );
 
   if (
-    value_float == 0.0f
+    valid_parameter != 0 ||
+    value_float < 0.0f
   ) {
-    unsigned char decimal_point_passed = 0;
-    unsigned char valid_parameter = 1;
+    char* message_debug_log_error_prefix = clic3_char_arrays_concatenate(
+      "invalid_configuration_value->{",
+      parameter
+    );
 
-    for (
-      unsigned short int index_value = 0;
-      index_value < length_value;
-      ++index_value
-    ) {
-      if (
-        value[
-          index_value
-        ] == '.'
-      ) {
-        if (decimal_point_passed == 1) {
-          valid_parameter = 0;
-          break;
-        }
+    char* message_debug_log_error_split = clic3_char_arrays_concatenate(
+      message_debug_log_error_prefix,
+      ":"
+    );
 
-        decimal_point_passed = 1;
-      } else if (
-        value[
-          index_value
-        ] != '0'
-      ) {
-        valid_parameter = 0;
-        break;
-      }
-    }
+    char* message_debug_log_error_value = clic3_char_arrays_concatenate(
+      message_debug_log_error_split,
+      value
+    );
 
-    if (
-      valid_parameter == 0
-    ) {
-      char* message_debug_log_error_prefix = clic3_char_arrays_concatenate(
-        "invalid_configuration_value->{",
-        parameter
-      );
+    char* message_debug_log_error = clic3_char_arrays_concatenate(
+      message_debug_log_error_value,
+      "};\n"
+    );
 
-      char* message_debug_log_error_split = clic3_char_arrays_concatenate(
-        message_debug_log_error_prefix,
-        ":"
-      );
+    debug_log_error(
+      message_debug_log_error
+    );
 
-      char* message_debug_log_error_value = clic3_char_arrays_concatenate(
-        message_debug_log_error_split,
-        value
-      );
+    free(message_debug_log_error_prefix);
+    free(message_debug_log_error_split);
+    free(message_debug_log_error_value);
+    free(message_debug_log_error);
 
-      char* message_debug_log_error = clic3_char_arrays_concatenate(
-        message_debug_log_error_value,
-        "};\n"
-      );
-
-      debug_log_error(
-        message_debug_log_error
-      );
-
-      free(message_debug_log_error_prefix);
-      free(message_debug_log_error_split);
-      free(message_debug_log_error_value);
-      free(message_debug_log_error);
-
-      return -1.0f;
-    }
+    return -1.0f;
   }
 
   return value_float;
