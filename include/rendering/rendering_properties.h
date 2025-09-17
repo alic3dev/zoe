@@ -5,8 +5,8 @@
 
 #include <pthread.h>
 
-static const unsigned int count_max_frames = 5;
-static const unsigned int length_buffers_visibility = count_max_frames + 1;
+#define count_max_frames 5
+#define length_buffers_visibility count_max_frames + 1
 
 struct rendering_properties {
   struct camera camera;
