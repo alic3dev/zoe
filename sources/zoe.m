@@ -23,7 +23,8 @@ int main(
 }
 
 void zoe_renderer_on_initialize(
-  id<MTLDevice> metil_metal_kit_device
+  id<MTLDevice> metil_metal_kit_device,
+  struct metil_rendering_properties* metil_rendering_properties
 ) {
   metal_kit_device = metil_metal_kit_device;
 
@@ -38,6 +39,11 @@ void zoe_renderer_on_initialize(
     metil_library.library
     newFunctionWithName: @"zoe_shader_fragment"
   ];
+
+  metil_rendering_properties->color_clear.x = 0.0324f;
+  metil_rendering_properties->color_clear.y = 0.0424f;
+  metil_rendering_properties->color_clear.z = 0.0649f;
+  metil_rendering_properties->color_clear.w = 1.0f;
 
   scene_menu_main_initialize(
     &metil_scene_controller.scene,
