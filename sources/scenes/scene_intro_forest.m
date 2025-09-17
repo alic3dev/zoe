@@ -1,36 +1,36 @@
 #include <scenes/scene_intro_forest.h>
 
-#include <audio/audio.h>
+#include <metil_audio/audio.h>
 #include <mesh/ground/mesh_ground.h>
 #include <mesh/mesh_player.h>
 #include <mesh/tree/mesh_tree.h>
-#include <metal_kit_shader_types.h>
-#include <object.h>
-#include <paths/paths.h>
-#include <scenes/scene.h>
+#include <mode_texture.h>
+#include <scenes/scene_id.h>
+
+#include <metil.h>
 
 #include <stdlib.h>
 
 void scene_intro_forest_data_initialize(
-  struct scene* scene
+  struct metil_scene* scene
 ) {
   scene->data = (void*)0;
 }
 
 void scene_intro_forest_initialize(
-  struct scene* scene,
+  struct metil_scene* scene,
   id<MTLDevice> metal_kit_device
 ) {
-  audio_io_proc_add(
+  metil_audio_io_proc_add(
     scene_intro_forest_io_proc
   );
 
-  scene_initialize(
+  metil_scene_initialize(
     scene,
     metal_kit_device
   );
 
-  scene->type = scene_type_game;
+  scene->type = metil_scene_type_game;
   scene->id = scene_id_intro_forest;
 
   scene->poll = scene_intro_forest_poll;
@@ -39,16 +39,16 @@ void scene_intro_forest_initialize(
   scene->length_objects = 502;
   scene->objects = realloc(
     scene->objects,
-    sizeof(struct object*) *
+    sizeof(struct metil_object*) *
     scene->length_objects
   );
 
   scene->objects[0] = malloc(
-    sizeof(struct object)
+    sizeof(struct metil_object)
   );
 
   scene->objects[1] = malloc(
-    sizeof(struct object)
+    sizeof(struct metil_object)
   );
 
   scene->length_textures = 3;
@@ -67,7 +67,7 @@ void scene_intro_forest_initialize(
       isDirectory: 0
       relativeToURL: [NSURL
         fileURLWithPath:[NSString
-          stringWithUTF8String: paths.directory_textures
+          stringWithUTF8String: metil_paths.directory_textures
         ]
         isDirectory: 1
       ]
@@ -84,7 +84,7 @@ void scene_intro_forest_initialize(
       isDirectory: 0
       relativeToURL: [NSURL
         fileURLWithPath:[NSString
-          stringWithUTF8String: paths.directory_textures
+          stringWithUTF8String: metil_paths.directory_textures
         ]
         isDirectory: 1
       ]
@@ -101,7 +101,7 @@ void scene_intro_forest_initialize(
       isDirectory: 0
       relativeToURL: [NSURL
         fileURLWithPath:[NSString
-          stringWithUTF8String: paths.directory_textures
+          stringWithUTF8String: metil_paths.directory_textures
         ]
         isDirectory: 1
       ]
@@ -133,7 +133,7 @@ void scene_intro_forest_initialize(
   ];
 
   scene->objects[0]->data = [metal_kit_device
-    newBufferWithLength: sizeof(metal_kit_data_frame_object)
+    newBufferWithLength: sizeof(metil_kit_data_frame_object)
     options: MTLResourceStorageModeShared
   ];
 
@@ -143,7 +143,7 @@ void scene_intro_forest_initialize(
 
   unsigned short int iterator_id = 0;
 
-  metal_kit_data_frame_object* data = scene->objects[0]->data.contents;
+  metil_kit_data_frame_object* data = scene->objects[0]->data.contents;
   data->id = iterator_id++;
   data->mode_texture = mode_texture_player;
 
@@ -169,7 +169,7 @@ void scene_intro_forest_initialize(
   ];
 
   scene->objects[1]->data = [metal_kit_device
-    newBufferWithLength: sizeof(metal_kit_data_frame_object)
+    newBufferWithLength: sizeof(metil_kit_data_frame_object)
     options: MTLResourceStorageModeShared
   ];
 
@@ -191,7 +191,7 @@ void scene_intro_forest_initialize(
     ++index_object
   ) {
     scene->objects[index_object] = malloc(
-      sizeof(struct object)
+      sizeof(struct metil_object)
     );
 
     mesh_tree_initialize(
@@ -232,11 +232,11 @@ void scene_intro_forest_initialize(
     ];
 
     scene->objects[index_object]->data = [metal_kit_device
-      newBufferWithLength: sizeof(metal_kit_data_frame_object)
+      newBufferWithLength: sizeof(metil_kit_data_frame_object)
       options: MTLResourceStorageModeShared
     ];
 
-    metal_kit_data_frame_object* data = scene->objects[index_object]->data.contents;
+    metil_kit_data_frame_object* data = scene->objects[index_object]->data.contents;
     
     data->id = iterator_id++;
     data->mode_texture = mode_texture_default;
@@ -248,9 +248,9 @@ void scene_intro_forest_initialize(
 }
 
 void scene_intro_forest_poll(
-  struct scene* scene
+  struct metil_scene* scene
 ) {
-  scene_poll_default(scene);
+  metil_scene_poll_default(scene);
 
   scene->objects[0]->position.x = (
     -scene->player.position.x - 1.0f
@@ -267,13 +267,13 @@ void scene_intro_forest_poll(
 
 
 void scene_intro_forest_destroy(
-  struct scene* scene
+  struct metil_scene* scene
 ) {
-  audio_io_proc_remove(
+  metil_audio_io_proc_remove(
     scene_intro_forest_io_proc
   );
 
-  scene_destroy_default(scene);
+  metil_scene_destroy_default(scene);
 }
 
 OSStatus scene_intro_forest_io_proc(

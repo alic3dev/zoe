@@ -1,18 +1,18 @@
 #include <mesh/tree/mesh_tree.h>
 
-#include <mesh/mesh.h>
-
 #include <clic3.h>
+
+#include <metil_mesh/mesh.h>
 
 #include <math.h>
 #include <stdlib.h>
 
 void mesh_tree_initialize(
-  struct mesh* mesh,
+  struct metil_mesh* mesh,
   float radius,
   float height
 ) {
-  mesh_initialize(mesh);
+  metil_mesh_initialize(mesh);
 
   mesh->size.x = radius * 2.0f;
   mesh->size.y = height;

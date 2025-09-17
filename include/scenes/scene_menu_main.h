@@ -1,8 +1,7 @@
 #ifndef __scenes_scene_menu_main_h
 #define __scenes_scene_menu_main_h
 
-#include <menus/menu.h>
-#include <scenes/scene.h>
+#include <metil.h>
 
 #include <CoreAudio/CoreAudio.h>
 #include <MetalKit/MetalKit.h>
@@ -18,25 +17,25 @@ enum textures_scene_menu_main {
 };
 
 struct scene_menu_main_data {
-  struct menu menu;
+  struct metil_menu menu;
   unsigned long int time_started;
 };
 
 void scene_menu_main_initialize(
-  struct scene*,
+  struct metil_scene*,
   id<MTLDevice>
 );
 
 void scene_menu_main_poll(
-  struct scene*
+  struct metil_scene*
 );
 
 void scene_menu_main_poll_input(
-  struct scene*
+  struct metil_scene*
 );
 
 void scene_menu_main_destroy(
-  struct scene*
+  struct metil_scene*
 );
 
 OSStatus scene_menu_main_io_proc(

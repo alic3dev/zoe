@@ -1,7 +1,7 @@
 #ifndef __scenes_scene_intro_forest_h
 #define __scenes_scene_intro_forest_h
 
-#include <scenes/scene.h>
+#include <metil.h>
 
 #include <CoreAudio/CoreAudio.h>
 #include <MetalKit/MetalKit.h>
@@ -13,16 +13,16 @@ enum textures_scene_intro_forest {
 };
 
 void scene_intro_forest_initialize(
-  struct scene*,
+  struct metil_scene*,
   id<MTLDevice>
 );
 
 void scene_intro_forest_poll(
-  struct scene*
+  struct metil_scene*
 );
 
 void scene_intro_forest_destroy(
-  struct scene*
+  struct metil_scene*
 );
 
 OSStatus scene_intro_forest_io_proc(
