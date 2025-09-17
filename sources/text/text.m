@@ -192,7 +192,7 @@ struct text_image* text_render(
     8,
     4 * (text_image->size.x),
     font_color_space,
-    kCGImageAlphaNoneSkipFirst
+    0x0 | kCGImageAlphaNoneSkipFirst
   );
 
   if (
