@@ -34,7 +34,11 @@ directory_interrupt_handler_library=${directory_interrupt_handler}/library
 
 directory_metil=../metil
 directory_metil_include=${directory_metil}/include
-directory_metil_library=${directory_metil}/library
+ifeq (${debug}, 1)
+	directory_metil_library=${directory_metil}/library_debug
+else
+	directory_metil_library=${directory_metil}/library
+endif
 
 directory_metal=metal
 directory_air=air
@@ -50,7 +54,11 @@ directory_macos_sdk=${shell xcrun --show-sdk-path}
 file_cer0_library=${directory_cer0_library}/cer0.o
 file_clic3_library=${directory_clic3_library}/clic3.o
 file_interrupt_handler_library=${directory_interrupt_handler_library}/interrupt_handler.o
-file_metil_library=${directory_metil_library}/metil.o
+ifeq (${debug}, 1)
+	file_metil_library=${directory_metil_library}/metil_debug.o
+else
+	file_metil_library=${directory_metil_library}/metil.o
+endif
 
 file_info_plist=Info.plist
 file_output=${directory_app_contents_macos}/${name}
@@ -119,7 +127,7 @@ strip_flags=-x
 
 metal=xcrun -sdk macosx metal
 metal_flags_common=-target ${target_platform_metal}
-metal_flags=${metal_flags_common} -I${directory_include} -I${directory_clic3_include} -isysroot ${directory_macos_sdk}
+metal_flags=${metal_flags_common} -I${directory_include} -I${directory_clic3_include} -I${directory_metil_include} -isysroot ${directory_macos_sdk}
 
 ifneq (${disable_metal_fast_options}, 1)
 	metal_flags:=${metal_flags} -fmetal-math-mode\=fast -fmetal-math-fp32-functions\=fast
