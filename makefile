@@ -32,6 +32,10 @@ directory_interrupt_handler=../interrupt_handler
 directory_interrupt_handler_include=${directory_interrupt_handler}/include
 directory_interrupt_handler_library=${directory_interrupt_handler}/library
 
+directory_metil=../metil
+directory_metil_include=${directory_metil}/include
+directory_metil_library=${directory_metil}/library
+
 directory_metal=metal
 directory_air=air
 
@@ -46,13 +50,14 @@ directory_macos_sdk=${shell xcrun --show-sdk-path}
 file_cer0_library=${directory_cer0_library}/cer0.o
 file_clic3_library=${directory_clic3_library}/clic3.o
 file_interrupt_handler_library=${directory_interrupt_handler_library}/interrupt_handler.o
+file_metil_library=${directory_metil_library}/metil.o
 
 file_info_plist=Info.plist
 file_output=${directory_app_contents_macos}/${name}
 file_output_info_plist=${directory_app_contents}/Info.plist
 file_output_metal=${directory_app_contents_resources}/default.metallib
 
-files_libraries=${file_cer0_library} ${file_clic3_library} ${file_interrupt_handler_library}
+files_libraries=${file_cer0_library} ${file_clic3_library} ${file_interrupt_handler_library} ${file_metil_library}
 
 files_sources_c=${shell find ${directory_sources} -name "*.c"}
 files_sources_objc=${shell find ${directory_sources} -name "*.m"}
@@ -88,7 +93,7 @@ target_platform_metal=air64-apple-macos${target_macos_version_metal}
 frameworks=Metal MetalKit GameController CoreAudio CoreGraphics CoreText
 
 cc=clang
-c_flags_includes=-I${directory_include} -I${directory_cer0_include} -I${directory_clic3_include} -I${directory_interrupt_handler_include}
+c_flags_includes=-I${directory_include} -I${directory_cer0_include} -I${directory_clic3_include} -I${directory_interrupt_handler_include} -I${directory_metil_include}
 c_flags_platform=-target ${target_platform} -isysroot ${directory_macos_sdk}
 
 c_flags_objc_debug=-O0 -g -v
