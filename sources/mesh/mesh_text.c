@@ -1,21 +1,20 @@
 #include <mesh/mesh_text.h>
 
-#include <mesh/mesh.h>
-
 #include <clic3_vector.h>
+#include <metil_mesh/mesh.h>
 
 #include <stdlib.h>
 #include <stdio.h>
 
 void mesh_text_initialize(
-  struct mesh* mesh,
+  struct metil_mesh* mesh,
   float width,
   float height,
   float scale
 ) {
-  mesh_initialize(mesh);
+  metil_mesh_initialize(mesh);
 
-  mesh->positioning = mesh_positioning_static;
+  mesh->positioning = metil_mesh_positioning_static;
 
   mesh->size.x = width * scale;
   mesh->size.y = height * scale;
