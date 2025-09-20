@@ -56,7 +56,6 @@ void zoe_renderer_on_initialize(
   );
 }
 
-
 void zoe_on_scene_change(
   int id_scene,
   void* _

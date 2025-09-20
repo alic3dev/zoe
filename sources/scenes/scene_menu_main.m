@@ -3,6 +3,7 @@
 #include <menus/menu_main.h>
 #include <mesh/ground/mesh_ground.h>
 #include <mesh/mesh_text.h>
+#include <metil_rendering/camera/camera.h>
 #include <mesh/tree/mesh_tree.h>
 #include <mode_texture.h>
 #include <scenes/scene_id.h>
@@ -10,6 +11,8 @@
 #include <metil.h>
 
 #include <CoreAudio/CoreAudio.h>
+
+#include <math.h>
 
 const unsigned long int scene_menu_main_time_scene_transition = 333;
 
@@ -107,8 +110,6 @@ void scene_menu_main_initialize(
     666.0f
   );
 
-  scene->objects[0]->position.y = -10.0f;
-
   scene->objects[0]->vertices = [metal_kit_device
     newBufferWithBytes: scene->objects[0]->mesh.vertices
     length: scene->objects[0]->mesh.length_vertices * sizeof(struct clic3_vector4_float)
@@ -150,12 +151,6 @@ void scene_menu_main_initialize(
     1.0f,
     66.6f
   );
-
-  scene->objects[1]->position.x = (
-    -(scene->objects[1]->mesh.size.x)
-  );
-
-  scene->objects[1]->position.y = -10.0f;
 
   scene->objects[1]->vertices = [metal_kit_device
     newBufferWithBytes: scene->objects[1]->mesh.vertices
@@ -321,26 +316,28 @@ void scene_menu_main_initialize(
   ];
 
   scene->player.position.y = (
-    -6.66f
+    -metil_camera_height_default + 2.0f
   );
 
   scene->player.position.z = (
-    100.0f
+    -100.0f
   );
 
-  scene->player.rotation.x = -0.6f;
+  scene->player.rotation.x = 0.3f;
 }
 
 void scene_menu_main_poll(
   struct metil_scene* scene
 ) {
-  scene->player.rotation.x = fmax(
-    scene->player.rotation.x - (
-      ((scene->player.rotation.x - -0.666f) / 0.066f) *
-      0.00001f *
+  scene->player.rotation.x = fmin((
+      scene->player.rotation.x +
+      (0.00001f * sin(
+        ((0.6f - (scene->player.rotation.x - 0.3f)) / 0.6f) *
+        M_PI_2
+      )) *
       scene->time_delta
     ),
-    -0.666f
+    0.9f
   );
 
   struct scene_menu_main_data* data = (struct scene_menu_main_data*) scene->data;
