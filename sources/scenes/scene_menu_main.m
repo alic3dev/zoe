@@ -110,8 +110,6 @@ void scene_menu_main_initialize(
     666.0f
   );
 
-  scene->objects[0]->position.y = 0.0f;
-
   scene->objects[0]->vertices = [metal_kit_device
     newBufferWithBytes: scene->objects[0]->mesh.vertices
     length: scene->objects[0]->mesh.length_vertices * sizeof(struct clic3_vector4_float)
@@ -153,12 +151,6 @@ void scene_menu_main_initialize(
     1.0f,
     66.6f
   );
-
-  scene->objects[1]->position.x = (
-    -(scene->objects[1]->mesh.size.x)
-  );
-
-  scene->objects[1]->position.y = 0.0f;
 
   scene->objects[1]->vertices = [metal_kit_device
     newBufferWithBytes: scene->objects[1]->mesh.vertices
@@ -328,7 +320,7 @@ void scene_menu_main_initialize(
   );
 
   scene->player.position.z = (
-    100.0f
+    -100.0f
   );
 
   scene->player.rotation.x = 0.3f;
