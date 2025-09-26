@@ -70,11 +70,9 @@ make
 - `target_macos_version`:sets_the_target_version.for->{`macos`|`metal`};
 
 ```zsh
-debug=1 make
+parameter=value make
 : or
-disable_metal_fast_options=1 make
-: or
-debug=1 disable_metal_fast_options=1 make
+parameter_1=value_1 parameter_2=value_2 make
 ```
 
 ### clean
