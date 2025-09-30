@@ -192,8 +192,9 @@ void scene_menu_main_initialize(
     metal_kit_device,
     &scene->objects[2]->mesh,
     "zoe",
-    metil_font_reference_monospace
-  ); // TODO: Check for null
+    metil_font_reference_monospace,
+    0.001f
+  );
 
   scene->objects[2]->vertices = [metal_kit_device
     newBufferWithBytes: scene->objects[2]->mesh.vertices
@@ -237,8 +238,9 @@ void scene_menu_main_initialize(
     metal_kit_device,
     &scene->objects[3]->mesh,
     "enter",
-    metil_font_reference_monospace
-  ); // TODO: Check for null
+    metil_font_reference_monospace,
+    0.001f
+  );
 
   scene->objects[3]->vertices = [metal_kit_device
     newBufferWithBytes: scene->objects[3]->mesh.vertices
@@ -281,8 +283,9 @@ void scene_menu_main_initialize(
     metal_kit_device,
     &scene->objects[4]->mesh,
     "exit",
-    metil_font_reference_monospace
-  ); // TODO: Check for null
+    metil_font_reference_monospace,
+    0.001f
+  );
 
   scene->objects[4]->vertices = [metal_kit_device
     newBufferWithBytes: scene->objects[4]->mesh.vertices

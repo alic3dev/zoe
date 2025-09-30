@@ -41,6 +41,7 @@ else
 endif
 
 directory_metal=metal
+directory_metalar=metalar
 directory_air=air
 
 directory_app=${directory_output}/${name}.app
@@ -53,6 +54,7 @@ directory_macos_sdk=${shell xcrun --show-sdk-path}
 
 file_cer0_library=${directory_cer0_library}/cer0.o
 file_clic3_library=${directory_clic3_library}/clic3.o
+
 file_interrupt_handler_library=${directory_interrupt_handler_library}/interrupt_handler.o
 ifeq (${debug}, 1)
 	file_metil_library=${directory_metil_library}/metil_debug.o
@@ -61,6 +63,7 @@ else
 endif
 
 file_info_plist=Info.plist
+file_metalar=${directory_metalar}/${name}.metalar
 file_output=${directory_app_contents_macos}/${name}
 file_output_info_plist=${directory_app_contents}/Info.plist
 file_output_metal=${directory_app_contents_resources}/default.metallib
@@ -128,6 +131,8 @@ strip=strip
 strip_flags=-x
 
 metal=xcrun -sdk macosx metal
+metal_ar=xcrun -sdk macosx metal-ar
+metallib=xcrun -sdk macosx metallib
 metal_flags_common=-target ${target_platform_metal}
 metal_flags=${metal_flags_common} -I${directory_include} -I${directory_clic3_include} -I${directory_metil_include} -isysroot ${directory_macos_sdk}
 
@@ -135,7 +140,7 @@ ifneq (${disable_metal_fast_options}, 1)
 	metal_flags:=${metal_flags} -fmetal-math-mode\=fast -fmetal-math-fp32-functions\=fast
 endif
 
-metal_flags_output=${metal_flags_common}
+metal_flags_output=
 
 all: ${name}
 
@@ -155,9 +160,14 @@ ${directory_app_contents_resources_textures}/%: ${directory_textures}/%
 	mkdir -p ${directory_app_contents_resources_textures}
 	cp $< $@
 
-${file_output_metal}: ${files_air}
+${file_output_metal}: ${file_metalar}
 	mkdir -p ${directory_app_contents_resources}
-	${metal} ${metal_flags_output} ${files_air} -o ${file_output_metal}
+	${metallib} ${metal_flags_output} ${file_metalar} ${directory_metil_library}/metil_fps_display.metalar -o ${file_output_metal}
+
+${file_metalar}: ${files_air}
+	mkdir -p ${directory_metalar}
+	if [[ -f ${file_metalar} ]]; then rm ${file_metalar}; fi
+	${metal_ar} -rc ${file_metalar} ${files_air}
 
 ${directory_air}/%.air: ${directory_metal}/%.metal
 	mkdir -p ${directory_air}
