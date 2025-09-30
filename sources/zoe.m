@@ -14,6 +14,8 @@ int main(
   int length_parameters,
   const char** parameters
 ) {
+  metil_player_speed_movement_default = 32.0f;
+
   return metil_initialize(
     length_parameters,
     parameters,
@@ -38,6 +40,18 @@ void zoe_renderer_on_initialize(
   metil_library.function_fragment = [
     metil_library.library
     newFunctionWithName: @"zoe_shader_fragment"
+  ];
+
+  metil_library.library_fps_display = [metal_kit_device newDefaultLibrary];
+
+  metil_library.function_vertex_fps_display = [
+    metil_library.library
+    newFunctionWithName: @"metil_fps_display_vertex"
+  ];
+
+  metil_library.function_fragment_fps_display = [
+    metil_library.library
+    newFunctionWithName: @"metil_fps_display_fragment"
   ];
 
   metil_rendering_properties->color_clear.x = 0.0324f;
