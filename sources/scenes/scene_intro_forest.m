@@ -3,6 +3,7 @@
 #include <metil_audio/audio.h>
 #include <mesh/ground/mesh_ground.h>
 #include <mesh/mesh_player.h>
+#include <mesh/mesh_player_mirror.h>
 #include <mesh/tree/mesh_tree.h>
 #include <mode_texture.h>
 #include <scenes/scene_id.h>
@@ -36,20 +37,22 @@ void scene_intro_forest_initialize(
   scene->poll = scene_intro_forest_poll;
   scene->destroy = scene_intro_forest_destroy;
 
-  scene->length_objects = 502;
+  scene->length_objects = 503;
   scene->objects = realloc(
     scene->objects,
     sizeof(struct metil_object*) *
     scene->length_objects
   );
 
-  scene->objects[0] = malloc(
-    sizeof(struct metil_object)
-  );
-
-  scene->objects[1] = malloc(
-    sizeof(struct metil_object)
-  );
+  for (
+    unsigned short int index_object = 0;
+    index_object < scene->length_objects;
+    ++index_object
+  ) {
+    scene->objects[index_object] = malloc(
+      sizeof(struct metil_object)
+    );
+  }
 
   scene->length_textures = 3;
   scene->textures = malloc(
@@ -116,10 +119,6 @@ void scene_intro_forest_initialize(
     &scene->objects[0]->mesh
   );
 
-  scene->objects[0]->position.y = (
-    -7.2f
-  );
-
   scene->objects[0]->vertices = [metal_kit_device
     newBufferWithBytes: scene->objects[0]->mesh.vertices
     length: scene->objects[0]->mesh.length_vertices * sizeof(struct clic3_vector4_float)
@@ -147,14 +146,9 @@ void scene_intro_forest_initialize(
   data->id = iterator_id++;
   data->mode_texture = mode_texture_player;
 
-  mesh_ground_initialize(
-    &scene->objects[1]->mesh,
-    2000.0f,
-    500.0f,
-    2000.0f
+  mesh_player_mirror_initialize(
+    &scene->objects[1]->mesh
   );
-
-  scene->objects[1]->position.y = -10.0f;
 
   scene->objects[1]->vertices = [metal_kit_device
     newBufferWithBytes: scene->objects[1]->mesh.vertices
@@ -174,26 +168,56 @@ void scene_intro_forest_initialize(
   ];
 
   scene->objects[1]->texture = scene->textures[
-    textures_scene_intro_forest_ground
-  ];
-
-  scene->objects[1]->texture_secondary = scene->textures[
-    textures_scene_intro_forest_tree
+    textures_scene_intro_forest_player
   ];
 
   data = scene->objects[1]->data.contents;
   data->id = iterator_id++;
+  data->mode_texture = mode_texture_player;
+
+  mesh_ground_initialize(
+    &scene->objects[2]->mesh,
+    2000.0f,
+    500.0f,
+    2000.0f
+  );
+
+  scene->objects[2]->position.y = -10.0f;
+
+  scene->objects[2]->vertices = [metal_kit_device
+    newBufferWithBytes: scene->objects[2]->mesh.vertices
+    length: scene->objects[2]->mesh.length_vertices * sizeof(struct clic3_vector4_float)
+    options: MTLResourceStorageModeShared
+  ];
+
+  scene->objects[2]->indices = [metal_kit_device
+    newBufferWithBytes: scene->objects[2]->mesh.indices
+    length: scene->objects[2]->mesh.length_indices * sizeof(unsigned int)
+    options: MTLResourceStorageModeShared
+  ];
+
+  scene->objects[2]->data = [metal_kit_device
+    newBufferWithLength: sizeof(metil_kit_data_frame_object)
+    options: MTLResourceStorageModeShared
+  ];
+
+  scene->objects[2]->texture = scene->textures[
+    textures_scene_intro_forest_ground
+  ];
+
+  scene->objects[2]->texture_secondary = scene->textures[
+    textures_scene_intro_forest_tree
+  ];
+
+  data = scene->objects[2]->data.contents;
+  data->id = iterator_id++;
   data->mode_texture = mode_texture_ground;
 
   for (
-    unsigned short int index_object = 2;
+    unsigned short int index_object = 3;
     index_object < scene->length_objects;
     ++index_object
   ) {
-    scene->objects[index_object] = malloc(
-      sizeof(struct metil_object)
-    );
-
     mesh_tree_initialize(
       &(scene->objects[index_object]->mesh),
       1.0f,
@@ -203,7 +227,7 @@ void scene_intro_forest_initialize(
     scene->objects[index_object]->position.x = (
       -(scene->objects[index_object]->mesh.size.x / 2.0f) + (
         (((float)(rand() % 10000) / 5000.0f) - 1.0f) * 0.7f *
-        (scene->objects[index_object]->mesh.size.x - (scene->objects[1]->mesh.size.x / 2.0f))
+        (scene->objects[index_object]->mesh.size.x - (scene->objects[2]->mesh.size.x / 2.0f))
       )
     );
 
@@ -212,7 +236,7 @@ void scene_intro_forest_initialize(
     scene->objects[index_object]->position.z = (
       -(scene->objects[index_object]->mesh.size.z / 2.0f) + (
         (((float)(rand() % 10000) / 5000.0f) - 1.0f) * 0.7f *
-        (scene->objects[1]->mesh.size.z - (scene->objects[1]->mesh.size.z / 2.0f))
+        (scene->objects[2]->mesh.size.z - (scene->objects[2]->mesh.size.z / 2.0f))
       )
     );
 
@@ -253,15 +277,27 @@ void scene_intro_forest_poll(
   metil_scene_poll_default(scene);
 
   scene->objects[0]->position.x = (
-    -scene->player.position.x - 1.0f
+    scene->player.position.x
   );
 
   scene->objects[0]->position.y = (
-    -7.2f
+    scene->player.position.y
   );
 
   scene->objects[0]->position.z = (
-    -scene->player.position.z + 1.0f
+    scene->player.position.z
+  );
+
+  scene->objects[1]->position.x = (
+    -scene->player.position.x
+  );
+
+  scene->objects[1]->position.y = (
+    scene->player.position.y
+  );
+
+  scene->objects[1]->position.z = (
+    -scene->player.position.z
   );
 }
 
