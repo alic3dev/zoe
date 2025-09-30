@@ -316,7 +316,7 @@ void scene_menu_main_initialize(
   ];
 
   scene->player.position.y = (
-    -metil_camera_height_default + 2.0f
+    -metil_camera_height_default + 3.0f
   );
 
   scene->player.position.z = (
