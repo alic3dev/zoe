@@ -10,7 +10,7 @@
 - - version.minimum->{`15.0`};
 - - - defaults:to->{`26.0`};
 - - - override_with:`target_macos_version`
-- - with->{`metal`}.support();
+- - with->{`metal`}.support().version.minimum->{`2.1`};
 
 ### frameworks
 
