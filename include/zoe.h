@@ -14,12 +14,13 @@ int main(
 
 void zoe_renderer_on_initialize(
   _Nonnull id<MTLDevice>,
-  struct metil_rendering_properties* _Nonnull
+  struct metil_rendering_properties* _Nonnull,
+  void* _Nullable
 );
 
 void zoe_on_scene_change(
   int,
-  void* _Nullable
+  void* _Nonnull
 );
 
 #endif

@@ -8,8 +8,6 @@
 
 #include <AppKit/AppKit.h>
 
-id<MTLDevice> metal_kit_device = (void*)0;
-
 int main(
   int length_parameters,
   const char** parameters
@@ -25,11 +23,10 @@ int main(
 }
 
 void zoe_renderer_on_initialize(
-  id<MTLDevice> metil_metal_kit_device,
-  struct metil_rendering_properties* metil_rendering_properties
+  id<MTLDevice> metal_kit_device,
+  struct metil_rendering_properties* metil_rendering_properties,
+  void* data
 ) {
-  metal_kit_device = metil_metal_kit_device;
-
   metil_library.library = [metal_kit_device newDefaultLibrary];
 
   metil_library.function_vertex = [
@@ -66,14 +63,18 @@ void zoe_renderer_on_initialize(
 
   metil_scene_controller_on_scene_change_add(
     zoe_on_scene_change,
-    (void*)0
+    metal_kit_device
   );
 }
 
 void zoe_on_scene_change(
   int id_scene,
-  void* _
+  void* data
 ) {
+  id<MTLDevice> metal_kit_device = (
+    (id<MTLDevice>) data
+  );
+
   metil_scene_destroy(
     &metil_scene_controller.scene
   );
