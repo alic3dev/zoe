@@ -5,7 +5,6 @@
 
 #include <math.h>
 #include <stdlib.h>
-#include <stdio.h>
 
 const struct clic3_vector3_float mesh_player_size = {
   .x = 10.0f,
