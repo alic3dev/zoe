@@ -123,7 +123,7 @@ void scene_menu_main_initialize(
   ];
 
   scene->objects[0]->data = [metal_kit_device
-    newBufferWithLength: sizeof(metil_kit_data_frame_object)
+    newBufferWithLength: sizeof(struct metil_renderer_data_object)
     options: MTLResourceStorageModeShared
   ];
 
@@ -137,7 +137,7 @@ void scene_menu_main_initialize(
 
   unsigned short int iterator_id = 0;
 
-  metil_kit_data_frame_object* data_object = scene->objects[0]->data.contents;
+  struct metil_renderer_data_object* data_object = scene->objects[0]->data.contents;
   data_object->id = iterator_id++;
   data_object->mode_texture = mode_texture_ground;
   data_object->noise = 666;
@@ -168,7 +168,7 @@ void scene_menu_main_initialize(
   ];
 
   scene->objects[1]->data = [metal_kit_device
-    newBufferWithLength: sizeof(metil_kit_data_frame_object)
+    newBufferWithLength: sizeof(struct metil_renderer_data_object)
     options: MTLResourceStorageModeShared
   ];
 
@@ -212,7 +212,7 @@ void scene_menu_main_initialize(
   ];
 
   scene->objects[2]->data = [metal_kit_device
-    newBufferWithLength: sizeof(metil_kit_data_frame_object)
+    newBufferWithLength: sizeof(struct metil_renderer_data_object)
     options: MTLResourceStorageModeShared
   ];
 
@@ -258,7 +258,7 @@ void scene_menu_main_initialize(
   ];
 
   scene->objects[3]->data = [metal_kit_device
-    newBufferWithLength: sizeof(metil_kit_data_frame_object)
+    newBufferWithLength: sizeof(struct metil_renderer_data_object)
     options: MTLResourceStorageModeShared
   ];
 
@@ -303,7 +303,7 @@ void scene_menu_main_initialize(
   ];
 
   scene->objects[4]->data = [metal_kit_device
-    newBufferWithLength: sizeof(metil_kit_data_frame_object)
+    newBufferWithLength: sizeof(struct metil_renderer_data_object)
     options: MTLResourceStorageModeShared
   ];
 
@@ -349,14 +349,14 @@ void scene_menu_main_poll(
 
   switch (menu->index_current) {
     case 0: {
-      metil_kit_data_frame_object* data_object = scene->objects[3]->data.contents;
+      struct metil_renderer_data_object* data_object = scene->objects[3]->data.contents;
       data_object->noise = 1600 + (rand() % 666);
       data_object = scene->objects[4]->data.contents;
       data_object->noise = 10000;
       break;
     }
     case 1: {
-      metil_kit_data_frame_object* data_object = scene->objects[4]->data.contents;
+      struct metil_renderer_data_object* data_object = scene->objects[4]->data.contents;
       data_object->noise = 1600 + (rand() % 666);
       data_object = scene->objects[3]->data.contents;
       data_object->noise = 10000;

@@ -8,7 +8,8 @@
 #include <mode_texture.h>
 #include <scenes/scene_id.h>
 
-#include <metil.h>
+#include <metil_object.h>
+#include <metil_scenes/scene.h>
 
 #include <stdlib.h>
 
@@ -132,7 +133,7 @@ void scene_intro_forest_initialize(
   ];
 
   scene->objects[0]->data = [metal_kit_device
-    newBufferWithLength: sizeof(metil_kit_data_frame_object)
+    newBufferWithLength: sizeof(struct metil_renderer_data_object)
     options: MTLResourceStorageModeShared
   ];
 
@@ -142,7 +143,7 @@ void scene_intro_forest_initialize(
 
   unsigned short int iterator_id = 0;
 
-  metil_kit_data_frame_object* data = scene->objects[0]->data.contents;
+  struct metil_renderer_data_object* data = scene->objects[0]->data.contents;
   data->id = iterator_id++;
   data->mode_texture = mode_texture_player;
 
@@ -163,7 +164,7 @@ void scene_intro_forest_initialize(
   ];
 
   scene->objects[1]->data = [metal_kit_device
-    newBufferWithLength: sizeof(metil_kit_data_frame_object)
+    newBufferWithLength: sizeof(struct metil_renderer_data_object)
     options: MTLResourceStorageModeShared
   ];
 
@@ -197,7 +198,7 @@ void scene_intro_forest_initialize(
   ];
 
   scene->objects[2]->data = [metal_kit_device
-    newBufferWithLength: sizeof(metil_kit_data_frame_object)
+    newBufferWithLength: sizeof(struct metil_renderer_data_object)
     options: MTLResourceStorageModeShared
   ];
 
@@ -256,11 +257,11 @@ void scene_intro_forest_initialize(
     ];
 
     scene->objects[index_object]->data = [metal_kit_device
-      newBufferWithLength: sizeof(metil_kit_data_frame_object)
+      newBufferWithLength: sizeof(struct metil_renderer_data_object)
       options: MTLResourceStorageModeShared
     ];
 
-    metil_kit_data_frame_object* data = scene->objects[index_object]->data.contents;
+    struct metil_renderer_data_object* data = scene->objects[index_object]->data.contents;
     
     data->id = iterator_id++;
     data->mode_texture = mode_texture_default;
