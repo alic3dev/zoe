@@ -18,7 +18,7 @@ struct data_vertex {
   float brightness_text;
 };
 
-[[vertex]] struct data_vertex zoe_shader_vertex(
+[[vertex]] struct data_vertex zoe_ground_vertex(
   const device simd_float4* positions [[
     buffer(
       metil_renderer_vertex_index_parameter_positions
@@ -113,52 +113,6 @@ struct data_vertex {
     } else {
       data_vertex.height = (positions[id_vertex].y / data_object->height) * 0.4;
     }
-  } else if (
-    data_object->mode_texture == mode_texture_player
-  ) {
-    data_vertex.index_texture = 0;
-
-    if (id_vertex == 0) {
-      data_vertex.position_texture.x = 0.5f;
-      data_vertex.position_texture.y = metal::fabs(1.0f - (float)(data_frame->frame % 221) / 110.0f);
-    } else {
-      data_vertex.position_texture.x = (float) ((id_vertex - 1)) / 6.0f;
-      
-      if (data_vertex.position_texture.x > 1.0f) {
-        data_vertex.position_texture.x = 1.0f - (data_vertex.position_texture.x - 1.0f);
-      }
-
-      data_vertex.position_texture.y = metal::fabs(((float)(data_frame->frame % 667) / 333.0f) - 1.0f);
-    }
-  } else if (
-    data_object->mode_texture == mode_texture_text
-  ) {
-    data_vertex.index_texture = 0;
-
-    data_vertex.position_texture.x = (
-      id_vertex == 0 || id_vertex == 3
-      ? 0
-      : 1
-    );
-
-    data_vertex.position_texture.y = (
-      id_vertex == 0 || id_vertex == 1
-      ? 1
-      : 0
-    );
-  } else {
-    data_vertex.index_texture = 0;
-    data_vertex.height = positions[id_vertex].y / data_object->height;
-
-    if (positions[id_vertex].x > data_object->width || positions[id_vertex].z > data_object->depth) {
-      data_vertex.height = metal::fmin(positions[id_vertex].y / data_object->height * 0.2f, 0.2f);
-      data_vertex.position_texture.y = id_vertex % 2 == 0 ? 1.0f : 0.0f;
-      data_vertex.position_texture.x = (float)((unsigned short int)(metal::fabs(positions[id_vertex].x + positions[id_vertex].z) * 10000.0f) % 74) / 74.0f;
-    } else {
-      data_vertex.height = metal::fmin(positions[id_vertex].y / data_object->height * 0.8, 0.2f);
-      data_vertex.position_texture.y = id_vertex % 20 < 10 ? 1.0f : 0.0f;
-      data_vertex.position_texture.x = metal::fabs(positions[id_vertex].x + positions[id_vertex].z) / (data_object->width * 2.0f);
-    }
   }
 
   data_vertex.brightness = data_frame->brightness;
@@ -194,7 +148,7 @@ struct data_vertex {
   return data_vertex;
 }
 
-fragment float4 zoe_shader_fragment(
+fragment float4 zoe_ground_fragment(
   struct data_vertex data_vertex [[stage_in]],
   metal::texture2d<half> texture [[ texture(0) ]],
   metal::texture2d<half> texture_two [[ texture(1) ]]
@@ -217,41 +171,15 @@ fragment float4 zoe_shader_fragment(
 
   float brightness = data_vertex.brightness;
 
-  if (
-    data_vertex.mode_texture == mode_texture_text
-  ) {
-    return float4(
-      texture_color[0] * data_vertex.noise * data_vertex.brightness_text,
-      texture_color[1] * data_vertex.noise * data_vertex.brightness_text,
-      texture_color[2] * data_vertex.noise * data_vertex.brightness_text,
-      texture_color[3]
-    );
-  } else if (
-    data_vertex.mode_texture == mode_texture_player
-  ) {
-    return float4(
-      texture_color[0] * brightness * 0.02f,
-      texture_color[1] * brightness * 0.019f,
-      texture_color[2] * brightness * 0.02f,
-      texture_color[3]
-    );
-  } else {
-    if (
-      data_vertex.mode_texture == mode_texture_ground
-    ) {
-      brightness = ((data_vertex.height * 0.8f) + 0.075f) * brightness;
-    } else {
-      brightness = ((data_vertex.height * 0.8f) + 0.075f) * (brightness * 0.8f);
-    }
+  brightness = ((data_vertex.height * 0.8f) + 0.075f) * brightness;
 
-    brightness = brightness * metal::fmax(
-      metal::fmin(
-        100.0f / data_vertex.distance,
-        1.0f
-      ),
-      0.0f
-    );
-  }
+  brightness = brightness * metal::fmax(
+    metal::fmin(
+      100.0f / data_vertex.distance,
+      1.0f
+    ),
+    0.0f
+  );
 
   return float4(
     texture_color[0] * brightness,

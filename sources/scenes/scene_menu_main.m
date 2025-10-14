@@ -7,6 +7,7 @@
 #include <mesh/tree/mesh_tree.h>
 #include <mode_texture.h>
 #include <scenes/scene_id.h>
+#include <zoe_pipeline_index.h>
 
 #include <metil.h>
 
@@ -18,7 +19,7 @@ const unsigned long int scene_menu_main_time_scene_transition = 333;
 
 void scene_menu_main_initialize(
   struct metil_scene* scene,
-  id<MTLDevice> metal_kit_device
+  id<MTLDevice> metal_device
 ) {
   metil_audio_io_proc_add(
     scene_menu_main_io_proc
@@ -26,7 +27,7 @@ void scene_menu_main_initialize(
 
   metil_scene_initialize(
     scene,
-    metal_kit_device
+    metal_device
   );
 
   scene->poll = scene_menu_main_poll;
@@ -65,7 +66,7 @@ void scene_menu_main_initialize(
     scene->length_textures
   );
 
-  MTKTextureLoader* texture_loader = [[MTKTextureLoader alloc] initWithDevice: metal_kit_device];
+  MTKTextureLoader* texture_loader = [[MTKTextureLoader alloc] initWithDevice: metal_device];
 
   scene->textures[
     textures_scene_menu_main_ground
@@ -103,6 +104,10 @@ void scene_menu_main_initialize(
 
   [texture_loader release];
 
+  metil_object_initialize(
+    scene->objects[0]
+  );
+
   mesh_ground_initialize(
     &scene->objects[0]->mesh,
     666.0f,
@@ -110,22 +115,14 @@ void scene_menu_main_initialize(
     666.0f
   );
 
-  scene->objects[0]->vertices = [metal_kit_device
-    newBufferWithBytes: scene->objects[0]->mesh.vertices
-    length: scene->objects[0]->mesh.length_vertices * sizeof(struct clic3_vector4_float)
-    options: MTLResourceStorageModeShared
-  ];
+  metil_object_buffers_initialize(
+    scene->objects[0],
+    scene->metal_device
+  );
 
-  scene->objects[0]->indices = [metal_kit_device
-    newBufferWithBytes: scene->objects[0]->mesh.indices
-    length: scene->objects[0]->mesh.length_indices * sizeof(unsigned int)
-    options: MTLResourceStorageModeShared
-  ];
-
-  scene->objects[0]->data = [metal_kit_device
-    newBufferWithLength: sizeof(struct metil_renderer_data_object)
-    options: MTLResourceStorageModeShared
-  ];
+  scene->objects[0]->index_pipeline_render = (
+    zoe_pipeline_index_ground
+  );
 
   scene->objects[0]->texture = scene->textures[
     textures_scene_menu_main_ground
@@ -146,31 +143,24 @@ void scene_menu_main_initialize(
     sizeof(struct metil_object)
   );
 
+  metil_object_initialize(
+    scene->objects[1]
+  );
+
   mesh_tree_initialize(
     &(scene->objects[1]->mesh),
     1.0f,
     66.6f
   );
 
-  scene->objects[1]->vertices = [metal_kit_device
-    newBufferWithBytes: scene->objects[1]->mesh.vertices
-    length: scene->objects[1]->mesh.length_vertices * sizeof(struct clic3_vector4_float)
-    options: MTLResourceStorageModeShared
-  ];
+  scene->objects[1]->index_pipeline_render = (
+    zoe_pipeline_index_tree
+  );
 
-  scene->objects[1]->indices = [metal_kit_device
-    newBufferWithBytes: scene->objects[1]->mesh.indices
-    length: (
-      sizeof(unsigned int) *
-      scene->objects[1]->mesh.length_indices
-    )
-    options: MTLResourceStorageModePrivate
-  ];
-
-  scene->objects[1]->data = [metal_kit_device
-    newBufferWithLength: sizeof(struct metil_renderer_data_object)
-    options: MTLResourceStorageModeShared
-  ];
+  metil_object_buffers_initialize(
+    scene->objects[1],
+    scene->metal_device
+  );
 
   data_object = scene->objects[1]->data.contents;
   
@@ -186,35 +176,28 @@ void scene_menu_main_initialize(
     sizeof(struct metil_object)
   );
 
+  metil_object_initialize(
+    scene->objects[2]
+  );
+
+  scene->objects[2]->index_pipeline_render = (
+    zoe_pipeline_index_text
+  );
+
   scene->textures[
     textures_scene_menu_main_title
   ] = metil_text_mesh_with_texture_initialize(
-    metal_kit_device,
+    metal_device,
     &scene->objects[2]->mesh,
     "zoe",
     metil_font_reference_monospace,
     0.001f
   );
 
-  scene->objects[2]->vertices = [metal_kit_device
-    newBufferWithBytes: scene->objects[2]->mesh.vertices
-    length: scene->objects[2]->mesh.length_vertices * sizeof(struct clic3_vector4_float)
-    options: MTLResourceStorageModeShared
-  ];
-
-  scene->objects[2]->indices = [metal_kit_device
-    newBufferWithBytes: scene->objects[2]->mesh.indices
-    length: (
-      sizeof(unsigned int) *
-      scene->objects[2]->mesh.length_indices
-    )
-    options: MTLResourceStorageModePrivate
-  ];
-
-  scene->objects[2]->data = [metal_kit_device
-    newBufferWithLength: sizeof(struct metil_renderer_data_object)
-    options: MTLResourceStorageModeShared
-  ];
+  metil_object_buffers_initialize(
+    scene->objects[2],
+    scene->metal_device
+  );
 
   scene->objects[2]->position.y = 0.5f - (scene->objects[2]->mesh.size.y / 4.0f);
 
@@ -232,35 +215,28 @@ void scene_menu_main_initialize(
     sizeof(struct metil_object)
   );
 
+  metil_object_initialize(
+    scene->objects[3]
+  );
+
+  scene->objects[3]->index_pipeline_render = (
+    zoe_pipeline_index_text
+  );
+
   scene->textures[
     textures_scene_menu_main_menu_enter
   ] = metil_text_mesh_with_texture_initialize(
-    metal_kit_device,
+    metal_device,
     &scene->objects[3]->mesh,
     "enter",
     metil_font_reference_monospace,
     0.001f
   );
 
-  scene->objects[3]->vertices = [metal_kit_device
-    newBufferWithBytes: scene->objects[3]->mesh.vertices
-    length: scene->objects[3]->mesh.length_vertices * sizeof(struct clic3_vector4_float)
-    options: MTLResourceStorageModeShared
-  ];
-
-  scene->objects[3]->indices = [metal_kit_device
-    newBufferWithBytes: scene->objects[3]->mesh.indices
-    length: (
-      sizeof(unsigned int) *
-      scene->objects[3]->mesh.length_indices
-    )
-    options: MTLResourceStorageModePrivate
-  ];
-
-  scene->objects[3]->data = [metal_kit_device
-    newBufferWithLength: sizeof(struct metil_renderer_data_object)
-    options: MTLResourceStorageModeShared
-  ];
+  metil_object_buffers_initialize(
+    scene->objects[3],
+    scene->metal_device
+  );
 
   scene->objects[3]->position.y = -scene->objects[3]->mesh.size.y * 6.0;
 
@@ -277,35 +253,28 @@ void scene_menu_main_initialize(
     sizeof(struct metil_object)
   );
 
+  metil_object_initialize(
+    scene->objects[4]
+  );
+
+  scene->objects[4]->index_pipeline_render = (
+    zoe_pipeline_index_text
+  );
+
   scene->textures[
     textures_scene_menu_main_menu_exit
   ] = metil_text_mesh_with_texture_initialize(
-    metal_kit_device,
+    metal_device,
     &scene->objects[4]->mesh,
     "exit",
     metil_font_reference_monospace,
     0.001f
   );
 
-  scene->objects[4]->vertices = [metal_kit_device
-    newBufferWithBytes: scene->objects[4]->mesh.vertices
-    length: scene->objects[4]->mesh.length_vertices * sizeof(struct clic3_vector4_float)
-    options: MTLResourceStorageModeShared
-  ];
-
-  scene->objects[4]->indices = [metal_kit_device
-    newBufferWithBytes: scene->objects[4]->mesh.indices
-    length: (
-      sizeof(unsigned int) *
-      scene->objects[4]->mesh.length_indices
-    )
-    options: MTLResourceStorageModePrivate
-  ];
-
-  scene->objects[4]->data = [metal_kit_device
-    newBufferWithLength: sizeof(struct metil_renderer_data_object)
-    options: MTLResourceStorageModeShared
-  ];
+  metil_object_buffers_initialize(
+    scene->objects[4],
+    scene->metal_device
+  );
 
   scene->objects[4]->position.y = -scene->objects[4]->mesh.size.y * 10.0f;
 

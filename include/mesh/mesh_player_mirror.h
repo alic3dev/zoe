@@ -1,5 +1,5 @@
-#ifndef __mesh_player_mirror_h
-#define __mesh_player_mirror_h
+#ifndef __zoe_mesh_mesh_player_mirror_h
+#define __zoe_mesh_mesh_player_mirror_h
 
 #include <metil_mesh/mesh.h>
 

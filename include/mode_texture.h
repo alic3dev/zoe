@@ -1,5 +1,5 @@
-#ifndef __metal_kit_shader_types_h
-#define __metal_kit_shader_types_h
+#ifndef __zoe_mode_texture_h
+#define __zoe_mode_texture_h
 
 enum mode_texture {
   mode_texture_default,

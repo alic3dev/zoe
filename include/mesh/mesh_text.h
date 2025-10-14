@@ -1,5 +1,5 @@
-#ifndef __mesh_text_h
-#define __mesh_text_h
+#ifndef __zoe_mesh_mesh_text_h
+#define __zoe_mesh_mesh_text_h
 
 #include <metil_mesh/mesh.h>
 
