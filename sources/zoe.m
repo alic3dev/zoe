@@ -3,16 +3,16 @@
 #include <scenes/scene_id.h>
 #include <scenes/scene_intro_forest.h>
 #include <scenes/scene_menu_main.h>
+#include <zoe_pipeline_index.h>
 
-#include <metil.h>
-
-#include <AppKit/AppKit.h>
+#include <metil_initialize.h>
+#include <metil_rendering/metil_renderer_interface.h>
 
 int main(
   int length_parameters,
   const char** parameters
 ) {
-  metil_player_speed_movement_default = 32.0f;
+  metil_player_speed_movement_default = 64.0f;
 
   return metil_initialize(
     length_parameters,
@@ -23,47 +23,90 @@ int main(
 }
 
 void zoe_renderer_on_initialize(
-  id<MTLDevice> metal_kit_device,
-  struct metil_rendering_properties* metil_rendering_properties,
+  struct metil_renderer_interface* metil_renderer_interface,
   void* data
 ) {
-  metil_library.library = [metal_kit_device newDefaultLibrary];
-
-  metil_library.function_vertex = [
-    metil_library.library
-    newFunctionWithName: @"zoe_shader_vertex"
+  metil_library.library = [
+    metil_renderer_interface->metal_device
+    newDefaultLibrary
   ];
 
   metil_library.function_fragment = [
     metil_library.library
-    newFunctionWithName: @"zoe_shader_fragment"
+    newFunctionWithName: @"zoe_default_fragment"
   ];
 
-  metil_library.library_fps_display = [metal_kit_device newDefaultLibrary];
-
-  metil_library.function_vertex_fps_display = [
+  metil_library.function_vertex = [
     metil_library.library
-    newFunctionWithName: @"metil_fps_display_vertex"
+    newFunctionWithName: @"zoe_default_vertex"
   ];
 
-  metil_library.function_fragment_fps_display = [
-    metil_library.library
-    newFunctionWithName: @"metil_fps_display_fragment"
+  metil_library_fps_display_initialize(
+    metil_renderer_interface->metal_device,
+    (void*)0
+  );
+
+  zoe_pipeline_index_ground = [
+    metil_renderer_interface->renderer
+    pipeline_add: [
+      metil_library.library
+      newFunctionWithName: @"zoe_ground_fragment"
+    ]
+    function_vertex: [
+      metil_library.library
+      newFunctionWithName: @"zoe_ground_vertex"
+    ]
   ];
 
-  metil_rendering_properties->color_clear.x = 0.0324f;
-  metil_rendering_properties->color_clear.y = 0.0424f;
-  metil_rendering_properties->color_clear.z = 0.0649f;
-  metil_rendering_properties->color_clear.w = 1.0f;
+  zoe_pipeline_index_player = [
+    metil_renderer_interface->renderer
+    pipeline_add: [
+      metil_library.library
+      newFunctionWithName: @"zoe_player_fragment"
+    ]
+    function_vertex: [
+      metil_library.library
+      newFunctionWithName: @"zoe_player_vertex"
+    ]
+  ];
+
+  zoe_pipeline_index_text = [
+    metil_renderer_interface->renderer
+    pipeline_add: [
+      metil_library.library
+      newFunctionWithName: @"zoe_text_fragment"
+    ]
+    function_vertex: [
+      metil_library.library
+      newFunctionWithName: @"zoe_text_vertex"
+    ]
+  ];
+
+  zoe_pipeline_index_tree = [
+    metil_renderer_interface->renderer
+    pipeline_add: [
+      metil_library.library
+      newFunctionWithName: @"zoe_tree_fragment"
+    ]
+    function_vertex: [
+      metil_library.library
+      newFunctionWithName: @"zoe_tree_vertex"
+    ]
+  ];
+
+  metil_renderer_interface->rendering_properties->color_clear.x = 0.0324f;
+  metil_renderer_interface->rendering_properties->color_clear.y = 0.0424f;
+  metil_renderer_interface->rendering_properties->color_clear.z = 0.0649f;
+  metil_renderer_interface->rendering_properties->color_clear.w = 1.0f;
 
   scene_menu_main_initialize(
     &metil_scene_controller.scene,
-    metal_kit_device
+    metil_renderer_interface->metal_device
   );
 
   metil_scene_controller_on_scene_change_add(
     zoe_on_scene_change,
-    metal_kit_device
+    metil_renderer_interface
   );
 }
 
@@ -71,8 +114,8 @@ void zoe_on_scene_change(
   int id_scene,
   void* data
 ) {
-  id<MTLDevice> metal_kit_device = (
-    (id<MTLDevice>) data
+  struct metil_renderer_interface* metil_renderer_interface = (
+    (struct metil_renderer_interface*) data
   );
 
   metil_scene_destroy(
@@ -86,13 +129,13 @@ void zoe_on_scene_change(
     case scene_id_menu_main:
       scene_menu_main_initialize(
         &metil_scene_controller.scene,
-        metal_kit_device
+        metil_renderer_interface->metal_device
       );
       break;
     case scene_id_intro_forest:
       scene_intro_forest_initialize(
         &metil_scene_controller.scene,
-        metal_kit_device
+        metil_renderer_interface->metal_device
       );
       break;
   }

@@ -7,6 +7,7 @@
 #include <mesh/tree/mesh_tree.h>
 #include <mode_texture.h>
 #include <scenes/scene_id.h>
+#include <zoe_pipeline_index.h>
 
 #include <metil_object.h>
 #include <metil_scenes/scene.h>
@@ -21,7 +22,7 @@ void scene_intro_forest_data_initialize(
 
 void scene_intro_forest_initialize(
   struct metil_scene* scene,
-  id<MTLDevice> metal_kit_device
+  id<MTLDevice> metal_device
 ) {
   metil_audio_io_proc_add(
     scene_intro_forest_io_proc
@@ -29,7 +30,7 @@ void scene_intro_forest_initialize(
 
   metil_scene_initialize(
     scene,
-    metal_kit_device
+    metal_device
   );
 
   scene->type = metil_scene_type_game;
@@ -53,6 +54,10 @@ void scene_intro_forest_initialize(
     scene->objects[index_object] = malloc(
       sizeof(struct metil_object)
     );
+
+    metil_object_initialize(
+      scene->objects[index_object]
+    );
   }
 
   scene->length_textures = 3;
@@ -61,7 +66,7 @@ void scene_intro_forest_initialize(
     scene->length_textures
   );
 
-  MTKTextureLoader* texture_loader = [[MTKTextureLoader alloc] initWithDevice: metal_kit_device];
+  MTKTextureLoader* texture_loader = [[MTKTextureLoader alloc] initWithDevice: metal_device];
 
   scene->textures[
     textures_scene_intro_forest_ground
@@ -120,22 +125,12 @@ void scene_intro_forest_initialize(
     &scene->objects[0]->mesh
   );
 
-  scene->objects[0]->vertices = [metal_kit_device
-    newBufferWithBytes: scene->objects[0]->mesh.vertices
-    length: scene->objects[0]->mesh.length_vertices * sizeof(struct clic3_vector4_float)
-    options: MTLResourceStorageModeShared
-  ];
+  scene->objects[0]->index_pipeline_render = zoe_pipeline_index_player;
 
-  scene->objects[0]->indices = [metal_kit_device
-    newBufferWithBytes: scene->objects[0]->mesh.indices
-    length: scene->objects[0]->mesh.length_indices * sizeof(unsigned int)
-    options: MTLResourceStorageModeShared
-  ];
-
-  scene->objects[0]->data = [metal_kit_device
-    newBufferWithLength: sizeof(struct metil_renderer_data_object)
-    options: MTLResourceStorageModeShared
-  ];
+  metil_object_buffers_initialize(
+    scene->objects[0],
+    scene->metal_device
+  );
 
   scene->objects[0]->texture = scene->textures[
     textures_scene_intro_forest_player
@@ -151,22 +146,12 @@ void scene_intro_forest_initialize(
     &scene->objects[1]->mesh
   );
 
-  scene->objects[1]->vertices = [metal_kit_device
-    newBufferWithBytes: scene->objects[1]->mesh.vertices
-    length: scene->objects[1]->mesh.length_vertices * sizeof(struct clic3_vector4_float)
-    options: MTLResourceStorageModeShared
-  ];
+  scene->objects[1]->index_pipeline_render = zoe_pipeline_index_player;
 
-  scene->objects[1]->indices = [metal_kit_device
-    newBufferWithBytes: scene->objects[1]->mesh.indices
-    length: scene->objects[1]->mesh.length_indices * sizeof(unsigned int)
-    options: MTLResourceStorageModeShared
-  ];
-
-  scene->objects[1]->data = [metal_kit_device
-    newBufferWithLength: sizeof(struct metil_renderer_data_object)
-    options: MTLResourceStorageModeShared
-  ];
+  metil_object_buffers_initialize(
+    scene->objects[1],
+    scene->metal_device
+  );
 
   scene->objects[1]->texture = scene->textures[
     textures_scene_intro_forest_player
@@ -183,24 +168,14 @@ void scene_intro_forest_initialize(
     2000.0f
   );
 
+  scene->objects[2]->index_pipeline_render = zoe_pipeline_index_ground;
+
   scene->objects[2]->position.y = -10.0f;
 
-  scene->objects[2]->vertices = [metal_kit_device
-    newBufferWithBytes: scene->objects[2]->mesh.vertices
-    length: scene->objects[2]->mesh.length_vertices * sizeof(struct clic3_vector4_float)
-    options: MTLResourceStorageModeShared
-  ];
-
-  scene->objects[2]->indices = [metal_kit_device
-    newBufferWithBytes: scene->objects[2]->mesh.indices
-    length: scene->objects[2]->mesh.length_indices * sizeof(unsigned int)
-    options: MTLResourceStorageModeShared
-  ];
-
-  scene->objects[2]->data = [metal_kit_device
-    newBufferWithLength: sizeof(struct metil_renderer_data_object)
-    options: MTLResourceStorageModeShared
-  ];
+  metil_object_buffers_initialize(
+    scene->objects[2],
+    scene->metal_device
+  );
 
   scene->objects[2]->texture = scene->textures[
     textures_scene_intro_forest_ground
@@ -224,6 +199,8 @@ void scene_intro_forest_initialize(
       1.0f,
       250.0f
     );
+    
+    scene->objects[index_object]->index_pipeline_render = zoe_pipeline_index_tree;
 
     scene->objects[index_object]->position.x = (
       -(scene->objects[index_object]->mesh.size.x / 2.0f) + (
@@ -241,25 +218,10 @@ void scene_intro_forest_initialize(
       )
     );
 
-    scene->objects[index_object]->vertices = [metal_kit_device
-      newBufferWithBytes: scene->objects[index_object]->mesh.vertices
-      length: scene->objects[index_object]->mesh.length_vertices * sizeof(struct clic3_vector4_float)
-      options: MTLResourceStorageModeShared
-    ];
-
-    scene->objects[index_object]->indices = [metal_kit_device
-      newBufferWithBytes: scene->objects[index_object]->mesh.indices
-      length: (
-        sizeof(unsigned int) *
-        scene->objects[index_object]->mesh.length_indices
-      )
-      options: MTLResourceStorageModePrivate
-    ];
-
-    scene->objects[index_object]->data = [metal_kit_device
-      newBufferWithLength: sizeof(struct metil_renderer_data_object)
-      options: MTLResourceStorageModeShared
-    ];
+    metil_object_buffers_initialize(
+      scene->objects[index_object],
+      scene->metal_device
+    );
 
     struct metil_renderer_data_object* data = scene->objects[index_object]->data.contents;
     

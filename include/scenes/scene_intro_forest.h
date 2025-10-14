@@ -1,5 +1,5 @@
-#ifndef __scenes_scene_intro_forest_h
-#define __scenes_scene_intro_forest_h
+#ifndef __zoe_scenes_scene_intro_forest_h
+#define __zoe_scenes_scene_intro_forest_h
 
 #include <metil.h>
 

@@ -1,5 +1,5 @@
-#ifndef __mesh_ground_h
-#define __mesh_ground_h
+#ifndef __zoe_mesh_ground_mesh_ground_h
+#define __zoe_mesh_ground_mesh_ground_h
 
 #include <clic3_vector.h>
 #include <metil_mesh/mesh.h>
