@@ -165,7 +165,7 @@ ${directory_app_contents_resources_textures}/%: ${directory_textures}/%
 
 ${file_output_metal}: ${file_metalar}
 	mkdir -p ${directory_app_contents_resources}
-	${metallib} ${metal_flags_output} ${file_metalar} ${directory_metil_library}/metil_fps_display.metalar -o ${file_output_metal}
+	${metallib} ${metal_flags_output} ${file_metalar} ${directory_metil_library}/metil_fps_display.metalar ${directory_metil_library}/metil_wireframe.metalar -o ${file_output_metal}
 
 ${file_metalar}: ${files_air}
 	mkdir -p ${directory_metalar}

@@ -132,9 +132,12 @@ void scene_intro_forest_initialize(
     scene->metal_device
   );
 
-  scene->objects[0]->texture = scene->textures[
-    textures_scene_intro_forest_player
-  ];
+  metil_object_texture_add(
+    scene->objects[0],
+    scene->textures[
+      textures_scene_intro_forest_player
+    ]
+  );
 
   unsigned short int iterator_id = 0;
 
@@ -153,9 +156,12 @@ void scene_intro_forest_initialize(
     scene->metal_device
   );
 
-  scene->objects[1]->texture = scene->textures[
-    textures_scene_intro_forest_player
-  ];
+  metil_object_texture_add(
+    scene->objects[1],
+    scene->textures[
+      textures_scene_intro_forest_player
+    ]
+  );
 
   data = scene->objects[1]->data.contents;
   data->id = iterator_id++;
@@ -177,13 +183,19 @@ void scene_intro_forest_initialize(
     scene->metal_device
   );
 
-  scene->objects[2]->texture = scene->textures[
-    textures_scene_intro_forest_ground
-  ];
+  metil_object_texture_add(
+    scene->objects[2],
+    scene->textures[
+      textures_scene_intro_forest_ground
+    ]
+  );
 
-  scene->objects[2]->texture_secondary = scene->textures[
-    textures_scene_intro_forest_tree
-  ];
+  metil_object_texture_add(
+    scene->objects[2],
+    scene->textures[
+      textures_scene_intro_forest_tree
+    ]
+  );
 
   data = scene->objects[2]->data.contents;
   data->id = iterator_id++;
@@ -228,9 +240,12 @@ void scene_intro_forest_initialize(
     data->id = iterator_id++;
     data->mode_texture = mode_texture_default;
 
-    scene->objects[index_object]->texture = scene->textures[
-      textures_scene_intro_forest_tree
-    ];
+    metil_object_texture_add(
+      scene->objects[index_object],
+      scene->textures[
+        textures_scene_intro_forest_tree
+      ]
+    );
   }
 }
 
