@@ -124,13 +124,19 @@ void scene_menu_main_initialize(
     zoe_pipeline_index_ground
   );
 
-  scene->objects[0]->texture = scene->textures[
-    textures_scene_menu_main_ground
-  ];
+  metil_object_texture_add(
+    scene->objects[0],
+    scene->textures[
+      textures_scene_menu_main_ground
+    ]
+  );
 
-  scene->objects[0]->texture_secondary = scene->textures[
-    textures_scene_menu_main_tree
-  ];
+  metil_object_texture_add(
+    scene->objects[0],
+    scene->textures[
+      textures_scene_menu_main_tree
+    ]
+  );
 
   unsigned short int iterator_id = 0;
 
@@ -168,9 +174,12 @@ void scene_menu_main_initialize(
   data_object->mode_texture = mode_texture_default;
   data_object->noise = 666;
 
-  scene->objects[1]->texture = scene->textures[
-    textures_scene_menu_main_tree
-  ];
+  metil_object_texture_add(
+    scene->objects[1],
+    scene->textures[
+      textures_scene_menu_main_tree
+    ]
+  );
 
   scene->objects[2] = malloc(
     sizeof(struct metil_object)
@@ -206,9 +215,12 @@ void scene_menu_main_initialize(
   data_object->mode_texture = mode_texture_text;
   data_object->noise = 10000;
 
-  scene->objects[2]->texture = scene->textures[
-    textures_scene_menu_main_title
-  ];
+  metil_object_texture_add(
+    scene->objects[2],
+    scene->textures[
+      textures_scene_menu_main_title
+    ]
+  );
 
   scene->objects[3] = malloc(
     sizeof(struct metil_object)
@@ -243,9 +255,12 @@ void scene_menu_main_initialize(
   data_object->id = iterator_id++;
   data_object->mode_texture = mode_texture_text;
 
-  scene->objects[3]->texture = scene->textures[
-    textures_scene_menu_main_menu_enter
-  ];
+  metil_object_texture_add(
+    scene->objects[3],
+    scene->textures[
+      textures_scene_menu_main_menu_enter
+    ]
+  );
 
   scene->objects[4] = malloc(
     sizeof(struct metil_object)
@@ -280,9 +295,12 @@ void scene_menu_main_initialize(
   data_object->id = iterator_id++;
   data_object->mode_texture = mode_texture_text;
 
-  scene->objects[4]->texture = scene->textures[
-    textures_scene_menu_main_menu_exit
-  ];
+  metil_object_texture_add(
+    scene->objects[4],
+    scene->textures[
+      textures_scene_menu_main_menu_exit
+    ]
+  );
 
   scene->player.position.y = (
     -metil_camera_height_default + 3.0f

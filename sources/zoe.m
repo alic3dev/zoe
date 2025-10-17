@@ -26,24 +26,10 @@ void zoe_renderer_on_initialize(
   struct metil_renderer_interface* metil_renderer_interface,
   void* data
 ) {
-  metil_library.library = [
-    metil_renderer_interface->metal_device
-    newDefaultLibrary
-  ];
-
-  metil_library.function_fragment = [
-    metil_library.library
-    newFunctionWithName: @"zoe_default_fragment"
-  ];
-
-  metil_library.function_vertex = [
-    metil_library.library
-    newFunctionWithName: @"zoe_default_vertex"
-  ];
-
-  metil_library_fps_display_initialize(
+  metil_library_initialize(
     metil_renderer_interface->metal_device,
-    (void*)0
+    @"zoe_default_fragment",
+    @"zoe_default_vertex"
   );
 
   zoe_pipeline_index_ground = [
