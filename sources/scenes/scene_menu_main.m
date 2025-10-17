@@ -190,8 +190,7 @@ void scene_menu_main_initialize(
     metal_device,
     &scene->objects[2]->mesh,
     "zoe",
-    metil_font_reference_monospace,
-    0.001f
+    &metil_text_render_parameters_default
   );
 
   metil_object_buffers_initialize(
@@ -229,8 +228,7 @@ void scene_menu_main_initialize(
     metal_device,
     &scene->objects[3]->mesh,
     "enter",
-    metil_font_reference_monospace,
-    0.001f
+    &metil_text_render_parameters_default
   );
 
   metil_object_buffers_initialize(
@@ -267,8 +265,7 @@ void scene_menu_main_initialize(
     metal_device,
     &scene->objects[4]->mesh,
     "exit",
-    metil_font_reference_monospace,
-    0.001f
+    &metil_text_render_parameters_default
   );
 
   metil_object_buffers_initialize(
