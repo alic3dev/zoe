@@ -39,15 +39,15 @@ jobs:
         with:
           repository: alic3dev/metil
           path: metil
-      - name: make_cer0
-        run: cd cer0 && make
       - name: make_clic3
-        run: cd clic3 && make
+        run: cd clic3 && make clic3_dylib
+      - name: make_cer0
+        run: cd cer0 && make cer0_dylib
       - name: make_interrupt_handler
-        run: cd interrupt_handler && make
+        run: cd interrupt_handler && make interrupt_handler_dylib
       - name: make_math_c
-        run: cd math_c && make
+        run: cd math_c && make math_c_dylib
       - name: make_metil
-        run: cd metil && make
+        run: cd metil && make metil
       - name: make_zoe
         run: cd zoe && disable_metal_fast_options=1 make
