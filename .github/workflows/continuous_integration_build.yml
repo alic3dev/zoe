@@ -48,6 +48,6 @@ jobs:
       - name: make_math_c
         run: cd math_c && make math_c_dylib
       - name: make_metil
-        run: cd metil && make metil_dylib
+        run: cd metil && make metil
       - name: make_zoe
         run: cd zoe && disable_metal_fast_options=1 make
