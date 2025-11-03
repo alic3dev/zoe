@@ -5,7 +5,6 @@
 #include <mesh/mesh_player.h>
 #include <mesh/mesh_player_mirror.h>
 #include <mesh/tree/mesh_tree.h>
-#include <mode_texture.h>
 #include <scenes/scene_id.h>
 #include <zoe_pipeline_index.h>
 
@@ -143,7 +142,6 @@ void scene_intro_forest_initialize(
 
   struct metil_renderer_data_object* data = scene->objects[0]->data.contents;
   data->id = iterator_id++;
-  data->mode_texture = mode_texture_player;
 
   mesh_player_mirror_initialize(
     &scene->objects[1]->mesh
@@ -165,7 +163,6 @@ void scene_intro_forest_initialize(
 
   data = scene->objects[1]->data.contents;
   data->id = iterator_id++;
-  data->mode_texture = mode_texture_player;
 
   mesh_ground_initialize(
     &scene->objects[2]->mesh,
@@ -199,7 +196,6 @@ void scene_intro_forest_initialize(
 
   data = scene->objects[2]->data.contents;
   data->id = iterator_id++;
-  data->mode_texture = mode_texture_ground;
 
   for (
     unsigned short int index_object = 3;
@@ -238,7 +234,6 @@ void scene_intro_forest_initialize(
     struct metil_renderer_data_object* data = scene->objects[index_object]->data.contents;
     
     data->id = iterator_id++;
-    data->mode_texture = mode_texture_default;
 
     metil_object_texture_add(
       scene->objects[index_object],

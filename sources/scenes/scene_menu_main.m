@@ -5,7 +5,6 @@
 #include <mesh/mesh_text.h>
 #include <metil_rendering/camera/camera.h>
 #include <mesh/tree/mesh_tree.h>
-#include <mode_texture.h>
 #include <scenes/scene_id.h>
 #include <zoe_pipeline_index.h>
 
@@ -142,7 +141,6 @@ void scene_menu_main_initialize(
 
   struct metil_renderer_data_object* data_object = scene->objects[0]->data.contents;
   data_object->id = iterator_id++;
-  data_object->mode_texture = mode_texture_ground;
   data_object->noise = 666;
 
   scene->objects[1] = malloc(
@@ -171,7 +169,6 @@ void scene_menu_main_initialize(
   data_object = scene->objects[1]->data.contents;
   
   data_object->id = iterator_id++;
-  data_object->mode_texture = mode_texture_default;
   data_object->noise = 666;
 
   metil_object_texture_add(
@@ -212,7 +209,6 @@ void scene_menu_main_initialize(
   data_object = scene->objects[2]->data.contents;
   
   data_object->id = iterator_id++;
-  data_object->mode_texture = mode_texture_text;
   data_object->noise = 10000;
 
   metil_object_texture_add(
@@ -253,7 +249,6 @@ void scene_menu_main_initialize(
   data_object = scene->objects[3]->data.contents;
   
   data_object->id = iterator_id++;
-  data_object->mode_texture = mode_texture_text;
 
   metil_object_texture_add(
     scene->objects[3],
@@ -293,7 +288,6 @@ void scene_menu_main_initialize(
   data_object = scene->objects[4]->data.contents;
   
   data_object->id = iterator_id++;
-  data_object->mode_texture = mode_texture_text;
 
   metil_object_texture_add(
     scene->objects[4],
