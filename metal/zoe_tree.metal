@@ -1,5 +1,3 @@
-#include <mode_texture.h>
-
 #include <metil_rendering/metil_renderer_data_frame.h>
 #include <metil_rendering/metil_renderer_data_object.h>
 #include <metil_rendering/metil_renderer_vertex_index_parameter.h>
@@ -11,7 +9,6 @@ struct data_vertex {
   float distance;
   float height;
   float2 position_texture;
-  unsigned char mode_texture;
   unsigned char index_texture;
   float noise;
   float brightness;
@@ -40,7 +37,6 @@ struct data_vertex {
 
   data_vertex.position = data_object->view_model_matrix_projection * positions[id_vertex];
   data_vertex.height = 0.0f;
-  data_vertex.mode_texture = data_object->mode_texture;
   data_vertex.noise = (float)(data_object->noise % 10001) / 10000.0f;
 
   data_vertex.index_texture = 0;
