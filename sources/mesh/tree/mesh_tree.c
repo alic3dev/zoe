@@ -4,6 +4,13 @@
 
 #include <metil_mesh/mesh.h>
 
+#include <rand_functions.h>
+#include <rand_initialize.h>
+#include <rand_parameters.h>
+#include <rand_result.h>
+#include <rand_source.h>
+#include <rand_source_type.h>
+
 #include <math.h>
 #include <stdlib.h>
 
@@ -51,6 +58,29 @@ void mesh_tree_initialize(
 
   unsigned int index_index = 0;
 
+  struct rand_parameters rand_parameters;
+  struct rand_source rand_source;
+  struct rand_result rand_result;
+
+  rand_initialize(
+    &rand_parameters,
+    &rand_result,
+    &rand_source, (
+      length_segments_height *
+      length_vertices_radius *
+      2 +
+      1
+    ),
+    rand_mode_bytes,
+    rand_source_type_divisive
+  );
+
+  rand_get(
+    &rand_source,
+    &rand_result,
+    &rand_parameters
+  );
+
   for (
     unsigned char index_segment_height = 0;
     index_segment_height < length_segments_height;
@@ -69,8 +99,17 @@ void mesh_tree_initialize(
         index_offset_height + index_segment_radius
       );
 
-      float distance = fmod(((float) rand()) / 1000.0f, radius_nine_tenths) + radius_tenth;
-      float angle = (float)index_segment_radius / (float)length_vertices_radius * M_PI * 2.0f;
+      float distance = fmod(((float) (
+        rand_result.bytes[index_vertex + 1] *
+        rand_result.bytes[index_vertex + 2]
+      )) / 1000.0f, radius_nine_tenths) + radius_tenth;
+
+      float angle = (
+        (float)index_segment_radius /
+        (float)length_vertices_radius *
+        M_PI *
+        2.0f
+      );
       
       mesh->vertices[index_vertex].x = cos(angle) * distance;
       mesh->vertices[index_vertex].y = index_segment_height * interval_height;
@@ -105,7 +144,9 @@ void mesh_tree_initialize(
     }
   }
 
-  unsigned char count_branches = (rand() % 30) + 10;
+  unsigned char count_branches = (
+    rand_result.bytes[0] % 30
+  ) + 10;
 
   float radius_branch_tenth = (radius / 2.0f) / 10.0f;
   float radius_branch_nine_tenths = radius_branch_nine_tenths * 9.0f;
@@ -118,16 +159,43 @@ void mesh_tree_initialize(
     );
   }
 
+  struct rand_parameters rand_parameters_secondary;
+  struct rand_source rand_source_secondary;
+  struct rand_result rand_result_secondary;
+
+  rand_initialize(
+    &rand_parameters_secondary,
+    &rand_result_secondary,
+    &rand_source_secondary, (
+      count_branches *
+      155
+    ),
+    rand_mode_bytes,
+    rand_source_type_divisive
+  );
+
+  rand_get(
+    &rand_source_secondary,
+    &rand_result_secondary,
+    &rand_parameters_secondary
+  );
+
   for (
     unsigned char index_branch = 0;
     index_branch < count_branches;
     ++index_branch
   ) {
+    unsigned int offset_byte = (
+      index_branch * 155
+    );
+
     unsigned int index_vertex = (
       mesh->length_vertices
     );
 
-    unsigned char joints_branch = rand() % 10 + 5;
+    unsigned char joints_branch = (
+      rand_result_secondary.bytes[offset_byte + 10] % 10
+    ) + 5;
 
     mesh->length_vertices = (
       mesh->length_vertices + 
@@ -152,13 +220,19 @@ void mesh_tree_initialize(
     );
 
     float angle = (
-      ((float)(rand() % 10000) / 10000.0f) *
+      ((float)((
+        rand_result_secondary.bytes[offset_byte + 3] *
+        rand_result_secondary.bytes[offset_byte + 4]
+      ) % 10000) / 10000.0f) *
       M_PI * 2.0f
     );
 
     struct clic3_vector3_float position_joint_branch = {
       .x = 0.0f,
-      .y = ((float)(rand() % 10000) / 20000.0f) * mesh->size.y + (mesh->size.y / 2.0f),
+      .y = ((float)((
+        rand_result_secondary.bytes[offset_byte + 2] *
+        rand_result_secondary.bytes[offset_byte + 1]
+      ) % 10000) / 20000.0f) * mesh->size.y,
       .z = 0.0f
     };
 
@@ -167,11 +241,23 @@ void mesh_tree_initialize(
       index_joint_branch < joints_branch;
       ++index_joint_branch
     ) {
-      float distance = fmod(((float) rand()) / 1000.0f, radius_branch_nine_tenths) + radius_branch_tenth;
-      float length = ((float)(rand() % 10000) / 10000.0f) * (mesh->size.y / 5.0f) + (mesh->size.y / 5.0f);
+      float distance = fmod(
+        (float) (
+          rand_result_secondary.bytes[offset_byte + 5] *
+          rand_result_secondary.bytes[offset_byte + 7]
+        ) / 1000.0f, radius_branch_nine_tenths
+      ) + radius_branch_tenth;
+
+      float length = (
+        ((float)((
+          rand_result_secondary.bytes[offset_byte + 11] *
+          rand_result_secondary.bytes[offset_byte]
+        ) % 10000) / 10000.0f) *
+        (mesh->size.y / 5.0f) +
+        (mesh->size.y / 5.0f)
+      );
       
       if (index_joint_branch == 0 ) {
-
         mesh->vertices[index_vertex].x = position_joint_branch.x;
         mesh->vertices[index_vertex].y = position_joint_branch.y;
         mesh->vertices[index_vertex].z = position_joint_branch.z;
@@ -179,7 +265,11 @@ void mesh_tree_initialize(
 
         position_joint_branch.y = (
           position_joint_branch.y + (
-            ((((float)(rand() % 10000)) / 10000.0f) - 0.125f) * (mesh->size.y / 20.0f) + (mesh->size.y / 20.0f)
+            ((((float)((
+              rand_result_secondary.bytes[offset_byte + 13] *
+              rand_result_secondary.bytes[offset_byte + 9]
+            ) % 10000)) / 5000.0f) - 1.0f) *
+            (mesh->size.y / 20.0f)
           )
         );
 
@@ -210,10 +300,13 @@ void mesh_tree_initialize(
       if (index_joint_branch != 0) {
         position_joint_branch.y = (
           position_joint_branch.y + (
-            ((((float)(rand() % 10000)) / 10000.0f) - 0.125f) * (mesh->size.y / 30.0f) + (mesh->size.y / 30.0f)
+            ((((float)((
+              rand_result_secondary.bytes[offset_byte + 8] *
+              rand_result_secondary.bytes[offset_byte + 12]
+            ) % 10000)) / 5000.0f) - 1.0f) * (mesh->size.y / 30.0f)
           )
         );
-      } 
+      }
 
       position_joint_branch.x = (
         cosf(angle) * (length * ((float)(index_joint_branch + 1) / ((float)(joints_branch))))
@@ -230,7 +323,10 @@ void mesh_tree_initialize(
 
       position_joint_branch.y = (
         position_joint_branch.y + (
-          ((((float)(rand() % 10000)) / 10000.0f) - 0.125f) * (mesh->size.y / 30.0f) + (mesh->size.y / 30.0f)
+          ((((float)((
+            rand_result_secondary.bytes[offset_byte + 14] *
+            rand_result_secondary.bytes[offset_byte + 6]
+          ) % 10000)) / 5000.0f) - 1.0f) * (mesh->size.y / 30.0f)
         )
       );
 

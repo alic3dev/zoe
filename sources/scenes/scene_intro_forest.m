@@ -11,6 +11,13 @@
 #include <metil_object.h>
 #include <metil_scenes/scene.h>
 
+#include <rand_functions.h>
+#include <rand_initialize.h>
+#include <rand_parameters.h>
+#include <rand_result.h>
+#include <rand_source.h>
+#include <rand_source_type.h>
+
 #include <stdlib.h>
 
 void scene_intro_forest_data_initialize(
@@ -23,8 +30,26 @@ void scene_intro_forest_initialize(
   struct metil_scene* scene,
   id<MTLDevice> metal_device
 ) {
-  metil_audio_io_proc_add(
-    scene_intro_forest_io_proc
+  scene->data = malloc(
+    sizeof(struct scene_intro_forest_io_proc_data)
+  );
+
+  struct scene_intro_forest_io_proc_data* io_proc_data = (
+    (struct scene_intro_forest_io_proc_data*) scene->data
+  );
+
+  rand_initialize(
+    &io_proc_data->rand_parameters_io_proc,
+    &io_proc_data->rand_result_io_proc,
+    &io_proc_data->rand_source_io_proc, 
+    41000,
+    rand_mode_bytes,
+    rand_source_type_divisive
+  );
+
+  metil_audio_io_proc_add_with_data(
+    scene_intro_forest_io_proc,
+    io_proc_data
   );
 
   metil_scene_initialize(
@@ -173,8 +198,6 @@ void scene_intro_forest_initialize(
 
   scene->objects[2]->index_pipeline_render = zoe_pipeline_index_ground;
 
-  scene->objects[2]->position.y = -10.0f;
-
   metil_object_buffers_initialize(
     scene->objects[2],
     scene->metal_device
@@ -197,11 +220,38 @@ void scene_intro_forest_initialize(
   data = scene->objects[2]->data.contents;
   data->id = iterator_id++;
 
+  struct rand_parameters rand_parameters;
+  struct rand_source rand_source;
+  struct rand_result rand_result;
+
+  rand_initialize(
+    &rand_parameters,
+    &rand_result,
+    &rand_source, (
+      (scene->length_objects - 3) *
+      4
+    ),
+    rand_mode_bytes,
+    rand_source_type_divisive
+  );
+
+  rand_get(
+    &rand_source,
+    &rand_result,
+    &rand_parameters
+  );
+
+  unsigned int offset_byte = 0;
+
   for (
     unsigned short int index_object = 3;
     index_object < scene->length_objects;
     ++index_object
   ) {
+    offset_byte = (
+      (index_object - 3) * 4
+    );
+
     mesh_tree_initialize(
       &(scene->objects[index_object]->mesh),
       1.0f,
@@ -212,17 +262,25 @@ void scene_intro_forest_initialize(
 
     scene->objects[index_object]->position.x = (
       -(scene->objects[index_object]->mesh.size.x / 2.0f) + (
-        (((float)(rand() % 10000) / 5000.0f) - 1.0f) * 0.7f *
-        (scene->objects[index_object]->mesh.size.x - (scene->objects[2]->mesh.size.x / 2.0f))
+        (((float)((
+          rand_result.bytes[offset_byte] *
+          rand_result.bytes[offset_byte + 2]
+        ) % 10000) / 5000.0f) - 1.0f) * 0.7f *
+        (scene->objects[index_object]->mesh.size.x - (
+          scene->objects[2]->mesh.size.x / 2.0f
+        ))
       )
     );
 
-    scene->objects[index_object]->position.y = -10.0f;
-
     scene->objects[index_object]->position.z = (
       -(scene->objects[index_object]->mesh.size.z / 2.0f) + (
-        (((float)(rand() % 10000) / 5000.0f) - 1.0f) * 0.7f *
-        (scene->objects[2]->mesh.size.z - (scene->objects[2]->mesh.size.z / 2.0f))
+        (((float)((
+          rand_result.bytes[offset_byte + 1] *
+          rand_result.bytes[offset_byte + 3]
+        ) % 10000) / 5000.0f) - 1.0f) * 0.7f *
+        (scene->objects[2]->mesh.size.z - (
+          scene->objects[2]->mesh.size.z / 2.0f
+        ))
       )
     );
 
@@ -282,6 +340,8 @@ void scene_intro_forest_destroy(
     scene_intro_forest_io_proc
   );
 
+  free(scene->data);
+
   metil_scene_destroy_default(scene);
 }
 
@@ -294,6 +354,16 @@ OSStatus scene_intro_forest_io_proc(
   const AudioTimeStamp* time_stamp_audio_out,
   void* data
 ) {
+  struct scene_intro_forest_io_proc_data* io_proc_data = (
+    (struct scene_intro_forest_io_proc_data*) data
+  );
+
+  rand_get(
+    &io_proc_data->rand_source_io_proc,
+    &io_proc_data->rand_result_io_proc,
+    &io_proc_data->rand_parameters_io_proc
+  );
+
   for (
     unsigned long int index_buffer = 0;
     index_buffer < list_buffer_audio_out->mNumberBuffers;
@@ -311,9 +381,17 @@ OSStatus scene_intro_forest_io_proc(
       ++index_buffer_out
     ) {
       unsigned long int channel = index_buffer_out % count_channel_out;
+      unsigned int offset_byte = index_buffer_out * 2;
 
       if (channel == 0) {
-        buffer_out[index_buffer_out] = ((float) (rand() % 10000)) / 100000.0f;
+        buffer_out[index_buffer_out] = ((float) ((
+          io_proc_data->rand_result_io_proc.bytes[
+            offset_byte % 20500
+          ] *
+          io_proc_data->rand_result_io_proc.bytes[
+            (offset_byte + 1) % 20500
+          ]
+        ) % 10000)) / 100000.0f;
       } else {
         buffer_out[index_buffer_out] = buffer_out[index_buffer_out - channel];
       }

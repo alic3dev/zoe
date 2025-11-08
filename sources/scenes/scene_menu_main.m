@@ -10,6 +10,13 @@
 
 #include <metil.h>
 
+#include <rand_functions.h>
+#include <rand_initialize.h>
+#include <rand_parameters.h>
+#include <rand_result.h>
+#include <rand_source.h>
+#include <rand_source_type.h>
+
 #include <CoreAudio/CoreAudio.h>
 
 #include <math.h>
@@ -20,24 +27,36 @@ void scene_menu_main_initialize(
   struct metil_scene* scene,
   id<MTLDevice> metal_device
 ) {
-  metil_audio_io_proc_add(
-    scene_menu_main_io_proc
-  );
-
   metil_scene_initialize(
     scene,
     metal_device
   );
 
-  scene->poll = scene_menu_main_poll;
-  scene->poll_input = scene_menu_main_poll_input;
-  scene->destroy = scene_menu_main_destroy;
-
   scene->data = malloc(
     sizeof(struct scene_menu_main_data)
   );
 
-  struct scene_menu_main_data* data = (struct scene_menu_main_data*) scene->data;
+  struct scene_menu_main_data* data = (
+    (struct scene_menu_main_data*) scene->data
+  );
+
+  rand_initialize(
+    &data->rand_parameters_io_proc,
+    &data->rand_result_io_proc,
+    &data->rand_source_io_proc, 
+    41000,
+    rand_mode_bytes,
+    rand_source_type_divisive
+  );
+
+  metil_audio_io_proc_add_with_data(
+    scene_menu_main_io_proc,
+    data
+  );
+
+  scene->poll = scene_menu_main_poll;
+  scene->poll_input = scene_menu_main_poll_input;
+  scene->destroy = scene_menu_main_destroy;
 
   data->time_started = 0;
 
@@ -421,6 +440,16 @@ OSStatus scene_menu_main_io_proc(
   const AudioTimeStamp* time_stamp_audio_out,
   void* data
 ) {
+  struct scene_menu_main_data* io_proc_data = (
+    (struct scene_menu_main_data*) data
+  );
+
+  rand_get(
+    &io_proc_data->rand_source_io_proc,
+    &io_proc_data->rand_result_io_proc,
+    &io_proc_data->rand_parameters_io_proc
+  );
+
   for (
     unsigned long int index_buffer = 0;
     index_buffer < list_buffer_audio_out->mNumberBuffers;
@@ -438,9 +467,17 @@ OSStatus scene_menu_main_io_proc(
       ++index_buffer_out
     ) {
       unsigned long int channel = index_buffer_out % count_channel_out;
+      unsigned int offset_byte = index_buffer_out * 2;
 
-      if (index_buffer == 0) {
-        buffer_out[index_buffer_out] = ((float) (rand() % 10000)) / 10000.0f;
+      if (channel == 0) {
+        buffer_out[index_buffer_out] = ((float) ((
+          io_proc_data->rand_result_io_proc.bytes[
+            offset_byte % 20500
+          ] *
+          io_proc_data->rand_result_io_proc.bytes[
+            (offset_byte + 1) % 20500
+          ]
+        ) % 10000)) / 100000.0f;
       } else {
         buffer_out[index_buffer_out] = buffer_out[index_buffer_out - channel];
       }

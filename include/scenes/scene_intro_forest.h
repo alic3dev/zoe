@@ -3,6 +3,10 @@
 
 #include <metil.h>
 
+#include <rand_parameters.h>
+#include <rand_result.h>
+#include <rand_source.h>
+
 #include <CoreAudio/CoreAudio.h>
 #include <MetalKit/MetalKit.h>
 
@@ -24,6 +28,12 @@ void scene_intro_forest_poll(
 void scene_intro_forest_destroy(
   struct metil_scene*
 );
+
+struct scene_intro_forest_io_proc_data {
+  struct rand_parameters rand_parameters_io_proc;
+  struct rand_source rand_source_io_proc;
+  struct rand_result rand_result_io_proc;
+};
 
 OSStatus scene_intro_forest_io_proc(
   AudioObjectID,

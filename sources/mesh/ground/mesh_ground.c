@@ -4,6 +4,13 @@
 
 #include <clic3.h>
 
+#include <rand_functions.h>
+#include <rand_initialize.h>
+#include <rand_parameters.h>
+#include <rand_result.h>
+#include <rand_source.h>
+#include <rand_source_type.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -52,7 +59,30 @@ void mesh_ground_initialize(
     .y = depth / (float)(mesh_ground_length_vertices.y)
   };
 
+  struct rand_parameters rand_parameters;
+  struct rand_source rand_source;
+  struct rand_result rand_result;
+
+  rand_initialize(
+    &rand_parameters,
+    &rand_result,
+    &rand_source, (
+      mesh_ground_length_vertices.x *
+      mesh_ground_length_vertices.y *
+      6
+    ),
+    rand_mode_bytes,
+    rand_source_type_divisive
+  );
+
+  rand_get(
+    &rand_source,
+    &rand_result,
+    &rand_parameters
+  );
+
   unsigned int index_vertex_ground = 0;
+  unsigned int offset_byte = 0;
   for (
     unsigned int index_x = 0;
     index_x < mesh_ground_length_vertices.x;
@@ -63,6 +93,13 @@ void mesh_ground_initialize(
       index_z < mesh_ground_length_vertices.y;
       ++index_z
     ) {
+      offset_byte = (
+        (index_x + (
+          index_z *
+          mesh_ground_length_vertices.x
+        ) * 6)
+      );
+
       mesh->vertices[index_vertex_ground].x = (
         index_x * increment_ground.x
       ) - (mesh->size.x / 2.0f);
@@ -72,17 +109,44 @@ void mesh_ground_initialize(
       ) - (mesh->size.z / 2.0f);
 
       if (
-        index_x > mesh_ground_length_vertices.x * 0.1 && index_x < mesh_ground_length_vertices.x * 0.9 &&
-        index_z > mesh_ground_length_vertices.y * 0.1 && index_z < mesh_ground_length_vertices.y * 0.9
+        index_x > mesh_ground_length_vertices.x * 0.1 &&
+        index_x < mesh_ground_length_vertices.x * 0.9 &&
+        index_z > mesh_ground_length_vertices.y * 0.1 &&
+        index_z < mesh_ground_length_vertices.y * 0.9
       ) {
-        mesh->vertices[index_vertex_ground].y = (float)(rand() % 1000) / 1000.0f * 4.0f - 2.0f;
+        mesh->vertices[index_vertex_ground].y = (
+          (float)((
+            rand_result.bytes[offset_byte] *
+            rand_result.bytes[offset_byte + 1]
+          ) % 1000) / (
+            1000.0f
+          ) * (
+            4.0f
+          ) - 2.0f
+        );
       } else if (index_vertex_ground % 4 == 0) {
-        mesh->vertices[index_vertex_ground].y = (float)(rand() % 500) / 1000.0f * mesh->size.y + (mesh->size.y / 2.0f);
+        mesh->vertices[index_vertex_ground].y = (
+          (float)((
+            rand_result.bytes[offset_byte + 2] *
+            rand_result.bytes[offset_byte + 3]
+          ) % 500) / 1000.0f * mesh->size.y + (
+            mesh->size.y / 2.0f
+          )
+        );
       } else {
-        mesh->vertices[index_vertex_ground].y = (float)(rand() % 400) / 1000.0f * mesh->size.y + (mesh->size.y * 0.6f);
+        mesh->vertices[index_vertex_ground].y = (
+          (float)((
+            rand_result.bytes[offset_byte + 4] *
+            rand_result.bytes[offset_byte + 5]
+          ) % 400) / 1000.0f * mesh->size.y + (
+            mesh->size.y * 0.6f
+          )
+        );
       }
 
-      mesh->vertices[index_vertex_ground].w = 1.0f;
+      mesh->vertices[
+        index_vertex_ground
+      ].w = 1.0f;
 
       index_vertex_ground = (
         index_vertex_ground + 1
