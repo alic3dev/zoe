@@ -40,33 +40,33 @@ struct data_vertex {
   data_vertex.noise = (float)(data_object->noise % 10001) / 10000.0f;
 
   float3 size_half;
-  size_half.x = (data_object->width / 2.0f);
-  size_half.y = (data_object->height / 2.0f);
-  size_half.z = (data_object->depth / 2.0f);
+  size_half.x = (data_object->size.x / 2.0f);
+  size_half.y = (data_object->size.y / 2.0f);
+  size_half.z = (data_object->size.z / 2.0f);
 
   if (
     (
-      (positions[id_vertex].x + size_half.x) < data_object->width * 0.12f ||
-      (positions[id_vertex].x + size_half.x) > data_object->width * 0.88f
+      (positions[id_vertex].x + size_half.x) < data_object->size.x * 0.12f ||
+      (positions[id_vertex].x + size_half.x) > data_object->size.x * 0.88f
     ) || (
-      (positions[id_vertex].z + size_half.z) < data_object->depth * 0.12f ||
-      (positions[id_vertex].z + size_half.z) > data_object->depth * 0.88f
+      (positions[id_vertex].z + size_half.z) < data_object->size.z * 0.12f ||
+      (positions[id_vertex].z + size_half.z) > data_object->size.z * 0.88f
     )
   ) {
     data_vertex.index_texture = 1;
     data_vertex.position_texture = float2(
-      ((float) data_frame->frame / 5000.0f) + (positions[id_vertex].x + size_half.x) / (data_object->width / 50.0f) + (positions[id_vertex].y + size_half.y) / (data_object->height / 50.0f),
-      ((float) data_frame->frame / 5000.0f) + (positions[id_vertex].z + size_half.z) / (data_object->depth / 50.0f) + (positions[id_vertex].y + size_half.y) / (data_object->height / 50.0f)
+      ((float) data_frame->frame / 5000.0f) + (positions[id_vertex].x + size_half.x) / (data_object->size.x / 50.0f) + (positions[id_vertex].y + size_half.y) / (data_object->size.y / 50.0f),
+      ((float) data_frame->frame / 5000.0f) + (positions[id_vertex].z + size_half.z) / (data_object->size.z / 50.0f) + (positions[id_vertex].y + size_half.y) / (data_object->size.y / 50.0f)
     );
   } else {
     data_vertex.index_texture = 0;
     data_vertex.position_texture = float2(
       (id_vertex / 10) % 10 == 0 
-      ? ((float) data_frame->frame / 100000.0f) + (positions[id_vertex].x + size_half.x) / (data_object->width / 1.0f) + (positions[id_vertex].y + size_half.y) / (data_object->height / 5.0f)
-      : ((float) data_frame->frame / 100000.0f) + (positions[id_vertex].x + size_half.x) / (data_object->width / 500.0f) + (positions[id_vertex].y + size_half.y) / (data_object->height / 500.0f),
+      ? ((float) data_frame->frame / 100000.0f) + (positions[id_vertex].x + size_half.x) / (data_object->size.x / 1.0f) + (positions[id_vertex].y + size_half.y) / (data_object->size.y / 5.0f)
+      : ((float) data_frame->frame / 100000.0f) + (positions[id_vertex].x + size_half.x) / (data_object->size.x / 500.0f) + (positions[id_vertex].y + size_half.y) / (data_object->size.y / 500.0f),
       (id_vertex / 10) % 10 == 0 
-      ? ((float) data_frame->frame / 100000.0f) + (positions[id_vertex].z + size_half.z) / (data_object->depth / 1.0f) + (positions[id_vertex].y + size_half.y) / (data_object->height / 5.0f)
-      : ((float) data_frame->frame / 100000.0f) + (positions[id_vertex].z + size_half.z) / (data_object->depth / 500.0f) + (positions[id_vertex].y + size_half.y) / (data_object->height / 500.0f)
+      ? ((float) data_frame->frame / 100000.0f) + (positions[id_vertex].z + size_half.z) / (data_object->size.z / 1.0f) + (positions[id_vertex].y + size_half.y) / (data_object->size.y / 5.0f)
+      : ((float) data_frame->frame / 100000.0f) + (positions[id_vertex].z + size_half.z) / (data_object->size.z / 500.0f) + (positions[id_vertex].y + size_half.y) / (data_object->size.y / 500.0f)
     );
   }
 
@@ -101,10 +101,10 @@ struct data_vertex {
     );
   }
 
-  if (positions[id_vertex].y <= data_object->height / 20.0f) {
-    data_vertex.height = positions[id_vertex].y / (data_object->height / 20.0f) * 0.5f;
+  if (positions[id_vertex].y <= data_object->size.y / 20.0f) {
+    data_vertex.height = positions[id_vertex].y / (data_object->size.y / 20.0f) * 0.5f;
   } else {
-    data_vertex.height = (positions[id_vertex].y / data_object->height) * 0.4;
+    data_vertex.height = (positions[id_vertex].y / data_object->size.y) * 0.4;
   }
 
   data_vertex.brightness = data_frame->brightness;

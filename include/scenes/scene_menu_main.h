@@ -3,6 +3,10 @@
 
 #include <metil.h>
 
+#include <rand_parameters.h>
+#include <rand_result.h>
+#include <rand_source.h>
+
 #include <CoreAudio/CoreAudio.h>
 #include <MetalKit/MetalKit.h>
 
@@ -19,6 +23,9 @@ enum textures_scene_menu_main {
 struct scene_menu_main_data {
   struct metil_menu menu;
   unsigned long int time_started;
+  struct rand_parameters rand_parameters_io_proc;
+  struct rand_source rand_source_io_proc;
+  struct rand_result rand_result_io_proc;
 };
 
 void scene_menu_main_initialize(
