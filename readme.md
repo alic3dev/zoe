@@ -1,8 +1,9 @@
 # zoe
 
-<img width="3932" height="2490" alt="zoe_menu" src="https://github.com/user-attachments/assets/2e6c4fca-96b3-46e2-82a1-7156889a50da" />
-
-<img width="1966" height="1250" alt="zoe_forest" src="https://github.com/user-attachments/assets/bc4031e2-d408-437d-94a2-3ee51c3b4eb3" />
+<img width="640" height="407" alt="Screenshot 2025-11-08 at 00 48 28 Large" src="https://github.com/user-attachments/assets/4a93ee4c-b882-462d-94ee-b53905c0b5a9" />
+<img width="160" height="102" alt="Screenshot 2025-11-08 at 00 48 28 Small" src="https://github.com/user-attachments/assets/482a4469-b701-4121-ad95-b137e2ebcc65" />
+<img width="1966" height="1250" alt="Screenshot 2025-11-08 at 00 48 38" src="https://github.com/user-attachments/assets/fd992cbd-2caa-4428-b0df-412c1b7610c0" />
+<img width="1966" height="1250" alt="Screenshot 2025-11-08 at 00 48 32" src="https://github.com/user-attachments/assets/0785ad7a-eccd-42e1-87b9-df66b5f3e2d2" />
 
 ## requirements
 
