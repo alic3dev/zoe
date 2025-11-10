@@ -5,22 +5,15 @@ on:
   pull_request:
     branches: ["core"]
 env:
-  target_version_cer0: 0_0_0
-  target_version_clic3: 0_0_0
-  target_version_interrupt_handler: 0_0_0
-  target_version_math_c: 0_0_0
-  target_version_metil: 0_0_0
-  target_version_rand: 0_0_0
+  key_cache_cer0: cache_cer0_0_0_0
+  key_cache_clic3: cache_clic3_0_0_0
+  key_cache_interrupt_handler: cache_interrupt_handler_0_0_0
+  key_cache_math_c: cache_math_c_0_0_0
+  key_cache_metil: cache_metil_0_0_0
+  key_cache_rand: cache_rand_0_0_0
 jobs:
   continuous_integration_build:
     runs-on: macos-latest
-    env:
-      key_cache_cer0: cache_cer0_${{ env.target_version_cer0 }}
-      key_cache_clic3: cache_cer0_${{ env.target_version_clic3 }}
-      key_cache_interrupt_handler: cache_cer0_${{ env.target_version_interrupt_handler }}
-      key_cache_math_c: cache_cer0_${{ env.target_version_math_c }}
-      key_cache_metil: cache_cer0_${{ env.target_version_metil }}
-      key_cache_rand: cache_cer0_${{ env.target_version_rand }}
     steps:
       - name: git_initialization
         run: git config --global init.defaultBranch core
