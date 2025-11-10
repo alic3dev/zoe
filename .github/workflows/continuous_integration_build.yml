@@ -106,3 +106,51 @@ jobs:
         run: cd rand && make rand_dylib
       - name: make_zoe
         run: cd zoe && make disable_metal_fast_options=1
+      - name: cache_save_cer0
+        id: cache_save_cer0
+        if: steps.cache_restore_cer0.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            cer0
+          key: cache_cer0_0_0_0
+      - name: cache_save_clic3
+        id: cache_save_clic3
+        if: steps.cache_restore_clic3.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            clic3
+          key: cache_clic3_0_0_0
+      - name: cache_save_interrupt_handler
+        id: cache_save_interrupt_handler
+        if: steps.cache_restore_interrupt_handler.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            interrupt_handler
+          key: cache_interrupt_handler_0_0_0
+      - name: cache_save_math_c
+        id: cache_save_math_c
+        if: steps.cache_restore_math_c.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            math_c
+          key: cache_math_c_0_0_0
+      - name: cache_save_metil
+        id: cache_save_metil
+        if: steps.cache_restore_metil.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            metil
+          key: cache_metil_0_0_0
+      - name: cache_save_rand
+        id: cache_save_rand
+        if: steps.cache_restore_rand.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            rand
+          key: cache_rand_0_0_0
