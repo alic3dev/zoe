@@ -4,6 +4,19 @@ on:
     branches: ["core"]
   pull_request:
     branches: ["core"]
+env:
+  target_version_cer0: 0_0_0
+  target_version_clic3: 0_0_0
+  target_version_interrupt_handler: 0_0_0
+  target_version_math_c: 0_0_0
+  target_version_metil: 0_0_0
+  target_version_rand: 0_0_0
+  key_cache_cer0: cache_cer0_$target_version_cer0
+  key_cache_clic3: cache_cer0_$target_version_clic3
+  key_cache_interrupt_handler: cache_cer0_$target_version_interrupt_handler
+  key_cache_math_c: cache_cer0_$target_version_math_c
+  key_cache_metil: cache_cer0_$target_version_metil
+  key_cache_rand: cache_cer0_$target_version_rand
 jobs:
   continuous_integration_build:
     runs-on: macos-latest
@@ -19,37 +32,37 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: cer0
-          key: cache_cer0_0_0_0
+          key: ${{ env.key_cache_cer0 }}
       - name: cache_restore_clic3
         id: cache_restore_clic3
         uses: actions/cache/restore@v4
         with:
           path: clic3
-          key: cache_clic3_0_0_0
+          key: ${{ env.key_cache_clic3 }}
       - name: cache_restore_interrupt_handler
         id: cache_restore_interrupt_handler
         uses: actions/cache/restore@v4
         with:
           path: interrupt_handler
-          key: cache_interrupt_handler_0_0_0
+          key: ${{ env.key_cache_interrupt_handler }}
       - name: cache_restore_math_c
         id: cache_restore_math_c
         uses: actions/cache/restore@v4
         with:
           path: math_c
-          key: cache_math_c_0_0_0
+          key: ${{ env.key_cache_math_c }}
       - name: cache_restore_metil
         id: cache_restore_metil
         uses: actions/cache/restore@v4
         with:
           path: metil
-          key: cache_metil_0_0_0
+          key: ${{ env.key_cache_metil }}
       - name: cache_restore_rand
         id: cache_restore_rand
         uses: actions/cache/restore@v4
         with:
           path: rand
-          key: cache_rand_0_0_0
+          key: ${{ env.key_cache_rand }}
       - name: checkout_cer0
         if: steps.cache_restore_cer0.outputs.cache-hit != 'true'
         uses: actions/checkout@v4
@@ -113,7 +126,7 @@ jobs:
         with:
           path: |
             cer0
-          key: cache_cer0_0_0_0
+          key: ${{ env.key_cache_cer0 }}
       - name: cache_save_clic3
         id: cache_save_clic3
         if: steps.cache_restore_clic3.outputs.cache-hit != 'true'
@@ -121,7 +134,7 @@ jobs:
         with:
           path: |
             clic3
-          key: cache_clic3_0_0_0
+          key: ${{ env.key_cache_clic3 }}
       - name: cache_save_interrupt_handler
         id: cache_save_interrupt_handler
         if: steps.cache_restore_interrupt_handler.outputs.cache-hit != 'true'
@@ -129,7 +142,7 @@ jobs:
         with:
           path: |
             interrupt_handler
-          key: cache_interrupt_handler_0_0_0
+          key: ${{ env.key_cache_interrupt_handler }}
       - name: cache_save_math_c
         id: cache_save_math_c
         if: steps.cache_restore_math_c.outputs.cache-hit != 'true'
@@ -137,7 +150,7 @@ jobs:
         with:
           path: |
             math_c
-          key: cache_math_c_0_0_0
+          key: ${{ env.key_cache_math_c }}
       - name: cache_save_metil
         id: cache_save_metil
         if: steps.cache_restore_metil.outputs.cache-hit != 'true'
@@ -145,7 +158,7 @@ jobs:
         with:
           path: |
             metil
-          key: cache_metil_0_0_0
+          key: ${{ env.key_cache_metil }}
       - name: cache_save_rand
         id: cache_save_rand
         if: steps.cache_restore_rand.outputs.cache-hit != 'true'
@@ -153,4 +166,4 @@ jobs:
         with:
           path: |
             rand
-          key: cache_rand_0_0_0
+          key: ${{ env.key_cache_rand }}
