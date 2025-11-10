@@ -14,47 +14,95 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: zoe
+      - name: cache_restore_cer0
+        id: cache_restore_cer0
+        uses: actions/cache/restore@v4
+        with:
+          path: cer0
+          key: cache_cer0_0_0_0
+      - name: cache_restore_clic3
+        id: cache_restore_clic3
+        uses: actions/cache/restore@v4
+        with:
+          path: clic3
+          key: cache_clic3_0_0_0
+      - name: cache_restore_interrupt_handler
+        id: cache_restore_interrupt_handler
+        uses: actions/cache/restore@v4
+        with:
+          path: interrupt_handler
+          key: cache_interrupt_handler_0_0_0
+      - name: cache_restore_math_c
+        id: cache_restore_math_c
+        uses: actions/cache/restore@v4
+        with:
+          path: math_c
+          key: cache_math_c_0_0_0
+      - name: cache_restore_metil
+        id: cache_restore_metil
+        uses: actions/cache/restore@v4
+        with:
+          path: metil
+          key: cache_metil_0_0_0
+      - name: cache_restore_rand
+        id: cache_restore_rand
+        uses: actions/cache/restore@v4
+        with:
+          path: rand
+          key: cache_rand_0_0_0
       - name: checkout_cer0
+        if: steps.cache_restore_cer0.outputs.cache-hit != 'true'
         uses: actions/checkout@v4
         with:
           repository: alic3dev/cer0
           path: cer0
       - name: checkout_clic3
+        if: steps.cache_restore_clic3.outputs.cache-hit != 'true'
         uses: actions/checkout@v4
         with:
           repository: alic3dev/clic3
           path: clic3
       - name: checkout_interrupt_handler
+        if: steps.cache_restore_interrupt_handler.outputs.cache-hit != 'true'
         uses: actions/checkout@v4
         with:
           repository: alic3dev/interrupt_handler
           path: interrupt_handler
       - name: checkout_math_c
+        if: steps.cache_restore_math_c.outputs.cache-hit != 'true'
         uses: actions/checkout@v4
         with:
           repository: alic3dev/math_c
           path: math_c
       - name: checkout_metil
+        if: steps.cache_restore_metil.outputs.cache-hit != 'true'
         uses: actions/checkout@v4
         with:
           repository: alic3dev/metil
           path: metil
       - name: checkout_rand
+        if: steps.cache_restore_rand.outputs.cache-hit != 'true'
         uses: actions/checkout@v4
         with:
           repository: alic3dev/rand
           path: rand
       - name: make_clic3
+        if: steps.cache_restore_clic3.outputs.cache-hit != 'true'
         run: cd clic3 && make clic3_dylib
       - name: make_cer0
+        if: steps.cache_restore_cer0.outputs.cache-hit != 'true'
         run: cd cer0 && make cer0_dylib
       - name: make_interrupt_handler
+        if: steps.cache_restore_interrupt_handler.outputs.cache-hit != 'true'
         run: cd interrupt_handler && make interrupt_handler_dylib
       - name: make_math_c
+        if: steps.cache_restore_math_c.outputs.cache-hit != 'true'
         run: cd math_c && make math_c_dylib
       - name: make_metil
+        if: steps.cache_restore_metil.outputs.cache-hit != 'true'
         run: cd metil && make metil
       - name: make_rand
-        run: cd rand && make
+        if: steps.cache_restore_rand.outputs.cache-hit != 'true'
+        run: cd rand && make rand_dylib
       - name: make_zoe
-        run: cd zoe && disable_metal_fast_options=1 make
+        run: cd zoe && make disable_metal_fast_options=1
