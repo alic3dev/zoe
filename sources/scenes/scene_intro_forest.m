@@ -30,6 +30,12 @@ void scene_intro_forest_initialize(
   struct metil_scene* scene,
   id<MTLDevice> metal_device
 ) {
+  metil_scene_initialize_with_renderables(
+    scene,
+    metal_device,
+    503
+  );
+
   scene->data = malloc(
     sizeof(struct scene_intro_forest_io_proc_data)
   );
@@ -52,40 +58,24 @@ void scene_intro_forest_initialize(
     io_proc_data
   );
 
-  metil_scene_initialize(
-    scene,
-    metal_device
-  );
-
-  scene->type = metil_scene_type_game;
-  scene->id = scene_id_intro_forest;
-
   scene->poll = scene_intro_forest_poll;
   scene->destroy = scene_intro_forest_destroy;
 
-  scene->length_objects = 503;
-  scene->objects = realloc(
-    scene->objects,
-    sizeof(struct metil_object*) *
-    scene->length_objects
-  );
-
   for (
-    unsigned short int index_object = 0;
-    index_object < scene->length_objects;
-    ++index_object
+    unsigned short int index_renderable = 0;
+    index_renderable < scene->length_renderables;
+    ++index_renderable
   ) {
-    scene->objects[index_object] = malloc(
-      sizeof(struct metil_object)
-    );
-
-    metil_object_initialize(
-      scene->objects[index_object]
+    metil_renderable_initialize_at_index(
+      scene->renderables,
+      index_renderable,
+      metil_renderable_type_object
     );
   }
 
   scene->length_textures = 3;
-  scene->textures = malloc(
+  scene->textures = realloc(
+    scene->textures,
     sizeof(id<MTLTexture>) *
     scene->length_textures
   );
@@ -145,19 +135,25 @@ void scene_intro_forest_initialize(
 
   [texture_loader release];
 
-  mesh_player_initialize(
-    &scene->objects[0]->mesh
+  struct metil_object* object = (
+    scene->renderables[
+      0
+    ].renderable
   );
 
-  scene->objects[0]->index_pipeline_render = zoe_pipeline_index_player;
+  mesh_player_initialize(
+    &object->mesh
+  );
+
+  object->index_pipeline_render = zoe_pipeline_index_player;
 
   metil_object_buffers_initialize(
-    scene->objects[0],
+    object,
     scene->metal_device
   );
 
   metil_object_texture_add(
-    scene->objects[0],
+    object,
     scene->textures[
       textures_scene_intro_forest_player
     ]
@@ -165,59 +161,71 @@ void scene_intro_forest_initialize(
 
   unsigned short int iterator_id = 0;
 
-  struct metil_renderer_data_object* data = scene->objects[0]->data.contents;
+  struct metil_renderer_data_object* data = object->data.contents;
   data->id = iterator_id++;
 
-  mesh_player_mirror_initialize(
-    &scene->objects[1]->mesh
+  object = (
+    scene->renderables[
+      1
+    ].renderable
   );
 
-  scene->objects[1]->index_pipeline_render = zoe_pipeline_index_player;
+  mesh_player_mirror_initialize(
+    &object->mesh
+  );
+
+  object->index_pipeline_render = zoe_pipeline_index_player;
 
   metil_object_buffers_initialize(
-    scene->objects[1],
+    object,
     scene->metal_device
   );
 
   metil_object_texture_add(
-    scene->objects[1],
+    object,
     scene->textures[
       textures_scene_intro_forest_player
     ]
   );
 
-  data = scene->objects[1]->data.contents;
+  data = object->data.contents;
   data->id = iterator_id++;
 
+  struct metil_object* object_ground = (
+    scene->renderables[
+      2
+    ].renderable
+  );
+
   mesh_ground_initialize(
-    &scene->objects[2]->mesh,
+    &object_ground->mesh,
     2000.0f,
     500.0f,
     2000.0f
   );
 
-  scene->objects[2]->index_pipeline_render = zoe_pipeline_index_ground;
+  object_ground->index_pipeline_render = zoe_pipeline_index_ground;
 
   metil_object_buffers_initialize(
-    scene->objects[2],
+    object_ground,
     scene->metal_device
   );
 
   metil_object_texture_add(
-    scene->objects[2],
+    object_ground,
     scene->textures[
       textures_scene_intro_forest_ground
     ]
   );
 
   metil_object_texture_add(
-    scene->objects[2],
+    object_ground,
     scene->textures[
       textures_scene_intro_forest_tree
     ]
   );
 
-  data = scene->objects[2]->data.contents;
+  data = object_ground->data.contents;
   data->id = iterator_id++;
 
   struct rand_parameters rand_parameters;
@@ -228,7 +236,7 @@ void scene_intro_forest_initialize(
     &rand_parameters,
     &rand_result,
     &rand_source, (
-      (scene->length_objects - 3) *
+      (scene->length_renderables - 3) *
       4
     ),
     rand_mode_bytes,
@@ -244,57 +252,63 @@ void scene_intro_forest_initialize(
   unsigned int offset_byte = 0;
 
   for (
-    unsigned short int index_object = 3;
-    index_object < scene->length_objects;
-    ++index_object
+    unsigned short int index_renderable = 3;
+    index_renderable < scene->length_renderables;
+    ++index_renderable
   ) {
     offset_byte = (
-      (index_object - 3) * 4
+      (index_renderable - 3) * 4
+    );
+
+    object = (
+      scene->renderables[
+        index_renderable
+      ].renderable
     );
 
     mesh_tree_initialize(
-      &(scene->objects[index_object]->mesh),
+      &(object->mesh),
       1.0f,
       250.0f
     );
     
-    scene->objects[index_object]->index_pipeline_render = zoe_pipeline_index_tree;
+    object->index_pipeline_render = zoe_pipeline_index_tree;
 
-    scene->objects[index_object]->position.x = (
-      -(scene->objects[index_object]->mesh.size.x / 2.0f) + (
+    object->position.x = (
+      -(object->mesh.size.x / 2.0f) + (
         (((float)((
           rand_result.bytes[offset_byte] *
           rand_result.bytes[offset_byte + 2]
         ) % 10000) / 5000.0f) - 1.0f) * 0.7f *
-        (scene->objects[index_object]->mesh.size.x - (
-          scene->objects[2]->mesh.size.x / 2.0f
+        (object->mesh.size.x - (
+          object_ground->mesh.size.x / 2.0f
         ))
       )
     );
 
-    scene->objects[index_object]->position.z = (
-      -(scene->objects[index_object]->mesh.size.z / 2.0f) + (
+    object->position.z = (
+      -(object->mesh.size.z / 2.0f) + (
         (((float)((
           rand_result.bytes[offset_byte + 1] *
           rand_result.bytes[offset_byte + 3]
         ) % 10000) / 5000.0f) - 1.0f) * 0.7f *
-        (scene->objects[2]->mesh.size.z - (
-          scene->objects[2]->mesh.size.z / 2.0f
+        (object_ground->mesh.size.z - (
+          object_ground->mesh.size.z / 2.0f
         ))
       )
     );
 
     metil_object_buffers_initialize(
-      scene->objects[index_object],
+      object,
       scene->metal_device
     );
 
-    struct metil_renderer_data_object* data = scene->objects[index_object]->data.contents;
+    struct metil_renderer_data_object* data = object->data.contents;
     
     data->id = iterator_id++;
 
     metil_object_texture_add(
-      scene->objects[index_object],
+      object,
       scene->textures[
         textures_scene_intro_forest_tree
       ]
@@ -307,27 +321,39 @@ void scene_intro_forest_poll(
 ) {
   metil_scene_poll_default(scene);
 
-  scene->objects[0]->position.x = (
+  struct metil_object* object_player = (
+    scene->renderables[
+      0
+    ].renderable
+  );
+
+  struct metil_object* object_player_mirror = (
+    scene->renderables[
+      1
+    ].renderable
+  );
+
+  object_player->position.x = (
     scene->player.position.x
   );
 
-  scene->objects[0]->position.y = (
+  object_player->position.y = (
     scene->player.position.y
   );
 
-  scene->objects[0]->position.z = (
+  object_player->position.z = (
     scene->player.position.z
   );
 
-  scene->objects[1]->position.x = (
+  object_player_mirror->position.x = (
     -scene->player.position.x
   );
 
-  scene->objects[1]->position.y = (
+  object_player_mirror->position.y = (
     scene->player.position.y
   );
 
-  scene->objects[1]->position.z = (
+  object_player_mirror->position.z = (
     -scene->player.position.z
   );
 }
@@ -339,8 +365,6 @@ void scene_intro_forest_destroy(
   metil_audio_io_proc_remove(
     scene_intro_forest_io_proc
   );
-
-  free(scene->data);
 
   metil_scene_destroy_default(scene);
 }
