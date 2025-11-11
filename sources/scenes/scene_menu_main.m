@@ -27,9 +27,10 @@ void scene_menu_main_initialize(
   struct metil_scene* scene,
   id<MTLDevice> metal_device
 ) {
-  metil_scene_initialize(
+  metil_scene_initialize_with_renderables(
     scene,
-    metal_device
+    metal_device,
+    5
   );
 
   scene->data = malloc(
@@ -64,22 +65,9 @@ void scene_menu_main_initialize(
     &data->menu
   );
 
-  scene->type = metil_scene_type_menu;
-  scene->id = scene_id_menu_main;
-
-  scene->length_objects = 5;
-  scene->objects = realloc(
-    scene->objects,
-    sizeof(struct metil_object*) *
-    scene->length_objects
-  );
-
-  scene->objects[0] = malloc(
-    sizeof(struct metil_object)
-  );
-
   scene->length_textures = 5;
-  scene->textures = malloc(
+  scene->textures = realloc(
+    scene->textures,
     sizeof(id<MTLTexture>) *
     scene->length_textures
   );
@@ -122,35 +110,49 @@ void scene_menu_main_initialize(
 
   [texture_loader release];
 
-  metil_object_initialize(
-    scene->objects[0]
+  for (
+    unsigned int index_renderable = 0;
+    index_renderable < scene->length_renderables;
+    ++index_renderable
+  ) {
+    metil_renderable_initialize_at_index(
+      scene->renderables,
+      index_renderable,
+      metil_renderable_type_object
+    );
+  }
+
+  struct metil_object* object = (
+    scene->renderables[
+      0
+    ].renderable
   );
 
   mesh_ground_initialize(
-    &scene->objects[0]->mesh,
+    &object->mesh,
     666.0f,
     6666.6f,
     666.0f
   );
 
   metil_object_buffers_initialize(
-    scene->objects[0],
+    object,
     scene->metal_device
   );
 
-  scene->objects[0]->index_pipeline_render = (
+  object->index_pipeline_render = (
     zoe_pipeline_index_ground
   );
 
   metil_object_texture_add(
-    scene->objects[0],
+    object,
     scene->textures[
       textures_scene_menu_main_ground
     ]
   );
 
   metil_object_texture_add(
-    scene->objects[0],
+    object,
     scene->textures[
       textures_scene_menu_main_tree
     ]
@@ -158,54 +160,50 @@ void scene_menu_main_initialize(
 
   unsigned short int iterator_id = 0;
 
-  struct metil_renderer_data_object* data_object = scene->objects[0]->data.contents;
+  struct metil_renderer_data_object* data_object = object->data.contents;
   data_object->id = iterator_id++;
   data_object->noise = 666;
 
-  scene->objects[1] = malloc(
-    sizeof(struct metil_object)
-  );
-
-  metil_object_initialize(
-    scene->objects[1]
+  object = (
+    scene->renderables[
+      1
+    ].renderable
   );
 
   mesh_tree_initialize(
-    &(scene->objects[1]->mesh),
+    &(object->mesh),
     1.0f,
     66.6f
   );
 
-  scene->objects[1]->index_pipeline_render = (
+  object->index_pipeline_render = (
     zoe_pipeline_index_tree
   );
 
   metil_object_buffers_initialize(
-    scene->objects[1],
+    object,
     scene->metal_device
   );
 
-  data_object = scene->objects[1]->data.contents;
+  data_object = object->data.contents;
   
   data_object->id = iterator_id++;
   data_object->noise = 666;
 
   metil_object_texture_add(
-    scene->objects[1],
+    object,
     scene->textures[
       textures_scene_menu_main_tree
     ]
   );
 
-  scene->objects[2] = malloc(
-    sizeof(struct metil_object)
+  object = (
+    scene->renderables[
+      2
+    ].renderable
   );
 
-  metil_object_initialize(
-    scene->objects[2]
-  );
-
-  scene->objects[2]->index_pipeline_render = (
+  object->index_pipeline_render = (
     zoe_pipeline_index_text
   );
 
@@ -213,39 +211,37 @@ void scene_menu_main_initialize(
     textures_scene_menu_main_title
   ] = metil_text_mesh_with_texture_initialize(
     metal_device,
-    &scene->objects[2]->mesh,
+    &object->mesh,
     "zoe",
     &metil_text_render_parameters_default
   );
 
   metil_object_buffers_initialize(
-    scene->objects[2],
+    object,
     scene->metal_device
   );
 
-  scene->objects[2]->position.y = 0.5f - (scene->objects[2]->mesh.size.y / 4.0f);
+  object->position.y = 0.5f - (object->mesh.size.y / 4.0f);
 
-  data_object = scene->objects[2]->data.contents;
+  data_object = object->data.contents;
   
   data_object->id = iterator_id++;
   data_object->noise = 10000;
 
   metil_object_texture_add(
-    scene->objects[2],
+    object,
     scene->textures[
       textures_scene_menu_main_title
     ]
   );
 
-  scene->objects[3] = malloc(
-    sizeof(struct metil_object)
+  object = (
+    scene->renderables[
+      3
+    ].renderable
   );
 
-  metil_object_initialize(
-    scene->objects[3]
-  );
-
-  scene->objects[3]->index_pipeline_render = (
+  object->index_pipeline_render = (
     zoe_pipeline_index_text
   );
 
@@ -253,38 +249,36 @@ void scene_menu_main_initialize(
     textures_scene_menu_main_menu_enter
   ] = metil_text_mesh_with_texture_initialize(
     metal_device,
-    &scene->objects[3]->mesh,
+    &object->mesh,
     "enter",
     &metil_text_render_parameters_default
   );
 
   metil_object_buffers_initialize(
-    scene->objects[3],
+    object,
     scene->metal_device
   );
 
-  scene->objects[3]->position.y = -scene->objects[3]->mesh.size.y * 6.0;
+  object->position.y = -object->mesh.size.y * 6.0;
 
-  data_object = scene->objects[3]->data.contents;
+  data_object = object->data.contents;
   
   data_object->id = iterator_id++;
 
   metil_object_texture_add(
-    scene->objects[3],
+    object,
     scene->textures[
       textures_scene_menu_main_menu_enter
     ]
   );
 
-  scene->objects[4] = malloc(
-    sizeof(struct metil_object)
+  object = (
+    scene->renderables[
+      4
+    ].renderable
   );
 
-  metil_object_initialize(
-    scene->objects[4]
-  );
-
-  scene->objects[4]->index_pipeline_render = (
+  object->index_pipeline_render = (
     zoe_pipeline_index_text
   );
 
@@ -292,24 +286,24 @@ void scene_menu_main_initialize(
     textures_scene_menu_main_menu_exit
   ] = metil_text_mesh_with_texture_initialize(
     metal_device,
-    &scene->objects[4]->mesh,
+    &object->mesh,
     "exit",
     &metil_text_render_parameters_default
   );
 
   metil_object_buffers_initialize(
-    scene->objects[4],
+    object,
     scene->metal_device
   );
 
-  scene->objects[4]->position.y = -scene->objects[4]->mesh.size.y * 10.0f;
+  object->position.y = -object->mesh.size.y * 10.0f;
 
-  data_object = scene->objects[4]->data.contents;
+  data_object = object->data.contents;
   
   data_object->id = iterator_id++;
 
   metil_object_texture_add(
-    scene->objects[4],
+    object,
     scene->textures[
       textures_scene_menu_main_menu_exit
     ]
@@ -329,14 +323,17 @@ void scene_menu_main_initialize(
 void scene_menu_main_poll(
   struct metil_scene* scene
 ) {
-  scene->player.rotation.x = fmin((
-      scene->player.rotation.x +
-      (0.00001f * sin(
-        ((0.6f - (scene->player.rotation.x - 0.3f)) / 0.6f) *
-        M_PI_2
-      )) *
-      scene->time_delta
-    ),
+  float rotation_player_x_updated = (
+    scene->player.rotation.x +
+    (0.00001f * sin(
+      ((0.6f - (scene->player.rotation.x - 0.3f)) / 0.6f) *
+      M_PI_2
+    )) *
+    scene->time_delta
+  );
+
+  scene->player.rotation.x = fmin(
+    rotation_player_x_updated,
     0.9f
   );
 
@@ -344,18 +341,42 @@ void scene_menu_main_poll(
 
   struct metil_menu* menu = &data->menu;
 
+  struct metil_object* object = (
+    (void*)0
+  );
+
   switch (menu->index_current) {
     case 0: {
-      struct metil_renderer_data_object* data_object = scene->objects[3]->data.contents;
+      object = (
+        scene->renderables[
+          3
+        ].renderable
+      );
+      struct metil_renderer_data_object* data_object = object->data.contents;
       data_object->noise = 1600 + (rand() % 666);
-      data_object = scene->objects[4]->data.contents;
+      object = (
+        scene->renderables[
+          4
+        ].renderable
+      );
+      data_object = object->data.contents;
       data_object->noise = 10000;
       break;
     }
     case 1: {
-      struct metil_renderer_data_object* data_object = scene->objects[4]->data.contents;
+      object = (
+        scene->renderables[
+          4
+        ].renderable
+      );
+      struct metil_renderer_data_object* data_object = object->data.contents;
       data_object->noise = 1600 + (rand() % 666);
-      data_object = scene->objects[3]->data.contents;
+      object = (
+        scene->renderables[
+          3
+        ].renderable
+      );
+      data_object = object->data.contents;
       data_object->noise = 10000;
       break;
     }
@@ -425,7 +446,9 @@ void scene_menu_main_destroy(
   );
 
   metil_menu_destroy(
-    &((struct scene_menu_main_data*) scene->data)->menu
+    &(
+      (struct scene_menu_main_data*) scene->data
+    )->menu
   );
 
   metil_scene_destroy_default(scene);
