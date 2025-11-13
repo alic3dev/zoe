@@ -10,6 +10,7 @@
 
 #include <metil.h>
 
+#include <rand_clean.h>
 #include <rand_functions.h>
 #include <rand_initialize.h>
 #include <rand_parameters.h>
@@ -37,32 +38,40 @@ void scene_menu_main_initialize(
     sizeof(struct scene_menu_main_data)
   );
 
-  struct scene_menu_main_data* data = (
-    (struct scene_menu_main_data*) scene->data
+  struct scene_menu_main_data* data_scene = (
+    scene->data
   );
 
-  rand_initialize(
-    &data->rand_parameters_io_proc,
-    &data->rand_result_io_proc,
-    &data->rand_source_io_proc, 
-    41000,
-    rand_mode_bytes,
-    rand_source_type_divisive
+  struct io_proc_data* io_proc_data = (
+    io_proc_data_create(
+      41000
+    )
   );
+
+  data_scene->io_proc_data = io_proc_data;
 
   metil_audio_io_proc_add_with_data(
     scene_menu_main_io_proc,
-    data
+    io_proc_data
+  );
+
+  rand_initialize(
+    &data_scene->rand_parameters,
+    &data_scene->rand_result,
+    &data_scene->rand_source, 
+    4,
+    rand_mode_bytes,
+    rand_source_type_divisive
   );
 
   scene->poll = scene_menu_main_poll;
   scene->poll_input = scene_menu_main_poll_input;
   scene->destroy = scene_menu_main_destroy;
 
-  data->time_started = 0;
+  data_scene->time_started = 0;
 
   menu_main_initialize(
-    &data->menu
+    &data_scene->menu
   );
 
   scene->length_textures = 5;
@@ -337,50 +346,45 @@ void scene_menu_main_poll(
     0.9f
   );
 
-  struct scene_menu_main_data* data = (struct scene_menu_main_data*) scene->data;
-
-  struct metil_menu* menu = &data->menu;
-
-  struct metil_object* object = (
-    (void*)0
+  struct scene_menu_main_data* data = (
+    (struct scene_menu_main_data*) scene->data
   );
 
-  switch (menu->index_current) {
-    case 0: {
-      object = (
-        scene->renderables[
-          3
-        ].renderable
-      );
-      struct metil_renderer_data_object* data_object = object->data.contents;
-      data_object->noise = 1600 + (rand() % 666);
-      object = (
-        scene->renderables[
-          4
-        ].renderable
-      );
-      data_object = object->data.contents;
-      data_object->noise = 10000;
-      break;
-    }
-    case 1: {
-      object = (
-        scene->renderables[
-          4
-        ].renderable
-      );
-      struct metil_renderer_data_object* data_object = object->data.contents;
-      data_object->noise = 1600 + (rand() % 666);
-      object = (
-        scene->renderables[
-          3
-        ].renderable
-      );
-      data_object = object->data.contents;
-      data_object->noise = 10000;
-      break;
-    }
+  struct metil_menu* menu = (
+    &data->menu
+  );
+
+  rand_get(
+    &data->rand_source,
+    &data->rand_result,
+    &data->rand_parameters
+  );
+
+  struct metil_renderer_data_object* data_object_enter = (
+    (struct metil_object*) scene->renderables[3].renderable
+  )->data.contents;
+  struct metil_renderer_data_object* data_object_exit = (
+    (struct metil_object*) scene->renderables[4].renderable
+  )->data.contents;
+
+  struct metil_renderer_data_object* data_object_menu_item_selected = data_object_enter;
+  struct metil_renderer_data_object* data_object_menu_item = data_object_exit;
+
+  if (
+    menu->index_current == 1
+  ) {
+    data_object_menu_item_selected = data_object_exit;
+    data_object_menu_item = data_object_enter;
   }
+
+  data_object_menu_item_selected->noise = (
+    1600 + ((
+      data->rand_result.bytes[0] *
+      data->rand_result.bytes[1]
+    ) % 666)
+  );
+      
+  data_object_menu_item->noise = 10000;
 
   if (
     data->time_started != 0
@@ -441,14 +445,23 @@ void scene_menu_main_poll_input(
 void scene_menu_main_destroy(
   struct metil_scene* scene
 ) {
-  metil_audio_io_proc_remove(
-    scene_menu_main_io_proc
+  struct scene_menu_main_data* data = (
+    scene->data
+  );
+
+  struct io_proc_data* io_proc_data = (
+    data->io_proc_data
   );
 
   metil_menu_destroy(
-    &(
-      (struct scene_menu_main_data*) scene->data
-    )->menu
+    &data->menu
+  );
+
+  io_proc_data->destroy = 1;
+
+  rand_clean(
+    &data->rand_result,
+    &data->rand_source
   );
 
   metil_scene_destroy_default(scene);
@@ -463,14 +476,31 @@ OSStatus scene_menu_main_io_proc(
   const AudioTimeStamp* time_stamp_audio_out,
   void* data
 ) {
-  struct scene_menu_main_data* io_proc_data = (
-    (struct scene_menu_main_data*) data
+  struct io_proc_data* io_proc_data = (
+    data
   );
 
+  if (
+    io_proc_data->destroy == 1
+  ) {
+    metil_audio_io_proc_remove(
+      scene_menu_main_io_proc
+    );
+
+    rand_clean(
+      &io_proc_data->rand_result,
+      &io_proc_data->rand_source
+    );
+
+    free(io_proc_data);
+
+    return 0;
+  }
+
   rand_get(
-    &io_proc_data->rand_source_io_proc,
-    &io_proc_data->rand_result_io_proc,
-    &io_proc_data->rand_parameters_io_proc
+    &io_proc_data->rand_source,
+    &io_proc_data->rand_result,
+    &io_proc_data->rand_parameters
   );
 
   for (
@@ -494,15 +524,22 @@ OSStatus scene_menu_main_io_proc(
 
       if (channel == 0) {
         buffer_out[index_buffer_out] = ((float) ((
-          io_proc_data->rand_result_io_proc.bytes[
+          io_proc_data->rand_result.bytes[
             offset_byte % 20500
           ] *
-          io_proc_data->rand_result_io_proc.bytes[
+          io_proc_data->rand_result.bytes[
             (offset_byte + 1) % 20500
           ]
         ) % 10000)) / 100000.0f;
       } else {
-        buffer_out[index_buffer_out] = buffer_out[index_buffer_out - channel];
+        buffer_out[
+          index_buffer_out
+        ] = (
+          buffer_out[
+            index_buffer_out -
+            channel
+          ]
+        );
       }
     }
   }
