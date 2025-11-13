@@ -1,5 +1,6 @@
 #include <scenes/scene_intro_forest.h>
 
+#include <audio/io_proc_data.h>
 #include <metil_audio/audio.h>
 #include <mesh/ground/mesh_ground.h>
 #include <mesh/mesh_player.h>
@@ -11,6 +12,7 @@
 #include <metil_object.h>
 #include <metil_scenes/scene.h>
 
+#include <rand_clean.h>
 #include <rand_functions.h>
 #include <rand_initialize.h>
 #include <rand_parameters.h>
@@ -30,31 +32,30 @@ void scene_intro_forest_initialize(
   struct metil_scene* scene,
   id<MTLDevice> metal_device
 ) {
+  metil_scene_initialize(
+    scene,
+    metal_device
+  );
+
   scene->data = malloc(
-    sizeof(struct scene_intro_forest_io_proc_data)
+    sizeof(struct scene_intro_forest_data)
   );
 
-  struct scene_intro_forest_io_proc_data* io_proc_data = (
-    (struct scene_intro_forest_io_proc_data*) scene->data
+  struct scene_intro_forest_data* data_scene = (
+    scene->data
   );
 
-  rand_initialize(
-    &io_proc_data->rand_parameters_io_proc,
-    &io_proc_data->rand_result_io_proc,
-    &io_proc_data->rand_source_io_proc, 
-    41000,
-    rand_mode_bytes,
-    rand_source_type_divisive
+  struct io_proc_data* io_proc_data = (
+    io_proc_data_create(
+      41000
+    )
   );
+
+  data_scene->io_proc_data = io_proc_data;
 
   metil_audio_io_proc_add_with_data(
     scene_intro_forest_io_proc,
     io_proc_data
-  );
-
-  metil_scene_initialize(
-    scene,
-    metal_device
   );
 
   scene->type = metil_scene_type_game;
@@ -300,6 +301,11 @@ void scene_intro_forest_initialize(
       ]
     );
   }
+
+  rand_clean(
+    &rand_result,
+    &rand_source
+  );
 }
 
 void scene_intro_forest_poll(
@@ -336,11 +342,15 @@ void scene_intro_forest_poll(
 void scene_intro_forest_destroy(
   struct metil_scene* scene
 ) {
-  metil_audio_io_proc_remove(
-    scene_intro_forest_io_proc
+  struct scene_intro_forest_data* data = (
+    scene->data
   );
 
-  free(scene->data);
+  struct io_proc_data* io_proc_data = (
+    data->io_proc_data
+  );
+
+  io_proc_data->destroy = 1;
 
   metil_scene_destroy_default(scene);
 }
@@ -354,14 +364,31 @@ OSStatus scene_intro_forest_io_proc(
   const AudioTimeStamp* time_stamp_audio_out,
   void* data
 ) {
-  struct scene_intro_forest_io_proc_data* io_proc_data = (
-    (struct scene_intro_forest_io_proc_data*) data
+  struct io_proc_data* io_proc_data = (
+    data
   );
 
+  if (
+    io_proc_data->destroy == 1
+  ) {
+    metil_audio_io_proc_remove(
+      scene_intro_forest_io_proc
+    );
+
+    rand_clean(
+      &io_proc_data->rand_result,
+      &io_proc_data->rand_source
+    );
+
+    free(io_proc_data);
+
+    return 0;
+  }
+
   rand_get(
-    &io_proc_data->rand_source_io_proc,
-    &io_proc_data->rand_result_io_proc,
-    &io_proc_data->rand_parameters_io_proc
+    &io_proc_data->rand_source,
+    &io_proc_data->rand_result,
+    &io_proc_data->rand_parameters
   );
 
   for (
@@ -385,10 +412,10 @@ OSStatus scene_intro_forest_io_proc(
 
       if (channel == 0) {
         buffer_out[index_buffer_out] = ((float) ((
-          io_proc_data->rand_result_io_proc.bytes[
+          io_proc_data->rand_result.bytes[
             offset_byte % 20500
           ] *
-          io_proc_data->rand_result_io_proc.bytes[
+          io_proc_data->rand_result.bytes[
             (offset_byte + 1) % 20500
           ]
         ) % 10000)) / 100000.0f;
