@@ -1,6 +1,8 @@
 #ifndef __zoe_scenes_scene_menu_main_h
 #define __zoe_scenes_scene_menu_main_h
 
+#include <audio/io_proc_data.h>
+
 #include <metil.h>
 
 #include <rand_parameters.h>
@@ -23,9 +25,12 @@ enum textures_scene_menu_main {
 struct scene_menu_main_data {
   struct metil_menu menu;
   unsigned long int time_started;
-  struct rand_parameters rand_parameters_io_proc;
-  struct rand_source rand_source_io_proc;
-  struct rand_result rand_result_io_proc;
+
+  struct rand_parameters rand_parameters;
+  struct rand_source rand_source;
+  struct rand_result rand_result;
+  
+  struct io_proc_data* io_proc_data;
 };
 
 void scene_menu_main_initialize(

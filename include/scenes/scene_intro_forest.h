@@ -1,6 +1,8 @@
 #ifndef __zoe_scenes_scene_intro_forest_h
 #define __zoe_scenes_scene_intro_forest_h
 
+#include <audio/io_proc_data.h>
+
 #include <metil.h>
 
 #include <rand_parameters.h>
@@ -29,10 +31,8 @@ void scene_intro_forest_destroy(
   struct metil_scene*
 );
 
-struct scene_intro_forest_io_proc_data {
-  struct rand_parameters rand_parameters_io_proc;
-  struct rand_source rand_source_io_proc;
-  struct rand_result rand_result_io_proc;
+struct scene_intro_forest_data {
+  struct io_proc_data* io_proc_data;
 };
 
 OSStatus scene_intro_forest_io_proc(
