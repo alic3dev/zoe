@@ -18,7 +18,7 @@ env:
   key_cache_math_c: cache_math_c_0_0_0
   key_cache_metil: cache_metil_0_0_0
   key_cache_rand: cache_rand_0_0_0
-  target_device_version_maacos: 18.5
+  target_device_version_macos: 18.5
   target_standard_metal: metal3.2
 jobs:
   continuous_integration_build:
