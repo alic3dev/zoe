@@ -14,8 +14,6 @@ void mesh_text_initialize(
 ) {
   metil_mesh_initialize(mesh);
 
-  mesh->positioning = metil_mesh_positioning_static;
-
   mesh->size.x = width * scale;
   mesh->size.y = height * scale;
   mesh->size.z = 1.0f;

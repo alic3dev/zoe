@@ -147,6 +147,7 @@ void scene_intro_forest_initialize(
   );
 
   object->index_pipeline_render = zoe_pipeline_index_player;
+  object->positioning = metil_positioning_player;
 
   metil_object_buffers_initialize(
     object,
