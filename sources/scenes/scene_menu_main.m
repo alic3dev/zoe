@@ -2,7 +2,6 @@
 
 #include <menus/menu_main.h>
 #include <mesh/ground/mesh_ground.h>
-#include <mesh/mesh_text.h>
 #include <metil_rendering/camera/camera.h>
 #include <mesh/tree/mesh_tree.h>
 #include <scenes/scene_id.h>
