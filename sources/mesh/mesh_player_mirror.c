@@ -10,6 +10,4 @@ void mesh_player_mirror_initialize(
   mesh_player_initialize(
     mesh
   );
-
-  mesh->positioning = metil_mesh_positioning_normal;
 }

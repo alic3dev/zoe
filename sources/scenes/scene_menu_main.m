@@ -2,7 +2,6 @@
 
 #include <menus/menu_main.h>
 #include <mesh/ground/mesh_ground.h>
-#include <mesh/mesh_text.h>
 #include <metil_rendering/camera/camera.h>
 #include <mesh/tree/mesh_tree.h>
 #include <scenes/scene_id.h>
@@ -232,6 +231,8 @@ void scene_menu_main_initialize(
 
   object->position.y = 0.5f - (object->mesh.size.y / 4.0f);
 
+  object->positioning = metil_positioning_static;
+
   data_object = object->data.contents;
   
   data_object->id = iterator_id++;
@@ -270,6 +271,8 @@ void scene_menu_main_initialize(
 
   object->position.y = -object->mesh.size.y * 6.0;
 
+  object->positioning = metil_positioning_static;
+
   data_object = object->data.contents;
   
   data_object->id = iterator_id++;
@@ -306,6 +309,8 @@ void scene_menu_main_initialize(
   );
 
   object->position.y = -object->mesh.size.y * 10.0f;
+
+  object->positioning = metil_positioning_static;
 
   data_object = object->data.contents;
   

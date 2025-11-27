@@ -49,19 +49,19 @@ directory_rand=../rand
 directory_rand_include=${directory_rand}/include
 
 ifeq (${debug}, 1)
-	directory_cer0_library=${directory_cer0}/library_debug
-	directory_clic3_library=${directory_clic3}/library_debug
-	directory_interrupt_handler_library=${directory_interrupt_handler}/library_debug
-	directory_math_c_library=${directory_math_c}/library_debug
-	directory_metil_library=${directory_metil}/library_debug
-	directory_rand_library=${directory_rand}/library_debug
-else
-	directory_cer0_library=${directory_cer0}/library
-	directory_clic3_library=${directory_clic3}/library
-	directory_interrupt_handler_library=${directory_interrupt_handler}/library
-	directory_math_c_library=${directory_math_c}/library
+	directory_cer0_library=${directory_cer0}/library/macos/debug
+	directory_clic3_library=${directory_clic3}/library/macos/debug
+	directory_interrupt_handler_library=${directory_interrupt_handler}/library/macos/debug
+	directory_math_c_library=${directory_math_c}/library/macos/debug
 	directory_metil_library=${directory_metil}/library
-	directory_rand_library=${directory_rand}/library
+	directory_rand_library=${directory_rand}/library/macos/debug
+else
+	directory_cer0_library=${directory_cer0}/library/macos/release
+	directory_clic3_library=${directory_clic3}/library/macos/release
+	directory_interrupt_handler_library=${directory_interrupt_handler}/library/macos/release
+	directory_math_c_library=${directory_math_c}/library/macos/release
+	directory_metil_library=${directory_metil}/library
+	directory_rand_library=${directory_rand}/library/macos/release
 endif
 
 directory_metal=metal
@@ -74,7 +74,16 @@ directory_app_contents_macos=${directory_app_contents}/MacOS
 directory_app_contents_resources=${directory_app_contents}/Resources
 directory_app_contents_resources_textures=${directory_app_contents_resources}/textures
 
-directory_macos_sdk=${shell xcrun --show-sdk-path}
+target_device=mac
+ifndef target_device_version
+	target_device_version=26.1
+endif
+
+ifndef target_standard_metal
+target_standard_metal=metal4.0
+endif
+
+directory_macos_sdk=${shell xcrun --sdk macosx${target_device_version} --show-sdk-path}
 
 ifeq (${debug}, 1)
 	file_cer0_library=${directory_cer0_library}/cer0_debug.${version_target_cer0}.dylib
@@ -134,13 +143,9 @@ files_textures_resources=${patsubst ${directory_textures}/%,${directory_app_cont
 url_assets=https://content.alic3.dev/assets/${name}
 url_assets_textures=${url_assets}/textures
 
-target_device=mac
-ifndef target_macos_version
-	target_macos_version=26.0
-endif
-target_macos_version_metal=${target_macos_version}
-target_platform=arm64-apple-macos${target_macos_version}
-target_platform_metal=air64-apple-macos${target_macos_version_metal}
+target_device_version_metal=${target_device_version}
+target_platform=arm64-apple-macos${target_device_version}
+target_platform_metal=air64-apple-macos${target_device_version_metal}
 
 frameworks=Metal MetalKit GameController CoreAudio CoreGraphics CoreText
 
@@ -172,7 +177,7 @@ strip_flags=-x
 metal=xcrun -sdk macosx metal
 metal_ar=xcrun -sdk macosx metal-ar
 metallib=xcrun -sdk macosx metallib
-metal_flags_common=-target ${target_platform_metal}
+metal_flags_common=-target ${target_platform_metal} -std=${target_standard_metal}
 metal_flags=${metal_flags_common} -I${directory_include} -I${directory_clic3_include} -I${directory_metil_include} -isysroot ${directory_macos_sdk}
 
 ifneq (${disable_metal_fast_options}, 1)
@@ -239,7 +244,7 @@ ${directory_objects_objc}/%.o: ${directory_sources}/%.m
 
 ${directory_app_contents_resources}/%.storyboardc: ${directory_storyboards}/%.storyboard
 	mkdir -p ${directory_app_contents_resources}
-	ibtool --module ${name} --target-device ${target_device} --minimum-deployment-target ${target_macos_version} --output-format human-readable-text $< --compilation-directory ${directory_app_contents_resources}	
+	ibtool --module ${name} --target-device ${target_device} --minimum-deployment-target ${target_device_version} --output-format human-readable-text $< --compilation-directory ${directory_app_contents_resources}	
 
 ${file_output_info_plist}: ${file_info_plist}
 	mkdir -p ${directory_app_contents}
