@@ -9,7 +9,9 @@
 #include <rand_result.h>
 #include <rand_source.h>
 
-#if !target_os_ios
+#if target_os_ios
+#include <AVFAudio/AVFAudio.h>
+#else
 #include <CoreAudio/CoreAudio.h>
 #endif
 #include <MetalKit/MetalKit.h>
@@ -37,7 +39,15 @@ struct scene_intro_forest_data {
   struct io_proc_data* io_proc_data;
 };
 
-#if !target_os_ios
+#if target_os_ios
+OSStatus scene_intro_forest_io_proc(
+  BOOL* _Nonnull,
+  const AudioTimeStamp* _Nonnull,
+  AVAudioFrameCount,
+  AudioBufferList* _Nonnull,
+  void* _Nonnull
+);
+#else
 OSStatus scene_intro_forest_io_proc(
   AudioObjectID,
   const AudioTimeStamp*,
