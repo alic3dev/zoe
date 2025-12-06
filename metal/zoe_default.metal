@@ -40,18 +40,6 @@ struct data_vertex {
   return data_vertex;
 }
 
-#if target_os_ios
-fragment float4 zoe_default_fragment(
-  struct data_vertex data_vertex [[stage_in]]
-) {
-  return float4(
-    data_vertex.brightness,
-    data_vertex.brightness,
-    data_vertex.brightness,
-    1.0f
-  );
-}
-#else
 fragment float4 zoe_default_fragment(
   struct data_vertex data_vertex [[stage_in]],
   metal::texture2d<half> texture [[ texture(0) ]]
@@ -75,4 +63,3 @@ fragment float4 zoe_default_fragment(
     texture_color[3]
   );
 }
-#endif
