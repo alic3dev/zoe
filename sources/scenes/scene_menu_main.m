@@ -472,12 +472,6 @@ void scene_menu_main_destroy(
 
   io_proc_data->destroy = 1;
 
-  #if !target_os_ios
-  metil_audio_io_proc_remove(
-    scene_menu_main_io_proc
-  );
-  #endif
-
   rand_clean(
     &data->rand_result,
     &data->rand_source
