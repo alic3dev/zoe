@@ -418,15 +418,15 @@ clean_all: clean
 clean: clean_air clean_metalar clean_objects clean_output
 
 clean_air:
-	-rm -r ${directory_air_base}
+	-rm -r ${directory_air_base} 2> /dev/null
 
 clean_metalar:
 	-rm -r ${directory_metalar_base} 2> /dev/null
 
 clean_objects:
-	-rm -r ${directory_objects_base}
+	-rm -r ${directory_objects_base} 2> /dev/null
 
 clean_output:
-	-rm -r ${directory_output_base}
+	-rm -r ${directory_output_base} 2> /dev/null
 
 .always:
