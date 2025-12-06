@@ -23,20 +23,20 @@ enum textures_scene_intro_forest {
 };
 
 void scene_intro_forest_initialize(
-  struct metil_scene*,
-  id<MTLDevice>
+  struct metil_scene* _Nonnull,
+  id<MTLDevice> _Nonnull
 );
 
 void scene_intro_forest_poll(
-  struct metil_scene*
+  struct metil_scene* _Nonnull
 );
 
 void scene_intro_forest_destroy(
-  struct metil_scene*
+  struct metil_scene* _Nonnull
 );
 
 struct scene_intro_forest_data {
-  struct io_proc_data* io_proc_data;
+  struct io_proc_data* _Nonnull io_proc_data;
 };
 
 #if target_os_ios
