@@ -381,12 +381,6 @@ void scene_intro_forest_destroy(
 
   io_proc_data->destroy = 1;
 
-  #if !target_os_ios
-  metil_audio_io_proc_remove(
-    scene_intro_forest_io_proc
-  );
-  #endif
-
   metil_scene_destroy_default(
     scene
   );
