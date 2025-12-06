@@ -20,6 +20,12 @@
 #include <rand_source.h>
 #include <rand_source_type.h>
 
+#if target_os_ios
+#include <AVFAudio/AVFAudio.h>
+#else
+#include <CoreAudio/CoreAudio.h>
+#endif
+
 #include <stdlib.h>
 
 void scene_intro_forest_data_initialize(
@@ -54,12 +60,10 @@ void scene_intro_forest_initialize(
 
   data_scene->io_proc_data = io_proc_data;
 
-  #if !target_os_ios
   metil_audio_io_proc_add_with_data(
     scene_intro_forest_io_proc,
     io_proc_data
   );
-  #endif
 
   scene->poll = scene_intro_forest_poll;
   scene->destroy = scene_intro_forest_destroy;
@@ -386,7 +390,95 @@ void scene_intro_forest_destroy(
   );
 }
 
-#if !target_os_ios
+#if target_os_ios
+OSStatus scene_intro_forest_io_proc(
+  BOOL* _Nonnull silence,
+  const AudioTimeStamp* _Nonnull timestamp,
+  AVAudioFrameCount frame_count,
+  AudioBufferList* _Nonnull output_data,
+  void* data
+) {
+  struct io_proc_data* io_proc_data = (
+    data
+  );
+
+  if (
+    io_proc_data->destroy == 1
+  ) {
+    metil_audio_io_proc_remove(
+      scene_intro_forest_io_proc
+    );
+
+    rand_clean(
+      &io_proc_data->rand_result,
+      &io_proc_data->rand_source
+    );
+
+    free(io_proc_data);
+
+    return 0;
+  }
+
+  rand_get(
+    &io_proc_data->rand_source,
+    &io_proc_data->rand_result,
+    &io_proc_data->rand_parameters
+  );
+
+  for (
+    unsigned long int index_buffer = 0;
+    index_buffer < output_data->mNumberBuffers;
+    ++index_buffer
+  ) {
+    AudioBuffer audio_buffer_current = output_data->mBuffers[
+      index_buffer
+    ];
+
+    float* buffer_out = audio_buffer_current.mData;
+    unsigned long int count_channel_out = audio_buffer_current.mNumberChannels;
+    
+    for (
+      unsigned int index_frame = 0;
+      index_frame < frame_count;
+      ++index_frame
+    ) {
+      unsigned long int channel = (
+        index_frame %
+        count_channel_out
+      );
+
+      unsigned int offset_byte = (
+        index_frame *
+        2
+      );
+
+      if (
+        channel == 0
+      ) {
+        buffer_out[index_frame] = ((float) ((
+          io_proc_data->rand_result.bytes[
+            offset_byte % 20500
+          ] *
+          io_proc_data->rand_result.bytes[
+            (offset_byte + 1) % 20500
+          ]
+        ) % 10000)) / 100000.0f;
+      } else {
+        buffer_out[
+          index_frame
+        ] = (
+          buffer_out[
+            index_frame -
+            channel
+          ]
+        );
+      }
+    }
+  }
+  
+  return 0;
+}
+#else
 OSStatus scene_intro_forest_io_proc(
   AudioObjectID id_audio_object,
   const AudioTimeStamp* time_stamp_audio,
@@ -431,7 +523,10 @@ OSStatus scene_intro_forest_io_proc(
     AudioBuffer audio_buffer_current = list_buffer_audio_out->mBuffers[index_buffer];
 
     float* buffer_out = audio_buffer_current.mData;
-    unsigned long int size_buffer_out = audio_buffer_current.mDataByteSize / sizeof(float);
+    unsigned long int size_buffer_out = (
+      audio_buffer_current.mDataByteSize /
+      sizeof(float)
+    );
     unsigned long int count_channel_out = audio_buffer_current.mNumberChannels;
     
     for (
@@ -439,20 +534,37 @@ OSStatus scene_intro_forest_io_proc(
       index_buffer_out < size_buffer_out;
       ++index_buffer_out
     ) {
-      unsigned long int channel = index_buffer_out % count_channel_out;
-      unsigned int offset_byte = index_buffer_out * 2;
+      unsigned long int channel = (
+        index_buffer_out %
+        count_channel_out
+      );
+      unsigned int offset_byte = (
+        index_buffer_out *
+        2
+      );
 
-      if (channel == 0) {
-        buffer_out[index_buffer_out] = ((float) ((
+      if (
+        channel == 0
+      ) {
+        buffer_out[
+          index_buffer_out
+        ] = ((float) ((
           io_proc_data->rand_result.bytes[
-            offset_byte % 20500
+            offset_byte %
+            20500
           ] *
           io_proc_data->rand_result.bytes[
-            (offset_byte + 1) % 20500
+            (offset_byte + 1) %
+            20500
           ]
         ) % 10000)) / 100000.0f;
       } else {
-        buffer_out[index_buffer_out] = buffer_out[index_buffer_out - channel];
+        buffer_out[
+          index_buffer_out
+        ] = buffer_out[
+          index_buffer_out -
+          channel
+        ];
       }
     }
   }

@@ -32,35 +32,43 @@ struct scene_menu_main_data {
   struct rand_source rand_source;
   struct rand_result rand_result;
   
-  struct io_proc_data* io_proc_data;
+  struct io_proc_data* _Nonnull io_proc_data;
 };
 
 void scene_menu_main_initialize(
-  struct metil_scene*,
-  id<MTLDevice>
+  struct metil_scene* _Nonnull,
+  id<MTLDevice> _Nonnull
 );
 
 void scene_menu_main_poll(
-  struct metil_scene*
+  struct metil_scene* _Nonnull
 );
 
 void scene_menu_main_poll_input(
-  struct metil_scene*
+  struct metil_scene* _Nonnull
 );
 
 void scene_menu_main_destroy(
-  struct metil_scene*
+  struct metil_scene* _Nonnull
 );
 
-#if !target_os_ios
+#if target_os_ios
+OSStatus scene_menu_main_io_proc(
+  BOOL* _Nonnull,
+  const AudioTimeStamp* _Nonnull,
+  AVAudioFrameCount,
+  AudioBufferList* _Nonnull,
+  void* _Nonnull
+);
+#else
 OSStatus scene_menu_main_io_proc(
   AudioObjectID,
-  const AudioTimeStamp*,
-  const AudioBufferList*,
-  const AudioTimeStamp*,
-  AudioBufferList*,
-  const AudioTimeStamp*,
-  void*
+  const AudioTimeStamp* _Nonnull,
+  const AudioBufferList* _Nonnull,
+  const AudioTimeStamp* _Nonnull,
+  AudioBufferList* _Nonnull,
+  const AudioTimeStamp* _Nonnull,
+  void* _Nonnull
 );
 #endif
 
