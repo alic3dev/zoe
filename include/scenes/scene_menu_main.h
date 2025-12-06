@@ -9,7 +9,9 @@
 #include <rand_result.h>
 #include <rand_source.h>
 
+#if !target_os_ios
 #include <CoreAudio/CoreAudio.h>
+#endif
 #include <MetalKit/MetalKit.h>
 
 extern const unsigned long int scene_menu_main_time_scene_transition;
@@ -50,6 +52,7 @@ void scene_menu_main_destroy(
   struct metil_scene*
 );
 
+#if !target_os_ios
 OSStatus scene_menu_main_io_proc(
   AudioObjectID,
   const AudioTimeStamp*,
@@ -59,5 +62,6 @@ OSStatus scene_menu_main_io_proc(
   const AudioTimeStamp*,
   void*
 );
+#endif
 
 #endif

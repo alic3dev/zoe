@@ -140,6 +140,30 @@ struct data_vertex {
   return data_vertex;
 }
 
+#if target_os_ios
+fragment float4 zoe_ground_fragment(
+  struct data_vertex data_vertex [[stage_in]]
+) {
+  float brightness = data_vertex.brightness;
+
+  brightness = ((data_vertex.height * 0.8f) + 0.075f) * brightness;
+
+  brightness = brightness * metal::fmax(
+    metal::fmin(
+      100.0f / data_vertex.distance,
+      1.0f
+    ),
+    0.0f
+  );
+
+  return float4(
+    0.5f * brightness,
+    0.4f * brightness,
+    0.3f * brightness,
+    1.0f
+  );
+}
+#else
 fragment float4 zoe_ground_fragment(
   struct data_vertex data_vertex [[stage_in]],
   metal::texture2d<half> texture [[ texture(0) ]],
@@ -180,3 +204,4 @@ fragment float4 zoe_ground_fragment(
     texture_color[3]
   );
 }
+#endif
