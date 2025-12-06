@@ -17,7 +17,9 @@
 #include <rand_source.h>
 #include <rand_source_type.h>
 
+#if !target_os_ios
 #include <CoreAudio/CoreAudio.h>
+#endif
 
 #include <math.h>
 
@@ -49,10 +51,12 @@ void scene_menu_main_initialize(
 
   data_scene->io_proc_data = io_proc_data;
 
+  #if !target_os_ios
   metil_audio_io_proc_add_with_data(
     scene_menu_main_io_proc,
     io_proc_data
   );
+  #endif
 
   rand_initialize(
     &data_scene->rand_parameters,
@@ -431,7 +435,11 @@ void scene_menu_main_poll(
       case 1:
         metil_debug_log("EXITING\n");
         
+        #if target_os_ios
+        [[UIApplication sharedApplication] terminate: 0];
+        #else
         [[NSApplication sharedApplication] terminate: 0];
+        #endif
         break;
     }
   }
@@ -464,6 +472,12 @@ void scene_menu_main_destroy(
 
   io_proc_data->destroy = 1;
 
+  #if !target_os_ios
+  metil_audio_io_proc_remove(
+    scene_menu_main_io_proc
+  );
+  #endif
+
   rand_clean(
     &data->rand_result,
     &data->rand_source
@@ -472,6 +486,7 @@ void scene_menu_main_destroy(
   metil_scene_destroy_default(scene);
 }
 
+#if !target_os_ios
 OSStatus scene_menu_main_io_proc(
   AudioObjectID id_audio_object,
   const AudioTimeStamp* time_stamp_audio,
@@ -551,3 +566,4 @@ OSStatus scene_menu_main_io_proc(
 
   return 0;
 }
+#endif

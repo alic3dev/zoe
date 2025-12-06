@@ -1,5 +1,6 @@
 #include <zoe.h>
 
+#include <application/zoe_application_delegate.h>
 #include <scenes/scene_id.h>
 #include <scenes/scene_intro_forest.h>
 #include <scenes/scene_menu_main.h>
@@ -10,16 +11,36 @@
 
 int main(
   int length_parameters,
+  #if target_os_ios
+  char** parameters
+  #else
   const char** parameters
+  #endif
 ) {
   metil_player_speed_movement_default = 64.0f;
 
+  #if target_os_ios
+  metil_initialize(
+    length_parameters,
+    parameters,
+    "zoe",
+    zoe_renderer_on_initialize
+  );
+
+  return UIApplicationMain(
+    length_parameters,
+    parameters,
+    (void*)0,
+    NSStringFromClass([zoe_application_delegate class])
+  );
+  #else
   return metil_initialize(
     length_parameters,
     parameters,
     "zoe",
     zoe_renderer_on_initialize
   );
+  #endif
 }
 
 void zoe_renderer_on_initialize(

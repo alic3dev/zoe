@@ -54,10 +54,12 @@ void scene_intro_forest_initialize(
 
   data_scene->io_proc_data = io_proc_data;
 
+  #if !target_os_ios
   metil_audio_io_proc_add_with_data(
     scene_intro_forest_io_proc,
     io_proc_data
   );
+  #endif
 
   scene->poll = scene_intro_forest_poll;
   scene->destroy = scene_intro_forest_destroy;
@@ -379,9 +381,18 @@ void scene_intro_forest_destroy(
 
   io_proc_data->destroy = 1;
 
-  metil_scene_destroy_default(scene);
+  #if !target_os_ios
+  metil_audio_io_proc_remove(
+    scene_intro_forest_io_proc
+  );
+  #endif
+
+  metil_scene_destroy_default(
+    scene
+  );
 }
 
+#if !target_os_ios
 OSStatus scene_intro_forest_io_proc(
   AudioObjectID id_audio_object,
   const AudioTimeStamp* time_stamp_audio,
@@ -454,3 +465,4 @@ OSStatus scene_intro_forest_io_proc(
 
   return 0;
 }
+#endif
