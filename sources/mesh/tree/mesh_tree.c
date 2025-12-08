@@ -145,8 +145,8 @@ void mesh_tree_initialize(
   }
 
   unsigned char count_branches = (
-    rand_result.bytes[0] % 30
-  ) + 10;
+    rand_result.bytes[0] % 50
+  ) + 50;
 
   float radius_branch_tenth = (radius / 2.0f) / 10.0f;
   float radius_branch_nine_tenths = radius_branch_nine_tenths * 9.0f;
@@ -245,7 +245,8 @@ void mesh_tree_initialize(
         (float) (
           rand_result_secondary.bytes[offset_byte + 5] *
           rand_result_secondary.bytes[offset_byte + 7]
-        ) / 1000.0f, radius_branch_nine_tenths
+        ) / 1000.0f,
+        radius_branch_nine_tenths
       ) + radius_branch_tenth;
 
       float length = (
@@ -257,47 +258,29 @@ void mesh_tree_initialize(
         (mesh->size.y / 5.0f)
       );
       
-      if (index_joint_branch == 0 ) {
-        mesh->vertices[index_vertex].x = position_joint_branch.x;
-        mesh->vertices[index_vertex].y = position_joint_branch.y;
-        mesh->vertices[index_vertex].z = position_joint_branch.z;
-        mesh->vertices[index_vertex].w = 1.0f;
+      mesh->vertices[index_vertex].x = position_joint_branch.x;
+      mesh->vertices[index_vertex].y = position_joint_branch.y;
+      mesh->vertices[index_vertex].z = position_joint_branch.z;
+      mesh->vertices[index_vertex].w = 1.0f;
 
-        position_joint_branch.y = (
-          position_joint_branch.y + (
-            ((((float)((
-              rand_result_secondary.bytes[offset_byte + 13] *
-              rand_result_secondary.bytes[offset_byte + 9]
-            ) % 10000)) / 5000.0f) - 0.3f) *
-            (mesh->size.y / 20.0f)
-          )
-        );
+      position_joint_branch.y = (
+        position_joint_branch.y + (
+          ((((float)((
+            rand_result_secondary.bytes[offset_byte + 13] *
+            rand_result_secondary.bytes[offset_byte + 9]
+          ) % 10000)) / 5000.0f) - 0.3f) *
+          (mesh->size.y / 20.0f)
+        )
+      );
 
-        mesh->vertices[index_vertex + 1].x = position_joint_branch.x;
-        mesh->vertices[index_vertex + 1].y = position_joint_branch.y;
-        mesh->vertices[index_vertex + 1].z = position_joint_branch.z;
-        mesh->vertices[index_vertex + 1].w = 1.0f;
-      } else {
-        position_joint_branch.x = mesh->vertices[index_vertex - 2].x;
-        position_joint_branch.y = mesh->vertices[index_vertex - 2].y;
-        position_joint_branch.z = mesh->vertices[index_vertex - 2].z;
+      mesh->vertices[index_vertex + 1].x = position_joint_branch.x;
+      mesh->vertices[index_vertex + 1].y = position_joint_branch.y;
+      mesh->vertices[index_vertex + 1].z = position_joint_branch.z;
+      mesh->vertices[index_vertex + 1].w = 1.0f;
 
-        mesh->vertices[index_vertex].x = position_joint_branch.x;
-        mesh->vertices[index_vertex].y = position_joint_branch.y;
-        mesh->vertices[index_vertex].z = position_joint_branch.z;
-        mesh->vertices[index_vertex].w = 1.0f;
-
-        position_joint_branch.x = mesh->vertices[index_vertex - 1].x;
-        position_joint_branch.y = mesh->vertices[index_vertex - 1].y;
-        position_joint_branch.z = mesh->vertices[index_vertex - 1].z;
-
-        mesh->vertices[index_vertex + 1].x = position_joint_branch.x;
-        mesh->vertices[index_vertex + 1].y = position_joint_branch.y;
-        mesh->vertices[index_vertex + 1].z = position_joint_branch.z;
-        mesh->vertices[index_vertex + 1].w = 1.0f;
-      }
-
-      if (index_joint_branch != 0) {
+      if (
+        index_joint_branch != 0
+      ) {
         position_joint_branch.y = (
           position_joint_branch.y + (
             ((((float)((
