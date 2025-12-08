@@ -9,6 +9,9 @@
 #include <zoe_pipeline_index.h>
 
 #include <metil_object.h>
+#include <metil_paths/paths.h>
+#include <metil_rendering/camera/camera_mode.h>
+#include <metil_rendering/metil_renderer_interface.h>
 #include <metil_scenes/scene.h>
 
 #include <rand_clean.h>
@@ -29,11 +32,20 @@
 
 void scene_intro_forest_initialize(
   struct metil_scene* scene,
-  id<MTLDevice> metal_device
+  struct metil_renderer_interface* renderer_interface
 ) {
+  scene->renderer_interface->rendering_properties->camera.mode = (
+    metil_camera_mode_third_person
+  );
+
+  scene->renderer_interface->rendering_properties->camera.height = (
+    metil_camera_height_default *
+    4.0f
+  );
+
   metil_scene_initialize_with_renderables(
     scene,
-    metal_device,
+    renderer_interface,
     503
   );
 
@@ -80,7 +92,12 @@ void scene_intro_forest_initialize(
     scene->length_textures
   );
 
-  MTKTextureLoader* texture_loader = [[MTKTextureLoader alloc] initWithDevice: metal_device];
+  MTKTextureLoader* texture_loader = [
+    [MTKTextureLoader alloc]
+    initWithDevice: (
+      scene->renderer_interface->metal_device
+    )
+  ];
 
   scene->textures[
     textures_scene_intro_forest_ground
@@ -146,7 +163,7 @@ void scene_intro_forest_initialize(
     scene->textures[
       textures_scene_intro_forest_player
     ],
-    scene->metal_device,
+    scene->renderer_interface->metal_device,
     0
   );
 
@@ -161,7 +178,7 @@ void scene_intro_forest_initialize(
     scene->textures[
       textures_scene_intro_forest_player
     ],
-    scene->metal_device,
+    scene->renderer_interface->metal_device,
     1
   );
 
@@ -184,7 +201,7 @@ void scene_intro_forest_initialize(
     scene->textures[
       textures_scene_intro_forest_tree
     ],
-    scene->metal_device
+    scene->renderer_interface->metal_device
   );
 
   struct rand_parameters rand_parameters;
@@ -234,7 +251,7 @@ void scene_intro_forest_initialize(
       scene->textures[
         textures_scene_intro_forest_tree
       ],
-      scene->metal_device
+      scene->renderer_interface->metal_device
     );
     
     object->position.x = (

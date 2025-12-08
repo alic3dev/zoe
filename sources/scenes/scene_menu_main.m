@@ -7,8 +7,14 @@
 #include <scenes/scene_id.h>
 #include <zoe_pipeline_index.h>
 
+#include <metil_audio/audio.h>
+#include <metil_debug/log.h>
 #include <metil_scenes/scene.h>
+#include <metil_scenes/scene_controller.h>
 #include <metil_object/metil_object_text.h>
+#include <metil_paths/paths.h>
+#include <metil_rendering/metil_renderer_data_object.h>
+#include <metil_rendering/metil_renderer_interface.h>
 
 #include <rand_clean.h>
 #include <rand_functions.h>
@@ -30,11 +36,11 @@ const unsigned long int scene_menu_main_time_scene_transition = 333;
 
 void scene_menu_main_initialize(
   struct metil_scene* scene,
-  id<MTLDevice> metal_device
+  struct metil_renderer_interface* metil_rendering_interface
 ) {
   metil_scene_initialize_with_renderables(
     scene,
-    metal_device,
+    metil_rendering_interface,
     5
   );
 
@@ -85,7 +91,12 @@ void scene_menu_main_initialize(
     scene->length_textures
   );
 
-  MTKTextureLoader* texture_loader = [[MTKTextureLoader alloc] initWithDevice: metal_device];
+  MTKTextureLoader* texture_loader = [
+    [MTKTextureLoader alloc]
+    initWithDevice: (
+      scene->renderer_interface->metal_device
+    )
+  ];
 
   scene->textures[
     textures_scene_menu_main_ground
@@ -154,7 +165,7 @@ void scene_menu_main_initialize(
     scene->textures[
       textures_scene_menu_main_tree
     ],
-    scene->metal_device
+    scene->renderer_interface->metal_device
   );
 
   metil_object = (
@@ -172,7 +183,7 @@ void scene_menu_main_initialize(
     scene->textures[
       textures_scene_menu_main_tree
     ],
-    scene->metal_device
+    scene->renderer_interface->metal_device
   );
 
   metil_object = (
@@ -184,7 +195,7 @@ void scene_menu_main_initialize(
   metil_object_text_initialize(
     metil_object,
     "zoe",
-    metal_device
+    scene->renderer_interface->metal_device
   );
 
   metil_object->position.y = (
@@ -203,7 +214,7 @@ void scene_menu_main_initialize(
   metil_object_text_initialize(
     metil_object,
     "enter",
-    metal_device
+    scene->renderer_interface->metal_device
   );
 
   metil_object->position.y = -(
@@ -220,7 +231,7 @@ void scene_menu_main_initialize(
   metil_object_text_initialize(
     metil_object,
     "exit",
-    metal_device
+    scene->renderer_interface->metal_device
   );
 
   metil_object->position.y = -(

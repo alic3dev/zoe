@@ -3,7 +3,8 @@
 
 #include <audio/io_proc_data.h>
 
-#include <metil.h>
+#include <metil_scenes/scene.h>
+#include <metil_rendering/metil_renderer_interface.h>
 
 #include <rand_parameters.h>
 #include <rand_result.h>
@@ -24,7 +25,7 @@ enum textures_scene_intro_forest {
 
 void scene_intro_forest_initialize(
   struct metil_scene* _Nonnull,
-  id<MTLDevice> _Nonnull
+  struct metil_renderer_interface* _Nonnull
 );
 
 void scene_intro_forest_poll(
