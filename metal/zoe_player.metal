@@ -67,9 +67,9 @@ fragment float4 zoe_player_fragment(
   );
 
   return float4(
-    texture_color[0] * data_vertex.brightness * 0.02f,
-    texture_color[1] * data_vertex.brightness * 0.019f,
-    texture_color[2] * data_vertex.brightness * 0.02f,
-    texture_color[3]
+    data_vertex.brightness * 0.02f,
+    data_vertex.brightness * 0.019f,
+    data_vertex.brightness * 0.02f,
+    1.0f
   );
 }

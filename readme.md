@@ -1,9 +1,8 @@
 # zoe
 
-<img width="640" height="407" alt="Screenshot 2025-11-08 at 00 48 28 Large" src="https://github.com/user-attachments/assets/4a93ee4c-b882-462d-94ee-b53905c0b5a9" />
-<img width="160" height="102" alt="Screenshot 2025-11-08 at 00 48 28 Small" src="https://github.com/user-attachments/assets/482a4469-b701-4121-ad95-b137e2ebcc65" />
-<img width="1966" height="1250" alt="Screenshot 2025-11-08 at 00 48 38" src="https://github.com/user-attachments/assets/fd992cbd-2caa-4428-b0df-412c1b7610c0" />
-<img width="1966" height="1250" alt="Screenshot 2025-11-08 at 00 48 32" src="https://github.com/user-attachments/assets/0785ad7a-eccd-42e1-87b9-df66b5f3e2d2" />
+<img width="1966" height="1250" alt="Screenshot 2025-12-07 at 18 50 44" src="https://github.com/user-attachments/assets/3c45fe1a-a852-4070-a79d-f298b1857829" />
+<img width="1966" height="1250" alt="Screenshot 2025-12-07 at 18 50 39" src="https://github.com/user-attachments/assets/5e574c4a-73c1-475f-b4e9-9087f24fbe7b" />
+<img width="1966" height="1250" alt="Screenshot 2025-12-07 at 18 50 50" src="https://github.com/user-attachments/assets/7ec3bd2b-b281-4a0f-ab66-5d0802e62ede" />
 
 ## requirements
 
