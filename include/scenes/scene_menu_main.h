@@ -11,7 +11,9 @@
 #include <rand_result.h>
 #include <rand_source.h>
 
-#if !target_os_ios
+#if target_os_ios
+#include <AVFAudio/AVFAudio.h>
+#else
 #include <CoreAudio/CoreAudio.h>
 #endif
 #include <MetalKit/MetalKit.h>
