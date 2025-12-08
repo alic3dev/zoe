@@ -7,6 +7,7 @@
 #include <zoe_pipeline_index.h>
 
 #include <metil_initialize.h>
+#include <metil_object/metil_object_text.h>
 #include <metil_rendering/metil_renderer_interface.h>
 
 int main(
@@ -102,6 +103,8 @@ void zoe_renderer_on_initialize(
       newFunctionWithName: @"zoe_tree_vertex"
     ]
   ];
+
+  metil_object_text_index_pipeline_render_default = zoe_pipeline_index_text;
 
   metil_renderer_interface->rendering_properties->color_clear.x = 0.0324f;
   metil_renderer_interface->rendering_properties->color_clear.y = 0.0424f;
