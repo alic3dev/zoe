@@ -50,12 +50,12 @@ OSStatus scene_intro_forest_io_proc(
 #else
 OSStatus scene_intro_forest_io_proc(
   AudioObjectID,
-  const AudioTimeStamp*,
-  const AudioBufferList*,
-  const AudioTimeStamp*,
-  AudioBufferList*,
-  const AudioTimeStamp*,
-  void*
+  const AudioTimeStamp* _Nonnull,
+  const AudioBufferList* _Nonnull,
+  const AudioTimeStamp* _Nonnull,
+  AudioBufferList* _Nonnull,
+  const AudioTimeStamp* _Nonnull,
+  void* _Nonnull
 );
 #endif
 
