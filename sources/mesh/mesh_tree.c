@@ -1,6 +1,6 @@
-#include <mesh/tree/mesh_tree.h>
+#include <mesh/mesh_tree.h>
 
-#include <clic3.h>
+#include <clic3_vector.h>
 
 #include <metil_mesh/mesh.h>
 
@@ -16,29 +16,35 @@
 
 void mesh_tree_initialize(
   struct metil_mesh* mesh,
-  float radius,
-  float height
+  struct clic3_vector2_float* size
 ) {
-  metil_mesh_initialize(mesh);
+  metil_mesh_initialize(
+    mesh
+  );
 
-  mesh->size.x = radius * 2.0f;
-  mesh->size.y = height;
+  mesh->size.x = (
+    size->x *
+    2.0f
+  );
+  mesh->size.y = size->y;
   mesh->size.z = mesh->size.x;
 
-  unsigned char length_segments_height = 10;
-  unsigned char length_vertices_radius = 10;
-
-  float interval_height = height / (float) (length_segments_height - 1);
+  float interval_height = (
+    mesh->size.y /
+    (float) (
+      zoe_mesh_tree_length_segments_height -
+      1
+    )
+  );
 
   mesh->length_vertices = (
-    length_segments_height * length_vertices_radius
+    zoe_mesh_tree_length_vertices_trunk
   );
 
   mesh->length_indices = (
-    (
-      (length_segments_height - 1) * 
-      (length_vertices_radius )
-    ) * 6
+    (zoe_mesh_tree_length_segments_height - 1) * 
+    zoe_mesh_tree_length_vertices_radius *
+    6
   );
 
   mesh->vertices = realloc(
@@ -53,8 +59,14 @@ void mesh_tree_initialize(
     mesh->length_indices
   );
 
-  float radius_tenth = radius / 10.0f;
-  float radius_nine_tenths = radius_tenth * 9.0f;
+  float radius_tenth = (
+    size->x /
+    10.0f
+  );
+  float radius_nine_tenths = (
+    radius_tenth *
+    9.0f
+  );
 
   unsigned int index_index = 0;
 
@@ -66,8 +78,8 @@ void mesh_tree_initialize(
     &rand_parameters,
     &rand_result,
     &rand_source, (
-      length_segments_height *
-      length_vertices_radius *
+      zoe_mesh_tree_length_segments_height *
+      zoe_mesh_tree_length_vertices_radius *
       2 +
       1
     ),
@@ -83,63 +95,96 @@ void mesh_tree_initialize(
 
   for (
     unsigned char index_segment_height = 0;
-    index_segment_height < length_segments_height;
+    index_segment_height < zoe_mesh_tree_length_segments_height;
     ++index_segment_height
   ) {
     unsigned int index_offset_height = (
-      index_segment_height * length_vertices_radius
+      index_segment_height *
+      zoe_mesh_tree_length_vertices_radius
     );
 
     for (
       unsigned char index_segment_radius = 0;
-      index_segment_radius < length_vertices_radius;
+      index_segment_radius < zoe_mesh_tree_length_vertices_radius;
       ++index_segment_radius
     ) {
       unsigned int index_vertex = (
-        index_offset_height + index_segment_radius
+        index_offset_height +
+        index_segment_radius
       );
 
-      float distance = fmod(((float) (
-        rand_result.bytes[index_vertex + 1] *
-        rand_result.bytes[index_vertex + 2]
-      )) / 1000.0f, radius_nine_tenths) + radius_tenth;
+      float distance = (
+        fmod(
+          (float) (
+            rand_result.bytes[
+              index_vertex +
+              1
+            ] *
+            rand_result.bytes[
+              index_vertex +
+              2
+            ]
+          ) /
+          1000.0f,
+          radius_nine_tenths
+        ) + radius_tenth
+      );
 
       float angle = (
-        (float)index_segment_radius /
-        (float)length_vertices_radius *
+        (float) index_segment_radius /
+        (float) zoe_mesh_tree_length_vertices_radius *
         M_PI *
         2.0f
       );
       
-      mesh->vertices[index_vertex].x = cosf(angle) * distance;
-      mesh->vertices[index_vertex].y = index_segment_height * interval_height;
-      mesh->vertices[index_vertex].z = sinf(angle) * distance;
+      mesh->vertices[index_vertex].x = (
+        cosf(
+          angle
+        ) *
+        distance
+      );
+      mesh->vertices[index_vertex].y = (
+        index_segment_height *
+        interval_height
+      );
+      mesh->vertices[index_vertex].z = (
+        sinf(
+          angle
+        ) *
+        distance
+      );
       mesh->vertices[index_vertex].w = 1.0f;
 
       if (
-        index_segment_height >= length_segments_height - 1
+        index_segment_height >= (
+          zoe_mesh_tree_length_segments_height -
+          1
+        )
       ) {
         continue;
       }
 
       if (
-        index_segment_radius + 1 < length_vertices_radius
+        zoe_mesh_tree_length_vertices_radius > (
+          index_segment_radius +
+          1
+        )
       ) {
         mesh->indices[index_index++] = index_vertex;
         mesh->indices[index_index++] = index_vertex + 1;
-        mesh->indices[index_index++] = index_vertex + length_vertices_radius;
+        mesh->indices[index_index++] = index_vertex + zoe_mesh_tree_length_vertices_radius;
 
         mesh->indices[index_index++] = index_vertex + 1;
-        mesh->indices[index_index++] = index_vertex + length_vertices_radius;
-        mesh->indices[index_index++] = index_vertex + length_vertices_radius + 1;
+        mesh->indices[index_index++] = index_vertex + zoe_mesh_tree_length_vertices_radius;
+        mesh->indices[index_index++] = index_vertex + zoe_mesh_tree_length_vertices_radius + 1;
       } else {
         mesh->indices[index_index++] = index_vertex;
-        mesh->indices[index_index++] = (index_vertex + 1) - length_vertices_radius;
-        mesh->indices[index_index++] = index_vertex + length_vertices_radius;
+        mesh->indices[index_index++] = (index_vertex + 1) - zoe_mesh_tree_length_vertices_radius;
+        mesh->indices[index_index++] = index_vertex + zoe_mesh_tree_length_vertices_radius;
 
         mesh->indices[index_index++] = index_vertex + 1;
-        mesh->indices[index_index++] = (index_vertex + 1) - length_vertices_radius;
-        mesh->indices[index_index++] = index_vertex + length_vertices_radius;
+        mesh->indices[index_index++] = (index_vertex + 1) - zoe_mesh_tree_length_vertices_radius;
+        mesh->indices[index_index++] = index_vertex + zoe_mesh_tree_length_vertices_radius;
       }
     }
   }
@@ -148,14 +193,17 @@ void mesh_tree_initialize(
     rand_result.bytes[0] % 10
   ) + 50;
 
-  float radius_branch_tenth = (radius / 2.0f) / 10.0f;
+  float radius_branch_tenth = (
+    (size->x / 2.0f) /
+    10.0f
+  );
   float radius_branch_nine_tenths = radius_branch_nine_tenths * 9.0f;
 
-  unsigned char length_vertices_radius_branch = length_vertices_radius / 2;
+  unsigned char zoe_mesh_tree_length_vertices_radius_branch = zoe_mesh_tree_length_vertices_radius / 2;
 
-  if (length_vertices_radius_branch % 2 != 0) {
-    length_vertices_radius_branch = (
-      length_vertices_radius_branch + 1
+  if (zoe_mesh_tree_length_vertices_radius_branch % 2 != 0) {
+    zoe_mesh_tree_length_vertices_radius_branch = (
+      zoe_mesh_tree_length_vertices_radius_branch + 1
     );
   }
 
@@ -263,7 +311,8 @@ void mesh_tree_initialize(
       );
 
       float thickness = (
-        radius / 10.0f
+        size->x /
+        10.0f
       );
       
       mesh->vertices[index_vertex].x = position_joint_branch.x - thickness;
