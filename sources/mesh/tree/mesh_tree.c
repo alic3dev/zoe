@@ -268,7 +268,7 @@ void mesh_tree_initialize(
             ((((float)((
               rand_result_secondary.bytes[offset_byte + 13] *
               rand_result_secondary.bytes[offset_byte + 9]
-            ) % 10000)) / 5000.0f) - 1.0f) *
+            ) % 10000)) / 5000.0f) - 0.3f) *
             (mesh->size.y / 20.0f)
           )
         );
@@ -303,7 +303,7 @@ void mesh_tree_initialize(
             ((((float)((
               rand_result_secondary.bytes[offset_byte + 8] *
               rand_result_secondary.bytes[offset_byte + 12]
-            ) % 10000)) / 5000.0f) - 1.0f) * (mesh->size.y / 30.0f)
+            ) % 10000)) / 5000.0f) - 0.3f) * (mesh->size.y / 30.0f)
           )
         );
       }
@@ -326,7 +326,7 @@ void mesh_tree_initialize(
           ((((float)((
             rand_result_secondary.bytes[offset_byte + 14] *
             rand_result_secondary.bytes[offset_byte + 6]
-          ) % 10000)) / 5000.0f) - 1.0f) * (mesh->size.y / 30.0f)
+          ) % 10000)) / 5000.0f) - 0.3f) * (mesh->size.y / 30.0f)
         )
       );
 
