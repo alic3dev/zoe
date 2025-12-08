@@ -49,6 +49,8 @@ void scene_intro_forest_initialize(
     503
   );
 
+  scene->player.rotation.x = -0.3f;
+
   scene->data = malloc(
     sizeof(struct scene_intro_forest_data)
   );
