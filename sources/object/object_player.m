@@ -8,6 +8,7 @@
 
 #include <metil_object/metil_object.h>
 #include <metil_positioning.h>
+#include <metil_rendering/camera/camera.h>
 #include <metil_scenes/scene_controller.h>
 
 #include <Metal/MTLDevice.h>
@@ -55,7 +56,7 @@ void zoe_object_player_poll(
   matrix_float3x4* matrix_projection_static,
   matrix_float4x4* matrix_object_projection,
   matrix_float4x4* matrix_player_projection,
-  float* height_camera
+  struct metil_camera* metil_camera
 ) {
   metil_object->position.x = (
     metil_scene_controller.scene.player.position.x
@@ -74,7 +75,7 @@ void zoe_object_player_poll(
     matrix_projection_static,
     matrix_object_projection,
     matrix_player_projection,
-    height_camera
+    metil_camera
   );
 }
 
@@ -83,7 +84,7 @@ void zoe_object_player_mirror_poll(
   matrix_float3x4* matrix_projection_static,
   matrix_float4x4* matrix_object_projection,
   matrix_float4x4* matrix_player_projection,
-  float* height_camera
+  struct metil_camera* metil_camera
 ) {
   metil_object->position.x = (
     -metil_scene_controller.scene.player.position.x
@@ -102,6 +103,6 @@ void zoe_object_player_mirror_poll(
     matrix_projection_static,
     matrix_object_projection,
     matrix_player_projection,
-    height_camera
+    metil_camera
   );
 }

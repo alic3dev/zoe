@@ -3,13 +3,17 @@
 
 #include <audio/io_proc_data.h>
 
-#include <metil.h>
+#include <metil_menus/menu.h>
+#include <metil_rendering/metil_renderer_interface.h>
+#include <metil_scenes/scene.h>
 
 #include <rand_parameters.h>
 #include <rand_result.h>
 #include <rand_source.h>
 
-#if !target_os_ios
+#if target_os_ios
+#include <AVFAudio/AVFAudio.h>
+#else
 #include <CoreAudio/CoreAudio.h>
 #endif
 #include <MetalKit/MetalKit.h>
@@ -37,7 +41,7 @@ struct scene_menu_main_data {
 
 void scene_menu_main_initialize(
   struct metil_scene* _Nonnull,
-  id<MTLDevice> _Nonnull
+  struct metil_renderer_interface* _Nonnull
 );
 
 void scene_menu_main_poll(

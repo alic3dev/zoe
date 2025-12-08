@@ -6,9 +6,12 @@
 #include <scenes/scene_menu_main.h>
 #include <zoe_pipeline_index.h>
 
+#include <metil_configuration/configuration_rendering_properties.h>
 #include <metil_initialize.h>
+#include <metil_library.h>
 #include <metil_object/metil_object_text.h>
 #include <metil_rendering/metil_renderer_interface.h>
+#include <metil_scenes/scene_controller.h>
 
 int main(
   int length_parameters,
@@ -113,7 +116,7 @@ void zoe_renderer_on_initialize(
 
   scene_menu_main_initialize(
     &metil_scene_controller.scene,
-    metil_renderer_interface->metal_device
+    metil_renderer_interface
   );
 
   metil_scene_controller_on_scene_change_add(
@@ -141,13 +144,13 @@ void zoe_on_scene_change(
     case scene_id_menu_main:
       scene_menu_main_initialize(
         &metil_scene_controller.scene,
-        metil_renderer_interface->metal_device
+        metil_renderer_interface
       );
       break;
     case scene_id_intro_forest:
       scene_intro_forest_initialize(
         &metil_scene_controller.scene,
-        metil_renderer_interface->metal_device
+        metil_renderer_interface
       );
       break;
   }
