@@ -229,10 +229,10 @@ void mesh_tree_initialize(
 
     struct clic3_vector3_float position_joint_branch = {
       .x = 0.0f,
-      .y = ((float)((
+      .y = mesh->size.y - (((float)((
         rand_result_secondary.bytes[offset_byte + 2] *
         rand_result_secondary.bytes[offset_byte + 1]
-      ) % 10000) / 20000.0f) * mesh->size.y,
+      ) % 10000) / 20000.0f) * mesh->size.y),
       .z = 0.0f
     };
 
