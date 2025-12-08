@@ -17,6 +17,8 @@ int main(
   const char** parameters
   #endif
 ) {
+  metil_configuration_default_rendering_properties_brightness = 0.4f;
+
   metil_player_speed_movement_default = 64.0f;
 
   #if target_os_ios
