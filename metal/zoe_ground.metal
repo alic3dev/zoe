@@ -7,12 +7,9 @@
 struct data_vertex {
   float4 position [[position]];
   float distance;
-  float height;
   float2 position_texture;
   unsigned char index_texture;
-  float noise;
   float brightness;
-  float brightness_text;
 };
 
 [[vertex]] struct data_vertex zoe_ground_vertex(
@@ -36,8 +33,6 @@ struct data_vertex {
   struct data_vertex data_vertex;
 
   data_vertex.position = data_object->view_model_matrix_projection * positions[id_vertex];
-  data_vertex.height = 0.0f;
-  data_vertex.noise = (float)(data_object->noise % 10001) / 10000.0f;
 
   float3 size_half;
   size_half.x = (data_object->size.x / 2.0f);
@@ -73,69 +68,37 @@ struct data_vertex {
   unsigned char z = 0;
   unsigned char x = 0;
 
-  while (data_vertex.position_texture.x > 1.0f) {
-    data_vertex.position_texture.x = (
-      data_vertex.position_texture.x - 1.0f
-    );
+  data_vertex.position_texture.x = metal::fmod(
+    data_vertex.position_texture.x,
+    1.0f
+  );
 
-    z = z == 0 ? 1 : 0;
-  }
-
-  while (data_vertex.position_texture.y > 1.0f) {
-    data_vertex.position_texture.y = (
-      data_vertex.position_texture.y - 1.0f
-    );
-
-    x = x == 0 ? 1 : 0;
-  }
-
-  if (z == 1) {
-    data_vertex.position_texture.x = 1.0f - (
-      data_vertex.position_texture.x
-    );
-  }
-
-  if (x == 1) {
-    data_vertex.position_texture.y = 1.0f - (
-      data_vertex.position_texture.y
-    );
-  }
-
-  if (positions[id_vertex].y <= data_object->size.y / 20.0f) {
-    data_vertex.height = positions[id_vertex].y / (data_object->size.y / 20.0f) * 0.5f;
-  } else {
-    data_vertex.height = (positions[id_vertex].y / data_object->size.y) * 0.4;
-  }
+  data_vertex.position_texture.y = metal::fmod(
+    data_vertex.position_texture.y,
+    1.0f
+  );
 
   data_vertex.brightness = data_frame->brightness;
-  data_vertex.brightness_text = data_frame->brightness_text;
 
-  if (data_object->noise == 666) {
-    data_vertex.distance = (
-      metal::fabs((data_object->position.x + positions[id_vertex].x)) + 
-      metal::fabs((data_object->position.y + positions[id_vertex].y) - 60.0f) + 
-      metal::fabs((data_object->position.z + positions[id_vertex].z))
-    );
-
-    if (
-      (data_object->position.x + positions[id_vertex].x) < 50 &&
-      (data_object->position.x + positions[id_vertex].x) > -50 &&
-      (data_object->position.z + positions[id_vertex].z) < 50 &&
-      (data_object->position.z + positions[id_vertex].z) > -50
-    ) {
-      data_vertex.distance = data_vertex.distance * 5;
-    } else {
-      data_vertex.distance = data_vertex.distance * 7;
-    }
-    
-    data_vertex.height = 1.0f;
-  } else {
-    data_vertex.distance = (
-      metal::fabs((data_object->position.x + positions[id_vertex].x) + data_frame->position_player.x) + 
-      metal::fabs((data_object->position.y + positions[id_vertex].y) + data_frame->position_player.y) + 
-      metal::fabs((data_object->position.z + positions[id_vertex].z) + data_frame->position_player.z)
-    );
-  }
+  data_vertex.distance = metal::distance(
+    metal::float3(
+      metal::float3(
+        data_object->position.x,
+        data_object->position.y,
+        data_object->position.z
+      ) +
+      metal::float3(
+        positions[id_vertex].x,
+        positions[id_vertex].y,
+        -positions[id_vertex].z
+      )
+    ),
+    metal::float3(
+      data_frame->position_player.x,
+      data_frame->position_player.y,
+      data_frame->position_player.z
+    )
+  );
 
   return data_vertex;
 }
@@ -161,22 +124,18 @@ fragment float4 zoe_ground_fragment(
     )
   );
 
-  float brightness = data_vertex.brightness;
-
-  brightness = ((data_vertex.height * 0.8f) + 0.075f) * brightness;
-
-  brightness = brightness * metal::fmax(
-    metal::fmin(
-      100.0f / data_vertex.distance,
-      1.0f
+  float brightness = metal::fmin(
+    metal::fmax(
+      1.0f - data_vertex.distance / 1000.0f,
+      0.0f
     ),
-    0.0f
+    1.0f
   );
 
   return float4(
-    texture_color[0] * brightness,
-    texture_color[1] * brightness,
-    texture_color[2] * brightness,
-    texture_color[3]
+    brightness,
+    brightness,
+    brightness,
+    1.0f
   );
 }

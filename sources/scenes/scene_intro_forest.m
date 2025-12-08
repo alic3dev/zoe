@@ -276,7 +276,7 @@ void scene_intro_forest_initialize(
 
     mesh_tree_initialize(
       &(object->mesh),
-      1.0f,
+      5.0f,
       250.0f
     );
     
