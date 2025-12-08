@@ -7,8 +7,6 @@
 struct data_vertex {
   float4 position [[position]];
   float distance;
-  float2 position_texture;
-  unsigned char index_texture;
   float brightness;
 };
 
@@ -39,49 +37,23 @@ struct data_vertex {
     ]
   );
 
-  data_vertex.index_texture = 0;
-
-  if (
-    positions[id_vertex].x > data_object->size.x ||
-    positions[id_vertex].x < -data_object->size.x ||
-    positions[id_vertex].z > data_object->size.z ||
-    positions[id_vertex].z < -data_object->size.z
-  ) {
-    data_vertex.position_texture.y = id_vertex % 2 == 0 ? 1.0f : 0.0f;
-    data_vertex.position_texture.x = (
-      (float) (
-        (unsigned short int) (
-          metal::fabs(
-            positions[id_vertex].x +
-            positions[id_vertex].z
-          ) * 10000.0f
-        ) % 74
-      ) / 74.0f
-    );
-  } else {
-    data_vertex.position_texture.y = id_vertex % 20 < 10 ? 1.0f : 0.0f;
-    data_vertex.position_texture.x = metal::fabs(positions[id_vertex].x + positions[id_vertex].z) / (data_object->size.x * 2.0f);
-  }
-
   data_vertex.brightness = data_frame->brightness;
 
   data_vertex.distance = metal::distance(
-    metal::float3(
-      metal::float3(
+    metal::float4(
+      metal::float4(
         data_object->position.x,
         data_object->position.y,
-        data_object->position.z
+        data_object->position.z,
+        1.0f
       ) +
-      metal::float3(
-        positions[id_vertex].x,
-        positions[id_vertex].y,
-        -positions[id_vertex].z
-      )
+      positions[id_vertex]
     ),
-    metal::float3(
+    metal::float4(
       data_frame->position_player.x,
       data_frame->position_player.y,
-      data_frame->position_player.z
+      data_frame->position_player.z,
+      1.0f
     )
   );
 
@@ -89,26 +61,8 @@ struct data_vertex {
 }
 
 fragment float4 zoe_tree_fragment(
-  struct data_vertex data_vertex [[stage_in]],
-  metal::texture2d<half> texture [[ texture(0) ]],
-  metal::texture2d<half> texture_two [[ texture(1) ]]
+  struct data_vertex data_vertex [[stage_in]]
 ) {
-  constexpr metal::sampler sampler_texture(
-    metal::filter::linear,
-    metal::mip_filter::linear
-  );
-
-  float4 texture_color = float4(
-    (
-      data_vertex.index_texture == 0
-      ? texture
-      : texture_two
-    ).sample(
-      sampler_texture,
-      data_vertex.position_texture
-    )
-  );
-
   float brightness = metal::fmin(
     metal::fmax(
       1.0f - data_vertex.distance / 1000.0f,
