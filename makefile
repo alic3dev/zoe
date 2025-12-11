@@ -8,8 +8,12 @@ ifndef target_device_version
 target_device_version=26.1
 endif
 
-ifndef target_standard_metal
-target_standard_metal=metal4.0
+ifndef target_metal_version
+target_metal_version=${target_device_version}
+endif
+
+ifndef target_metal_standard
+target_metal_standard=metal4.0
 endif
 
 directory_objects_base=objects
@@ -19,7 +23,7 @@ ifeq (${target_device},mac)
 target_os=macos
 
 target_platform=arm64-apple-macos${target_device_version}
-target_platform_metal=air64-apple-macos${target_version_metal}
+target_platform_metal=air64-apple-macos${target_metal_version}
 
 directory_sdk=${shell xcrun --sdk macosx${target_device_version} --show-sdk-path}
 endif
@@ -267,7 +271,7 @@ strip_flags=-x
 metal=xcrun -sdk macosx metal
 metal_ar=xcrun -sdk macosx metal-ar
 metallib=xcrun -sdk macosx metallib
-metal_flags_common=-target ${target_platform_metal} -std=${target_standard_metal}
+metal_flags_common=-target ${target_platform_metal} -std=${target_metal_standard}
 
 ifeq (${target_os},ios)
 metal_flags_common:=${metal_flags_common} -Dtarget_os_ios
