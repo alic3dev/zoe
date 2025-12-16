@@ -15,6 +15,9 @@
 #include <metil_paths/paths.h>
 #include <metil_rendering/metil_renderer_data_object.h>
 #include <metil_rendering/metil_renderer_interface.h>
+#if target_os_ios
+#include <metil_termination.h>
+#endif
 
 #include <rand_clean.h>
 #include <rand_functions.h>
@@ -340,15 +343,16 @@ void scene_menu_main_poll(
 
     switch (menu->index_selected) {
       case 0:
-        metil_debug_log("STARTING\n");
+        metil_debug_log("scene_menu_main:starting\n");
 
         data->time_started = scene->time;
         break;
       case 1:
-        metil_debug_log("EXITING\n");
+        metil_debug_log("scene_menu_main:exiting\n");
         
         #if target_os_ios
-        [[UIApplication sharedApplication] terminate: 0];
+        metil_termination_terminate();
+        exit(0);
         #else
         [[NSApplication sharedApplication] terminate: 0];
         #endif
@@ -393,8 +397,8 @@ void scene_menu_main_destroy(
 }
 
 #if target_os_ios
-OSStatus scene_menu_main_io_proc(
-  BOOL* _Nonnull silence,
+int scene_menu_main_io_proc(
+  unsigned char silence,
   const AudioTimeStamp* _Nonnull timestamp,
   AVAudioFrameCount frame_count,
   AudioBufferList* _Nonnull output_data,
