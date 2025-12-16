@@ -3,7 +3,7 @@
 		<key>UILaunchStoryboardName</key>
 		<string></string>
 		<key>UIMainStoryboardFile</key>
-		<string>zoe_ios</string>
+		<string>metil_ios</string>
 		<key>UISupportedInterfaceOrientations</key>
 		<array>
 			<string>UIInterfaceOrientationPortrait</string>
