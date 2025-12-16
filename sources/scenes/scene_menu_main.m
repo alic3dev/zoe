@@ -1,13 +1,23 @@
 #include <scenes/scene_menu_main.h>
 
 #include <menus/menu_main.h>
-#include <mesh/ground/mesh_ground.h>
 #include <metil_rendering/camera/camera.h>
-#include <mesh/tree/mesh_tree.h>
+#include <object/object_ground.h>
+#include <object/object_tree.h>
 #include <scenes/scene_id.h>
 #include <zoe_pipeline_index.h>
 
-#include <metil.h>
+#include <metil_audio/metil_audio_io_proc.h>
+#include <metil_debug/log.h>
+#include <metil_scenes/scene.h>
+#include <metil_scenes/scene_controller.h>
+#include <metil_object/metil_object_text.h>
+#include <metil_paths/paths.h>
+#include <metil_rendering/metil_renderer_data_object.h>
+#include <metil_rendering/metil_renderer_interface.h>
+#if target_os_ios
+#include <metil_termination.h>
+#endif
 
 #include <rand_clean.h>
 #include <rand_functions.h>
@@ -17,7 +27,11 @@
 #include <rand_source.h>
 #include <rand_source_type.h>
 
+#if target_os_ios
+#include <AVFAudio/AVFAudio.h>
+#else
 #include <CoreAudio/CoreAudio.h>
+#endif
 
 #include <math.h>
 
@@ -25,11 +39,12 @@ const unsigned long int scene_menu_main_time_scene_transition = 333;
 
 void scene_menu_main_initialize(
   struct metil_scene* scene,
-  id<MTLDevice> metal_device
+  struct metil_renderer_interface* metil_rendering_interface
 ) {
-  metil_scene_initialize(
+  metil_scene_initialize_with_renderables(
     scene,
-    metal_device
+    metil_rendering_interface,
+    5
   );
 
   scene->data = malloc(
@@ -72,27 +87,19 @@ void scene_menu_main_initialize(
     &data_scene->menu
   );
 
-  scene->type = metil_scene_type_menu;
-  scene->id = scene_id_menu_main;
-
-  scene->length_objects = 5;
-  scene->objects = realloc(
-    scene->objects,
-    sizeof(struct metil_object*) *
-    scene->length_objects
-  );
-
-  scene->objects[0] = malloc(
-    sizeof(struct metil_object)
-  );
-
   scene->length_textures = 5;
-  scene->textures = malloc(
+  scene->textures = realloc(
+    scene->textures,
     sizeof(id<MTLTexture>) *
     scene->length_textures
   );
 
-  MTKTextureLoader* texture_loader = [[MTKTextureLoader alloc] initWithDevice: metal_device];
+  MTKTextureLoader* texture_loader = [
+    [MTKTextureLoader alloc]
+    initWithDevice: (
+      scene->renderer_interface->metal_device
+    )
+  ];
 
   scene->textures[
     textures_scene_menu_main_ground
@@ -130,197 +137,109 @@ void scene_menu_main_initialize(
 
   [texture_loader release];
 
-  metil_object_initialize(
-    scene->objects[0]
+  for (
+    unsigned int index_renderable = 0;
+    index_renderable < scene->length_renderables;
+    ++index_renderable
+  ) {
+    metil_renderable_initialize_at_index(
+      scene->renderables,
+      index_renderable,
+      metil_renderable_type_object
+    );
+  }
+
+  struct metil_object* metil_object = (
+    scene->renderables[
+      0
+    ].renderable
   );
 
-  mesh_ground_initialize(
-    &scene->objects[0]->mesh,
-    666.0f,
-    6666.6f,
-    666.0f
-  );
-
-  metil_object_buffers_initialize(
-    scene->objects[0],
-    scene->metal_device
-  );
-
-  scene->objects[0]->index_pipeline_render = (
-    zoe_pipeline_index_ground
-  );
-
-  metil_object_texture_add(
-    scene->objects[0],
+  zoe_object_ground_initialize(
+    metil_object, 
+    (struct clic3_vector3_float) {
+      .x = 500.0f,
+      .y = 5000.0f,
+      .z = 500.0f
+    },
     scene->textures[
       textures_scene_menu_main_ground
-    ]
-  );
-
-  metil_object_texture_add(
-    scene->objects[0],
+    ],
     scene->textures[
       textures_scene_menu_main_tree
-    ]
+    ],
+    scene->renderer_interface->metal_device
   );
 
-  unsigned short int iterator_id = 0;
-
-  struct metil_renderer_data_object* data_object = scene->objects[0]->data.contents;
-  data_object->id = iterator_id++;
-  data_object->noise = 666;
-
-  scene->objects[1] = malloc(
-    sizeof(struct metil_object)
+  metil_object = (
+    scene->renderables[
+      1
+    ].renderable
   );
 
-  metil_object_initialize(
-    scene->objects[1]
+  zoe_object_tree_initialize(
+    metil_object,
+    (struct clic3_vector2_float) {
+      .x = 1.0f,
+      .y = 66.6f
+    },
+    scene->textures[
+      textures_scene_menu_main_tree
+    ],
+    scene->renderer_interface->metal_device
   );
 
-  mesh_tree_initialize(
-    &(scene->objects[1]->mesh),
-    1.0f,
-    66.6f
+  metil_object = (
+    scene->renderables[
+      2
+    ].renderable
   );
-
-  scene->objects[1]->index_pipeline_render = (
-    zoe_pipeline_index_tree
-  );
-
-  metil_object_buffers_initialize(
-    scene->objects[1],
-    scene->metal_device
-  );
-
-  data_object = scene->objects[1]->data.contents;
   
-  data_object->id = iterator_id++;
-  data_object->noise = 666;
-
-  metil_object_texture_add(
-    scene->objects[1],
-    scene->textures[
-      textures_scene_menu_main_tree
-    ]
-  );
-
-  scene->objects[2] = malloc(
-    sizeof(struct metil_object)
-  );
-
-  metil_object_initialize(
-    scene->objects[2]
-  );
-
-  scene->objects[2]->index_pipeline_render = (
-    zoe_pipeline_index_text
-  );
-
-  scene->textures[
-    textures_scene_menu_main_title
-  ] = metil_text_mesh_with_texture_initialize(
-    metal_device,
-    &scene->objects[2]->mesh,
+  metil_object_text_initialize(
+    metil_object,
     "zoe",
-    &metil_text_render_parameters_default
+    scene->renderer_interface->metal_device
   );
 
-  metil_object_buffers_initialize(
-    scene->objects[2],
-    scene->metal_device
+  metil_object->position.y = (
+    0.5f - (
+      metil_object->mesh.size.y /
+      4.0f
+    )
   );
 
-  scene->objects[2]->position.y = 0.5f - (scene->objects[2]->mesh.size.y / 4.0f);
-
-  data_object = scene->objects[2]->data.contents;
-  
-  data_object->id = iterator_id++;
-  data_object->noise = 10000;
-
-  metil_object_texture_add(
-    scene->objects[2],
-    scene->textures[
-      textures_scene_menu_main_title
-    ]
+  metil_object = (
+    scene->renderables[
+      3
+    ].renderable
   );
 
-  scene->objects[3] = malloc(
-    sizeof(struct metil_object)
-  );
-
-  metil_object_initialize(
-    scene->objects[3]
-  );
-
-  scene->objects[3]->index_pipeline_render = (
-    zoe_pipeline_index_text
-  );
-
-  scene->textures[
-    textures_scene_menu_main_menu_enter
-  ] = metil_text_mesh_with_texture_initialize(
-    metal_device,
-    &scene->objects[3]->mesh,
+  metil_object_text_initialize(
+    metil_object,
     "enter",
-    &metil_text_render_parameters_default
+    scene->renderer_interface->metal_device
   );
 
-  metil_object_buffers_initialize(
-    scene->objects[3],
-    scene->metal_device
+  metil_object->position.y = -(
+    metil_object->mesh.size.y *
+    6.0
   );
 
-  scene->objects[3]->position.y = -scene->objects[3]->mesh.size.y * 6.0;
-
-  data_object = scene->objects[3]->data.contents;
-  
-  data_object->id = iterator_id++;
-
-  metil_object_texture_add(
-    scene->objects[3],
-    scene->textures[
-      textures_scene_menu_main_menu_enter
-    ]
+  metil_object = (
+    scene->renderables[
+      4
+    ].renderable
   );
 
-  scene->objects[4] = malloc(
-    sizeof(struct metil_object)
-  );
-
-  metil_object_initialize(
-    scene->objects[4]
-  );
-
-  scene->objects[4]->index_pipeline_render = (
-    zoe_pipeline_index_text
-  );
-
-  scene->textures[
-    textures_scene_menu_main_menu_exit
-  ] = metil_text_mesh_with_texture_initialize(
-    metal_device,
-    &scene->objects[4]->mesh,
+  metil_object_text_initialize(
+    metil_object,
     "exit",
-    &metil_text_render_parameters_default
+    scene->renderer_interface->metal_device
   );
 
-  metil_object_buffers_initialize(
-    scene->objects[4],
-    scene->metal_device
-  );
-
-  scene->objects[4]->position.y = -scene->objects[4]->mesh.size.y * 10.0f;
-
-  data_object = scene->objects[4]->data.contents;
-  
-  data_object->id = iterator_id++;
-
-  metil_object_texture_add(
-    scene->objects[4],
-    scene->textures[
-      textures_scene_menu_main_menu_exit
-    ]
+  metil_object->position.y = -(
+    metil_object->mesh.size.y *
+    10.0f
   );
 
   scene->player.position.y = (
@@ -337,14 +256,17 @@ void scene_menu_main_initialize(
 void scene_menu_main_poll(
   struct metil_scene* scene
 ) {
-  scene->player.rotation.x = fmin((
-      scene->player.rotation.x +
-      (0.00001f * sin(
-        ((0.6f - (scene->player.rotation.x - 0.3f)) / 0.6f) *
-        M_PI_2
-      )) *
-      scene->time_delta
-    ),
+  float rotation_player_x_updated = (
+    scene->player.rotation.x +
+    (0.00001f * sin(
+      ((0.6f - (scene->player.rotation.x - 0.3f)) / 0.6f) *
+      M_PI_2
+    )) *
+    scene->time_delta
+  );
+
+  scene->player.rotation.x = fmin(
+    rotation_player_x_updated,
     0.9f
   );
 
@@ -362,8 +284,12 @@ void scene_menu_main_poll(
     &data->rand_parameters
   );
 
-  struct metil_renderer_data_object* data_object_enter = scene->objects[3]->data.contents;
-  struct metil_renderer_data_object* data_object_exit = scene->objects[4]->data.contents;
+  struct metil_renderer_data_object* data_object_enter = (
+    (struct metil_object*) scene->renderables[3].renderable
+  )->data.contents;
+  struct metil_renderer_data_object* data_object_exit = (
+    (struct metil_object*) scene->renderables[4].renderable
+  )->data.contents;
 
   struct metil_renderer_data_object* data_object_menu_item_selected = data_object_enter;
   struct metil_renderer_data_object* data_object_menu_item = data_object_exit;
@@ -376,13 +302,13 @@ void scene_menu_main_poll(
   }
 
   data_object_menu_item_selected->noise = (
-    1600 + ((
+    8000 + ((
       data->rand_result.bytes[0] *
       data->rand_result.bytes[1]
-    ) % 666)
+    ) % 1000)
   );
       
-  data_object_menu_item->noise = 10000;
+  data_object_menu_item->noise = 0;
 
   if (
     data->time_started != 0
@@ -417,14 +343,19 @@ void scene_menu_main_poll(
 
     switch (menu->index_selected) {
       case 0:
-        metil_debug_log("STARTING\n");
+        metil_debug_log("scene_menu_main:starting\n");
 
         data->time_started = scene->time;
         break;
       case 1:
-        metil_debug_log("EXITING\n");
+        metil_debug_log("scene_menu_main:exiting\n");
         
+        #if target_os_ios
+        metil_termination_terminate();
+        exit(0);
+        #else
         [[NSApplication sharedApplication] terminate: 0];
+        #endif
         break;
     }
   }
@@ -465,6 +396,95 @@ void scene_menu_main_destroy(
   metil_scene_destroy_default(scene);
 }
 
+#if target_os_ios
+int scene_menu_main_io_proc(
+  unsigned char silence,
+  const AudioTimeStamp* _Nonnull timestamp,
+  AVAudioFrameCount frame_count,
+  AudioBufferList* _Nonnull output_data,
+  void* data
+) {
+  struct io_proc_data* io_proc_data = (
+    data
+  );
+
+  if (
+    io_proc_data->destroy == 1
+  ) {
+    metil_audio_io_proc_remove(
+      scene_menu_main_io_proc
+    );
+
+    rand_clean(
+      &io_proc_data->rand_result,
+      &io_proc_data->rand_source
+    );
+
+    free(io_proc_data);
+
+    return 0;
+  }
+
+  rand_get(
+    &io_proc_data->rand_source,
+    &io_proc_data->rand_result,
+    &io_proc_data->rand_parameters
+  );
+
+  for (
+    unsigned long int index_buffer = 0;
+    index_buffer < output_data->mNumberBuffers;
+    ++index_buffer
+  ) {
+    AudioBuffer audio_buffer_current = output_data->mBuffers[
+      index_buffer
+    ];
+
+    float* buffer_out = audio_buffer_current.mData;
+    unsigned long int count_channel_out = audio_buffer_current.mNumberChannels;
+    
+    for (
+      unsigned int index_frame = 0;
+      index_frame < frame_count;
+      ++index_frame
+    ) {
+      unsigned long int channel = (
+        index_frame %
+        count_channel_out
+      );
+
+      unsigned int offset_byte = (
+        index_frame *
+        2
+      );
+
+      if (
+        channel == 0
+      ) {
+        buffer_out[index_frame] = ((float) ((
+          io_proc_data->rand_result.bytes[
+            offset_byte % 20500
+          ] *
+          io_proc_data->rand_result.bytes[
+            (offset_byte + 1) % 20500
+          ]
+        ) % 10000)) / 100000.0f;
+      } else {
+        buffer_out[
+          index_frame
+        ] = (
+          buffer_out[
+            index_frame -
+            channel
+          ]
+        );
+      }
+    }
+  }
+  
+  return 0;
+}
+#else
 OSStatus scene_menu_main_io_proc(
   AudioObjectID id_audio_object,
   const AudioTimeStamp* time_stamp_audio,
@@ -544,3 +564,4 @@ OSStatus scene_menu_main_io_proc(
 
   return 0;
 }
+#endif

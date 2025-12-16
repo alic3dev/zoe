@@ -3,13 +3,19 @@
 
 #include <audio/io_proc_data.h>
 
-#include <metil.h>
+#include <metil_menus/menu.h>
+#include <metil_rendering/metil_renderer_interface.h>
+#include <metil_scenes/scene.h>
 
 #include <rand_parameters.h>
 #include <rand_result.h>
 #include <rand_source.h>
 
+#if target_os_ios
+#include <AVFAudio/AVFAudio.h>
+#else
 #include <CoreAudio/CoreAudio.h>
+#endif
 #include <MetalKit/MetalKit.h>
 
 extern const unsigned long int scene_menu_main_time_scene_transition;
@@ -30,34 +36,44 @@ struct scene_menu_main_data {
   struct rand_source rand_source;
   struct rand_result rand_result;
   
-  struct io_proc_data* io_proc_data;
+  struct io_proc_data* _Nonnull io_proc_data;
 };
 
 void scene_menu_main_initialize(
-  struct metil_scene*,
-  id<MTLDevice>
+  struct metil_scene* _Nonnull,
+  struct metil_renderer_interface* _Nonnull
 );
 
 void scene_menu_main_poll(
-  struct metil_scene*
+  struct metil_scene* _Nonnull
 );
 
 void scene_menu_main_poll_input(
-  struct metil_scene*
+  struct metil_scene* _Nonnull
 );
 
 void scene_menu_main_destroy(
-  struct metil_scene*
+  struct metil_scene* _Nonnull
 );
 
+#if target_os_ios
+int scene_menu_main_io_proc(
+  unsigned char,
+  const AudioTimeStamp* _Nonnull,
+  unsigned int,
+  AudioBufferList* _Nonnull,
+  void* _Nonnull
+);
+#else
 OSStatus scene_menu_main_io_proc(
   AudioObjectID,
-  const AudioTimeStamp*,
-  const AudioBufferList*,
-  const AudioTimeStamp*,
-  AudioBufferList*,
-  const AudioTimeStamp*,
-  void*
+  const AudioTimeStamp* _Nonnull,
+  const AudioBufferList* _Nonnull,
+  const AudioTimeStamp* _Nonnull,
+  AudioBufferList* _Nonnull,
+  const AudioTimeStamp* _Nonnull,
+  void* _Nonnull
 );
+#endif
 
 #endif

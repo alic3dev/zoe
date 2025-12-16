@@ -7,12 +7,7 @@
 struct data_vertex {
   float4 position [[position]];
   float distance;
-  float height;
-  float2 position_texture;
-  unsigned char index_texture;
-  float noise;
   float brightness;
-  float brightness_text;
 };
 
 [[vertex]] struct data_vertex zoe_ground_vertex(
@@ -35,148 +30,51 @@ struct data_vertex {
 ) {
   struct data_vertex data_vertex;
 
-  data_vertex.position = data_object->view_model_matrix_projection * positions[id_vertex];
-  data_vertex.height = 0.0f;
-  data_vertex.noise = (float)(data_object->noise % 10001) / 10000.0f;
-
-  float3 size_half;
-  size_half.x = (data_object->size.x / 2.0f);
-  size_half.y = (data_object->size.y / 2.0f);
-  size_half.z = (data_object->size.z / 2.0f);
-
-  if (
-    (
-      (positions[id_vertex].x + size_half.x) < data_object->size.x * 0.12f ||
-      (positions[id_vertex].x + size_half.x) > data_object->size.x * 0.88f
-    ) || (
-      (positions[id_vertex].z + size_half.z) < data_object->size.z * 0.12f ||
-      (positions[id_vertex].z + size_half.z) > data_object->size.z * 0.88f
-    )
-  ) {
-    data_vertex.index_texture = 1;
-    data_vertex.position_texture = float2(
-      ((float) data_frame->frame / 5000.0f) + (positions[id_vertex].x + size_half.x) / (data_object->size.x / 50.0f) + (positions[id_vertex].y + size_half.y) / (data_object->size.y / 50.0f),
-      ((float) data_frame->frame / 5000.0f) + (positions[id_vertex].z + size_half.z) / (data_object->size.z / 50.0f) + (positions[id_vertex].y + size_half.y) / (data_object->size.y / 50.0f)
-    );
-  } else {
-    data_vertex.index_texture = 0;
-    data_vertex.position_texture = float2(
-      (id_vertex / 10) % 10 == 0 
-      ? ((float) data_frame->frame / 100000.0f) + (positions[id_vertex].x + size_half.x) / (data_object->size.x / 1.0f) + (positions[id_vertex].y + size_half.y) / (data_object->size.y / 5.0f)
-      : ((float) data_frame->frame / 100000.0f) + (positions[id_vertex].x + size_half.x) / (data_object->size.x / 500.0f) + (positions[id_vertex].y + size_half.y) / (data_object->size.y / 500.0f),
-      (id_vertex / 10) % 10 == 0 
-      ? ((float) data_frame->frame / 100000.0f) + (positions[id_vertex].z + size_half.z) / (data_object->size.z / 1.0f) + (positions[id_vertex].y + size_half.y) / (data_object->size.y / 5.0f)
-      : ((float) data_frame->frame / 100000.0f) + (positions[id_vertex].z + size_half.z) / (data_object->size.z / 500.0f) + (positions[id_vertex].y + size_half.y) / (data_object->size.y / 500.0f)
-    );
-  }
-
-  unsigned char z = 0;
-  unsigned char x = 0;
-
-  while (data_vertex.position_texture.x > 1.0f) {
-    data_vertex.position_texture.x = (
-      data_vertex.position_texture.x - 1.0f
-    );
-
-    z = z == 0 ? 1 : 0;
-  }
-
-  while (data_vertex.position_texture.y > 1.0f) {
-    data_vertex.position_texture.y = (
-      data_vertex.position_texture.y - 1.0f
-    );
-
-    x = x == 0 ? 1 : 0;
-  }
-
-  if (z == 1) {
-    data_vertex.position_texture.x = 1.0f - (
-      data_vertex.position_texture.x
-    );
-  }
-
-  if (x == 1) {
-    data_vertex.position_texture.y = 1.0f - (
-      data_vertex.position_texture.y
-    );
-  }
-
-  if (positions[id_vertex].y <= data_object->size.y / 20.0f) {
-    data_vertex.height = positions[id_vertex].y / (data_object->size.y / 20.0f) * 0.5f;
-  } else {
-    data_vertex.height = (positions[id_vertex].y / data_object->size.y) * 0.4;
-  }
+  data_vertex.position = (
+    data_object->view_model_matrix_projection *
+    positions[
+      id_vertex
+    ]
+  );
 
   data_vertex.brightness = data_frame->brightness;
-  data_vertex.brightness_text = data_frame->brightness_text;
 
-  if (data_object->noise == 666) {
-    data_vertex.distance = (
-      metal::fabs((data_object->position.x + positions[id_vertex].x)) + 
-      metal::fabs((data_object->position.y + positions[id_vertex].y) - 60.0f) + 
-      metal::fabs((data_object->position.z + positions[id_vertex].z))
-    );
-
-    if (
-      (data_object->position.x + positions[id_vertex].x) < 50 &&
-      (data_object->position.x + positions[id_vertex].x) > -50 &&
-      (data_object->position.z + positions[id_vertex].z) < 50 &&
-      (data_object->position.z + positions[id_vertex].z) > -50
-    ) {
-      data_vertex.distance = data_vertex.distance * 5;
-    } else {
-      data_vertex.distance = data_vertex.distance * 7;
-    }
-    
-    data_vertex.height = 1.0f;
-  } else {
-    data_vertex.distance = (
-      metal::fabs((data_object->position.x + positions[id_vertex].x) + data_frame->position_player.x) + 
-      metal::fabs((data_object->position.y + positions[id_vertex].y) + data_frame->position_player.y) + 
-      metal::fabs((data_object->position.z + positions[id_vertex].z) + data_frame->position_player.z)
-    );
-  }
+  data_vertex.distance = metal::distance(
+    metal::float4(
+      metal::float4(
+        data_object->position.x,
+        data_object->position.y,
+        data_object->position.z,
+        1.0f
+      ) +
+      positions[id_vertex]
+    ),
+    metal::float4(
+      data_frame->position_player.x,
+      data_frame->position_player.y,
+      data_frame->position_player.z,
+      1.0f
+    )
+  );
 
   return data_vertex;
 }
 
 fragment float4 zoe_ground_fragment(
-  struct data_vertex data_vertex [[stage_in]],
-  metal::texture2d<half> texture [[ texture(0) ]],
-  metal::texture2d<half> texture_two [[ texture(1) ]]
+  struct data_vertex data_vertex [[stage_in]]
 ) {
-  constexpr metal::sampler sampler_texture(
-    metal::filter::linear,
-    metal::mip_filter::linear
-  );
-
-  float4 texture_color = float4(
-    (
-      data_vertex.index_texture == 0
-      ? texture
-      : texture_two
-    ).sample(
-      sampler_texture,
-      data_vertex.position_texture
-    )
-  );
-
-  float brightness = data_vertex.brightness;
-
-  brightness = ((data_vertex.height * 0.8f) + 0.075f) * brightness;
-
-  brightness = brightness * metal::fmax(
-    metal::fmin(
-      100.0f / data_vertex.distance,
-      1.0f
+  float brightness = metal::fmin(
+    metal::fmax(
+      1.0f - data_vertex.distance / 1000.0f,
+      0.0f
     ),
-    0.0f
+    1.0f
   );
 
   return float4(
-    texture_color[0] * brightness,
-    texture_color[1] * brightness,
-    texture_color[2] * brightness,
-    texture_color[3]
+    brightness,
+    brightness,
+    brightness,
+    1.0f
   );
 }

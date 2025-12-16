@@ -1,15 +1,17 @@
 #include <scenes/scene_intro_forest.h>
 
 #include <audio/io_proc_data.h>
-#include <metil_audio/audio.h>
-#include <mesh/ground/mesh_ground.h>
-#include <mesh/mesh_player.h>
-#include <mesh/mesh_player_mirror.h>
-#include <mesh/tree/mesh_tree.h>
+#include <object/object_ground.h>
+#include <object/object_player.h>
+#include <object/object_tree.h>
 #include <scenes/scene_id.h>
 #include <zoe_pipeline_index.h>
 
+#include <metil_audio/metil_audio_io_proc.h>
 #include <metil_object.h>
+#include <metil_paths/paths.h>
+#include <metil_rendering/camera/camera_mode.h>
+#include <metil_rendering/metil_renderer_interface.h>
 #include <metil_scenes/scene.h>
 
 #include <rand_clean.h>
@@ -20,22 +22,34 @@
 #include <rand_source.h>
 #include <rand_source_type.h>
 
-#include <stdlib.h>
+#if target_os_ios
+#include <AVFAudio/AVFAudio.h>
+#else
+#include <CoreAudio/CoreAudio.h>
+#endif
 
-void scene_intro_forest_data_initialize(
-  struct metil_scene* scene
-) {
-  scene->data = (void*)0;
-}
+#include <stdlib.h>
 
 void scene_intro_forest_initialize(
   struct metil_scene* scene,
-  id<MTLDevice> metal_device
+  struct metil_renderer_interface* renderer_interface
 ) {
-  metil_scene_initialize(
-    scene,
-    metal_device
+  scene->renderer_interface->rendering_properties->camera.mode = (
+    metil_camera_mode_third_person
   );
+
+  scene->renderer_interface->rendering_properties->camera.height = (
+    metil_camera_height_default *
+    4.0f
+  );
+
+  metil_scene_initialize_with_renderables(
+    scene,
+    renderer_interface,
+    503
+  );
+
+  scene->player.rotation.x = -0.3f;
 
   scene->data = malloc(
     sizeof(struct scene_intro_forest_data)
@@ -58,40 +72,34 @@ void scene_intro_forest_initialize(
     io_proc_data
   );
 
-  scene->type = metil_scene_type_game;
-  scene->id = scene_id_intro_forest;
-
   scene->poll = scene_intro_forest_poll;
   scene->destroy = scene_intro_forest_destroy;
 
-  scene->length_objects = 503;
-  scene->objects = realloc(
-    scene->objects,
-    sizeof(struct metil_object*) *
-    scene->length_objects
-  );
-
   for (
-    unsigned short int index_object = 0;
-    index_object < scene->length_objects;
-    ++index_object
+    unsigned short int index_renderable = 0;
+    index_renderable < scene->length_renderables;
+    ++index_renderable
   ) {
-    scene->objects[index_object] = malloc(
-      sizeof(struct metil_object)
-    );
-
-    metil_object_initialize(
-      scene->objects[index_object]
+    metil_renderable_initialize_at_index(
+      scene->renderables,
+      index_renderable,
+      metil_renderable_type_object
     );
   }
 
   scene->length_textures = 3;
-  scene->textures = malloc(
+  scene->textures = realloc(
+    scene->textures,
     sizeof(id<MTLTexture>) *
     scene->length_textures
   );
 
-  MTKTextureLoader* texture_loader = [[MTKTextureLoader alloc] initWithDevice: metal_device];
+  MTKTextureLoader* texture_loader = [
+    [MTKTextureLoader alloc]
+    initWithDevice: (
+      scene->renderer_interface->metal_device
+    )
+  ];
 
   scene->textures[
     textures_scene_intro_forest_ground
@@ -146,80 +154,57 @@ void scene_intro_forest_initialize(
 
   [texture_loader release];
 
-  mesh_player_initialize(
-    &scene->objects[0]->mesh
+  struct metil_object* object = (
+    scene->renderables[
+      0
+    ].renderable
   );
 
-  scene->objects[0]->index_pipeline_render = zoe_pipeline_index_player;
-
-  metil_object_buffers_initialize(
-    scene->objects[0],
-    scene->metal_device
-  );
-
-  metil_object_texture_add(
-    scene->objects[0],
+  zoe_object_player_initialize(
+    object,
     scene->textures[
       textures_scene_intro_forest_player
-    ]
+    ],
+    scene->renderer_interface->metal_device,
+    0
   );
 
-  unsigned short int iterator_id = 0;
-
-  struct metil_renderer_data_object* data = scene->objects[0]->data.contents;
-  data->id = iterator_id++;
-
-  mesh_player_mirror_initialize(
-    &scene->objects[1]->mesh
+  object = (
+    scene->renderables[
+      1
+    ].renderable
   );
 
-  scene->objects[1]->index_pipeline_render = zoe_pipeline_index_player;
-
-  metil_object_buffers_initialize(
-    scene->objects[1],
-    scene->metal_device
-  );
-
-  metil_object_texture_add(
-    scene->objects[1],
+  zoe_object_player_initialize(
+    object,
     scene->textures[
       textures_scene_intro_forest_player
-    ]
+    ],
+    scene->renderer_interface->metal_device,
+    1
   );
 
-  data = scene->objects[1]->data.contents;
-  data->id = iterator_id++;
-
-  mesh_ground_initialize(
-    &scene->objects[2]->mesh,
-    2000.0f,
-    500.0f,
-    2000.0f
+  struct metil_object* metil_object_ground = (
+    scene->renderables[
+      2
+    ].renderable
   );
 
-  scene->objects[2]->index_pipeline_render = zoe_pipeline_index_ground;
-
-  metil_object_buffers_initialize(
-    scene->objects[2],
-    scene->metal_device
-  );
-
-  metil_object_texture_add(
-    scene->objects[2],
+  zoe_object_ground_initialize(
+    metil_object_ground,
+    (struct clic3_vector3_float) {
+      .x = 2000.0f,
+      .y = 500.0f,
+      .z = 2000.0f
+    },
     scene->textures[
       textures_scene_intro_forest_ground
-    ]
-  );
-
-  metil_object_texture_add(
-    scene->objects[2],
+    ],
     scene->textures[
       textures_scene_intro_forest_tree
-    ]
+    ],
+    scene->renderer_interface->metal_device
   );
-
-  data = scene->objects[2]->data.contents;
-  data->id = iterator_id++;
 
   struct rand_parameters rand_parameters;
   struct rand_source rand_source;
@@ -229,7 +214,7 @@ void scene_intro_forest_initialize(
     &rand_parameters,
     &rand_result,
     &rand_source, (
-      (scene->length_objects - 3) *
+      (scene->length_renderables - 3) *
       4
     ),
     rand_mode_bytes,
@@ -245,60 +230,54 @@ void scene_intro_forest_initialize(
   unsigned int offset_byte = 0;
 
   for (
-    unsigned short int index_object = 3;
-    index_object < scene->length_objects;
-    ++index_object
+    unsigned short int index_renderable = 3;
+    index_renderable < scene->length_renderables;
+    ++index_renderable
   ) {
     offset_byte = (
-      (index_object - 3) * 4
+      (index_renderable - 3) * 4
     );
 
-    mesh_tree_initialize(
-      &(scene->objects[index_object]->mesh),
-      1.0f,
-      250.0f
+    object = (
+      scene->renderables[
+        index_renderable
+      ].renderable
+    );
+
+    zoe_object_tree_initialize(
+      object,
+      (struct clic3_vector2_float) {
+        .x = 5.0f,
+        .y = 250.0f
+      },
+      scene->textures[
+        textures_scene_intro_forest_tree
+      ],
+      scene->renderer_interface->metal_device
     );
     
-    scene->objects[index_object]->index_pipeline_render = zoe_pipeline_index_tree;
-
-    scene->objects[index_object]->position.x = (
-      -(scene->objects[index_object]->mesh.size.x / 2.0f) + (
+    object->position.x = (
+      -(object->mesh.size.x / 2.0f) + (
         (((float)((
           rand_result.bytes[offset_byte] *
           rand_result.bytes[offset_byte + 2]
         ) % 10000) / 5000.0f) - 1.0f) * 0.7f *
-        (scene->objects[index_object]->mesh.size.x - (
-          scene->objects[2]->mesh.size.x / 2.0f
+        (object->mesh.size.x - (
+          metil_object_ground->mesh.size.x / 2.0f
         ))
       )
     );
 
-    scene->objects[index_object]->position.z = (
-      -(scene->objects[index_object]->mesh.size.z / 2.0f) + (
+    object->position.z = (
+      -(object->mesh.size.z / 2.0f) + (
         (((float)((
           rand_result.bytes[offset_byte + 1] *
           rand_result.bytes[offset_byte + 3]
         ) % 10000) / 5000.0f) - 1.0f) * 0.7f *
-        (scene->objects[2]->mesh.size.z - (
-          scene->objects[2]->mesh.size.z / 2.0f
+        (metil_object_ground->mesh.size.z - (
+          metil_object_ground->mesh.size.z / 2.0f
         ))
       )
-    );
-
-    metil_object_buffers_initialize(
-      scene->objects[index_object],
-      scene->metal_device
-    );
-
-    struct metil_renderer_data_object* data = scene->objects[index_object]->data.contents;
-    
-    data->id = iterator_id++;
-
-    metil_object_texture_add(
-      scene->objects[index_object],
-      scene->textures[
-        textures_scene_intro_forest_tree
-      ]
     );
   }
 
@@ -313,48 +292,129 @@ void scene_intro_forest_poll(
 ) {
   metil_scene_poll_default(scene);
 
-  scene->objects[0]->position.x = (
-    scene->player.position.x
-  );
+  for (
+    unsigned short int index_renderable = 3;
+    index_renderable < scene->length_renderables;
+    ++index_renderable
+  ) {
+    struct metil_object* metil_object = (
+      scene->renderables[
+        index_renderable
+      ].renderable
+    );
 
-  scene->objects[0]->position.y = (
-    scene->player.position.y
-  );
-
-  scene->objects[0]->position.z = (
-    scene->player.position.z
-  );
-
-  scene->objects[1]->position.x = (
-    -scene->player.position.x
-  );
-
-  scene->objects[1]->position.y = (
-    scene->player.position.y
-  );
-
-  scene->objects[1]->position.z = (
-    -scene->player.position.z
-  );
+    struct clic3_vector3_float* vertices = metil_object->vertices.contents;
+  }
 }
 
 
 void scene_intro_forest_destroy(
-  struct metil_scene* scene
+  struct metil_scene* metil_scene
 ) {
-  struct scene_intro_forest_data* data = (
-    scene->data
+  struct scene_intro_forest_data* scene_intro_forest_data = (
+    metil_scene->data
   );
 
   struct io_proc_data* io_proc_data = (
-    data->io_proc_data
+    scene_intro_forest_data->io_proc_data
   );
 
   io_proc_data->destroy = 1;
 
-  metil_scene_destroy_default(scene);
+  metil_scene_destroy_default(
+    metil_scene
+  );
 }
 
+#if target_os_ios
+int scene_intro_forest_io_proc(
+  unsigned char silence,
+  const AudioTimeStamp* _Nonnull timestamp,
+  unsigned int frame_count,
+  AudioBufferList* _Nonnull output_data,
+  void* data
+) {
+  struct io_proc_data* io_proc_data = (
+    data
+  );
+
+  if (
+    io_proc_data->destroy == 1
+  ) {
+    metil_audio_io_proc_remove(
+      scene_intro_forest_io_proc
+    );
+
+    rand_clean(
+      &io_proc_data->rand_result,
+      &io_proc_data->rand_source
+    );
+
+    free(io_proc_data);
+
+    return 0;
+  }
+
+  rand_get(
+    &io_proc_data->rand_source,
+    &io_proc_data->rand_result,
+    &io_proc_data->rand_parameters
+  );
+
+  for (
+    unsigned long int index_buffer = 0;
+    index_buffer < output_data->mNumberBuffers;
+    ++index_buffer
+  ) {
+    AudioBuffer audio_buffer_current = output_data->mBuffers[
+      index_buffer
+    ];
+
+    float* buffer_out = audio_buffer_current.mData;
+    unsigned long int count_channel_out = audio_buffer_current.mNumberChannels;
+    
+    for (
+      unsigned int index_frame = 0;
+      index_frame < frame_count;
+      ++index_frame
+    ) {
+      unsigned long int channel = (
+        index_frame %
+        count_channel_out
+      );
+
+      unsigned int offset_byte = (
+        index_frame *
+        2
+      );
+
+      if (
+        channel == 0
+      ) {
+        buffer_out[index_frame] = ((float) ((
+          io_proc_data->rand_result.bytes[
+            offset_byte % 20500
+          ] *
+          io_proc_data->rand_result.bytes[
+            (offset_byte + 1) % 20500
+          ]
+        ) % 10000)) / 100000.0f;
+      } else {
+        buffer_out[
+          index_frame
+        ] = (
+          buffer_out[
+            index_frame -
+            channel
+          ]
+        );
+      }
+    }
+  }
+  
+  return 0;
+}
+#else
 OSStatus scene_intro_forest_io_proc(
   AudioObjectID id_audio_object,
   const AudioTimeStamp* time_stamp_audio,
@@ -399,7 +459,10 @@ OSStatus scene_intro_forest_io_proc(
     AudioBuffer audio_buffer_current = list_buffer_audio_out->mBuffers[index_buffer];
 
     float* buffer_out = audio_buffer_current.mData;
-    unsigned long int size_buffer_out = audio_buffer_current.mDataByteSize / sizeof(float);
+    unsigned long int size_buffer_out = (
+      audio_buffer_current.mDataByteSize /
+      sizeof(float)
+    );
     unsigned long int count_channel_out = audio_buffer_current.mNumberChannels;
     
     for (
@@ -407,23 +470,41 @@ OSStatus scene_intro_forest_io_proc(
       index_buffer_out < size_buffer_out;
       ++index_buffer_out
     ) {
-      unsigned long int channel = index_buffer_out % count_channel_out;
-      unsigned int offset_byte = index_buffer_out * 2;
+      unsigned long int channel = (
+        index_buffer_out %
+        count_channel_out
+      );
+      unsigned int offset_byte = (
+        index_buffer_out *
+        2
+      );
 
-      if (channel == 0) {
-        buffer_out[index_buffer_out] = ((float) ((
+      if (
+        channel == 0
+      ) {
+        buffer_out[
+          index_buffer_out
+        ] = ((float) ((
           io_proc_data->rand_result.bytes[
-            offset_byte % 20500
+            offset_byte %
+            20500
           ] *
           io_proc_data->rand_result.bytes[
-            (offset_byte + 1) % 20500
+            (offset_byte + 1) %
+            20500
           ]
         ) % 10000)) / 100000.0f;
       } else {
-        buffer_out[index_buffer_out] = buffer_out[index_buffer_out - channel];
+        buffer_out[
+          index_buffer_out
+        ] = buffer_out[
+          index_buffer_out -
+          channel
+        ];
       }
     }
   }
 
   return 0;
 }
+#endif

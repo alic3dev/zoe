@@ -5,21 +5,49 @@
 #include <scenes/scene_menu_main.h>
 #include <zoe_pipeline_index.h>
 
+#include <metil_application/metil_application.h>
+#include <metil_application/metil_application_delegate.h>
+#include <metil_configuration/configuration_rendering_properties.h>
 #include <metil_initialize.h>
+#include <metil_library.h>
+#include <metil_object/metil_object_text.h>
 #include <metil_rendering/metil_renderer_interface.h>
+#include <metil_scenes/scene_controller.h>
 
 int main(
   int length_parameters,
+  #if target_os_ios
+  char** parameters
+  #else
   const char** parameters
+  #endif
 ) {
+  metil_configuration_default_rendering_properties_brightness = 0.4f;
+
   metil_player_speed_movement_default = 64.0f;
 
+  #if target_os_ios
+  metil_initialize(
+    length_parameters,
+    parameters,
+    "zoe",
+    zoe_renderer_on_initialize
+  );
+
+  return UIApplicationMain(
+    length_parameters,
+    parameters,
+    NSStringFromClass([metil_application class]),
+    NSStringFromClass([metil_application_delegate class])
+  );
+  #else
   return metil_initialize(
     length_parameters,
     parameters,
     "zoe",
     zoe_renderer_on_initialize
   );
+  #endif
 }
 
 void zoe_renderer_on_initialize(
@@ -80,6 +108,8 @@ void zoe_renderer_on_initialize(
     ]
   ];
 
+  metil_object_text_index_pipeline_render_default = zoe_pipeline_index_text;
+
   metil_renderer_interface->rendering_properties->color_clear.x = 0.0324f;
   metil_renderer_interface->rendering_properties->color_clear.y = 0.0424f;
   metil_renderer_interface->rendering_properties->color_clear.z = 0.0649f;
@@ -87,7 +117,7 @@ void zoe_renderer_on_initialize(
 
   scene_menu_main_initialize(
     &metil_scene_controller.scene,
-    metil_renderer_interface->metal_device
+    metil_renderer_interface
   );
 
   metil_scene_controller_on_scene_change_add(
@@ -115,13 +145,13 @@ void zoe_on_scene_change(
     case scene_id_menu_main:
       scene_menu_main_initialize(
         &metil_scene_controller.scene,
-        metil_renderer_interface->metal_device
+        metil_renderer_interface
       );
       break;
     case scene_id_intro_forest:
       scene_intro_forest_initialize(
         &metil_scene_controller.scene,
-        metil_renderer_interface->metal_device
+        metil_renderer_interface
       );
       break;
   }

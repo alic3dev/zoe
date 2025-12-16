@@ -1,9 +1,9 @@
 #ifndef __zoe_mesh_mesh_player_h
 #define __zoe_mesh_mesh_player_h
 
-#include <metil_mesh/mesh.h>
-
 #include <clic3_vector.h>
+
+#include <metil_mesh/mesh.h>
 
 extern const struct clic3_vector3_float mesh_player_size;
 extern const struct clic3_vector3_float mesh_player_size_half;
