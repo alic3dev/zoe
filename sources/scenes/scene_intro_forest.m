@@ -327,10 +327,10 @@ void scene_intro_forest_destroy(
 }
 
 #if target_os_ios
-OSStatus scene_intro_forest_io_proc(
-  BOOL* _Nonnull silence,
+int scene_intro_forest_io_proc(
+  unsigned char silence,
   const AudioTimeStamp* _Nonnull timestamp,
-  AVAudioFrameCount frame_count,
+  unsigned int frame_count,
   AudioBufferList* _Nonnull output_data,
   void* data
 ) {

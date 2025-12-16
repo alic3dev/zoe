@@ -57,10 +57,10 @@ void scene_menu_main_destroy(
 );
 
 #if target_os_ios
-OSStatus scene_menu_main_io_proc(
-  BOOL* _Nonnull,
+int scene_menu_main_io_proc(
+  unsigned char,
   const AudioTimeStamp* _Nonnull,
-  AVAudioFrameCount,
+  unsigned int,
   AudioBufferList* _Nonnull,
   void* _Nonnull
 );

@@ -41,10 +41,10 @@ struct scene_intro_forest_data {
 };
 
 #if target_os_ios
-OSStatus scene_intro_forest_io_proc(
-  BOOL* _Nonnull,
+int scene_intro_forest_io_proc(
+  unsigned char,
   const AudioTimeStamp* _Nonnull,
-  AVAudioFrameCount,
+  unsigned int,
   AudioBufferList* _Nonnull,
   void* _Nonnull
 );
