@@ -1,11 +1,12 @@
 #include <zoe.h>
 
-#include <application/zoe_application_delegate.h>
 #include <scenes/scene_id.h>
 #include <scenes/scene_intro_forest.h>
 #include <scenes/scene_menu_main.h>
 #include <zoe_pipeline_index.h>
 
+#include <metil_application/metil_application.h>
+#include <metil_application/metil_application_delegate.h>
 #include <metil_configuration/configuration_rendering_properties.h>
 #include <metil_initialize.h>
 #include <metil_library.h>
@@ -36,8 +37,8 @@ int main(
   return UIApplicationMain(
     length_parameters,
     parameters,
-    (void*)0,
-    NSStringFromClass([zoe_application_delegate class])
+    NSStringFromClass([metil_application class]),
+    NSStringFromClass([metil_application_delegate class])
   );
   #else
   return metil_initialize(

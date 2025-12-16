@@ -106,6 +106,7 @@ directory_math_c=../math_c
 
 directory_metil=../metil
 directory_metil_include=${directory_metil}/include
+directory_metil_storyboards=${directory_metil}/storyboards
 
 directory_rand=../rand
 directory_rand_include=${directory_rand}/include
@@ -203,13 +204,13 @@ files_air=${patsubst ${directory_metal}/%.metal,${directory_air}/%.air,${files_m
 ifeq (${target_os},macos)
 files_storyboards=${directory_storyboards}/zoe.storyboard
 
-files_storyboards_compiled=${patsubst ${directory_storyboards}/%.storyboard,${directory_output_storyboards}/%.storyboardc,${files_storyboards}}
+files_storyboards_compiled=${directory_output_storyboards}/zoe.storyboardc
 endif
 
 ifeq (${target_os},ios)
-files_storyboards=${directory_storyboards}/zoe_ios.storyboard
+files_storyboards=${directory_metil_storyboards}/metil_ios.storyboard
 
-files_storyboards_compiled=${patsubst ${directory_storyboards}/%.storyboard,${directory_output_storyboards}/%.storyboardc,${files_storyboards}}
+files_storyboards_compiled=${directory_output_storyboards}/metil_ios.storyboardc
 endif
 
 prefix_content_texture=__content_texture
@@ -342,6 +343,10 @@ ${directory_objects_objc}/%.o: ${directory_sources}/%.m
 	${cc} ${c_flags_objc} -c $< -o $@
 
 ${directory_output_storyboards}/%.storyboardc: ${directory_storyboards}/%.storyboard
+	mkdir -p ${directory_output_storyboards}
+	ibtool --module ${name} --target-device ${target_device} --minimum-deployment-target ${target_device_version} --output-format human-readable-text $< --compilation-directory ${directory_output_storyboards}	
+
+${directory_output_storyboards}/%.storyboardc: ${directory_metil_storyboards}/%.storyboard
 	mkdir -p ${directory_output_storyboards}
 	ibtool --module ${name} --target-device ${target_device} --minimum-deployment-target ${target_device_version} --output-format human-readable-text $< --compilation-directory ${directory_output_storyboards}	
 

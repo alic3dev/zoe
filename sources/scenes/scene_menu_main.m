@@ -7,7 +7,7 @@
 #include <scenes/scene_id.h>
 #include <zoe_pipeline_index.h>
 
-#include <metil_audio/audio.h>
+#include <metil_audio/metil_audio_io_proc.h>
 #include <metil_debug/log.h>
 #include <metil_scenes/scene.h>
 #include <metil_scenes/scene_controller.h>
