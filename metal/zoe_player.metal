@@ -12,7 +12,7 @@ struct data_vertex {
 [[vertex]] struct data_vertex zoe_player_vertex(
   const device simd_float4* positions [[
     buffer(
-      metil_renderer_vertex_index_parameter_positions
+      metil_renderer_vertex_index_parameter_vertices
     )
   ]],
   constant struct metil_renderer_data_frame* data_frame [[

@@ -286,10 +286,15 @@ void scene_menu_main_poll(
 
   struct metil_renderer_data_object* data_object_enter = (
     (struct metil_object*) scene->renderables[3].renderable
-  )->data.contents;
+  )->buffers_vertex[
+    metil_object_buffer_default_index_data
+  ].buffer.contents;
+
   struct metil_renderer_data_object* data_object_exit = (
     (struct metil_object*) scene->renderables[4].renderable
-  )->data.contents;
+  )->buffers_vertex[
+    metil_object_buffer_default_index_vertices
+  ].buffer.contents;
 
   struct metil_renderer_data_object* data_object_menu_item_selected = data_object_enter;
   struct metil_renderer_data_object* data_object_menu_item = data_object_exit;

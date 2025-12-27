@@ -8,7 +8,8 @@
 #include <zoe_pipeline_index.h>
 
 #include <metil_audio/metil_audio_io_proc.h>
-#include <metil_object.h>
+#include <metil_object/metil_object.h>
+#include <metil_object/metil_object_buffer.h>
 #include <metil_paths/paths.h>
 #include <metil_rendering/camera/camera_mode.h>
 #include <metil_rendering/metil_renderer_interface.h>
@@ -303,7 +304,9 @@ void scene_intro_forest_poll(
       ].renderable
     );
 
-    struct clic3_vector3_float* vertices = metil_object->vertices.contents;
+    struct clic3_vector3_float* vertices = metil_object->buffers_vertex[
+      metil_object_buffer_default_index_vertices
+    ].buffer.contents;
   }
 }
 
