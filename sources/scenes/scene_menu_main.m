@@ -293,7 +293,7 @@ void scene_menu_main_poll(
   struct metil_renderer_data_object* data_object_exit = (
     (struct metil_object*) scene->renderables[4].renderable
   )->buffers_vertex[
-    metil_object_buffer_default_index_vertices
+    metil_object_buffer_default_index_data
   ].buffer.contents;
 
   struct metil_renderer_data_object* data_object_menu_item_selected = data_object_enter;
@@ -334,7 +334,8 @@ void scene_menu_main_poll(
       );
     } else {
       float brightness = (
-        (float) (scene_menu_main_time_scene_transition - time_delta) / (float) scene_menu_main_time_scene_transition
+        (float) (scene_menu_main_time_scene_transition - time_delta) /
+        (float) scene_menu_main_time_scene_transition
       );
 
       scene->rendering_properties.brightness = brightness;
