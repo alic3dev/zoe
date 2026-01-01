@@ -2,7 +2,7 @@
 
 #include <clic3_vector.h>
 
-#include <metil_mesh/mesh.h>
+#include <metil_mesh/metil_mesh.h>
 
 #include <rand_functions.h>
 #include <rand_initialize.h>

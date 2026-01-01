@@ -8,12 +8,13 @@
 #include <zoe_pipeline_index.h>
 
 #include <metil_audio/metil_audio_io_proc.h>
+#include <metil_audio/metil_audio_io_proc_data.h>
 #include <metil_object/metil_object.h>
 #include <metil_object/metil_object_buffer.h>
-#include <metil_paths/paths.h>
-#include <metil_rendering/camera/camera_mode.h>
+#include <metil_paths/metil_paths.h>
+#include <metil_rendering/metil_camera/metil_camera_mode.h>
 #include <metil_rendering/metil_renderer_interface.h>
-#include <metil_scenes/scene.h>
+#include <metil_scenes/metil_scene.h>
 
 #include <rand_clean.h>
 #include <rand_functions.h>
@@ -32,21 +33,21 @@
 #include <stdlib.h>
 
 void scene_intro_forest_initialize(
-  struct metil_scene* scene,
-  struct metil_renderer_interface* renderer_interface
+  struct metil* metil,
+  struct metil_scene* scene
 ) {
-  scene->renderer_interface->rendering_properties->camera.mode = (
+  metil->rendering_properties.camera.mode = (
     metil_camera_mode_third_person
   );
 
-  scene->renderer_interface->rendering_properties->camera.height = (
+  metil->rendering_properties.camera.height = (
     metil_camera_height_default *
     4.0f
   );
 
   metil_scene_initialize_with_renderables(
+    metil,
     scene,
-    renderer_interface,
     503
   );
 
@@ -69,6 +70,7 @@ void scene_intro_forest_initialize(
   data_scene->io_proc_data = io_proc_data;
 
   metil_audio_io_proc_add_with_data(
+    &metil->audio,
     scene_intro_forest_io_proc,
     io_proc_data
   );
@@ -98,7 +100,7 @@ void scene_intro_forest_initialize(
   MTKTextureLoader* texture_loader = [
     [MTKTextureLoader alloc]
     initWithDevice: (
-      scene->renderer_interface->metal_device
+      metil->renderer_interface.metal_device
     )
   ];
 
@@ -110,7 +112,7 @@ void scene_intro_forest_initialize(
       isDirectory: 0
       relativeToURL: [NSURL
         fileURLWithPath:[NSString
-          stringWithUTF8String: metil_paths.directory_textures
+          stringWithUTF8String: metil->paths.directory_textures
         ]
         isDirectory: 1
       ]
@@ -127,7 +129,7 @@ void scene_intro_forest_initialize(
       isDirectory: 0
       relativeToURL: [NSURL
         fileURLWithPath:[NSString
-          stringWithUTF8String: metil_paths.directory_textures
+          stringWithUTF8String: metil->paths.directory_textures
         ]
         isDirectory: 1
       ]
@@ -144,7 +146,7 @@ void scene_intro_forest_initialize(
       isDirectory: 0
       relativeToURL: [NSURL
         fileURLWithPath:[NSString
-          stringWithUTF8String: metil_paths.directory_textures
+          stringWithUTF8String: metil->paths.directory_textures
         ]
         isDirectory: 1
       ]
@@ -166,7 +168,7 @@ void scene_intro_forest_initialize(
     scene->textures[
       textures_scene_intro_forest_player
     ],
-    scene->renderer_interface->metal_device,
+    metil->renderer_interface.metal_device,
     0
   );
 
@@ -181,7 +183,7 @@ void scene_intro_forest_initialize(
     scene->textures[
       textures_scene_intro_forest_player
     ],
-    scene->renderer_interface->metal_device,
+    metil->renderer_interface.metal_device,
     1
   );
 
@@ -204,7 +206,7 @@ void scene_intro_forest_initialize(
     scene->textures[
       textures_scene_intro_forest_tree
     ],
-    scene->renderer_interface->metal_device
+    metil->renderer_interface.metal_device
   );
 
   struct rand_parameters rand_parameters;
@@ -254,7 +256,7 @@ void scene_intro_forest_initialize(
       scene->textures[
         textures_scene_intro_forest_tree
       ],
-      scene->renderer_interface->metal_device
+      metil->renderer_interface.metal_device
     );
     
     object->position.x = (
@@ -289,9 +291,13 @@ void scene_intro_forest_initialize(
 }
 
 void scene_intro_forest_poll(
+  struct metil* metil,
   struct metil_scene* scene
 ) {
-  metil_scene_poll_default(scene);
+  metil_scene_poll_default(
+    metil,
+    scene
+  );
 
   for (
     unsigned short int index_renderable = 3;
@@ -312,6 +318,7 @@ void scene_intro_forest_poll(
 
 
 void scene_intro_forest_destroy(
+  struct metil* metil,
   struct metil_scene* metil_scene
 ) {
   struct scene_intro_forest_data* scene_intro_forest_data = (
@@ -325,6 +332,7 @@ void scene_intro_forest_destroy(
   io_proc_data->destroy = 1;
 
   metil_scene_destroy_default(
+    metil,
     metil_scene
   );
 }
@@ -337,14 +345,19 @@ int scene_intro_forest_io_proc(
   AudioBufferList* _Nonnull output_data,
   void* data
 ) {
-  struct io_proc_data* io_proc_data = (
+  struct metil_audio_io_proc_data* metil_audio_io_proc_data = (
     data
+  );
+
+  struct io_proc_data* io_proc_data = (
+    metil_audio_io_proc_data->data
   );
 
   if (
     io_proc_data->destroy == 1
   ) {
     metil_audio_io_proc_remove(
+      &metil_audio_io_proc_data->metil->audio,
       scene_intro_forest_io_proc
     );
 
@@ -427,14 +440,19 @@ OSStatus scene_intro_forest_io_proc(
   const AudioTimeStamp* time_stamp_audio_out,
   void* data
 ) {
-  struct io_proc_data* io_proc_data = (
+  struct metil_audio_io_proc_data* metil_audio_io_proc_data = (
     data
+  );
+
+  struct io_proc_data* io_proc_data = (
+    metil_audio_io_proc_data->data
   );
 
   if (
     io_proc_data->destroy == 1
   ) {
     metil_audio_io_proc_remove(
+      &metil_audio_io_proc_data->metil->audio,
       scene_intro_forest_io_proc
     );
 

@@ -8,8 +8,8 @@
 
 #include <metil_object/metil_object.h>
 #include <metil_positioning.h>
-#include <metil_rendering/camera/camera.h>
-#include <metil_scenes/scene_controller.h>
+#include <metil_rendering/metil_camera/metil_camera.h>
+#include <metil_scenes/metil_scene_controller.h>
 
 #include <Metal/MTLDevice.h>
 #include <Metal/MTLTexture.h>
@@ -52,6 +52,7 @@ void zoe_object_player_initialize(
 }
 
 void zoe_object_player_poll(
+  struct metil* metil,
   struct metil_object* metil_object,
   matrix_float3x4* matrix_projection_static,
   matrix_float4x4* matrix_object_projection,
@@ -59,18 +60,19 @@ void zoe_object_player_poll(
   struct metil_camera* metil_camera
 ) {
   metil_object->position.x = (
-    metil_scene_controller.scene.player.position.x
+    ((struct metil_scene_controller*) metil->scene_controller)->scene.player.position.x
   );
 
   metil_object->position.y = (
-    metil_scene_controller.scene.player.position.y
+    ((struct metil_scene_controller*) metil->scene_controller)->scene.player.position.y
   );
 
   metil_object->position.z = (
-    metil_scene_controller.scene.player.position.z
+    ((struct metil_scene_controller*) metil->scene_controller)->scene.player.position.z
   );
 
   metil_object_poll(
+    metil,
     metil_object,
     matrix_projection_static,
     matrix_object_projection,
@@ -80,25 +82,31 @@ void zoe_object_player_poll(
 }
 
 void zoe_object_player_mirror_poll(
+  struct metil* metil,
   struct metil_object* metil_object,
   matrix_float3x4* matrix_projection_static,
   matrix_float4x4* matrix_object_projection,
   matrix_float4x4* matrix_player_projection,
   struct metil_camera* metil_camera
 ) {
+  struct metil_scene_controller* metil_scene_controller = (
+    metil->scene_controller
+  );
+
   metil_object->position.x = (
-    -metil_scene_controller.scene.player.position.x
+    -metil_scene_controller->scene.player.position.x
   );
 
   metil_object->position.y = (
-    metil_scene_controller.scene.player.position.y
+    metil_scene_controller->scene.player.position.y
   );
 
   metil_object->position.z = (
-    -metil_scene_controller.scene.player.position.z
+    -metil_scene_controller->scene.player.position.z
   );
 
   metil_object_poll(
+    metil,
     metil_object,
     matrix_projection_static,
     matrix_object_projection,

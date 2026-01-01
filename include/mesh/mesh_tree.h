@@ -3,7 +3,7 @@
 
 #include <clic3_vector.h>
 
-#include <metil_mesh/mesh.h>
+#include <metil_mesh/metil_mesh.h>
 
 #define zoe_mesh_tree_length_segments_height 10
 #define zoe_mesh_tree_length_vertices_radius 10

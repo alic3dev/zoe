@@ -1,7 +1,7 @@
 #include <menus/menu_main.h>
 
-#include <metil_menus/menu.h>
-#include <metil_menus/menu_item.h>
+#include <metil_menus/metil_menu.h>
+#include <metil_menus/metil_menu_item.h>
 
 void menu_main_initialize(
   struct metil_menu* menu
