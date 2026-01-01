@@ -3,7 +3,7 @@
 
 #include <clic3_vector.h>
 
-#include <metil_mesh/mesh.h>
+#include <metil_mesh/metil_mesh.h>
 
 extern const struct clic3_vector3_float mesh_player_size;
 extern const struct clic3_vector3_float mesh_player_size_half;

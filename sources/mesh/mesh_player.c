@@ -1,7 +1,7 @@
 #include <mesh/mesh_player.h>
 
 #include <clic3_vector.h>
-#include <metil_mesh/mesh.h>
+#include <metil_mesh/metil_mesh.h>
 
 #include <math.h>
 #include <stdlib.h>

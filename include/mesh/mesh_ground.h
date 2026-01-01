@@ -3,7 +3,7 @@
 
 #include <clic3_vector.h>
 
-#include <metil_mesh/mesh.h>
+#include <metil_mesh/metil_mesh.h>
 
 #define length_vertices_ground_x 100
 #define length_vertices_ground_y 100

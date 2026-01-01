@@ -1,7 +1,11 @@
 #ifndef __zoe_h
 #define __zoe_h
 
-#include <metil_rendering/metil_renderer_interface.h>
+#include <metil.h>
+
+#if target_os_ios
+extern char* _Nonnull zoe_executable_path;
+#endif
 
 int main(
   int,
@@ -12,12 +16,17 @@ int main(
   #endif
 );
 
+#if target_os_ios
+void zoe_view_controller_on_view_did_load();
+#endif
+
 void zoe_renderer_on_initialize(
-  struct metil_renderer_interface* _Nonnull metil_renderer_interface,
+  struct metil* _Nonnull metil,
   void* _Nullable
 );
 
 void zoe_on_scene_change(
+  struct metil* _Nonnull,
   int,
   void* _Nonnull
 );

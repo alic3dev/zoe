@@ -2,7 +2,7 @@
 #define __zoe_object_object_player_h
 
 #include <metil_object/metil_object.h>
-#include <metil_rendering/camera/camera.h>
+#include <metil_rendering/metil_camera/metil_camera.h>
 
 #include <clic3_vector.h>
 
@@ -17,6 +17,7 @@ void zoe_object_player_initialize(
 );
 
 void zoe_object_player_poll(
+  struct metil* _Nonnull,
   struct metil_object* _Nonnull,
   matrix_float3x4* _Nonnull,
   matrix_float4x4* _Nonnull,
@@ -25,6 +26,7 @@ void zoe_object_player_poll(
 );
 
 void zoe_object_player_mirror_poll(
+  struct metil* _Nonnull,
   struct metil_object* _Nonnull,
   matrix_float3x4* _Nonnull,
   matrix_float4x4* _Nonnull,

@@ -3,9 +3,9 @@
 
 #include <audio/io_proc_data.h>
 
-#include <metil_menus/menu.h>
+#include <metil_menus/metil_menu.h>
 #include <metil_rendering/metil_renderer_interface.h>
-#include <metil_scenes/scene.h>
+#include <metil_scenes/metil_scene.h>
 
 #include <rand_parameters.h>
 #include <rand_result.h>
@@ -40,19 +40,22 @@ struct scene_menu_main_data {
 };
 
 void scene_menu_main_initialize(
-  struct metil_scene* _Nonnull,
-  struct metil_renderer_interface* _Nonnull
+  struct metil* _Nonnull,
+  struct metil_scene* _Nonnull
 );
 
 void scene_menu_main_poll(
+  struct metil* _Nonnull,
   struct metil_scene* _Nonnull
 );
 
 void scene_menu_main_poll_input(
+  struct metil* _Nonnull,
   struct metil_scene* _Nonnull
 );
 
 void scene_menu_main_destroy(
+  struct metil* _Nonnull,
   struct metil_scene* _Nonnull
 );
 
