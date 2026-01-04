@@ -37,7 +37,9 @@ struct data_vertex {
     ]
   );
 
-  data_vertex.brightness = data_frame->brightness;
+  data_vertex.brightness = (
+    data_frame->brightness
+  );
 
   data_vertex.distance = metal::distance(
     metal::float4(
@@ -65,16 +67,19 @@ fragment float4 zoe_ground_fragment(
 ) {
   float brightness = metal::fmin(
     metal::fmax(
-      1.0f - data_vertex.distance / 1000.0f,
+      1.0f - (
+        data_vertex.distance /
+        1000.0f
+      ),
       0.0f
     ),
     1.0f
   );
 
   return float4(
-    brightness,
-    brightness,
-    brightness,
+    brightness * data_vertex.brightness,
+    brightness * data_vertex.brightness,
+    brightness * data_vertex.brightness,
     1.0f
   );
 }

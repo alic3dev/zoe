@@ -46,7 +46,9 @@ struct data_vertex {
     : 0
   );
 
-  data_vertex.brightness = data_frame->brightness_text;
+  data_vertex.brightness = (
+    data_frame->brightness_text
+  );
 
   return data_vertex;
 }
