@@ -10,7 +10,7 @@ struct data_vertex {
   float brightness;
 };
 
-[[vertex]] struct data_vertex zoe_ground_vertex(
+[[vertex]] struct data_vertex zoe_hill_vertex(
   const device simd_float4* positions [[
     buffer(
       metil_renderer_vertex_index_parameter_vertices
@@ -62,7 +62,7 @@ struct data_vertex {
   return data_vertex;
 }
 
-fragment float4 zoe_ground_fragment(
+fragment float4 zoe_hill_fragment(
   struct data_vertex data_vertex [[stage_in]]
 ) {
   float brightness = metal::fmin(

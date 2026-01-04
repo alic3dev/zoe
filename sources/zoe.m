@@ -2,6 +2,7 @@
 
 #include <scenes/scene_id.h>
 #include <scenes/scene_intro_forest.h>
+#include <scenes/scene_intro_hill.h>
 #include <scenes/scene_menu_main.h>
 #include <zoe_pipeline_index.h>
 
@@ -89,6 +90,18 @@ void zoe_renderer_on_initialize(
     ]
   ];
 
+  zoe_pipeline_index_hill = [
+    metil->renderer_interface.renderer
+    pipeline_add: [
+      metil->library.library
+      newFunctionWithName: @"zoe_hill_fragment"
+    ]
+    function_vertex: [
+      metil->library.library
+      newFunctionWithName: @"zoe_hill_vertex"
+    ]
+  ];
+
   zoe_pipeline_index_player = [
     metil->renderer_interface.renderer
     pipeline_add: [
@@ -134,15 +147,19 @@ void zoe_renderer_on_initialize(
   metil->rendering_properties.color_clear.z = 0.0649f;
   metil->rendering_properties.color_clear.w = 1.0f;
 
+  struct metil_scene_controller* metil_scene_controller = (
+    metil->scene_controller
+  );
+
   scene_menu_main_initialize(
     metil,
-    &((struct metil_scene_controller*) metil->scene_controller)->scene
+    &metil_scene_controller->scene
   );
 
   metil_scene_controller_on_scene_change_add(
-    metil->scene_controller,
+    metil_scene_controller,
     zoe_on_scene_change,
-    (void*)0
+    (void*) 0
   );
 }
 
@@ -167,15 +184,22 @@ void zoe_on_scene_change(
   switch (
     id_scene
   ) {
-    case scene_id_unknown:
-    case scene_id_menu_main:
-      scene_menu_main_initialize(
+    case scene_id_intro_forest:
+      scene_intro_forest_initialize(
         metil,
         metil_scene
       );
       break;
-    case scene_id_intro_forest:
-      scene_intro_forest_initialize(
+    case scene_id_intro_hill:
+      scene_intro_hill_initialize(
+        metil,
+        metil_scene
+      );
+      break;
+    case scene_id_menu_main:
+    case scene_id_unknown:
+    default:
+      scene_menu_main_initialize(
         metil,
         metil_scene
       );

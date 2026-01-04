@@ -1,6 +1,6 @@
-#include <object/object_ground.h>
+#include <object/object_hill.h>
 
-#include <mesh/mesh_ground.h>
+#include <mesh/mesh_hill.h>
 #include <zoe_pipeline_index.h>
 
 #include <clic3_vector.h>
@@ -10,16 +10,14 @@
 #include <Metal/MTLDevice.h>
 #include <Metal/MTLTexture.h>
 
-void zoe_object_ground_initialize(
+void zoe_object_hill_initialize(
   struct metil_object* metil_object,
-  struct clic3_vector3_float size,
   id<MTLTexture> texture_one,
   id<MTLTexture> texture_two,
   id<MTLDevice> metal_device
 ) {
-  mesh_ground_initialize(
-    &metil_object->mesh,
-    &size
+  mesh_hill_initialize(
+    &metil_object->mesh
   );
 
   metil_object_buffers_initialize(
@@ -28,7 +26,7 @@ void zoe_object_ground_initialize(
   );
 
   metil_object->index_pipeline_render = (
-    zoe_pipeline_index_ground
+    zoe_pipeline_index_hill
   );
 
   metil_object_texture_add(

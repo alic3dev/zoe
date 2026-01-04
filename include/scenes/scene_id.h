@@ -2,9 +2,10 @@
 #define __zoe_scenes_scene_id_h
 
 enum scene_id {
-  scene_id_unknown,
-  scene_id_menu_main,
-  scene_id_intro_forest
+  scene_id_intro_forest = 3,
+  scene_id_intro_hill = 2,
+  scene_id_menu_main = 1,
+  scene_id_unknown = 0
 };
 
 #endif

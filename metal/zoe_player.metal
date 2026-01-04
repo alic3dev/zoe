@@ -34,7 +34,9 @@ struct data_vertex {
     positions[id_vertex]
   );
 
-  data_vertex.brightness = data_frame->brightness;
+  data_vertex.brightness = (
+    data_frame->brightness
+  );
 
   return data_vertex;
 }
@@ -44,9 +46,9 @@ fragment float4 zoe_player_fragment(
 ) {
 
   return float4(
-    data_vertex.brightness * 0.02f,
-    data_vertex.brightness * 0.019f,
-    data_vertex.brightness * 0.02f,
+    0.02f * data_vertex.brightness,
+    0.019f * data_vertex.brightness,
+    0.02f * data_vertex.brightness,
     1.0f
   );
 }
