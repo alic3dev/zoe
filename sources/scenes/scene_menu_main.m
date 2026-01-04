@@ -37,7 +37,7 @@
 
 #include <math.h>
 
-const unsigned long int scene_menu_main_time_scene_transition = 333;
+const unsigned long int scene_menu_main_time_scene_transition = 3333;
 
 void scene_menu_main_initialize(
   struct metil* metil,
