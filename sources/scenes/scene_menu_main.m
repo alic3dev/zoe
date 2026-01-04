@@ -459,7 +459,9 @@ int scene_menu_main_io_proc(
       &io_proc_data->rand_source
     );
 
-    free(io_proc_data);
+    free(
+      io_proc_data
+    );
 
     return 0;
   }

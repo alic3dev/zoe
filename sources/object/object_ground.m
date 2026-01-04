@@ -41,5 +41,3 @@ void zoe_object_ground_initialize(
     texture_two
   );
 }
-
-
