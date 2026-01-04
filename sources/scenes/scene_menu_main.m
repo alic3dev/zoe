@@ -59,7 +59,8 @@ void scene_menu_main_initialize(
 
   struct io_proc_data* io_proc_data = (
     io_proc_data_create(
-      41000
+      41000,
+      3
     )
   );
 

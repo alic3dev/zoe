@@ -14,7 +14,8 @@ struct io_proc_data {
 };
 
 struct io_proc_data* io_proc_data_create(
-  unsigned int
+  unsigned int,
+  unsigned char
 );
 
 #endif

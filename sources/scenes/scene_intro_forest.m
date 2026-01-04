@@ -63,7 +63,8 @@ void scene_intro_forest_initialize(
 
   struct io_proc_data* io_proc_data = (
     io_proc_data_create(
-      41000
+      41000,
+      1
     )
   );
 
