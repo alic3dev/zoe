@@ -338,7 +338,7 @@ void scene_menu_main_poll(
       metil_scene_controller_scene_change(
         metil,
         metil->scene_controller,
-        scene_id_intro_forest
+        scene_id_intro_hill
       );
     } else {
       float brightness = (
