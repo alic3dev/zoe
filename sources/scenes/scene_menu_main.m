@@ -275,7 +275,7 @@ void scene_menu_main_poll(
   );
 
   struct scene_menu_main_data* data = (
-    (struct scene_menu_main_data*) scene->data
+    scene->data
   );
 
   struct metil_menu* menu = (
@@ -385,11 +385,12 @@ void scene_menu_main_poll_input(
   struct metil* metil,
   struct metil_scene* scene
 ) {
+  struct scene_menu_main_data* scene_menu_main_data = (
+    scene->data
+  );
+
   struct metil_menu* menu = &(
-    (
-      (struct scene_menu_main_data*)
-      scene->data
-    )->menu
+    scene_menu_main_data->menu
   );
 
   metil_menu_poll_input(
@@ -461,6 +462,48 @@ int scene_menu_main_io_proc(
     return 0;
   }
 
+  struct metil_scene_controller* metil_scene_controller = (
+    metil_audio_io_proc_data->metil->scene_controller
+  );
+
+  struct metil_scene* metil_scene = &(
+    metil_scene_controller->scene
+  );
+
+  struct scene_menu_main_data* scene_menu_main_data = (
+    metil_scene->data
+  );
+
+  float volume_multiplier = (
+    1.0f
+  );
+
+  if (
+    scene_menu_main_data->time_started != 0
+  ) {
+    unsigned long int time_delta = (
+      metil_scene->time -
+      scene_menu_main_data->time_started
+    );
+
+    if (
+      time_delta >= scene_menu_main_time_scene_transition
+    ) {
+      volume_multiplier = (
+        0.0f
+      );
+    } else {
+      volume_multiplier = (
+        (
+          (float) (scene_menu_main_time_scene_transition - time_delta) /
+          (float) scene_menu_main_time_scene_transition
+        ) *
+        0.75 +
+        0.25f
+      );
+    }
+  }
+
   rand_get(
     &io_proc_data->rand_source,
     &io_proc_data->rand_result,
@@ -494,27 +537,30 @@ int scene_menu_main_io_proc(
         2
       );
 
-      if (
-        channel == 0
-      ) {
-        buffer_out[index_frame] = ((float) ((
-          io_proc_data->rand_result.bytes[
-            offset_byte % 20500
-          ] *
-          io_proc_data->rand_result.bytes[
-            (offset_byte + 1) % 20500
-          ]
-        ) % 10000)) / 100000.0f;
-      } else {
-        buffer_out[
-          index_frame
-        ] = (
-          buffer_out[
-            index_frame -
-            channel
-          ]
-        );
-      }
+      buffer_out[
+        index_frame
+      ] = (
+        (
+          (float) (
+            (
+              io_proc_data->rand_result.bytes[
+                offset_byte %
+                20500
+              ] *
+              io_proc_data->rand_result.bytes[
+                (
+                  offset_byte +
+                  1
+                ) %
+                20500
+              ]
+            ) %
+            10000
+          )
+        ) /
+        100000.0f *
+        volume_multiplier
+      );
     }
   }
   
@@ -558,6 +604,48 @@ OSStatus scene_menu_main_io_proc(
     return 0;
   }
 
+  struct metil_scene_controller* metil_scene_controller = (
+    metil_audio_io_proc_data->metil->scene_controller
+  );
+
+  struct metil_scene* metil_scene = &(
+    metil_scene_controller->scene
+  );
+
+  struct scene_menu_main_data* scene_menu_main_data = (
+    metil_scene->data
+  );
+
+  float volume_multiplier = (
+    1.0f
+  );
+
+  if (
+    scene_menu_main_data->time_started != 0
+  ) {
+    unsigned long int time_delta = (
+      metil_scene->time -
+      scene_menu_main_data->time_started
+    );
+
+    if (
+      time_delta >= scene_menu_main_time_scene_transition
+    ) {
+      volume_multiplier = (
+        0.0f
+      );
+    } else {
+      volume_multiplier = (
+        (
+          (float) (scene_menu_main_time_scene_transition - time_delta) /
+          (float) scene_menu_main_time_scene_transition
+        ) *
+        0.75 +
+        0.25f
+      );
+    }
+  }
+
   rand_get(
     &io_proc_data->rand_source,
     &io_proc_data->rand_result,
@@ -581,27 +669,35 @@ OSStatus scene_menu_main_io_proc(
       ++index_buffer_out
     ) {
       unsigned long int channel = index_buffer_out % count_channel_out;
-      unsigned int offset_byte = index_buffer_out * 2;
+      unsigned int offset_byte = (
+        index_buffer_out *
+        2
+      );
 
-      if (channel == 0) {
-        buffer_out[index_buffer_out] = ((float) ((
-          io_proc_data->rand_result.bytes[
-            offset_byte % 20500
-          ] *
-          io_proc_data->rand_result.bytes[
-            (offset_byte + 1) % 20500
-          ]
-        ) % 10000)) / 100000.0f;
-      } else {
-        buffer_out[
-          index_buffer_out
-        ] = (
-          buffer_out[
-            index_buffer_out -
-            channel
-          ]
-        );
-      }
+      buffer_out[
+        index_buffer_out
+      ] = (
+        (
+          (float) (
+            (
+              io_proc_data->rand_result.bytes[
+                offset_byte %
+                20500
+              ] *
+              io_proc_data->rand_result.bytes[
+                (
+                  offset_byte +
+                  1
+                ) %
+                20500
+              ]
+            ) %
+            10000
+          )
+        ) /
+        100000.0f *
+        volume_multiplier
+      );
     }
   }
 
