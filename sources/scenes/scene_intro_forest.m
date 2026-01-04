@@ -250,6 +250,7 @@ void scene_intro_forest_initialize(
 
     zoe_object_tree_initialize(
       object,
+      (void*) 0,
       (struct clic3_vector2_float) {
         .x = 5.0f,
         .y = 250.0f

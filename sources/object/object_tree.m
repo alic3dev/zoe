@@ -12,14 +12,24 @@
 
 void zoe_object_tree_initialize(
   struct metil_object* metil_object,
+  struct metil_mesh* metil_mesh_clone_source,
   struct clic3_vector2_float size,
   id<MTLTexture> texture,
   id<MTLDevice> metal_device
 ) {
-  mesh_tree_initialize(
-    &metil_object->mesh,
-    &size
-  );
+  if (
+    metil_mesh_clone_source != (void*) 0
+  ) {
+    metil_mesh_clone(
+      metil_mesh_clone_source,
+      &metil_object->mesh
+    );
+  } else {
+    mesh_tree_initialize(
+      &metil_object->mesh,
+      &size
+    );
+  }
 
   metil_object->index_pipeline_render = (
     zoe_pipeline_index_tree

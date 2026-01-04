@@ -183,6 +183,7 @@ void scene_menu_main_initialize(
 
   zoe_object_tree_initialize(
     metil_object,
+    (void*) 0,
     (struct clic3_vector2_float) {
       .x = 1.0f,
       .y = 66.6f
