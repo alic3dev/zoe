@@ -89,6 +89,18 @@ void zoe_renderer_on_initialize(
     ]
   ];
 
+  zoe_pipeline_index_hill = [
+    metil->renderer_interface.renderer
+    pipeline_add: [
+      metil->library.library
+      newFunctionWithName: @"zoe_hill_fragment"
+    ]
+    function_vertex: [
+      metil->library.library
+      newFunctionWithName: @"zoe_hill_vertex"
+    ]
+  ];
+
   zoe_pipeline_index_player = [
     metil->renderer_interface.renderer
     pipeline_add: [
