@@ -5,6 +5,7 @@
 #include <mesh/mesh_hill.h>
 #include <object/object_hill.h>
 #include <object/object_player.h>
+#include <object/object_text_backing.h>
 #include <object/object_tree.h>
 #include <scenes/scene_id.h>
 #include <zoe_pipeline_index.h>
@@ -12,13 +13,19 @@
 #include <metil.h>
 #include <metil_audio/metil_audio_io_proc.h>
 #include <metil_audio/metil_audio_io_proc_data.h>
+#include <metil_group.h>
 #include <metil_object/metil_object.h>
 #include <metil_object/metil_object_buffer.h>
+#include <metil_object/metil_object_text.h>
 #include <metil_paths/metil_paths.h>
 #include <metil_rendering/metil_camera/metil_camera_mode.h>
+#include <metil_rendering/metil_renderer_data_object.h>
+#include <metil_rendering/metil_renderer_vertex_index_parameter.h>
 #include <metil_scenes/metil_scene.h>
 
 #include <math_c_absolute.h>
+#include <math_c_maximum.h>
+#include <math_c_minimum.h>
 
 #include <rand_clean.h>
 #include <rand_functions.h>
@@ -60,7 +67,7 @@ void scene_intro_hill_initialize(
   metil_scene_initialize_with_renderables(
     metil,
     scene,
-    5
+    scene_intro_hill_length_renderables
   );
 
   scene->player.rotation.x = -0.3f;
@@ -96,11 +103,28 @@ void scene_intro_hill_initialize(
     index_renderable < scene->length_renderables;
     ++index_renderable
   ) {
-    metil_renderable_initialize_at_index(
-      scene->renderables,
-      index_renderable,
-      metil_renderable_type_object
-    );
+    switch (
+      index_renderable
+    ) {
+      case scene_intro_hill_index_renderable_text: {
+        metil_renderable_initialize_at_index(
+          scene->renderables,
+          index_renderable,
+          metil_renderable_type_group
+        );
+        
+        break;
+      }
+      default: {
+        metil_renderable_initialize_at_index(
+          scene->renderables,
+          index_renderable,
+          metil_renderable_type_object
+        );
+
+        break;
+      }
+    }
   }
 
   scene->length_textures = (
@@ -277,6 +301,57 @@ void scene_intro_hill_initialize(
 
   metil_object_tree_zoe_mirror->position.y = 100.0f;
   metil_object_tree_zoe_mirror->position.z = -1666.1f;
+
+  struct metil_group* metil_group_text = (
+    scene->renderables[
+      scene_intro_hill_index_renderable_text
+    ].renderable
+  );
+
+  for (
+    unsigned char index_group_renderable = 0;
+    index_group_renderable < 2;
+    ++index_group_renderable
+  ) {
+    metil_group_add_initialize(
+      metil_group_text,
+      metil_renderable_type_object
+    );
+  }
+
+  struct metil_object* metil_object_text_bounds = (
+    metil_group_text->renderables[
+      scene_intro_hill_index_renderable_text_index_renderable_bounds
+    ]->renderable
+  );
+
+  metil_object_text_initialize(
+    metil,
+    metil_object_text_bounds,
+    "there's  nothing  out  there . . ."
+  );
+
+  metil_object_text_bounds->position.y = -(
+    metil_object_text_bounds->mesh.size.y *
+    6.0
+  );
+
+  metil_object_text_bounds->visible = 0;
+
+  struct metil_object* metil_object_text_bounds_backing = (
+    metil_group_text->renderables[
+      scene_intro_hill_index_renderable_text_index_renderable_bounds_backing
+    ]->renderable
+  );
+
+  object_text_backing_initialize(
+    metil_object_text_bounds_backing,
+    metil->renderer_interface.metal_device,
+    &metil_object_text_bounds->mesh.size,
+    &metil_object_text_bounds->position
+  );
+
+  metil_object_text_bounds_backing->visible = 0;
 }
 
 void scene_intro_hill_poll(
@@ -288,21 +363,37 @@ void scene_intro_hill_poll(
     scene
   );
 
-  if (
-    length_vertices_hill_x < (
+  struct clic3_vector2_float position_player_bounds_minimum = {
+    .x = (
+      scene->player.position.x -
+      scene->player.size.x
+    ),
+    .y = (
+      scene->player.position.z -
+      scene->player.size.z
+    )
+  };
+
+  struct clic3_vector2_float position_player_bounds_maximum = {
+    .x = (
       scene->player.position.x +
       scene->player.size.x
+    ),
+    .y = (
+      scene->player.position.z +
+      scene->player.size.z
     )
+  };
+
+  if (
+    position_player_bounds_maximum.x > length_vertices_hill_x
   ) {
     scene->player.position.x = (
       length_vertices_hill_x -
       scene->player.size.x
     );
   } else if (
-    -length_vertices_hill_x > (
-      scene->player.position.x -
-      scene->player.size.x
-    )
+    position_player_bounds_minimum.x < -length_vertices_hill_x
   ) {
     scene->player.position.x = (
       -length_vertices_hill_x +
@@ -311,26 +402,106 @@ void scene_intro_hill_poll(
   }
 
   if (
-    length_vertices_hill_y < (
-      scene->player.position.z +
-      scene->player.size.z
-    )
+    position_player_bounds_maximum.y > length_vertices_hill_y
   ) {
     scene->player.position.z = (
       length_vertices_hill_y -
       scene->player.size.z
     );
   } else if (
-    -length_vertices_hill_y > (
-      scene->player.position.z -
-      scene->player.size.z
-    )
+    position_player_bounds_minimum.y < -length_vertices_hill_y
   ) {
     scene->player.position.z = (
       -length_vertices_hill_y +
       scene->player.size.z
     );
   }
+
+  struct metil_group* metil_group_text = (
+    scene->renderables[
+      scene_intro_hill_index_renderable_text
+    ].renderable
+  );
+
+  struct metil_object* metil_object_text_bounds = (
+    metil_group_text->renderables[
+      scene_intro_hill_index_renderable_text_index_renderable_bounds
+    ]->renderable
+  );
+
+  struct metil_object* metil_object_text_bounds_backing = (
+    metil_group_text->renderables[
+      scene_intro_hill_index_renderable_text_index_renderable_bounds_backing
+    ]->renderable
+  );
+
+  struct metil_renderer_data_object* metil_renderer_data_object_text = (
+    metil_object_text_bounds->buffers_vertex[
+      metil_object_buffer_default_index_data
+    ].buffer.contents
+  );
+
+  struct metil_renderer_data_object* metil_renderer_data_object_text_backing = (
+    metil_object_text_bounds_backing->buffers_vertex[
+      metil_object_buffer_default_index_data
+    ].buffer.contents
+  );
+
+  float proximity_text_bounds = 100.0f;
+
+  float distance_proximity_text_bounds = (
+    math_c_minimum_float(
+      math_c_minimum_float(
+        length_vertices_hill_x -
+        scene->player.position.x,
+        math_c_absolute_float(
+          -length_vertices_hill_x -
+          scene->player.position.x
+        )
+      ),
+      math_c_minimum_float(
+        length_vertices_hill_y -
+        scene->player.position.z,
+        math_c_absolute_float(
+          -length_vertices_hill_y -
+          scene->player.position.z
+        )
+      )
+    )
+  );
+
+  if (
+    distance_proximity_text_bounds <= proximity_text_bounds
+  ) {
+    metil_object_text_bounds->visible = (
+      1
+    );
+
+    metil_renderer_data_object_text->color.w = (
+      math_c_maximum_float(
+        (
+          (
+            proximity_text_bounds -
+            distance_proximity_text_bounds
+          ) /
+          proximity_text_bounds
+        ),
+        0.0f
+      )
+    );
+  } else {
+    metil_object_text_bounds->visible = (
+      0
+    );
+  }
+
+  metil_object_text_bounds_backing->visible = (
+    metil_object_text_bounds->visible
+  );
+
+  metil_renderer_data_object_text_backing->color.w = (
+    metil_renderer_data_object_text->color.w
+  );
 
   struct clic3_vector2_float position_percentage = {
     .x = (
