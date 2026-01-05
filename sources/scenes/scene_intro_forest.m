@@ -118,8 +118,8 @@ void scene_intro_forest_initialize(
         isDirectory: 1
       ]
     ]
-    options: (void*)0
-    error: (void*)0
+    options: (void*) 0
+    error: (void*) 0
   ];
 
   scene->textures[
@@ -135,8 +135,8 @@ void scene_intro_forest_initialize(
         isDirectory: 1
       ]
     ]
-    options: (void*)0
-    error: (void*)0
+    options: (void*) 0
+    error: (void*) 0
   ];
 
   scene->textures[
@@ -152,8 +152,8 @@ void scene_intro_forest_initialize(
         isDirectory: 1
       ]
     ]
-    options: (void*)0
-    error: (void*)0
+    options: (void*) 0
+    error: (void*) 0
   ];
 
   [texture_loader release];
