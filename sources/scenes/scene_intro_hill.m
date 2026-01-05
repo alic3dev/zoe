@@ -133,8 +133,8 @@ void scene_intro_hill_initialize(
         isDirectory: 1
       ]
     ]
-    options: (void*)0
-    error: (void*)0
+    options: (void*) 0
+    error: (void*) 0
   ];
 
   scene->textures[
@@ -150,8 +150,8 @@ void scene_intro_hill_initialize(
         isDirectory: 1
       ]
     ]
-    options: (void*)0
-    error: (void*)0
+    options: (void*) 0
+    error: (void*) 0
   ];
 
   scene->textures[
@@ -167,8 +167,8 @@ void scene_intro_hill_initialize(
         isDirectory: 1
       ]
     ]
-    options: (void*)0
-    error: (void*)0
+    options: (void*) 0
+    error: (void*) 0
   ];
 
   [texture_loader release];
@@ -186,6 +186,20 @@ void scene_intro_hill_initialize(
     ],
     metil->renderer_interface.metal_device,
     0
+  );
+
+  scene->player.size.x = (
+    object->mesh.size.x /
+    2.0f
+  );
+
+  scene->player.size.y = (
+    object->mesh.size.y
+  );
+
+  scene->player.size.z = (
+    object->mesh.size.z /
+    2.0f
   );
 
   object = (
@@ -274,24 +288,72 @@ void scene_intro_hill_poll(
     scene
   );
 
+  scene->player.speed_movement = 100.0f;
+
+  if (
+    length_vertices_hill_x < (
+      scene->player.position.x +
+      scene->player.size.x
+    )
+  ) {
+    scene->player.position.x = (
+      length_vertices_hill_x -
+      scene->player.size.x
+    );
+  } else if (
+    -length_vertices_hill_x > (
+      scene->player.position.x -
+      scene->player.size.x
+    )
+  ) {
+    scene->player.position.x = (
+      -length_vertices_hill_x +
+      scene->player.size.x
+    );
+  }
+
+  if (
+    length_vertices_hill_y < (
+      scene->player.position.z +
+      scene->player.size.z
+    )
+  ) {
+    scene->player.position.z = (
+      length_vertices_hill_y -
+      scene->player.size.z
+    );
+  } else if (
+    -length_vertices_hill_y > (
+      scene->player.position.z -
+      scene->player.size.z
+    )
+  ) {
+    scene->player.position.z = (
+      -length_vertices_hill_y +
+      scene->player.size.z
+    );
+  }
+
   struct clic3_vector2_float position_percentage = {
     .x = (
       math_c_absolute_float(
         scene->player.position.x / (
-          length_vertices_hill_x
+          length_vertices_hill_x -
+          1
         )
       ) / 2.0f
     ),
     .y = (
       math_c_absolute_float(
         scene->player.position.z / (
-          length_vertices_hill_y
+          length_vertices_hill_y -
+          1
         )
       ) / 2.0f
     )
   };
 
-  scene->player.position.y = (
+  scene->player.position_y_floor = (
     hill_y_value_get(
       &position_percentage
     )
