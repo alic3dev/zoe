@@ -291,7 +291,7 @@ void scene_intro_hill_poll(
     )
   };
 
-  scene->player.position.y = (
+  scene->player.position_y_floor = (
     hill_y_value_get(
       &position_percentage
     )
