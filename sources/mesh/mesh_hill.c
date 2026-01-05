@@ -63,11 +63,11 @@ void mesh_hill_initialize(
   const struct clic3_vector2_float increment_hill = {
     .x = (
       metil_mesh->size.x /
-      (float) (mesh_hill_length_vertices.x)
+      (float) (mesh_hill_length_vertices.x - 1)
     ),
     .y = (
       metil_mesh->size.z /
-      (float) (mesh_hill_length_vertices.y)
+      (float) (mesh_hill_length_vertices.y - 1)
     )
   };
 

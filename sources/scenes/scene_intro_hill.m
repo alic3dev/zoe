@@ -278,14 +278,16 @@ void scene_intro_hill_poll(
     .x = (
       math_c_absolute_float(
         scene->player.position.x / (
-          length_vertices_hill_x
+          length_vertices_hill_x -
+          1
         )
       ) / 2.0f
     ),
     .y = (
       math_c_absolute_float(
         scene->player.position.z / (
-          length_vertices_hill_y
+          length_vertices_hill_y -
+          1
         )
       ) / 2.0f
     )
