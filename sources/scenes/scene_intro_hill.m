@@ -12,8 +12,10 @@
 #include <metil.h>
 #include <metil_audio/metil_audio_io_proc.h>
 #include <metil_audio/metil_audio_io_proc_data.h>
+#include <metil_group.h>
 #include <metil_object/metil_object.h>
 #include <metil_object/metil_object_buffer.h>
+#include <metil_object/metil_object_text.h>
 #include <metil_paths/metil_paths.h>
 #include <metil_rendering/metil_camera/metil_camera_mode.h>
 #include <metil_scenes/metil_scene.h>
@@ -294,6 +296,36 @@ void scene_intro_hill_initialize(
 
   metil_object_tree_zoe_mirror->position.y = 100.0f;
   metil_object_tree_zoe_mirror->position.z = -1666.1f;
+
+  struct metil_group* metil_group_text = (
+    scene->renderables[
+      scene_intro_hill_index_renderable_text
+    ].renderable
+  );
+
+  metil_group_add_initialize(
+    metil_group_text,
+    metil_renderable_type_object
+  );
+
+  struct metil_object* metil_object_text_bounds = (
+    metil_group_text->renderables[
+      0
+    ]->renderable
+  );
+
+  metil_object_text_initialize(
+    metil,
+    metil_object_text_bounds,
+    "there's nothing out there..."
+  );
+
+  metil_object_text_bounds->position.y = -(
+    metil_object_text_bounds->mesh.size.y *
+    6.0
+  );
+
+  metil_object_text_bounds->visible = 0;
 }
 
 void scene_intro_hill_poll(
