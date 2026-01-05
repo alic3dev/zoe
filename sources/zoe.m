@@ -126,6 +126,18 @@ void zoe_renderer_on_initialize(
     ]
   ];
 
+  zoe_pipeline_index_text_backing = [
+    metil->renderer_interface.renderer
+    pipeline_add: [
+      metil->library.library
+      newFunctionWithName: @"zoe_text_backing_fragment"
+    ]
+    function_vertex: [
+      metil->library.library
+      newFunctionWithName: @"zoe_text_backing_vertex"
+    ]
+  ];
+
   zoe_pipeline_index_tree = [
     metil->renderer_interface.renderer
     pipeline_add: [

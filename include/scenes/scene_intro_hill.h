@@ -24,6 +24,11 @@ enum scene_intro_hill_index_renderable {
   scene_intro_hill_index_renderable_text = 5
 };
 
+enum scene_intro_hill_index_renderable_text_index_renderable {
+  scene_intro_hill_index_renderable_text_index_renderable_bounds_backing = 0,
+  scene_intro_hill_index_renderable_text_index_renderable_bounds = 1
+};
+
 #define scene_intro_hill_length_textures 3
 
 enum scene_intro_hill_textures {
