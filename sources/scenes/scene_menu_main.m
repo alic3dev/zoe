@@ -346,8 +346,15 @@ void scene_menu_main_poll(
         (float) scene_menu_main_time_scene_transition
       );
 
-      metil->rendering_properties.brightness = brightness;
-      metil->rendering_properties.brightness_text = brightness;
+      metil->rendering_properties.brightness = (
+        metil->configuration.rendering_properties.brightness *
+        brightness
+      );
+
+      metil->rendering_properties.brightness_text = (
+        metil->configuration.rendering_properties.brightness_text *
+        brightness
+      );
     }
   } else if (
     menu->index_selected != -1 &&
