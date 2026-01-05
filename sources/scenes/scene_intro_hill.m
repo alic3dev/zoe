@@ -60,7 +60,7 @@ void scene_intro_hill_initialize(
   metil_scene_initialize_with_renderables(
     metil,
     scene,
-    5
+    scene_intro_hill_length_renderables
   );
 
   scene->player.rotation.x = -0.3f;
@@ -96,11 +96,28 @@ void scene_intro_hill_initialize(
     index_renderable < scene->length_renderables;
     ++index_renderable
   ) {
-    metil_renderable_initialize_at_index(
-      scene->renderables,
-      index_renderable,
-      metil_renderable_type_object
-    );
+    switch (
+      index_renderable
+    ) {
+      case scene_intro_hill_index_renderable_text: {
+        metil_renderable_initialize_at_index(
+          scene->renderables,
+          index_renderable,
+          metil_renderable_type_group
+        );
+        
+        break;
+      }
+      default: {
+        metil_renderable_initialize_at_index(
+          scene->renderables,
+          index_renderable,
+          metil_renderable_type_object
+        );
+
+        break;
+      }
+    }
   }
 
   scene->length_textures = (

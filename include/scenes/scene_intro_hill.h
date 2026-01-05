@@ -13,6 +13,8 @@
 #endif
 #include <MetalKit/MetalKit.h>
 
+#define scene_intro_hill_length_renderables 6
+
 enum scene_intro_hill_index_renderable {
   scene_intro_hill_index_renderable_hill = 0,
   scene_intro_hill_index_renderable_player = 1,
