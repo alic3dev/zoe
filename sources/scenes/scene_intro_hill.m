@@ -288,8 +288,6 @@ void scene_intro_hill_poll(
     scene
   );
 
-  scene->player.speed_movement = 100.0f;
-
   if (
     length_vertices_hill_x < (
       scene->player.position.x +
