@@ -32,8 +32,20 @@ struct data_vertex {
 ) {
   struct data_vertex data_vertex;
 
-  data_vertex.position = data_object->view_model_matrix_projection * positions[id_vertex];
-  data_vertex.noise = (float) (10000 - data_object->noise) / 10000.0f;
+  data_vertex.position = (
+    data_object->view_model_matrix_projection *
+    positions[
+      id_vertex
+    ]
+  );
+
+  data_vertex.noise = (
+    (float) (
+      10000 -
+      data_object->noise
+    ) /
+    10000.0f
+  );
 
   data_vertex.position_texture.x = (
     id_vertex == 0 || id_vertex == 3
