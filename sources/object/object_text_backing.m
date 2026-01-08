@@ -7,19 +7,19 @@
 #include <metil_rendering/metil_renderer_data_object.h>
 #include <metil_rendering/metil_renderer_vertex_index_parameter.h>
 
-#include <clic3_vector.h>
+#include <math_c_vector.h>
 
 #include <Metal/MTLDevice.h>
 
 void object_text_backing_initialize(
   struct metil_object* metil_object_text_backing,
   id<MTLDevice> metal_device,
-  struct clic3_vector3_float* size,
-  struct clic3_vector3_float* position
+  struct math_c_vector3_float* size,
+  struct math_c_vector3_float* position
 ) {
   metil_mesh_rectangle_initialize(
     &metil_object_text_backing->mesh,
-    (struct clic3_vector2_float) {
+    (struct math_c_vector2_float) {
       .x = size->x * 1.1f,
       .y = size->y * 1.2f
     }

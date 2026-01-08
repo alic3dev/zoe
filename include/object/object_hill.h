@@ -3,7 +3,7 @@
 
 #include <metil_object/metil_object.h>
 
-#include <clic3_vector.h>
+#include <math_c_vector.h>
 
 #include <Metal/MTLDevice.h>
 #include <Metal/MTLTexture.h>

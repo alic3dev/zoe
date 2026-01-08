@@ -3,7 +3,7 @@
 #include <mesh/mesh_tree.h>
 #include <zoe_pipeline_index.h>
 
-#include <clic3_vector.h>
+#include <math_c_vector.h>
 
 #include <metil_object/metil_object.h>
 
@@ -13,7 +13,7 @@
 void zoe_object_tree_initialize(
   struct metil_object* metil_object,
   struct metil_mesh* metil_mesh_clone_source,
-  struct clic3_vector2_float size,
+  struct math_c_vector2_float size,
   id<MTLTexture> texture,
   id<MTLDevice> metal_device
 ) {

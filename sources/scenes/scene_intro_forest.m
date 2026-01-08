@@ -196,7 +196,7 @@ void scene_intro_forest_initialize(
 
   zoe_object_ground_initialize(
     metil_object_ground,
-    (struct clic3_vector3_float) {
+    (struct math_c_vector3_float) {
       .x = 2000.0f,
       .y = 500.0f,
       .z = 2000.0f
@@ -251,7 +251,7 @@ void scene_intro_forest_initialize(
     zoe_object_tree_initialize(
       object,
       (void*) 0,
-      (struct clic3_vector2_float) {
+      (struct math_c_vector2_float) {
         .x = 5.0f,
         .y = 250.0f
       },
@@ -312,7 +312,7 @@ void scene_intro_forest_poll(
       ].renderable
     );
 
-    struct clic3_vector3_float* vertices = metil_object->buffers_vertex[
+    struct math_c_vector3_float* vertices = metil_object->buffers_vertex[
       metil_object_buffer_default_index_vertices
     ].buffer.contents;
   }

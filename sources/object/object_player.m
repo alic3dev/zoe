@@ -4,7 +4,7 @@
 #include <mesh/mesh_player_mirror.h>
 #include <zoe_pipeline_index.h>
 
-#include <clic3_vector.h>
+#include <math_c_vector.h>
 
 #include <metil_object/metil_object.h>
 #include <metil_positioning.h>

@@ -1,6 +1,6 @@
 #include <mesh/mesh_tree.h>
 
-#include <clic3_vector.h>
+#include <math_c_vector.h>
 
 #include <metil_mesh/metil_mesh.h>
 
@@ -16,7 +16,7 @@
 
 void mesh_tree_initialize(
   struct metil_mesh* mesh,
-  struct clic3_vector2_float* size
+  struct math_c_vector2_float* size
 ) {
   metil_mesh_initialize(
     mesh
@@ -49,7 +49,7 @@ void mesh_tree_initialize(
 
   mesh->vertices = realloc(
     mesh->vertices,
-    sizeof(struct clic3_vector4_float) *
+    sizeof(struct math_c_vector4_float) *
     mesh->length_vertices
   );
 
@@ -261,7 +261,7 @@ void mesh_tree_initialize(
 
     mesh->vertices = realloc(
       mesh->vertices,
-      sizeof(struct clic3_vector4_float) *
+      sizeof(struct math_c_vector4_float) *
       mesh->length_vertices
     );
 
@@ -279,7 +279,7 @@ void mesh_tree_initialize(
       M_PI * 2.0f
     );
 
-    struct clic3_vector3_float position_joint_branch = {
+    struct math_c_vector3_float position_joint_branch = {
       .x = 0.0f,
       .y = mesh->size.y - (((float)((
         rand_result_secondary.bytes[offset_byte + 2] *

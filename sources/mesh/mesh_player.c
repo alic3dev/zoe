@@ -1,18 +1,18 @@
 #include <mesh/mesh_player.h>
 
-#include <clic3_vector.h>
+#include <math_c_vector.h>
 #include <metil_mesh/metil_mesh.h>
 
 #include <math.h>
 #include <stdlib.h>
 
-const struct clic3_vector3_float mesh_player_size = {
+const struct math_c_vector3_float mesh_player_size = {
   .x = 10.0f,
   .y = 5.0f,
   .z = 10.0f
 };
 
-const struct clic3_vector3_float mesh_player_size_half = {
+const struct math_c_vector3_float mesh_player_size_half = {
   .x = mesh_player_size.x / 2.0f,
   .y = mesh_player_size.y / 2.0f,
   .z = mesh_player_size.z / 2.0f
@@ -40,7 +40,7 @@ void mesh_player_initialize(
 
   mesh->vertices = realloc(
     mesh->vertices,
-    sizeof(struct clic3_vector4_float) *
+    sizeof(struct math_c_vector4_float) *
     mesh->length_vertices
   );
 

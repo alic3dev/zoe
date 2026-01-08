@@ -4,7 +4,7 @@
 
 #include <metil_mesh/metil_mesh.h>
 
-#include <clic3_vector.h>
+#include <math_c_vector.h>
 
 #include <rand_functions.h>
 #include <rand_initialize.h>
@@ -15,7 +15,7 @@
 
 #include <stdlib.h>
 
-const struct clic3_vector2_unsigned_int mesh_hill_length_vertices = {
+const struct math_c_vector2_unsigned_int mesh_hill_length_vertices = {
   .x = length_vertices_hill_x,
   .y = length_vertices_hill_y
 };
@@ -23,7 +23,7 @@ const struct clic3_vector2_unsigned_int mesh_hill_length_vertices = {
 void mesh_hill_initialize(
   struct metil_mesh* metil_mesh
 ) {
-  struct clic3_vector3_float size = {
+  struct math_c_vector3_float size = {
     .x = mesh_hill_length_vertices.x * 2.0f,
     .y = 333.3f,
     .z = mesh_hill_length_vertices.y * 2.0f
@@ -50,7 +50,7 @@ void mesh_hill_initialize(
 
   metil_mesh->vertices = realloc(
     metil_mesh->vertices,
-    sizeof(struct clic3_vector4_float) *
+    sizeof(struct math_c_vector4_float) *
     metil_mesh->length_vertices
   );
 
@@ -60,7 +60,7 @@ void mesh_hill_initialize(
     metil_mesh->length_indices
   );
 
-  const struct clic3_vector2_float increment_hill = {
+  const struct math_c_vector2_float increment_hill = {
     .x = (
       metil_mesh->size.x /
       (float) (mesh_hill_length_vertices.x - 1)
@@ -118,7 +118,7 @@ void mesh_hill_initialize(
         )
       );
 
-      struct clic3_vector2_float position_percentage = {
+      struct math_c_vector2_float position_percentage = {
         .x = (
           (float) index_x /
           (float) (
