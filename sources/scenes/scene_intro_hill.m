@@ -267,7 +267,7 @@ void scene_intro_hill_initialize(
   zoe_object_tree_initialize(
     metil_object_tree_zoe,
     (void*) 0,
-    (struct clic3_vector2_float) {
+    (struct math_c_vector2_float) {
       .x = 33.3f,
       .y = 333.5f
     },
@@ -289,7 +289,7 @@ void scene_intro_hill_initialize(
   zoe_object_tree_initialize(
     metil_object_tree_zoe_mirror,
     &metil_object_tree_zoe->mesh,
-    (struct clic3_vector2_float) {
+    (struct math_c_vector2_float) {
       .x = 33.3f,
       .y = 333.5f
     },
@@ -363,7 +363,7 @@ void scene_intro_hill_poll(
     scene
   );
 
-  struct clic3_vector2_float position_player_bounds_minimum = {
+  struct math_c_vector2_float position_player_bounds_minimum = {
     .x = (
       scene->player.position.x -
       scene->player.size.x
@@ -374,7 +374,7 @@ void scene_intro_hill_poll(
     )
   };
 
-  struct clic3_vector2_float position_player_bounds_maximum = {
+  struct math_c_vector2_float position_player_bounds_maximum = {
     .x = (
       scene->player.position.x +
       scene->player.size.x
@@ -503,7 +503,7 @@ void scene_intro_hill_poll(
     metil_renderer_data_object_text->color.w
   );
 
-  struct clic3_vector2_float position_percentage = {
+  struct math_c_vector2_float position_percentage = {
     .x = (
       math_c_absolute_float(
         scene->player.position.x / (

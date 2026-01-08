@@ -1,7 +1,7 @@
 #ifndef __zoe_mesh_mesh_tree_h
 #define __zoe_mesh_mesh_tree_h
 
-#include <clic3_vector.h>
+#include <math_c_vector.h>
 
 #include <metil_mesh/metil_mesh.h>
 
@@ -11,7 +11,7 @@
 
 void mesh_tree_initialize(
   struct metil_mesh* _Nonnull,
-  struct clic3_vector2_float* _Nonnull
+  struct math_c_vector2_float* _Nonnull
 );
 
 #endif

@@ -3,7 +3,7 @@
 #include <mesh/mesh_hill.h>
 #include <zoe_pipeline_index.h>
 
-#include <clic3_vector.h>
+#include <math_c_vector.h>
 
 #include <metil_object/metil_object.h>
 
