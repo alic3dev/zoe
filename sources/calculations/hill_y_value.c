@@ -1,9 +1,9 @@
 #include <calculations/hill_y_value.h>
 
-#include <clic3_vector.h>
+#include <math_c_vector.h>
 
 float hill_y_value_get(
-  struct clic3_vector2_float* position_percentage
+  struct math_c_vector2_float* position_percentage
 ) {
   if (
     position_percentage->x > 0.7f

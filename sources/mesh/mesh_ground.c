@@ -2,7 +2,7 @@
 
 #include <metil_mesh/metil_mesh.h>
 
-#include <clic3_vector.h>
+#include <math_c_vector.h>
 
 #include <rand_functions.h>
 #include <rand_initialize.h>
@@ -14,14 +14,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-const struct clic3_vector2_unsigned_int mesh_ground_length_vertices = {
+const struct math_c_vector2_unsigned_int mesh_ground_length_vertices = {
   .x = length_vertices_ground_x,
   .y = length_vertices_ground_y
 };
 
 void mesh_ground_initialize(
   struct metil_mesh* mesh,
-  struct clic3_vector3_float* size
+  struct math_c_vector3_float* size
 ) {
   metil_mesh_initialize(mesh);
 
@@ -42,7 +42,7 @@ void mesh_ground_initialize(
 
   mesh->vertices = realloc(
     mesh->vertices,
-    sizeof(struct clic3_vector4_float) *
+    sizeof(struct math_c_vector4_float) *
     mesh->length_vertices
   );
 
@@ -52,7 +52,7 @@ void mesh_ground_initialize(
     mesh->length_indices
   );
 
-  const struct clic3_vector2_float increment_ground = {
+  const struct math_c_vector2_float increment_ground = {
     .x = (
       mesh->size.x /
       (float) (mesh_ground_length_vertices.x)
