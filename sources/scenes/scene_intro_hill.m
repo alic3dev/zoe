@@ -449,11 +449,9 @@ void scene_intro_hill_poll(
       }
     }
 
-    metil_collision_uncollide_circular_xz(
-      &metil_object_tree->position,
-      &metil_object_tree->mesh.size,
-      &scene->player.position,
-      &scene->player.size
+    metil_collision_player_object_uncollide_circular_xz(
+      metil_object_tree,
+      &scene->player
     );
   }
 
