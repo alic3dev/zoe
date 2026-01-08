@@ -9,6 +9,7 @@
 
 #include <metil_audio/metil_audio_io_proc.h>
 #include <metil_audio/metil_audio_io_proc_data.h>
+#include <metil_collision/metil_collision_uncollide/metil_collision_uncollide_circular.h>
 #include <metil_object/metil_object.h>
 #include <metil_object/metil_object_buffer.h>
 #include <metil_paths/metil_paths.h>
@@ -36,6 +37,14 @@ void scene_intro_forest_initialize(
   struct metil* metil,
   struct metil_scene* scene
 ) {
+  metil->rendering_properties.brightness = (
+    metil->configuration.rendering_properties.brightness
+  );
+
+  metil->rendering_properties.brightness_text = (
+    metil->configuration.rendering_properties.brightness_text
+  );
+
   metil->rendering_properties.camera.mode = (
     metil_camera_mode_third_person
   );
@@ -173,6 +182,20 @@ void scene_intro_forest_initialize(
     0
   );
 
+  scene->player.size.x = (
+    object->mesh.size.x /
+    2.0f
+  );
+
+  scene->player.size.y = (
+    object->mesh.size.y
+  );
+
+  scene->player.size.z = (
+    object->mesh.size.z /
+    2.0f
+  );
+
   object = (
     scene->renderables[
       1
@@ -306,15 +329,16 @@ void scene_intro_forest_poll(
     index_renderable < scene->length_renderables;
     ++index_renderable
   ) {
-    struct metil_object* metil_object = (
+    struct metil_object* metil_object_tree = (
       scene->renderables[
         index_renderable
       ].renderable
     );
 
-    struct math_c_vector3_float* vertices = metil_object->buffers_vertex[
-      metil_object_buffer_default_index_vertices
-    ].buffer.contents;
+    metil_collision_player_object_uncollide_circular_xz(
+      metil_object_tree,
+      &scene->player
+    );
   }
 }
 
