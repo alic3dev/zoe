@@ -13,6 +13,7 @@
 #include <metil.h>
 #include <metil_audio/metil_audio_io_proc.h>
 #include <metil_audio/metil_audio_io_proc_data.h>
+#include <metil_collision/metil_collision_uncollide/metil_collision_uncollide_circular.h>
 #include <metil_group.h>
 #include <metil_object/metil_object.h>
 #include <metil_object/metil_object_buffer.h>
@@ -414,6 +415,43 @@ void scene_intro_hill_poll(
     scene->player.position.z = (
       -length_vertices_hill_y +
       scene->player.size.z
+    );
+  }
+
+  struct metil_object* metil_object_tree;
+
+  for (
+    unsigned char index_tree = 0;
+    index_tree < 2;
+    ++index_tree
+  ) {
+    switch (
+      index_tree
+    ) {
+      case 0: {
+        metil_object_tree = (
+          scene->renderables[
+            scene_intro_hill_index_renderable_tree_zoe
+          ].renderable
+        );
+        
+        break;
+      }
+      default:
+      case 1: {
+        metil_object_tree = (
+          scene->renderables[
+            scene_intro_hill_index_renderable_tree_zoe_mirror
+          ].renderable
+        );
+
+        break;
+      }
+    }
+
+    metil_collision_player_object_uncollide_circular_xz(
+      metil_object_tree,
+      &scene->player
     );
   }
 
