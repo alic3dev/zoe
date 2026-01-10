@@ -30,25 +30,32 @@ struct io_proc_data* io_proc_data_create(
     io_proc_data->rand_source.data
   );
 
-  if (
-    set == 3
+  switch (
+    set
   ) {
-    rand_source_divisive_data->multiplier = (
-      -('h' - 'e' - 'l' - 'l' - 'o') - -('.' - '.' - '.')
-    );
+    case 3: {
+      // rand_source_divisive_data->multiplier = (
+      //   -('h' - 'e' - 'l' - 'l' - 'o') - -('.' - '.' - '.')
+      // );
 
-    rand_source_divisive_data->seed = (
-      -('z' - 'o' - 'e') / -(';' - '-' - ';')
-    );
+      // rand_source_divisive_data->seed = (
+      //   -('z' - 'o' - 'e') / -(';' - '-' - ';')
+      // );
 
-    // sup
+      // rand_source_divisive_data->value = (
+      //   rand_source_divisive_data->seed
+      // );
+      
+      break;
+    }
+    default: {
+      break;
+    }
   }
-
-  rand_source_divisive_data->value = (
-    rand_source_divisive_data->seed
-  );
 
   io_proc_data->destroy = 0;
 
-  return io_proc_data;
+  return (
+    io_proc_data
+  );
 }
