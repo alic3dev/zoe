@@ -10,6 +10,7 @@
 #include <metil_object/metil_object_text.h>
 #include <metil_rendering/metil_renderer_data_object.h>
 
+#include <math_c_minimum.h>
 #include <math_c_maximum.h>
 
 void group_text_with_backing_initialize(
@@ -47,9 +48,9 @@ void group_text_with_backing_initialize(
     text
   );
 
-  metil_object_text->position.y = -(
-    metil_object_text->mesh.size.y *
-    8.0
+  metil_object_text->position.y = (
+    -0.75f +
+    metil_object_text->mesh.size.y / 2.0f
   );
 
   object_text_backing_initialize(
@@ -77,8 +78,27 @@ void group_text_with_backing_visibility_set(
   float distance,
   float proximity
 ) {
+  group_text_with_backing_visibility_minimum_maximum_set(
+    metil_group_text_with_backing,
+    distance,
+    proximity,
+    0.0f
+  );
+}
+
+void group_text_with_backing_visibility_minimum_maximum_set(
+  struct metil_group* metil_group_text_with_backing,
+  float distance,
+  float minimum,
+  float maximum
+) {
+  float difference = (
+    minimum -
+    maximum
+  );
+
   if (
-    distance <= proximity
+    distance <= minimum
   ) {
     metil_group_text_with_backing->visible = (
       1
@@ -109,15 +129,21 @@ void group_text_with_backing_visibility_set(
     );
 
     metil_renderer_data_object_text->color.w = (
-      math_c_maximum_float(
-        (
+      math_c_minimum_float(
+        math_c_maximum_float(
           (
-            proximity -
-            distance
-          ) /
-          proximity
+            (
+              difference -
+              (
+                distance -
+                maximum
+              )
+            ) /
+            difference
+          ),
+          0.0f
         ),
-        0.0f
+        1.0f
       )
     );
 

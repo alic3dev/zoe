@@ -14,6 +14,7 @@
 #include <MetalKit/MetalKit.h>
 
 #define scene_intro_hill_length_renderables 6
+#define scene_intro_hill_length_group_text_renderables 3
 
 enum scene_intro_hill_index_renderable {
   scene_intro_hill_index_renderable_hill = 0,

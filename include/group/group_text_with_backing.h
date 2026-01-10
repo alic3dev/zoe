@@ -21,4 +21,11 @@ void group_text_with_backing_visibility_set(
   float
 );
 
+void group_text_with_backing_visibility_minimum_maximum_set(
+  struct metil_group* _Nonnull,
+  float,
+  float,
+  float
+);
+
 #endif
