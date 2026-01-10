@@ -2,10 +2,10 @@
 
 #include <audio/io_proc_data.h>
 #include <calculations/hill_y_value.h>
+#include <group/group_text_with_backing.h>
 #include <mesh/mesh_hill.h>
 #include <object/object_hill.h>
 #include <object/object_player.h>
-#include <object/object_text_backing.h>
 #include <object/object_tree.h>
 #include <scenes/scene_id.h>
 #include <zoe_pipeline_index.h>
@@ -27,6 +27,8 @@
 #include <math_c_absolute.h>
 #include <math_c_maximum.h>
 #include <math_c_minimum.h>
+#include <math_c_vector.h>
+#include <math_c_vector_distance.h>
 
 #include <rand_clean.h>
 #include <rand_functions.h>
@@ -107,7 +109,7 @@ void scene_intro_hill_initialize(
     switch (
       index_renderable
     ) {
-      case scene_intro_hill_index_renderable_text: {
+      case scene_intro_hill_index_renderable_group_text: {
         metil_renderable_initialize_at_index(
           scene->renderables,
           index_renderable,
@@ -305,54 +307,58 @@ void scene_intro_hill_initialize(
 
   struct metil_group* metil_group_text = (
     scene->renderables[
-      scene_intro_hill_index_renderable_text
+      scene_intro_hill_index_renderable_group_text
     ].renderable
   );
 
   for (
     unsigned char index_group_renderable = 0;
-    index_group_renderable < 2;
+    index_group_renderable < scene_intro_hill_length_group_text_renderables;
     ++index_group_renderable
   ) {
     metil_group_add_initialize(
       metil_group_text,
-      metil_renderable_type_object
+      metil_renderable_type_group
     );
+
+    struct metil_group* metil_group_text_group = (
+      metil_group_text->renderables[
+        index_group_renderable
+      ]->renderable
+    );
+
+    switch (
+      index_group_renderable
+    ) {
+      case scene_intro_hill_index_renderable_group_text_index_renderable_bounds: {
+        group_text_with_backing_initialize(
+          metil,
+          metil_group_text_group,
+          "there's  nothing  out  there      .       .     .   .  . . ...."
+        );
+
+        break;
+      }
+      case scene_intro_hill_index_renderable_group_text_index_renderable_tree_hello: {
+        group_text_with_backing_initialize(
+          metil,
+          metil_group_text_group,
+          "h    e  l   l     o       .               .            ."
+        );
+
+        break;
+      }
+      case scene_intro_hill_index_renderable_group_text_index_renderable_tree_not_yours: {
+        group_text_with_backing_initialize(
+          metil,
+          metil_group_text_group,
+          "t h i s,     i s   n o t     yo u r      t r e e"
+        );
+
+        break;
+      }
+    }
   }
-
-  struct metil_object* metil_object_text_bounds = (
-    metil_group_text->renderables[
-      scene_intro_hill_index_renderable_text_index_renderable_bounds
-    ]->renderable
-  );
-
-  metil_object_text_initialize(
-    metil,
-    metil_object_text_bounds,
-    "there's  nothing  out  there . . ."
-  );
-
-  metil_object_text_bounds->position.y = -(
-    metil_object_text_bounds->mesh.size.y *
-    6.0
-  );
-
-  metil_object_text_bounds->visible = 0;
-
-  struct metil_object* metil_object_text_bounds_backing = (
-    metil_group_text->renderables[
-      scene_intro_hill_index_renderable_text_index_renderable_bounds_backing
-    ]->renderable
-  );
-
-  object_text_backing_initialize(
-    metil_object_text_bounds_backing,
-    metil->renderer_interface.metal_device,
-    &metil_object_text_bounds->mesh.size,
-    &metil_object_text_bounds->position
-  );
-
-  metil_object_text_bounds_backing->visible = 0;
 }
 
 void scene_intro_hill_poll(
@@ -418,74 +424,17 @@ void scene_intro_hill_poll(
     );
   }
 
-  struct metil_object* metil_object_tree;
-
-  for (
-    unsigned char index_tree = 0;
-    index_tree < 2;
-    ++index_tree
-  ) {
-    switch (
-      index_tree
-    ) {
-      case 0: {
-        metil_object_tree = (
-          scene->renderables[
-            scene_intro_hill_index_renderable_tree_zoe
-          ].renderable
-        );
-        
-        break;
-      }
-      default:
-      case 1: {
-        metil_object_tree = (
-          scene->renderables[
-            scene_intro_hill_index_renderable_tree_zoe_mirror
-          ].renderable
-        );
-
-        break;
-      }
-    }
-
-    metil_collision_player_object_uncollide_circular_xz(
-      metil_object_tree,
-      &scene->player
-    );
-  }
-
   struct metil_group* metil_group_text = (
     scene->renderables[
-      scene_intro_hill_index_renderable_text
+      scene_intro_hill_index_renderable_group_text
     ].renderable
   );
 
-  struct metil_object* metil_object_text_bounds = (
+  struct metil_group* metil_group_text_bounds = (
     metil_group_text->renderables[
-      scene_intro_hill_index_renderable_text_index_renderable_bounds
+      scene_intro_hill_index_renderable_group_text_index_renderable_bounds
     ]->renderable
   );
-
-  struct metil_object* metil_object_text_bounds_backing = (
-    metil_group_text->renderables[
-      scene_intro_hill_index_renderable_text_index_renderable_bounds_backing
-    ]->renderable
-  );
-
-  struct metil_renderer_data_object* metil_renderer_data_object_text = (
-    metil_object_text_bounds->buffers_vertex[
-      metil_object_buffer_default_index_data
-    ].buffer.contents
-  );
-
-  struct metil_renderer_data_object* metil_renderer_data_object_text_backing = (
-    metil_object_text_bounds_backing->buffers_vertex[
-      metil_object_buffer_default_index_data
-    ].buffer.contents
-  );
-
-  float proximity_text_bounds = 100.0f;
 
   float distance_proximity_text_bounds = (
     math_c_minimum_float(
@@ -508,38 +457,82 @@ void scene_intro_hill_poll(
     )
   );
 
-  if (
-    distance_proximity_text_bounds <= proximity_text_bounds
+  group_text_with_backing_visibility_set(
+    metil_group_text_bounds,
+    distance_proximity_text_bounds,
+    100.0f
+  );
+
+  struct metil_object* metil_object_tree;
+
+  for (
+    unsigned char index_tree = 0;
+    index_tree < 2;
+    ++index_tree
   ) {
-    metil_object_text_bounds->visible = (
-      1
+    struct metil_group* metil_group_text_tree;
+
+    switch (
+      index_tree
+    ) {
+      case 0: {
+        metil_object_tree = (
+          scene->renderables[
+            scene_intro_hill_index_renderable_tree_zoe
+          ].renderable
+        );
+
+        metil_group_text_tree = (
+          metil_group_text->renderables[
+            scene_intro_hill_index_renderable_group_text_index_renderable_tree_hello
+          ]->renderable
+        );
+        
+        break;
+      }
+      default:
+      case 1: {
+        metil_object_tree = (
+          scene->renderables[
+            scene_intro_hill_index_renderable_tree_zoe_mirror
+          ].renderable
+        );
+
+        metil_group_text_tree = (
+          metil_group_text->renderables[
+            scene_intro_hill_index_renderable_group_text_index_renderable_tree_not_yours
+          ]->renderable
+        );
+
+        break;
+      }
+    }
+
+    metil_collision_player_object_uncollide_circular_xz(
+      metil_object_tree,
+      &scene->player
     );
 
-    metil_renderer_data_object_text->color.w = (
-      math_c_maximum_float(
-        (
-          (
-            proximity_text_bounds -
-            distance_proximity_text_bounds
-          ) /
-          proximity_text_bounds
-        ),
-        0.0f
-      )
-    );
-  } else {
-    metil_object_text_bounds->visible = (
-      0
-    );
+    if (
+      metil_group_text_bounds->visible == 0
+    ) {
+      float distance_proximity_text_tree = (
+        math_c_vector3_distance_float(
+          &scene->player.position,
+          &metil_object_tree->position
+        )
+      );
+
+      group_text_with_backing_visibility_minimum_maximum_set(
+        metil_group_text_tree,
+        distance_proximity_text_tree,
+        25.0f,
+        20.0f
+      );
+    } else {
+      metil_group_text_tree->visible = 0;
+    }
   }
-
-  metil_object_text_bounds_backing->visible = (
-    metil_object_text_bounds->visible
-  );
-
-  metil_renderer_data_object_text_backing->color.w = (
-    metil_renderer_data_object_text->color.w
-  );
 
   struct math_c_vector2_float position_percentage = {
     .x = (

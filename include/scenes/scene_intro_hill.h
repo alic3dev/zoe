@@ -14,6 +14,7 @@
 #include <MetalKit/MetalKit.h>
 
 #define scene_intro_hill_length_renderables 6
+#define scene_intro_hill_length_group_text_renderables 3
 
 enum scene_intro_hill_index_renderable {
   scene_intro_hill_index_renderable_hill = 0,
@@ -21,12 +22,13 @@ enum scene_intro_hill_index_renderable {
   scene_intro_hill_index_renderable_player_mirror = 2,
   scene_intro_hill_index_renderable_tree_zoe = 3,
   scene_intro_hill_index_renderable_tree_zoe_mirror = 4,
-  scene_intro_hill_index_renderable_text = 5
+  scene_intro_hill_index_renderable_group_text = 5
 };
 
-enum scene_intro_hill_index_renderable_text_index_renderable {
-  scene_intro_hill_index_renderable_text_index_renderable_bounds_backing = 0,
-  scene_intro_hill_index_renderable_text_index_renderable_bounds = 1
+enum scene_intro_hill_index_renderable_group_text_index_renderable {
+  scene_intro_hill_index_renderable_group_text_index_renderable_bounds = 0,
+  scene_intro_hill_index_renderable_group_text_index_renderable_tree_hello = 1,
+  scene_intro_hill_index_renderable_group_text_index_renderable_tree_not_yours = 2
 };
 
 #define scene_intro_hill_length_textures 3
