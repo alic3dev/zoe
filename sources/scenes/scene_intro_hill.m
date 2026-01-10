@@ -370,8 +370,6 @@ void scene_intro_hill_poll(
     scene
   );
 
-  scene->player.speed_movement = 1000.0f;
-
   struct math_c_vector2_float position_player_bounds_minimum = {
     .x = (
       scene->player.position.x -
