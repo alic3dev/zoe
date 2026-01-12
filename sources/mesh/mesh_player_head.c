@@ -12,10 +12,10 @@ void mesh_player_head_initialize(
 ) {
   metil_mesh_ball_initialize(
     mesh,
-    5.0f,
+    mesh_player_head_diameter,
     (struct math_c_vector2_unsigned_short_int) {
-      .x = 10,
-      .y = 10
+      .x = mesh_player_head_segments_x,
+      .y = mesh_player_head_segments_y
     }
   );
 }
