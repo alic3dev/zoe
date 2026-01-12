@@ -19,6 +19,13 @@ enum zoe_model_player_object_index {
   zoe_model_player_object_index_arm_right = 5
 };
 
+enum zoe_model_player_joint_index {
+  zoe_model_player_joint_index_shoulder_left = 0,
+  zoe_model_player_joint_index_elbow_left = 1,
+  zoe_model_player_joint_index_shoulder_right = 2,
+  zoe_model_player_joint_index_elbow_right = 3
+};
+
 void zoe_model_player_initialize(
   struct metil* _Nonnull,
   struct metil_model* _Nonnull,
