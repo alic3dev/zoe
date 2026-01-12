@@ -1,6 +1,7 @@
 #include <mesh/mesh_player.h>
 #include <mesh/mesh_player_leg.h>
 
+#include <metil_metal/metil_metal_model_object.h>
 #include <metil_rendering/metil_renderer_data_frame.h>
 #include <metil_rendering/metil_renderer_data_model_object.h>
 #include <metil_rendering/metil_renderer_vertex_index_parameter.h>
@@ -13,7 +14,7 @@ struct data_vertex {
 };
 
 [[vertex]] struct data_vertex zoe_player_leg_vertex(
-  const device simd_float4* positions [[
+  const device simd_float4* vertices [[
     buffer(
       metil_renderer_vertex_index_parameter_vertices
     )
@@ -42,9 +43,21 @@ struct data_vertex {
 ) {
   struct data_vertex data_vertex;
 
+  float4 position_vertex = (
+    metil_model_object_position_calcluate(
+      id_vertex,
+      &vertices[
+        id_vertex
+      ],
+      &data_object->position,
+      vertex_joint_map,
+      joints
+    )
+  );
+
   data_vertex.position = (
     data_object->view_model_matrix_projection *
-    positions[id_vertex]
+    position_vertex
   );
 
   unsigned char index_segment_y = (
