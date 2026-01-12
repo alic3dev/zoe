@@ -4,8 +4,8 @@
 #include <calculations/hill_y_value.h>
 #include <group/group_text_with_backing.h>
 #include <mesh/mesh_hill.h>
+#include <model/model_player.h>
 #include <object/object_hill.h>
-#include <object/object_player.h>
 #include <object/object_tree.h>
 #include <scenes/scene_id.h>
 #include <zoe_pipeline_index.h>
@@ -76,7 +76,9 @@ void scene_intro_hill_initialize(
   scene->player.rotation.x = -0.3f;
 
   scene->data = malloc(
-    sizeof(struct scene_intro_hill_data)
+    sizeof(
+      struct scene_intro_hill_data
+    )
   );
 
   struct scene_intro_hill_data* data_scene = (
@@ -109,6 +111,15 @@ void scene_intro_hill_initialize(
     switch (
       index_renderable
     ) {
+      case scene_intro_hill_index_renderable_player:
+      case scene_intro_hill_index_renderable_player_mirror:
+        metil_renderable_initialize_at_index(
+          scene->renderables,
+          index_renderable,
+          metil_renderable_type_model
+        );
+
+        break;
       case scene_intro_hill_index_renderable_group_text: {
         metil_renderable_initialize_at_index(
           scene->renderables,
@@ -200,47 +211,53 @@ void scene_intro_hill_initialize(
 
   [texture_loader release];
 
-  struct metil_object* object = (
+  struct metil_model* metil_model_player = (
     scene->renderables[
       scene_intro_hill_index_renderable_player
     ].renderable
   );
 
-  zoe_object_player_initialize(
-    object,
+  zoe_model_player_initialize(
+    metil,
+    metil_model_player,
     scene->textures[
       scene_intro_hill_textures_player
     ],
-    metil->renderer_interface.metal_device,
     0
   );
 
+  struct metil_object* metil_object_player_body = &(
+    metil_model_player->objects[
+      zoe_model_player_object_index_body
+    ]
+  );
+
   scene->player.size.x = (
-    object->mesh.size.x /
+    metil_object_player_body->mesh.size.x /
     2.0f
   );
 
   scene->player.size.y = (
-    object->mesh.size.y
+    metil_object_player_body->mesh.size.y
   );
 
   scene->player.size.z = (
-    object->mesh.size.z /
+    metil_object_player_body->mesh.size.z /
     2.0f
   );
 
-  object = (
+  struct metil_model* metil_model_player_mirror = (
     scene->renderables[
       scene_intro_hill_index_renderable_player_mirror
     ].renderable
   );
 
-  zoe_object_player_initialize(
-    object,
+  zoe_model_player_initialize(
+    metil,
+    metil_model_player_mirror,
     scene->textures[
       scene_intro_hill_textures_player_mirror
     ],
-    metil->renderer_interface.metal_device,
     1
   );
 

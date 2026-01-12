@@ -1,8 +1,8 @@
 #include <scenes/scene_intro_forest.h>
 
 #include <audio/io_proc_data.h>
+#include <model/model_player.h>
 #include <object/object_ground.h>
-#include <object/object_player.h>
 #include <object/object_tree.h>
 #include <scenes/scene_id.h>
 #include <zoe_pipeline_index.h>
@@ -167,47 +167,53 @@ void scene_intro_forest_initialize(
 
   [texture_loader release];
 
-  struct metil_object* object = (
+  struct metil_model* metil_model_player = (
     scene->renderables[
       0
     ].renderable
   );
 
-  zoe_object_player_initialize(
-    object,
+  zoe_model_player_initialize(
+    metil,
+    metil_model_player,
     scene->textures[
       textures_scene_intro_forest_player
     ],
-    metil->renderer_interface.metal_device,
     0
   );
 
+  struct metil_object* metil_object_player_body = &(
+    metil_model_player->objects[
+      zoe_model_player_object_index_body
+    ]
+  );
+
   scene->player.size.x = (
-    object->mesh.size.x /
+    metil_object_player_body->mesh.size.x /
     2.0f
   );
 
   scene->player.size.y = (
-    object->mesh.size.y
+    metil_object_player_body->mesh.size.y
   );
 
   scene->player.size.z = (
-    object->mesh.size.z /
+    metil_object_player_body->mesh.size.z /
     2.0f
   );
 
-  object = (
+  struct metil_model* metil_model_player_mirror = (
     scene->renderables[
       1
     ].renderable
   );
 
-  zoe_object_player_initialize(
-    object,
+  zoe_model_player_initialize(
+    metil,
+    metil_model_player,
     scene->textures[
       textures_scene_intro_forest_player
     ],
-    metil->renderer_interface.metal_device,
     1
   );
 
@@ -265,7 +271,7 @@ void scene_intro_forest_initialize(
       (index_renderable - 3) * 4
     );
 
-    object = (
+    struct metil_object* object = (
       scene->renderables[
         index_renderable
       ].renderable
