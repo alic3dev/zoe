@@ -24,7 +24,7 @@ void zoe_model_player_initialize(
 ) {
   metil_model_objects_add_length(
     metil_model,
-    2
+    1
   );
 
   struct metil_object* metil_object_body = &(
@@ -33,11 +33,11 @@ void zoe_model_player_initialize(
     ]
   );
 
-  struct metil_object* metil_object_head = &(
-    metil_model->objects[
-      zoe_model_player_object_index_head
-    ]
-  );
+  // struct metil_object* metil_object_head = &(
+  //   metil_model->objects[
+  //     zoe_model_player_object_index_head
+  //   ]
+  // );
 
   if (
     mirror == 1
@@ -63,22 +63,22 @@ void zoe_model_player_initialize(
     );
   }
 
-  mesh_player_head_initialize(
-    &metil_object_head->mesh
-  );
+  // mesh_player_head_initialize(
+  //   &metil_object_head->mesh
+  // );
 
-  metil_object_head->position.y = (
-    metil_object_body->mesh.size.y +
-    metil_object_head->mesh.size.y / 2.0f
-  );
+  // metil_object_head->position.y = (
+  //   metil_object_body->mesh.size.y +
+  //   metil_object_head->mesh.size.y / 2.0f
+  // );
 
   metil_object_body->index_pipeline_render = (
     zoe_pipeline_index_player
   );
 
-  metil_object_head->index_pipeline_render = (
-    zoe_pipeline_index_player
-  );
+  // metil_object_head->index_pipeline_render = (
+  //   zoe_pipeline_index_player
+  // );
 
   metil_model_vertex_joint_maps_initialize(
     metil_model
