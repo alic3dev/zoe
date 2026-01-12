@@ -121,7 +121,9 @@ void zoe_model_player_initialize(
 
   metil_object_arm_left->position.x = -(
     metil_object_body->mesh.size.x
-    / 2.0f
+    / 2.0f -
+    metil_object_arm_left->mesh.size.x /
+    20.0f
   );
 
   metil_object_arm_left->position.y = (
@@ -182,9 +184,155 @@ void zoe_model_player_initialize(
     zoe_pipeline_index_player_leg
   );
 
+  metil_model_joints_add_length(
+    metil_model,
+    4
+  );
+
   metil_model_vertex_joint_maps_initialize(
     metil_model
   );
+
+  struct metil_joint* metil_joint_player_shoulder_left = &(
+    metil_model->joints[
+      zoe_model_player_joint_index_shoulder_left
+    ]
+  );
+
+  struct metil_joint* metil_joint_player_shoulder_right = &(
+    metil_model->joints[
+      zoe_model_player_joint_index_shoulder_right
+    ]
+  );
+
+  struct metil_joint* metil_joint_player_elbow_left = &(
+    metil_model->joints[
+      zoe_model_player_joint_index_elbow_left
+    ]
+  );
+
+  struct metil_joint* metil_joint_player_elbow_right = &(
+    metil_model->joints[
+      zoe_model_player_joint_index_elbow_right
+    ]
+  );
+
+  metil_joint_attach(
+    metil_joint_player_shoulder_left,
+    metil_joint_player_elbow_left
+  );
+
+  metil_joint_attach(
+    metil_joint_player_shoulder_right,
+    metil_joint_player_elbow_right
+  );
+
+  metil_joint_player_elbow_left->position.x = (
+    metil_object_arm_left->position.x
+  );
+
+  metil_joint_player_elbow_left->position.y = (
+    metil_object_arm_left->position.y
+  );
+
+  metil_joint_player_elbow_left->position.z = (
+    metil_object_arm_left->position.z
+  );
+
+  metil_joint_player_elbow_right->position.x = (
+    metil_object_arm_right->position.x
+  );
+
+  metil_joint_player_elbow_right->position.y = (
+    metil_object_arm_right->position.y
+  );
+
+  metil_joint_player_elbow_right->position.z = (
+    metil_object_arm_right->position.z
+  );
+
+  metil_joint_player_shoulder_left->position.x = (
+    metil_object_arm_left->position.x +
+    metil_object_arm_left->mesh.size.x /
+    2.0f
+  );
+
+  metil_joint_player_shoulder_left->position.y = (
+    metil_object_arm_left->position.y
+  );
+
+  metil_joint_player_shoulder_left->position.z = (
+    metil_object_arm_left->position.z
+  );
+
+  metil_joint_player_shoulder_right->position.x = (
+    metil_object_arm_right->position.x -
+    metil_object_arm_right->mesh.size.x /
+    2.0f
+  );
+
+  metil_joint_player_shoulder_right->position.y = (
+    metil_object_arm_right->position.y
+  );
+
+  metil_joint_player_shoulder_right->position.z = (
+    metil_object_arm_right->position.z
+  );
+
+
+  for (
+    unsigned int index_vertex = 0;
+    index_vertex < metil_object_arm_left->mesh.length_vertices;
+    ++index_vertex
+  ) {
+    if (
+      index_vertex < (
+        metil_object_arm_left->mesh.length_vertices /
+        2.0f
+      )
+    ) {
+      metil_model_vertex_joint_attach(
+        metil_model,
+        zoe_model_player_object_index_arm_left,
+        index_vertex,
+        zoe_model_player_joint_index_shoulder_left
+      );
+    } else {
+      metil_model_vertex_joint_attach(
+        metil_model,
+        zoe_model_player_object_index_arm_left,
+        index_vertex,
+        zoe_model_player_joint_index_elbow_left
+      );
+    }
+  }
+
+  for (
+    unsigned int index_vertex = 0;
+    index_vertex < metil_object_arm_right->mesh.length_vertices;
+    ++index_vertex
+  ) {
+    if (
+      index_vertex < (
+        metil_object_arm_right->mesh.length_vertices /
+        2.0f
+      )
+    ) {
+      metil_model_vertex_joint_attach(
+        metil_model,
+        zoe_model_player_object_index_arm_right,
+        index_vertex,
+        zoe_model_player_joint_index_shoulder_right
+      );
+    } else {
+      metil_model_vertex_joint_attach(
+        metil_model,
+        zoe_model_player_object_index_arm_right,
+        index_vertex,
+        zoe_model_player_joint_index_elbow_right
+      );
+    }
+  }
 
   metil_model_buffers_initialize(
     metil,
@@ -226,6 +374,120 @@ void zoe_model_player_poll(
     scene_controller->scene.player.position.z
   );
 
+  struct metil_joint* metil_joint_player_shoulder_left = &(
+    metil_model->joints[
+      zoe_model_player_joint_index_shoulder_left
+    ]
+  );
+
+  struct metil_joint* metil_joint_player_shoulder_right = &(
+    metil_model->joints[
+      zoe_model_player_joint_index_shoulder_right
+    ]
+  );
+
+  struct metil_joint* metil_joint_player_elbow_left = &(
+    metil_model->joints[
+      zoe_model_player_joint_index_elbow_left
+    ]
+  );
+
+  struct metil_joint* metil_joint_player_elbow_right = &(
+    metil_model->joints[
+      zoe_model_player_joint_index_elbow_right
+    ]
+  );
+
+  unsigned long int time = (
+    scene_controller->scene.time
+  );
+
+  float position_time = (
+    (int) (time % 2000) - 1000
+  ) / 1000.0f;
+
+  unsigned char flip = (
+    (time / 2000) % 2
+  );
+
+  float movement = 0.5f;
+
+  float position_time_movement = (
+    position_time *
+    movement
+  );
+
+  if (
+    flip == 1
+  ) {
+    position_time_movement = (
+      -position_time_movement
+    );
+  }
+
+  float rotation_shoulder_y = (
+    position_time_movement *
+    0.05f
+  );
+
+  float rotation_shoulder_z = (
+    position_time_movement *
+    0.1f
+  );
+
+  float rotation_elbow_y = (
+    position_time_movement *
+    0.05f
+  );
+
+  float rotation_elbow_z = (
+    position_time_movement *
+    0.1f
+  );
+
+  metil_joint_player_shoulder_left->rotation.z = (
+    0.8f +
+    rotation_shoulder_z
+  );
+
+  metil_joint_player_shoulder_left->rotation.y = (
+    rotation_shoulder_y
+  );
+
+  metil_joint_player_elbow_left->rotation.y = (
+    rotation_elbow_y
+  );
+
+  metil_joint_player_elbow_left->rotation.z = (
+    rotation_elbow_z
+  );
+
+  metil_joint_player_shoulder_right->rotation.z = (
+    -0.8f +
+    -rotation_shoulder_z
+  );
+
+  metil_joint_player_shoulder_right->rotation.y = (
+    -rotation_shoulder_y
+  );
+
+  metil_joint_player_elbow_right->rotation.y = (
+    -rotation_elbow_y
+  );
+
+  metil_joint_player_elbow_right->rotation.z = (
+    0.1f +
+    -rotation_elbow_z
+  );
+
+  metil_joint_propagate(
+    metil_joint_player_shoulder_left
+  );
+
+  metil_joint_propagate(
+    metil_joint_player_shoulder_right
+  );
+
   metil_model_poll(
     metil,
     metil_model,
@@ -246,6 +508,15 @@ void zoe_model_player_mirror_poll(
 ) {
   struct metil_scene_controller* metil_scene_controller = (
     metil->scene_controller
+  );
+
+  zoe_model_player_poll(
+    metil,
+    metil_model,
+    matrix_projection_static,
+    matrix_object_projection,
+    matrix_player_projection,
+    metil_camera
   );
 
   metil_model->position.x = (
