@@ -150,6 +150,18 @@ void zoe_renderer_on_initialize(
     ]
   ];
 
+  zoe_pipeline_index_leaf = [
+    metil->renderer_interface.renderer
+    pipeline_add: [
+      metil->library.library
+      newFunctionWithName: @"zoe_leaf_fragment"
+    ]
+    function_vertex: [
+      metil->library.library
+      newFunctionWithName: @"zoe_leaf_vertex"
+    ]
+  ];
+
   metil->text_defaults.object_text_index_pipeline_render = (
     zoe_pipeline_index_text
   );
