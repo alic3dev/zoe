@@ -8,9 +8,12 @@
 #include <stdlib.h>
 
 const struct math_c_vector3_float mesh_player_size = {
-  .x = 10.0f,
-  .y = 5.0f,
-  .z = 10.0f
+  .x = 6.5f,
+  .y = (
+    mesh_player_height_total /
+    2.5f
+  ),
+  .z = 6.5f
 };
 
 const struct math_c_vector3_float mesh_player_size_half = {
@@ -28,9 +31,16 @@ void mesh_player_initialize(
   mesh->size.y = mesh_player_size.y;
   mesh->size.z = mesh_player_size.z;
 
-  mesh->length_vertices = 14;
+  mesh->length_vertices = (
+    mesh_player_body_length_vertices
+  );
+  
   mesh->length_indices = (
-    (mesh->length_vertices - 1) * 3
+    (
+      mesh->length_vertices -
+      1
+    ) *
+    3
   );
 
   mesh->indices = realloc(

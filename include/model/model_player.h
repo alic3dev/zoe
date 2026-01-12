@@ -12,7 +12,11 @@
 
 enum zoe_model_player_object_index {
   zoe_model_player_object_index_body = 0,
-  zoe_model_player_object_index_head = 1
+  zoe_model_player_object_index_head = 1,
+  zoe_model_player_object_index_leg_left = 2,
+  zoe_model_player_object_index_leg_right = 3,
+  zoe_model_player_object_index_arm_left = 4,
+  zoe_model_player_object_index_arm_right = 5
 };
 
 void zoe_model_player_initialize(

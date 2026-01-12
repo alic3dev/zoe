@@ -1,10 +1,13 @@
 #include <model/model_player.h>
 
 #include <mesh/mesh_player.h>
+#include <mesh/mesh_player_arm.h>
 #include <mesh/mesh_player_head.h>
+#include <mesh/mesh_player_leg.h>
 #include <mesh/mesh_player_mirror.h>
 #include <zoe_pipeline_index.h>
 
+#include <math_c_minimum.h>
 #include <math_c_vector.h>
 
 #include <metil.h>
@@ -24,7 +27,7 @@ void zoe_model_player_initialize(
 ) {
   metil_model_objects_add_length(
     metil_model,
-    1
+    6
   );
 
   struct metil_object* metil_object_body = &(
@@ -33,11 +36,39 @@ void zoe_model_player_initialize(
     ]
   );
 
-  // struct metil_object* metil_object_head = &(
-  //   metil_model->objects[
-  //     zoe_model_player_object_index_head
-  //   ]
-  // );
+  struct metil_object* metil_object_head = &(
+    metil_model->objects[
+      zoe_model_player_object_index_head
+    ]
+  );
+
+  struct metil_object* metil_object_leg_left = &(
+    metil_model->objects[
+      zoe_model_player_object_index_leg_left
+    ]
+  );
+
+  struct metil_object* metil_object_leg_right = &(
+    metil_model->objects[
+      zoe_model_player_object_index_leg_right
+    ]
+  );
+
+  struct metil_object* metil_object_arm_left = &(
+    metil_model->objects[
+      zoe_model_player_object_index_arm_left
+    ]
+  );
+
+  struct metil_object* metil_object_arm_right = &(
+    metil_model->objects[
+      zoe_model_player_object_index_arm_right
+    ]
+  );
+  
+  metil_model->positioning = (
+    metil_positioning_player
+  );
 
   if (
     mirror == 1
@@ -54,31 +85,102 @@ void zoe_model_player_initialize(
       &metil_object_body->mesh
     );
 
-    metil_model->positioning = (
-      metil_positioning_player
-    );
-
     metil_model->poll = (
       zoe_model_player_poll
     );
   }
 
-  // mesh_player_head_initialize(
-  //   &metil_object_head->mesh
-  // );
-
-  // metil_object_head->position.y = (
-  //   metil_object_body->mesh.size.y +
-  //   metil_object_head->mesh.size.y / 2.0f
-  // );
-
-  metil_object_body->index_pipeline_render = (
-    zoe_pipeline_index_player
+  mesh_player_head_initialize(
+    &metil_object_head->mesh
   );
 
-  // metil_object_head->index_pipeline_render = (
-  //   zoe_pipeline_index_player
-  // );
+  mesh_player_leg_initialize(
+    &metil_object_leg_left->mesh
+  );
+
+  mesh_player_leg_initialize(
+    &metil_object_leg_right->mesh
+  );
+
+  mesh_player_arm_initialize(
+    &metil_object_arm_left->mesh,
+    metil_direction_left
+  );
+
+  mesh_player_arm_initialize(
+    &metil_object_arm_right->mesh,
+    metil_direction_right
+  );
+
+  metil_object_body->position.y = (
+    math_c_minimum_float(
+      metil_object_leg_left->mesh.size.y,
+      metil_object_leg_right->mesh.size.y
+    )
+  );
+
+  metil_object_arm_left->position.x = -(
+    metil_object_body->mesh.size.x
+    / 2.0f
+  );
+
+  metil_object_arm_left->position.y = (
+    metil_object_body->position.y +
+    metil_object_body->mesh.size.y /
+    1.5f -
+    metil_object_arm_left->mesh.size.y /
+    2.0f
+  );
+
+  metil_object_arm_right->position.x = -(
+    metil_object_arm_left->position.x
+  );
+
+  metil_object_arm_right->position.y = (
+    metil_object_arm_left->position.y
+  );
+
+  metil_object_head->position.y = (
+    metil_object_body->position.y +
+    metil_object_body->mesh.size.y +
+    metil_object_head->mesh.size.y / 4.0f
+  );
+
+  metil_object_leg_left->position.y = (
+    metil_object_leg_left->mesh.size.y /
+    2.0f
+  );
+  metil_object_leg_right->position.y = (
+    metil_object_leg_right->mesh.size.y /
+    2.0f
+  );
+
+  metil_object_leg_left->position.x = -1.0f;
+  metil_object_leg_right->position.x = 1.0f;
+
+  metil_object_arm_left->index_pipeline_render = (
+    zoe_pipeline_index_player_arm
+  );
+
+  metil_object_arm_right->index_pipeline_render = (
+    zoe_pipeline_index_player_arm
+  );
+
+  metil_object_body->index_pipeline_render = (
+    zoe_pipeline_index_player_body
+  );
+
+  metil_object_head->index_pipeline_render = (
+    zoe_pipeline_index_player_head
+  );
+
+  metil_object_leg_left->index_pipeline_render = (
+    zoe_pipeline_index_player_leg
+  );
+
+  metil_object_leg_right->index_pipeline_render = (
+    zoe_pipeline_index_player_leg
+  );
 
   metil_model_vertex_joint_maps_initialize(
     metil_model
@@ -106,6 +208,10 @@ void zoe_model_player_poll(
 ) {
   struct metil_scene_controller* scene_controller = (
     metil->scene_controller
+  );
+
+  metil_model->rotation.y = (
+    -scene_controller->scene.player.rotation.y
   );
 
   metil_model->position.x = (

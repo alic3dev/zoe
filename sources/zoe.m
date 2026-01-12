@@ -102,15 +102,63 @@ void zoe_renderer_on_initialize(
     ]
   ];
 
-  zoe_pipeline_index_player = [
+  zoe_pipeline_index_player_arm = [
     metil->renderer_interface.renderer
     pipeline_add: [
       metil->library.library
-      newFunctionWithName: @"zoe_player_fragment"
+      newFunctionWithName: @"zoe_player_arm_fragment"
     ]
     function_vertex: [
       metil->library.library
-      newFunctionWithName: @"zoe_player_vertex"
+      newFunctionWithName: @"zoe_player_arm_vertex"
+    ]
+  ];
+
+  zoe_pipeline_index_player_body = [
+    metil->renderer_interface.renderer
+    pipeline_add: [
+      metil->library.library
+      newFunctionWithName: @"zoe_player_body_fragment"
+    ]
+    function_vertex: [
+      metil->library.library
+      newFunctionWithName: @"zoe_player_body_vertex"
+    ]
+  ];
+
+  zoe_pipeline_index_player_head = [
+    metil->renderer_interface.renderer
+    pipeline_add: [
+      metil->library.library
+      newFunctionWithName: @"zoe_player_head_fragment"
+    ]
+    function_vertex: [
+      metil->library.library
+      newFunctionWithName: @"zoe_player_head_vertex"
+    ]
+  ];
+
+  zoe_pipeline_index_player_leg = [
+    metil->renderer_interface.renderer
+    pipeline_add: [
+      metil->library.library
+      newFunctionWithName: @"zoe_player_leg_fragment"
+    ]
+    function_vertex: [
+      metil->library.library
+      newFunctionWithName: @"zoe_player_leg_vertex"
+    ]
+  ];
+
+  zoe_pipeline_index_leaf = [
+    metil->renderer_interface.renderer
+    pipeline_add: [
+      metil->library.library
+      newFunctionWithName: @"zoe_leaf_fragment"
+    ]
+    function_vertex: [
+      metil->library.library
+      newFunctionWithName: @"zoe_leaf_vertex"
     ]
   ];
 
@@ -147,18 +195,6 @@ void zoe_renderer_on_initialize(
     function_vertex: [
       metil->library.library
       newFunctionWithName: @"zoe_tree_vertex"
-    ]
-  ];
-
-  zoe_pipeline_index_leaf = [
-    metil->renderer_interface.renderer
-    pipeline_add: [
-      metil->library.library
-      newFunctionWithName: @"zoe_leaf_fragment"
-    ]
-    function_vertex: [
-      metil->library.library
-      newFunctionWithName: @"zoe_leaf_vertex"
     ]
   ];
 

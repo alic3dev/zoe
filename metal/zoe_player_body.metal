@@ -1,3 +1,5 @@
+#include <mesh/mesh_player.h>
+
 #include <metil_rendering/metil_renderer_data_frame.h>
 #include <metil_rendering/metil_renderer_data_object.h>
 #include <metil_rendering/metil_renderer_vertex_index_parameter.h>
@@ -9,7 +11,7 @@ struct data_vertex {
   float brightness;
 };
 
-[[vertex]] struct data_vertex zoe_player_vertex(
+[[vertex]] struct data_vertex zoe_player_body_vertex(
   const device simd_float4* positions [[
     buffer(
       metil_renderer_vertex_index_parameter_vertices
@@ -35,20 +37,23 @@ struct data_vertex {
   );
 
   data_vertex.brightness = (
-    data_frame->brightness
+    data_frame->brightness * (
+      id_vertex == 0
+      ? 1.0f
+      : 0.0f
+    )
   );
 
   return data_vertex;
 }
 
-fragment float4 zoe_player_fragment(
+fragment float4 zoe_player_body_fragment(
   struct data_vertex data_vertex [[stage_in]]
 ) {
-
   return float4(
     0.02f * data_vertex.brightness,
     0.019f * data_vertex.brightness,
-    0.02f * data_vertex.brightness,
+    0.04f * data_vertex.brightness,
     1.0f
   );
 }
