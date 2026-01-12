@@ -23,7 +23,11 @@ enum zoe_model_player_joint_index {
   zoe_model_player_joint_index_shoulder_left = 0,
   zoe_model_player_joint_index_elbow_left = 1,
   zoe_model_player_joint_index_shoulder_right = 2,
-  zoe_model_player_joint_index_elbow_right = 3
+  zoe_model_player_joint_index_elbow_right = 3,
+  zoe_model_player_joint_index_hip_left = 4,
+  zoe_model_player_joint_index_knee_left = 5,
+  zoe_model_player_joint_index_hip_right = 6,
+  zoe_model_player_joint_index_knee_right = 7
 };
 
 void zoe_model_player_initialize(
