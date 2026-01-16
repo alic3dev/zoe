@@ -44,6 +44,11 @@ void zoe_loading_threads_initialize(
   zoe_loading_threads->length = 0;
 
   zoe_loading_threads->progress = 0.0f;
+  
+  pthread_mutex_init(
+    &zoe_loading_threads->mutex_progress,
+    0
+  );
 }
 
 void zoe_loading_threads_spawn(
@@ -175,6 +180,10 @@ void zoe_loading_threads_destroy(
       zoe_loading_threads_data->data
     );
   }
+
+  pthread_mutex_destroy(
+    &zoe_loading_threads->mutex_progress
+  );
 
   clic3_memory_free_raw(
     zoe_loading_threads->data
