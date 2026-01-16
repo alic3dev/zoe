@@ -88,24 +88,6 @@ unsigned char zoe_scene_loading_loading_initialize_function_no_load(
   unsigned char id_scene,
   void* data
 ) {
-  return 1;
-}
-
-unsigned char zoe_scene_loading_loading_poll_function_no_load(
-  struct metil* metil,
-  struct metil_scene* metil_scene,
-  unsigned char id_scene,
-  void* data
-) {
-  return 1;
-}
-
-void zoe_scene_loading_loading_finished_function_no_load(
-  struct metil* metil,
-  struct metil_scene* metil_scene,
-  unsigned char id_scene,
-  void* data
-) {
   switch (
     id_scene
   ) {
@@ -130,4 +112,22 @@ void zoe_scene_loading_loading_finished_function_no_load(
       );
       break;
   }
+
+  return 1;
 }
+
+unsigned char zoe_scene_loading_loading_poll_function_no_load(
+  struct metil* metil,
+  struct metil_scene* metil_scene,
+  unsigned char id_scene,
+  void* data
+) {
+  return 1;
+}
+
+void zoe_scene_loading_loading_finished_function_no_load(
+  struct metil* metil,
+  struct metil_scene* metil_scene,
+  unsigned char id_scene,
+  void* data
+) {}
