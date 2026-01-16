@@ -2,8 +2,7 @@
 
 #include <data/data_zoe.h>
 #include <scenes/scene_id.h>
-#include <scenes/scene_intro_forest.h>
-#include <scenes/scene_intro_hill.h>
+#include <scenes/scene_loading.h>
 #include <scenes/scene_menu_main.h>
 #include <zoe_pipeline_index.h>
 
@@ -260,30 +259,11 @@ void zoe_on_scene_change(
     metil_scene
   );
 
-  switch (
+  scene_loading_initialize(
+    metil,
+    metil_scene,
     id_scene
-  ) {
-    case scene_id_intro_forest:
-      scene_intro_forest_initialize(
-        metil,
-        metil_scene
-      );
-      break;
-    case scene_id_intro_hill:
-      scene_intro_hill_initialize(
-        metil,
-        metil_scene
-      );
-      break;
-    case scene_id_menu_main:
-    case scene_id_unknown:
-    default:
-      scene_menu_main_initialize(
-        metil,
-        metil_scene
-      );
-      break;
-  }
+  );
 }
 
 void zoe_destroy(
