@@ -78,7 +78,7 @@ void scene_loading_poll(
     metil_scene_loading->data
   );
 
-  unsigned char initialized = (
+  float progress = (
     data_scene_loading->loading_map.poll(
       metil,
       &data_scene_loading->scene,
@@ -88,7 +88,7 @@ void scene_loading_poll(
   );
 
   if (
-    initialized != 0
+    progress >= 1.0f
   ) {
     struct data_scene_loading* data_scene_loading = (
       metil_scene_loading->data

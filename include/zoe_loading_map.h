@@ -8,21 +8,21 @@ typedef unsigned char (*zoe_scene_loading_loading_initialize_function)(
   struct metil* _Nonnull,
   struct metil_scene* _Nonnull,
   unsigned char,
-  void* _Nullable
+  void* _Nonnull * _Nullable
 );
 
-typedef unsigned char (*zoe_scene_loading_loading_poll_function)(
+typedef float (*zoe_scene_loading_loading_poll_function)(
   struct metil* _Nonnull,
   struct metil_scene* _Nonnull,
   unsigned char,
-  void* _Nullable
+  void* _Nonnull * _Nullable
 );
 
 typedef void (*zoe_scene_loading_loading_finished_function)(
   struct metil* _Nonnull,
   struct metil_scene* _Nonnull,
   unsigned char,
-  void* _Nullable
+  void* _Nonnull * _Nullable
 );
 
 struct zoe_loading_map {
@@ -52,21 +52,21 @@ unsigned char zoe_scene_loading_loading_initialize_function_no_load(
   struct metil* _Nonnull,
   struct metil_scene* _Nonnull,
   unsigned char,
-  void* _Nullable
+  void* _Nonnull * _Nullable
 );
 
-unsigned char zoe_scene_loading_loading_poll_function_no_load(
+float zoe_scene_loading_loading_poll_function_no_load(
   struct metil* _Nonnull,
   struct metil_scene* _Nonnull,
   unsigned char,
-  void* _Nullable
+  void* _Nonnull * _Nullable
 );
 
 void zoe_scene_loading_loading_finished_function_no_load(
   struct metil* _Nonnull,
   struct metil_scene* _Nonnull,
   unsigned char,
-  void* _Nullable
+  void* _Nonnull * _Nullable
 );
 
 #endif

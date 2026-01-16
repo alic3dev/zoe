@@ -1,4 +1,4 @@
-#include <scenes/scene_intro_forest.h>
+#include <scenes/scene_intro_forest/scene_intro_forest.h>
 
 #include <audio/io_proc_data.h>
 #include <data/data_zoe.h>
@@ -40,7 +40,8 @@
 
 void scene_intro_forest_initialize(
   struct metil* metil,
-  struct metil_scene* scene
+  struct metil_scene* scene,
+  float* progress
 ) {
   struct data_zoe* data_zoe = (
     metil->data
@@ -145,7 +146,6 @@ void scene_intro_forest_initialize(
         break;
       }
     }
-    
   }
 
   scene->length_textures = 3;
@@ -179,6 +179,8 @@ void scene_intro_forest_initialize(
     error: (void*) 0
   ];
 
+  *progress = 0.1f;
+
   scene->textures[
     textures_scene_intro_forest_tree
   ] = [texture_loader
@@ -196,6 +198,8 @@ void scene_intro_forest_initialize(
     error: (void*) 0
   ];
 
+  *progress = 0.2f;
+
   scene->textures[
     textures_scene_intro_forest_player
   ] = [texture_loader
@@ -212,6 +216,8 @@ void scene_intro_forest_initialize(
     options: (void*) 0
     error: (void*) 0
   ];
+
+  *progress = 0.3f;
 
   [texture_loader release];
 
@@ -287,6 +293,8 @@ void scene_intro_forest_initialize(
     metil->renderer_interface.metal_device
   );
 
+  *progress = 0.4f;
+
   struct metil_group* metil_group_trees = (
     scene->renderables[
       scene_intro_forest_index_renderable_group_trees
@@ -327,6 +335,15 @@ void scene_intro_forest_initialize(
     index_renderable < metil_group_trees->length;
     ++index_renderable
   ) {
+    *progress = (
+      0.4f +
+      (
+        0.5 *
+        (float) index_renderable /
+        (float) metil_group_trees->length
+      )
+    );
+
     offset_byte = (
       index_renderable * 4
     );
@@ -390,6 +407,8 @@ void scene_intro_forest_initialize(
       )
     );
   }
+
+  *progress = 1.0f;
 
   rand_clean(
     &rand_result,
