@@ -1,5 +1,5 @@
-#ifndef __zoe_scenes_scene_intro_forest_h
-#define __zoe_scenes_scene_intro_forest_h
+#ifndef __zoe_scenes_scene_intro_forest_scene_intro_forest_h
+#define __zoe_scenes_scene_intro_forest_scene_intro_forest_h
 
 #include <audio/io_proc_data.h>
 
@@ -35,7 +35,8 @@ struct scene_intro_forest_data {
 
 void scene_intro_forest_initialize(
   struct metil* _Nonnull,
-  struct metil_scene* _Nonnull
+  struct metil_scene* _Nonnull,
+  float* _Nonnull
 );
 
 void scene_intro_forest_poll(
