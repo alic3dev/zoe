@@ -90,6 +90,21 @@ void scene_loading_poll(
   if (
     initialized != 0
   ) {
+    struct data_scene_loading* data_scene_loading = (
+      metil_scene_loading->data
+    );
+
+    metil_scene_loading->data = 0;
+
+    metil_scene_loading->destroy(
+      metil,
+      metil_scene_loading
+    );
+
+    metil_scene_loading->data = (
+      data_scene_loading
+    );
+
     scene_loading_finished(
       metil,
       metil_scene_loading,
