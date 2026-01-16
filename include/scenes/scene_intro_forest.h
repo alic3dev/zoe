@@ -13,6 +13,16 @@
 #endif
 #include <MetalKit/MetalKit.h>
 
+#define scene_intro_forest_length_renderables 4
+#define scene_intro_forest_length_group_trees_renderables 1000
+
+enum scene_intro_forest_index_renderable {
+  scene_intro_forest_index_renderable_ground = 0,
+  scene_intro_forest_index_renderable_player = 1,
+  scene_intro_forest_index_renderable_player_mirror = 2,
+  scene_intro_forest_index_renderable_group_trees = 3,
+};
+
 enum textures_scene_intro_forest {
   textures_scene_intro_forest_ground = 0,
   textures_scene_intro_forest_tree = 1,

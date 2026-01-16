@@ -1,6 +1,8 @@
 #include <scenes/scene_intro_forest.h>
 
 #include <audio/io_proc_data.h>
+#include <data/data_zoe.h>
+#include <input/input_movement.h>
 #include <model/model_player.h>
 #include <object/object_ground.h>
 #include <object/object_tree.h>
@@ -10,12 +12,15 @@
 #include <metil_audio/metil_audio_io_proc.h>
 #include <metil_audio/metil_audio_io_proc_data.h>
 #include <metil_collision/metil_collision_uncollide/metil_collision_uncollide_circular.h>
+#include <metil_group.h>
 #include <metil_object/metil_object.h>
 #include <metil_object/metil_object_buffer.h>
 #include <metil_paths/metil_paths.h>
 #include <metil_rendering/metil_camera/metil_camera_mode.h>
 #include <metil_rendering/metil_renderer_interface.h>
 #include <metil_scenes/metil_scene.h>
+
+#include <clic3_memory.h>
 
 #include <rand_clean.h>
 #include <rand_functions.h>
@@ -37,6 +42,10 @@ void scene_intro_forest_initialize(
   struct metil* metil,
   struct metil_scene* scene
 ) {
+  struct data_zoe* data_zoe = (
+    metil->data
+  );
+
   metil->rendering_properties.brightness = (
     metil->configuration.rendering_properties.brightness
   );
@@ -57,13 +66,24 @@ void scene_intro_forest_initialize(
   metil_scene_initialize_with_renderables(
     metil,
     scene,
-    503
+    scene_intro_forest_length_renderables
   );
 
   scene->player.rotation.x = -0.3f;
+  scene->player.data = (
+    &data_zoe->player
+  );
 
-  scene->data = malloc(
-    sizeof(struct scene_intro_forest_data)
+  scene->player.poll_input = (
+    zoe_input_movement
+  );
+
+  scene->data = (
+    clic3_memory_allocate_raw(
+      sizeof(
+        struct scene_intro_forest_data
+      )
+    )
   );
 
   struct scene_intro_forest_data* data_scene = (
@@ -93,11 +113,39 @@ void scene_intro_forest_initialize(
     index_renderable < scene->length_renderables;
     ++index_renderable
   ) {
-    metil_renderable_initialize_at_index(
-      scene->renderables,
-      index_renderable,
-      metil_renderable_type_object
-    );
+    switch (
+      index_renderable
+    ) {
+      case scene_intro_forest_index_renderable_player:
+      case scene_intro_forest_index_renderable_player_mirror: {
+        metil_renderable_initialize_at_index(
+          scene->renderables,
+          index_renderable,
+          metil_renderable_type_model
+        );
+        break;
+      }
+      case scene_intro_forest_index_renderable_group_trees: {
+        metil_renderable_initialize_at_index(
+          scene->renderables,
+          index_renderable,
+          metil_renderable_type_group
+        );
+
+        break;
+      }
+      case scene_intro_forest_index_renderable_ground:
+      default: {
+        metil_renderable_initialize_at_index(
+          scene->renderables,
+          index_renderable,
+          metil_renderable_type_object
+        );
+
+        break;
+      }
+    }
+    
   }
 
   scene->length_textures = 3;
@@ -169,7 +217,7 @@ void scene_intro_forest_initialize(
 
   struct metil_model* metil_model_player = (
     scene->renderables[
-      0
+      scene_intro_forest_index_renderable_player
     ].renderable
   );
 
@@ -204,13 +252,13 @@ void scene_intro_forest_initialize(
 
   struct metil_model* metil_model_player_mirror = (
     scene->renderables[
-      1
+      scene_intro_forest_index_renderable_player_mirror
     ].renderable
   );
 
   zoe_model_player_initialize(
     metil,
-    metil_model_player,
+    metil_model_player_mirror,
     scene->textures[
       textures_scene_intro_forest_player
     ],
@@ -219,7 +267,7 @@ void scene_intro_forest_initialize(
 
   struct metil_object* metil_object_ground = (
     scene->renderables[
-      2
+      scene_intro_forest_index_renderable_ground
     ].renderable
   );
 
@@ -239,6 +287,18 @@ void scene_intro_forest_initialize(
     metil->renderer_interface.metal_device
   );
 
+  struct metil_group* metil_group_trees = (
+    scene->renderables[
+      scene_intro_forest_index_renderable_group_trees
+    ].renderable
+  );
+
+  metil_group_add_length_initialize(
+    metil_group_trees,
+    scene_intro_forest_length_group_trees_renderables,
+    metil_renderable_type_object
+  );
+
   struct rand_parameters rand_parameters;
   struct rand_source rand_source;
   struct rand_result rand_result;
@@ -247,7 +307,7 @@ void scene_intro_forest_initialize(
     &rand_parameters,
     &rand_result,
     &rand_source, (
-      (scene->length_renderables - 3) *
+      metil_group_trees->length *
       4
     ),
     rand_mode_bytes,
@@ -263,18 +323,18 @@ void scene_intro_forest_initialize(
   unsigned int offset_byte = 0;
 
   for (
-    unsigned short int index_renderable = 3;
-    index_renderable < scene->length_renderables;
+    unsigned short int index_renderable = 0;
+    index_renderable < metil_group_trees->length;
     ++index_renderable
   ) {
     offset_byte = (
-      (index_renderable - 3) * 4
+      index_renderable * 4
     );
 
     struct metil_object* object = (
-      scene->renderables[
+      metil_group_trees->renderables[
         index_renderable
-      ].renderable
+      ]->renderable
     );
 
     zoe_object_tree_initialize(
@@ -293,8 +353,16 @@ void scene_intro_forest_initialize(
     object->position.x = (
       -(object->mesh.size.x / 2.0f) + (
         (((float)((
-          rand_result.bytes[offset_byte] *
-          rand_result.bytes[offset_byte + 2]
+          (
+            rand_result.bytes[offset_byte] %
+            0xfe +
+            0x01
+          ) *
+          (
+            rand_result.bytes[offset_byte + 2] %
+            0xfe +
+            0x01
+          )
         ) % 10000) / 5000.0f) - 1.0f) * 0.7f *
         (object->mesh.size.x - (
           metil_object_ground->mesh.size.x / 2.0f
@@ -305,8 +373,16 @@ void scene_intro_forest_initialize(
     object->position.z = (
       -(object->mesh.size.z / 2.0f) + (
         (((float)((
-          rand_result.bytes[offset_byte + 1] *
-          rand_result.bytes[offset_byte + 3]
+          (
+            rand_result.bytes[offset_byte + 1]  %
+            0xfe +
+            0x01
+          ) *
+          (
+            rand_result.bytes[offset_byte + 3] %
+            0xfe +
+            0x01
+          )
         ) % 10000) / 5000.0f) - 1.0f) * 0.7f *
         (metil_object_ground->mesh.size.z - (
           metil_object_ground->mesh.size.z / 2.0f
@@ -330,15 +406,21 @@ void scene_intro_forest_poll(
     scene
   );
 
+  struct metil_group* metil_group_trees = (
+    scene->renderables[
+      scene_intro_forest_index_renderable_group_trees
+    ].renderable
+  );
+
   for (
-    unsigned short int index_renderable = 3;
-    index_renderable < scene->length_renderables;
+    unsigned short int index_renderable = 0;
+    index_renderable < metil_group_trees->length;
     ++index_renderable
   ) {
     struct metil_object* metil_object_tree = (
-      scene->renderables[
+      metil_group_trees->renderables[
         index_renderable
-      ].renderable
+      ]->renderable
     );
 
     metil_collision_player_object_uncollide_circular_xz(

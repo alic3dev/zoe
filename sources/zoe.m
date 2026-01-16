@@ -1,5 +1,6 @@
 #include <zoe.h>
 
+#include <data/data_zoe.h>
 #include <scenes/scene_id.h>
 #include <scenes/scene_intro_forest.h>
 #include <scenes/scene_intro_hill.h>
@@ -14,6 +15,8 @@
 #include <metil_object/metil_object_text.h>
 #include <metil_rendering/metil_renderer_interface.h>
 #include <metil_scenes/metil_scene_controller.h>
+
+#include <clic3_memory.h>
 
 #if target_os_ios
 char* zoe_executable_path = (
@@ -207,6 +210,22 @@ void zoe_renderer_on_initialize(
   metil->rendering_properties.color_clear.z = 0.0649f;
   metil->rendering_properties.color_clear.w = 1.0f;
 
+  metil->data = (
+    clic3_memory_allocate_raw(
+      sizeof(
+        struct data_zoe
+      )
+    )
+  );
+
+  data_zoe_initialize(
+    metil->data
+  );
+
+  metil->destroy = (
+    zoe_destroy
+  );
+
   struct metil_scene_controller* metil_scene_controller = (
     metil->scene_controller
   );
@@ -265,4 +284,12 @@ void zoe_on_scene_change(
       );
       break;
   }
+}
+
+void zoe_destroy(
+  struct metil* metil
+) {
+  clic3_memory_free_raw(
+    metil->data
+  );
 }

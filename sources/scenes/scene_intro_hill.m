@@ -2,7 +2,10 @@
 
 #include <audio/io_proc_data.h>
 #include <calculations/hill_y_value.h>
+#include <data/data_player.h>
+#include <data/data_zoe.h>
 #include <group/group_text_with_backing.h>
+#include <input/input_movement.h>
 #include <mesh/mesh_hill.h>
 #include <model/model_player.h>
 #include <object/object_hill.h>
@@ -23,6 +26,9 @@
 #include <metil_rendering/metil_renderer_data_object.h>
 #include <metil_rendering/metil_renderer_vertex_index_parameter.h>
 #include <metil_scenes/metil_scene.h>
+#include <metil_scenes/metil_scene_controller.h>
+
+#include <clic3_memory.h>
 
 #include <math_c_absolute.h>
 #include <math_c_maximum.h>
@@ -50,6 +56,10 @@ void scene_intro_hill_initialize(
   struct metil* metil,
   struct metil_scene* scene
 ) {
+  struct data_zoe* data_zoe = (
+    metil->data
+  );
+
   metil->rendering_properties.brightness = (
     metil->configuration.rendering_properties.brightness
   );
@@ -73,11 +83,21 @@ void scene_intro_hill_initialize(
     scene_intro_hill_length_renderables
   );
 
+  scene->player.poll_input = (
+    zoe_input_movement
+  );
+
+  scene->player.data = (
+    &data_zoe->player
+  );
+
   scene->player.rotation.x = -0.3f;
 
-  scene->data = malloc(
-    sizeof(
-      struct scene_intro_hill_data
+  scene->data = (
+    clic3_memory_allocate_raw(
+      sizeof(
+        struct scene_intro_hill_data
+      )
     )
   );
 
@@ -382,9 +402,17 @@ void scene_intro_hill_poll(
   struct metil* metil,
   struct metil_scene* scene
 ) {
+  struct scene_intro_hill_data* scene_intro_hill_data = (
+    scene->data
+  );
+
   metil_scene_poll_default(
     metil,
     scene
+  );
+
+  struct data_player* data_player = (
+    scene->player.data
   );
 
   struct math_c_vector2_float position_player_bounds_minimum = {
@@ -546,6 +574,25 @@ void scene_intro_hill_poll(
         25.0f,
         20.0f
       );
+
+      if (
+        index_tree == 0 &&
+        metil_group_text_tree->visible != 0 &&
+        data_player->actions & data_player_action_select
+      ) {
+        data_player->actions = (
+          data_player->actions ^
+          data_player_action_select
+        );
+
+        metil_scene_controller_scene_change(
+          metil,
+          metil->scene_controller,
+          scene_id_intro_forest
+        );
+
+        return;
+      }
     } else {
       metil_group_text_tree->visible = 0;
     }

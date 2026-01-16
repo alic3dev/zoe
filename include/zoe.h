@@ -31,4 +31,8 @@ void zoe_on_scene_change(
   void* _Nonnull
 );
 
+void zoe_destroy(
+  struct metil* _Nonnull
+);
+
 #endif
