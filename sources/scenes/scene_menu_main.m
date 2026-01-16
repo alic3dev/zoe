@@ -23,6 +23,8 @@
 #include <metil_termination/metil_termination.h>
 #endif
 
+#include <clic3_memory.h>
+
 #include <rand_clean.h>
 #include <rand_functions.h>
 #include <rand_initialize.h>
@@ -53,8 +55,12 @@ void scene_menu_main_initialize(
     5
   );
 
-  scene->data = malloc(
-    sizeof(struct scene_menu_main_data)
+  scene->data = (
+    clic3_memory_allocate_raw(
+      sizeof(
+        struct scene_menu_main_data
+      )
+    )
   );
 
   struct scene_menu_main_data* data_scene = (
@@ -344,6 +350,8 @@ void scene_menu_main_poll(
         metil->scene_controller,
         scene_id_intro_hill
       );
+
+      return;
     } else {
       float brightness = (
         (float) (scene_menu_main_time_scene_transition - time_delta) /
