@@ -11,6 +11,7 @@ struct zoe_loading_threads_data {
   struct metil_scene* scene;
   unsigned char id_scene;
   float* progress;
+  pthread_mutex_t* mutex_progress;
   void* data;
 };
 
@@ -33,6 +34,7 @@ struct zoe_loading_threads {
   unsigned char id_scene;
 
   float progress;
+  pthread_mutex_t mutex_progress;
 };
 
 void zoe_loading_threads_initialize(
