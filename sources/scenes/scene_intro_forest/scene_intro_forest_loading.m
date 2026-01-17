@@ -5,6 +5,8 @@
 
 #include <clic3_memory.h>
 
+#include <pthread.h>
+
 unsigned char zoe_scene_intro_forest_loading_initialize_function(
   struct metil* metil,
   struct metil_scene* metil_scene,
@@ -32,23 +34,11 @@ unsigned char zoe_scene_intro_forest_loading_initialize_function(
 
   zoe_loading_threads_spawn(
     zoe_loading_threads,
-    zoe_scene_intro_forest_loading_initialize_threaded_function,
+    scene_intro_forest_initialize,
     0
   );
 
   return 0;
-}
-
-void zoe_scene_intro_forest_loading_initialize_threaded_function(
-  struct zoe_loading_threads_data* zoe_loading_threads_data
-) {
-  scene_intro_forest_initialize(
-    zoe_loading_threads_data->metil,
-    zoe_loading_threads_data->scene,
-    zoe_loading_threads_data->progress
-  );
-
-  *zoe_loading_threads_data->progress = 1.0f;
 }
 
 float zoe_scene_intro_forest_loading_poll_function(
@@ -59,6 +49,18 @@ float zoe_scene_intro_forest_loading_poll_function(
 ) {
   struct zoe_loading_threads* zoe_loading_threads = (
     *data
+  );
+
+  pthread_mutex_lock(
+    &zoe_loading_threads->mutex_progress
+  );
+
+  float progress = (
+    zoe_loading_threads->progress
+  );
+
+  pthread_mutex_unlock(
+    &zoe_loading_threads->mutex_progress
   );
 
   return (

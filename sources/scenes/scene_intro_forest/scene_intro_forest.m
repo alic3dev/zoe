@@ -7,6 +7,7 @@
 #include <object/object_ground.h>
 #include <object/object_tree.h>
 #include <scenes/scene_id.h>
+#include <zoe_loading_threads.h>
 #include <zoe_pipeline_index.h>
 
 #include <metil_audio/metil_audio_io_proc.h>
@@ -39,10 +40,16 @@
 #include <stdlib.h>
 
 void scene_intro_forest_initialize(
-  struct metil* metil,
-  struct metil_scene* scene,
-  float* progress
+  struct zoe_loading_threads_data* zoe_loading_threads_data
 ) {
+  struct metil* metil = (
+    zoe_loading_threads_data->metil
+  );
+
+  struct metil_scene* scene = (
+    zoe_loading_threads_data->scene
+  );
+
   struct data_zoe* data_zoe = (
     metil->data
   );
@@ -179,7 +186,10 @@ void scene_intro_forest_initialize(
     error: (void*) 0
   ];
 
-  *progress = 0.1f;
+  zoe_loading_threads_progress_increase(
+    zoe_loading_threads_data,
+    0.1f
+  );
 
   scene->textures[
     textures_scene_intro_forest_tree
@@ -198,7 +208,10 @@ void scene_intro_forest_initialize(
     error: (void*) 0
   ];
 
-  *progress = 0.2f;
+  zoe_loading_threads_progress_increase(
+    zoe_loading_threads_data,
+    0.1f
+  );
 
   scene->textures[
     textures_scene_intro_forest_player
@@ -217,7 +230,10 @@ void scene_intro_forest_initialize(
     error: (void*) 0
   ];
 
-  *progress = 0.3f;
+  zoe_loading_threads_progress_increase(
+    zoe_loading_threads_data,
+    0.1f
+  );
 
   [texture_loader release];
 
@@ -293,7 +309,10 @@ void scene_intro_forest_initialize(
     metil->renderer_interface.metal_device
   );
 
-  *progress = 0.4f;
+  zoe_loading_threads_progress_increase(
+    zoe_loading_threads_data,
+    0.1f
+  );
 
   struct metil_group* metil_group_trees = (
     scene->renderables[
@@ -335,12 +354,15 @@ void scene_intro_forest_initialize(
     index_renderable < metil_group_trees->length;
     ++index_renderable
   ) {
-    *progress = (
-      0.4f +
+    zoe_loading_threads_progress_set(
+      zoe_loading_threads_data,
       (
-        0.5 *
-        (float) index_renderable /
-        (float) metil_group_trees->length
+        0.4f +
+        (
+          0.5f *
+          (float) index_renderable /
+          (float) metil_group_trees->length
+        )
       )
     );
 
@@ -408,11 +430,14 @@ void scene_intro_forest_initialize(
     );
   }
 
-  *progress = 1.0f;
-
   rand_clean(
     &rand_result,
     &rand_source
+  );
+
+  zoe_loading_threads_progress_set(
+    zoe_loading_threads_data,
+    1.0f
   );
 }
 

@@ -108,6 +108,10 @@ void zoe_loading_threads_spawn(
     &zoe_loading_threads->progress
   );
 
+  zoe_loading_threads_data->mutex_progress = (
+    &zoe_loading_threads->mutex_progress
+  );
+
   static struct zoe_loading_threads_passthrough_data* zoe_loading_threads_passthrough_data;
 
   zoe_loading_threads_passthrough_data = (
@@ -137,7 +141,7 @@ void zoe_loading_threads_spawn(
   );
 }
 
-void* zoe_loading_threads_passthrough (
+void* zoe_loading_threads_passthrough(
   void* data
 ) {
   struct zoe_loading_threads_passthrough_data* zoe_loading_threads_passthrough_data = (
@@ -153,6 +157,41 @@ void* zoe_loading_threads_passthrough (
   );
 
   return 0;
+}
+
+void zoe_loading_threads_progress_increase(
+  struct zoe_loading_threads_data* zoe_loading_threads_data,
+  float progress_increase
+) {
+  pthread_mutex_lock(
+    zoe_loading_threads_data->mutex_progress
+  );
+
+  *zoe_loading_threads_data->progress = (
+    *zoe_loading_threads_data->progress +
+    progress_increase
+  );
+
+  pthread_mutex_unlock(
+    zoe_loading_threads_data->mutex_progress
+  );
+}
+
+void zoe_loading_threads_progress_set(
+  struct zoe_loading_threads_data* zoe_loading_threads_data,
+  float progress
+) {
+  pthread_mutex_lock(
+    zoe_loading_threads_data->mutex_progress
+  );
+
+  *zoe_loading_threads_data->progress = (
+    progress
+  );
+
+  pthread_mutex_unlock(
+    zoe_loading_threads_data->mutex_progress
+  );
 }
 
 void zoe_loading_threads_destroy(
