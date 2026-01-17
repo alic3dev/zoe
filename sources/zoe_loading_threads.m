@@ -75,17 +75,31 @@ void zoe_loading_threads_spawn(
     &zoe_loading_threads->data,
     (
       sizeof(
-        struct zoe_loading_threads_data
+        void*
       ) *
       zoe_loading_threads->length
     )
   );
 
-  struct zoe_loading_threads_data* zoe_loading_threads_data = &(
-    zoe_loading_threads->data[
-      zoe_loading_threads->length -
-      1
-    ]
+  static struct zoe_loading_threads_data* zoe_loading_threads_data;
+  
+  zoe_loading_threads_data = (
+    clic3_memory_allocate_raw(
+      sizeof(
+        struct zoe_loading_threads_data
+      )
+    )
+  );
+
+  zoe_loading_threads->data[
+    zoe_loading_threads->length -
+    1
+  ] = (
+    zoe_loading_threads_data
+  );
+
+  zoe_loading_threads_data->loading_threads = (
+    zoe_loading_threads
   );
 
   zoe_loading_threads_data->metil = (
@@ -209,7 +223,7 @@ void zoe_loading_threads_destroy(
       0
     );
 
-    struct zoe_loading_threads_data* zoe_loading_threads_data = &(
+    struct zoe_loading_threads_data* zoe_loading_threads_data = (
       zoe_loading_threads->data[
         index_thread
       ]
@@ -217,6 +231,10 @@ void zoe_loading_threads_destroy(
 
     clic3_memory_free(
       zoe_loading_threads_data->data
+    );
+
+    clic3_memory_free_raw(
+      zoe_loading_threads_data
     );
   }
 

@@ -6,7 +6,10 @@
 
 #include <pthread.h>
 
+struct zoe_loading_threads;
+
 struct zoe_loading_threads_data {
+  struct zoe_loading_threads* loading_threads;
   struct metil* metil;
   struct metil_scene* scene;
   unsigned char id_scene;
@@ -26,7 +29,7 @@ struct zoe_loading_threads_passthrough_data {
 
 struct zoe_loading_threads {
   pthread_t* threads;
-  struct zoe_loading_threads_data* data;
+  struct zoe_loading_threads_data** data;
   unsigned char length;
 
   struct metil* metil;

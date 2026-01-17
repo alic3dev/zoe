@@ -320,10 +320,137 @@ void scene_intro_forest_initialize(
     ].renderable
   );
 
-  metil_group_add_length_initialize(
+  metil_group_allocate_length(
     metil_group_trees,
     scene_intro_forest_length_group_trees_renderables,
     metil_renderable_type_object
+  );
+
+  unsigned short int length_renderables_thread = (
+    metil_group_trees->length /
+    metil->system_information.cores_cpu
+  );
+
+  for (
+    unsigned char index_thread = 0;
+    index_thread < metil->system_information.cores_cpu;
+    ++index_thread
+  ) {
+    unsigned short int offset = (
+      length_renderables_thread *
+      index_thread
+    );
+
+    unsigned short int length;
+
+    if (
+      offset >= metil_group_trees->length
+    ) {
+      break;
+    }
+
+    if (
+      index_thread == (
+        metil->system_information.cores_cpu -
+        1
+      )
+    ) {
+      length = (
+        metil_group_trees->length -
+        offset
+      );
+    } else {
+      length = (
+        length_renderables_thread
+      );
+    }
+
+    if (
+      (
+        offset +
+        length
+      ) > metil_group_trees->length
+    ) {
+      length = (
+        metil_group_trees->length -
+        offset
+      );
+    }
+
+    static struct scene_intro_forest_tree_thread_data* scene_intro_forest_tree_thread_data;
+
+    scene_intro_forest_tree_thread_data = (
+      clic3_memory_allocate_raw(
+        sizeof(
+          struct scene_intro_forest_tree_thread_data
+        )
+      )
+    );
+
+    scene_intro_forest_tree_thread_data->group = (
+      metil_group_trees
+    );
+
+    scene_intro_forest_tree_thread_data->size_bounds = (
+      &metil_object_ground->mesh.size
+    );
+
+    scene_intro_forest_tree_thread_data->offset = (
+      offset
+    );
+
+    scene_intro_forest_tree_thread_data->length = (
+      length
+    );
+
+    zoe_loading_threads_spawn(
+      zoe_loading_threads_data->loading_threads,
+      zoe_scene_intro_forest_threaded_trees_initialization,
+      scene_intro_forest_tree_thread_data
+    );
+  }
+
+  for (
+    unsigned char index_thread = 0;
+    index_thread < metil->system_information.cores_cpu;
+    ++index_thread
+  ) {
+    pthread_join(
+      zoe_loading_threads_data->loading_threads->threads[
+        index_thread +
+        1
+      ],
+      0
+    );
+  }
+
+  zoe_loading_threads_progress_set(
+    zoe_loading_threads_data,
+    1.0f
+  );
+}
+
+void zoe_scene_intro_forest_threaded_trees_initialization(
+  struct zoe_loading_threads_data* zoe_loading_threads_data
+) {
+  struct metil* metil = (
+    zoe_loading_threads_data->metil
+  );
+
+  struct metil_scene* scene = (
+    zoe_loading_threads_data->scene
+  );
+
+  struct scene_intro_forest_tree_thread_data* scene_intro_forest_tree_thread_data = (
+    zoe_loading_threads_data->data
+  );
+
+  struct metil_group* metil_group_trees = (
+    scene_intro_forest_tree_thread_data->group
+  );
+
+  struct math_c_vector3_float* size_bounds = (
+    scene_intro_forest_tree_thread_data->size_bounds
   );
 
   struct rand_parameters rand_parameters;
@@ -333,8 +460,9 @@ void scene_intro_forest_initialize(
   rand_initialize(
     &rand_parameters,
     &rand_result,
-    &rand_source, (
-      metil_group_trees->length *
+    &rand_source,
+    (
+      scene_intro_forest_tree_thread_data->length *
       4
     ),
     rand_mode_bytes,
@@ -347,37 +475,30 @@ void scene_intro_forest_initialize(
     &rand_parameters
   );
 
-  unsigned int offset_byte = 0;
-
   for (
-    unsigned short int index_renderable = 0;
-    index_renderable < metil_group_trees->length;
+    unsigned int index_renderable = scene_intro_forest_tree_thread_data->offset;
+    index_renderable < (
+      scene_intro_forest_tree_thread_data->offset +
+      scene_intro_forest_tree_thread_data->length
+    );
     ++index_renderable
   ) {
-    zoe_loading_threads_progress_set(
-      zoe_loading_threads_data,
-      (
-        0.4f +
-        (
-          0.5f *
-          (float) index_renderable /
-          (float) metil_group_trees->length
-        )
-      )
-    );
-
-    offset_byte = (
-      index_renderable * 4
-    );
-
-    struct metil_object* object = (
+    struct metil_object* metil_object_tree = (
       metil_group_trees->renderables[
         index_renderable
       ]->renderable
     );
 
+    metil_object_initialize(
+      metil_object_tree
+    );
+
+    unsigned short int offset_byte = (
+      index_renderable * 4
+    );
+
     zoe_object_tree_initialize(
-      object,
+      metil_object_tree,
       (void*) 0,
       (struct math_c_vector2_float) {
         .x = 5.0f,
@@ -389,43 +510,69 @@ void scene_intro_forest_initialize(
       metil->renderer_interface.metal_device
     );
     
-    object->position.x = (
-      -(object->mesh.size.x / 2.0f) + (
+    metil_object_tree->position.x = (
+      -(metil_object_tree->mesh.size.x / 2.0f) + (
         (((float)((
           (
-            rand_result.bytes[offset_byte] %
+            rand_result.bytes[
+              offset_byte
+            ] %
             0xfe +
             0x01
           ) *
           (
-            rand_result.bytes[offset_byte + 2] %
+            rand_result.bytes[
+              offset_byte +
+              2
+            ] %
             0xfe +
             0x01
           )
         ) % 10000) / 5000.0f) - 1.0f) * 0.7f *
-        (object->mesh.size.x - (
-          metil_object_ground->mesh.size.x / 2.0f
-        ))
+        (
+          metil_object_tree->mesh.size.x - (
+            size_bounds->x /
+            2.0f
+          )
+        )
       )
     );
 
-    object->position.z = (
-      -(object->mesh.size.z / 2.0f) + (
+    metil_object_tree->position.z = (
+      -(metil_object_tree->mesh.size.z / 2.0f) + (
         (((float)((
           (
-            rand_result.bytes[offset_byte + 1]  %
+            rand_result.bytes[
+              offset_byte +
+              1
+            ]  %
             0xfe +
             0x01
           ) *
           (
-            rand_result.bytes[offset_byte + 3] %
+            rand_result.bytes[
+              offset_byte +
+              3
+            ] %
             0xfe +
             0x01
           )
         ) % 10000) / 5000.0f) - 1.0f) * 0.7f *
-        (metil_object_ground->mesh.size.z - (
-          metil_object_ground->mesh.size.z / 2.0f
-        ))
+        (
+          size_bounds->z - (
+            size_bounds->z /
+            2.0f
+          )
+        )
+      )
+    );
+
+    zoe_loading_threads_progress_increase(
+      zoe_loading_threads_data,
+      (
+        index_renderable /
+        metil_group_trees->length *
+        0.55f
       )
     );
   }
@@ -433,11 +580,6 @@ void scene_intro_forest_initialize(
   rand_clean(
     &rand_result,
     &rand_source
-  );
-
-  zoe_loading_threads_progress_set(
-    zoe_loading_threads_data,
-    1.0f
   );
 }
 
@@ -473,7 +615,6 @@ void scene_intro_forest_poll(
     );
   }
 }
-
 
 void scene_intro_forest_destroy(
   struct metil* metil,
