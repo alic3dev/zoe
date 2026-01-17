@@ -4,6 +4,7 @@
 #include <audio/io_proc_data.h>
 #include <zoe_loading_threads.h>
 
+#include <metil_group.h>
 #include <metil_scenes/metil_scene.h>
 #include <metil_rendering/metil_renderer_interface.h>
 
@@ -34,7 +35,18 @@ struct scene_intro_forest_data {
   struct io_proc_data* _Nonnull io_proc_data;
 };
 
+struct scene_intro_forest_tree_thread_data {
+  struct metil_group* _Nonnull group;
+  struct math_c_vector3_float* _Nonnull size_bounds;
+  unsigned int offset;
+  unsigned int length;
+};
+
 void scene_intro_forest_initialize(
+  struct zoe_loading_threads_data* _Nonnull
+);
+
+void zoe_scene_intro_forest_threaded_trees_initialization(
   struct zoe_loading_threads_data* _Nonnull
 );
 

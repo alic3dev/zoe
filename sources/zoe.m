@@ -104,6 +104,18 @@ void zoe_renderer_on_initialize(
     ]
   ];
 
+  zoe_pipeline_index_loading_screen = [
+    metil->renderer_interface.renderer
+    pipeline_add: [
+      metil->library.library
+      newFunctionWithName: @"zoe_loading_screen_fragment"
+    ]
+    function_vertex: [
+      metil->library.library
+      newFunctionWithName: @"zoe_loading_screen_vertex"
+    ]
+  ];
+
   zoe_pipeline_index_player_arm = [
     metil->renderer_interface.renderer
     pipeline_add: [
