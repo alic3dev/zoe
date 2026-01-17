@@ -54,6 +54,16 @@ void* zoe_loading_threads_passthrough (
   void*
 );
 
+void zoe_loading_threads_progress_increase(
+  struct zoe_loading_threads_data*,
+  float
+);
+
+void zoe_loading_threads_progress_set(
+  struct zoe_loading_threads_data*,
+  float
+);
+
 void zoe_loading_threads_destroy(
   struct zoe_loading_threads*
 );

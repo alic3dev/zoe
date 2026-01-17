@@ -2,6 +2,7 @@
 #define __zoe_scenes_scene_intro_forest_scene_intro_forest_h
 
 #include <audio/io_proc_data.h>
+#include <zoe_loading_threads.h>
 
 #include <metil_scenes/metil_scene.h>
 #include <metil_rendering/metil_renderer_interface.h>
@@ -34,9 +35,7 @@ struct scene_intro_forest_data {
 };
 
 void scene_intro_forest_initialize(
-  struct metil* _Nonnull,
-  struct metil_scene* _Nonnull,
-  float* _Nonnull
+  struct zoe_loading_threads_data* _Nonnull
 );
 
 void scene_intro_forest_poll(
