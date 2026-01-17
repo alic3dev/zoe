@@ -3,6 +3,7 @@
 
 extern unsigned short int zoe_pipeline_index_ground;
 extern unsigned short int zoe_pipeline_index_hill;
+extern unsigned short int zoe_pipeline_index_loading_screen;
 extern unsigned short int zoe_pipeline_index_player_arm;
 extern unsigned short int zoe_pipeline_index_player_body;
 extern unsigned short int zoe_pipeline_index_player_head;

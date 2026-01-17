@@ -1,7 +1,6 @@
 #include <scenes/scene_menu_main.h>
 
 #include <menus/menu_main.h>
-#include <metil_rendering/metil_camera/metil_camera.h>
 #include <object/object_ground.h>
 #include <object/object_tree.h>
 #include <scenes/scene_id.h>
@@ -15,6 +14,7 @@
 #include <metil_menus/metil_menu_input.h>
 #include <metil_object/metil_object_text.h>
 #include <metil_paths/metil_paths.h>
+#include <metil_rendering/metil_camera/metil_camera.h>
 #include <metil_rendering/metil_renderer_data_object.h>
 #include <metil_rendering/metil_renderer_interface.h>
 #include <metil_scenes/metil_scene.h>
