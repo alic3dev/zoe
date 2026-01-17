@@ -37,8 +37,6 @@
 #include <CoreAudio/CoreAudio.h>
 #endif
 
-#include <stdlib.h>
-
 void scene_intro_forest_initialize(
   struct zoe_loading_threads_data* zoe_loading_threads_data
 ) {
@@ -567,11 +565,17 @@ void zoe_scene_intro_forest_threaded_trees_initialization(
       )
     );
 
+    metil_object_tree->index_pipeline_render = (
+      zoe_pipeline_index_tree
+    );
+
     zoe_loading_threads_progress_increase(
       zoe_loading_threads_data,
       (
-        index_renderable /
-        metil_group_trees->length *
+        (
+          1.0f /
+          (float) metil_group_trees->length
+        ) *
         0.55f
       )
     );

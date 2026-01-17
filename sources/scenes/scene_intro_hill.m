@@ -411,8 +411,6 @@ void scene_intro_hill_poll(
     scene
   );
 
-  scene->player.speed_movement = 10000.0f;
-
   struct data_player* data_player = (
     scene->player.data
   );
