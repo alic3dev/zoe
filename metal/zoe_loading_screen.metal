@@ -6,7 +6,7 @@
 
 struct data_vertex {
   float4 position [[position]];
-  float4 color;
+  float4 colour;
   float brightness;
 };
 
@@ -46,7 +46,7 @@ struct data_vertex {
     10000.0f
   );
 
-  data_vertex.color.x = (
+  data_vertex.colour.x = (
     (
       progress < 0.3f
       ? progress
@@ -54,7 +54,7 @@ struct data_vertex {
     ) / 0.3f
   );
 
-  data_vertex.color.y = (
+  data_vertex.colour.y = (
     (
       (progress < 0.6f)
       ? progress - 0.3f
@@ -62,7 +62,7 @@ struct data_vertex {
     ) / 0.3f
   );
 
-  data_vertex.color.z = (
+  data_vertex.colour.z = (
     (
       (progress >= 0.6f)
       ? progress - 0.6f
@@ -70,7 +70,7 @@ struct data_vertex {
     ) / 0.4f
   );
 
-  data_vertex.color.w = (
+  data_vertex.colour.w = (
     1.0f
   );
 
@@ -82,17 +82,17 @@ struct data_vertex {
 ) {
   return float4(
     (
-      data_vertex.color.x *
+      data_vertex.colour.x *
       data_vertex.brightness
     ),
     (
-      data_vertex.color.y *
+      data_vertex.colour.y *
       data_vertex.brightness
     ),
     (
-      data_vertex.color.z *
+      data_vertex.colour.z *
       data_vertex.brightness
     ),
-    data_vertex.color.w
+    data_vertex.colour.w
   );
 }

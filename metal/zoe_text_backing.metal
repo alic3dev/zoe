@@ -6,7 +6,7 @@
 
 struct data_vertex {
   float4 position [[position]];
-  float4 color;
+  float4 colour;
   float brightness;
 };
 
@@ -41,20 +41,20 @@ struct data_vertex {
     data_frame->brightness_text
   );
 
-  data_vertex.color.x = (
-    data_object->color.x
+  data_vertex.colour.x = (
+    data_object->colour.x
   );
 
-  data_vertex.color.y = (
-    data_object->color.y
+  data_vertex.colour.y = (
+    data_object->colour.y
   );
 
-  data_vertex.color.z = (
-    data_object->color.z
+  data_vertex.colour.z = (
+    data_object->colour.z
   );
 
-  data_vertex.color.w = (
-    data_object->color.w
+  data_vertex.colour.w = (
+    data_object->colour.w
   );
 
   return data_vertex;
@@ -65,19 +65,19 @@ struct data_vertex {
 ) {
   return float4(
     (
-      data_vertex.color.x *
+      data_vertex.colour.x *
       data_vertex.brightness
     ),
     (
-      data_vertex.color.y *
+      data_vertex.colour.y *
       data_vertex.brightness
     ),
     (
-      data_vertex.color.z *
+      data_vertex.colour.z *
       data_vertex.brightness
     ),
     (
-      data_vertex.color.w *
+      data_vertex.colour.w *
       0.5f
     )
   );

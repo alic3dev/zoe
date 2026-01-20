@@ -128,7 +128,7 @@ void group_text_with_backing_visibility_minimum_maximum_set(
       ].buffer.contents
     );
 
-    metil_renderer_data_object_text->color.w = (
+    metil_renderer_data_object_text->colour.w = (
       math_c_minimum_float(
         math_c_maximum_float(
           (
@@ -147,8 +147,8 @@ void group_text_with_backing_visibility_minimum_maximum_set(
       )
     );
 
-    metil_renderer_data_object_text_backing->color.w = (
-      metil_renderer_data_object_text->color.w
+    metil_renderer_data_object_text_backing->colour.w = (
+      metil_renderer_data_object_text->colour.w
     );
   } else {
     metil_group_text_with_backing->visible = (

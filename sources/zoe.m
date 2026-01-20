@@ -216,10 +216,10 @@ void zoe_renderer_on_initialize(
     zoe_pipeline_index_text
   );
 
-  metil->rendering_properties.color_clear.x = 0.0324f;
-  metil->rendering_properties.color_clear.y = 0.0424f;
-  metil->rendering_properties.color_clear.z = 0.0649f;
-  metil->rendering_properties.color_clear.w = 1.0f;
+  metil->rendering_properties.colour_clear.x = 0.0324f;
+  metil->rendering_properties.colour_clear.y = 0.0424f;
+  metil->rendering_properties.colour_clear.z = 0.0649f;
+  metil->rendering_properties.colour_clear.w = 1.0f;
 
   metil->data = (
     clic3_memory_allocate_raw(
