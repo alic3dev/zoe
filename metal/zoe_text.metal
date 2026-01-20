@@ -7,7 +7,7 @@
 struct data_vertex {
   float4 position [[position]];
   float2 position_texture;
-  float4 color;
+  float4 colour;
   float noise;
   float brightness;
 };
@@ -59,20 +59,20 @@ struct data_vertex {
     : 0
   );
 
-  data_vertex.color.x = (
-    data_object->color.x
+  data_vertex.colour.x = (
+    data_object->colour.x
   );
 
-  data_vertex.color.y = (
-    data_object->color.y
+  data_vertex.colour.y = (
+    data_object->colour.y
   );
 
-  data_vertex.color.z = (
-    data_object->color.z
+  data_vertex.colour.z = (
+    data_object->colour.z
   );
 
-  data_vertex.color.w = (
-    data_object->color.w
+  data_vertex.colour.w = (
+    data_object->colour.w
   );
 
   data_vertex.brightness = (
@@ -91,7 +91,7 @@ struct data_vertex {
     metal::mip_filter::linear
   );
 
-  float4 texture_color = float4(
+  float4 texture_colour = float4(
     texture.sample(
       sampler_texture,
       data_vertex.position_texture
@@ -100,26 +100,26 @@ struct data_vertex {
 
   return float4(
     (
-      texture_color[0] *
-      data_vertex.color.r *
+      texture_colour[0] *
+      data_vertex.colour.r *
       data_vertex.noise *
       data_vertex.brightness
     ),
     (
-      texture_color[1] *
-      data_vertex.color.g *
+      texture_colour[1] *
+      data_vertex.colour.g *
       data_vertex.noise *
       data_vertex.brightness
     ),
     (
-      texture_color[2] *
-      data_vertex.color.b *
+      texture_colour[2] *
+      data_vertex.colour.b *
       data_vertex.noise *
       data_vertex.brightness
     ),
     (
-      texture_color[3] *
-      data_vertex.color.a
+      texture_colour[3] *
+      data_vertex.colour.a
     )
   );
 }

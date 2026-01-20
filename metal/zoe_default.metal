@@ -49,7 +49,7 @@ fragment float4 zoe_default_fragment(
     metal::mip_filter::linear
   );
 
-  float4 texture_color = float4(
+  float4 texture_colour = float4(
     texture.sample(
       sampler_texture,
       data_vertex.position_texture
@@ -57,9 +57,9 @@ fragment float4 zoe_default_fragment(
   );
 
   return float4(
-    texture_color[0] * data_vertex.brightness,
-    texture_color[1] * data_vertex.brightness,
-    texture_color[2] * data_vertex.brightness,
-    texture_color[3]
+    texture_colour[0] * data_vertex.brightness,
+    texture_colour[1] * data_vertex.brightness,
+    texture_colour[2] * data_vertex.brightness,
+    texture_colour[3]
   );
 }

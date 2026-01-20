@@ -11,10 +11,10 @@
 
 #define mesh_player_height_total 15.0f
 
-#define mesh_player_color_r 0.01f
-#define mesh_player_color_g 0.009f
-#define mesh_player_color_b 0.02f
-#define mesh_player_color_a 1.0f
+#define mesh_player_colour_r 0.01f
+#define mesh_player_colour_g 0.009f
+#define mesh_player_colour_b 0.02f
+#define mesh_player_colour_a 1.0f
 
 #ifndef __METAL_VERSION__
 extern const struct math_c_vector3_float mesh_player_size;

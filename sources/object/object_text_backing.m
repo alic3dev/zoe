@@ -56,8 +56,8 @@ void object_text_backing_initialize(
     ].buffer.contents
   );
 
-  metil_renderer_data_object_text_backing->color.x = 0.0f;
-  metil_renderer_data_object_text_backing->color.y = 0.0f;
-  metil_renderer_data_object_text_backing->color.z = 0.0f;
-  metil_renderer_data_object_text_backing->color.w = 1.0f;
+  metil_renderer_data_object_text_backing->colour.x = 0.0f;
+  metil_renderer_data_object_text_backing->colour.y = 0.0f;
+  metil_renderer_data_object_text_backing->colour.z = 0.0f;
+  metil_renderer_data_object_text_backing->colour.w = 1.0f;
 }

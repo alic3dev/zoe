@@ -92,9 +92,9 @@ fragment float4 zoe_player_arm_fragment(
   struct data_vertex data_vertex [[stage_in]]
 ) {
   return float4(
-    mesh_player_color_r * data_vertex.brightness,
-    mesh_player_color_g * data_vertex.brightness,
-    mesh_player_color_b * data_vertex.brightness,
-    mesh_player_color_a
+    mesh_player_colour_r * data_vertex.brightness,
+    mesh_player_colour_g * data_vertex.brightness,
+    mesh_player_colour_b * data_vertex.brightness,
+    mesh_player_colour_a
   );
 }
