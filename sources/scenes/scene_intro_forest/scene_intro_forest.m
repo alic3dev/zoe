@@ -7,6 +7,7 @@
 #include <object/object_ground.h>
 #include <object/object_tree.h>
 #include <scenes/scene_id.h>
+#include <textures/zoe_texture_static.h>
 #include <zoe_loading_threads.h>
 #include <zoe_pipeline_index.h>
 
@@ -169,20 +170,15 @@ void scene_intro_forest_initialize(
 
   scene->textures[
     textures_scene_intro_forest_ground
-  ] = [texture_loader
-    newTextureWithContentsOfURL: [NSURL
-      fileURLWithPath:@"0028.png"
-      isDirectory: 0
-      relativeToURL: [NSURL
-        fileURLWithPath:[NSString
-          stringWithUTF8String: metil->paths.directory_textures
-        ]
-        isDirectory: 1
-      ]
-    ]
-    options: (void*) 0
-    error: (void*) 0
-  ];
+  ] = (
+    zoe_texture_static_generate(
+      (struct math_c_vector2_unsigned_short_int) {
+        .x = 300,
+        .y = 300
+      },
+      metil->renderer_interface.metal_device
+    )
+  );
 
   zoe_loading_threads_progress_increase(
     zoe_loading_threads_data,
@@ -191,20 +187,15 @@ void scene_intro_forest_initialize(
 
   scene->textures[
     textures_scene_intro_forest_tree
-  ] = [texture_loader
-    newTextureWithContentsOfURL: [NSURL
-      fileURLWithPath:@"zoef.png"
-      isDirectory: 0
-      relativeToURL: [NSURL
-        fileURLWithPath:[NSString
-          stringWithUTF8String: metil->paths.directory_textures
-        ]
-        isDirectory: 1
-      ]
-    ]
-    options: (void*) 0
-    error: (void*) 0
-  ];
+  ] = (
+    zoe_texture_static_generate(
+      (struct math_c_vector2_unsigned_short_int) {
+        .x = 300,
+        .y = 300
+      },
+      metil->renderer_interface.metal_device
+    )
+  );
 
   zoe_loading_threads_progress_increase(
     zoe_loading_threads_data,
@@ -213,20 +204,15 @@ void scene_intro_forest_initialize(
 
   scene->textures[
     textures_scene_intro_forest_player
-  ] = [texture_loader
-    newTextureWithContentsOfURL: [NSURL
-      fileURLWithPath:@"zoef.png"
-      isDirectory: 0
-      relativeToURL: [NSURL
-        fileURLWithPath:[NSString
-          stringWithUTF8String: metil->paths.directory_textures
-        ]
-        isDirectory: 1
-      ]
-    ]
-    options: (void*) 0
-    error: (void*) 0
-  ];
+  ] = (
+    zoe_texture_static_generate(
+      (struct math_c_vector2_unsigned_short_int) {
+        .x = 300,
+        .y = 300
+      },
+      metil->renderer_interface.metal_device
+    )
+  );
 
   zoe_loading_threads_progress_increase(
     zoe_loading_threads_data,

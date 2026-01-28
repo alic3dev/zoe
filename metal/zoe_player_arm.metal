@@ -3,6 +3,9 @@
 #include <mesh/mesh_player.h>
 #include <mesh/mesh_player_arm.h>
 
+#include <math_c_pi.h>
+#include <math_c_sine.h>
+
 #include <metil_metal/metil_metal_model_object.h>
 #include <metil_rendering/metil_renderer_data_frame.h>
 #include <metil_rendering/metil_renderer_data_model_object.h>
@@ -12,6 +15,7 @@
 
 struct data_vertex {
   float4 position [[position]];
+  float2 position_texture;
   float brightness;
   float4 colour;
 };
@@ -105,16 +109,66 @@ struct data_vertex {
     )
   );
 
+  float sine_frame = (
+    math_c_sine(
+      data_frame->frame,
+      math_c_pi
+    )
+  );
+
+  data_vertex.position_texture.x = (
+    vertices[
+      id_vertex
+    ].x +
+    vertices[
+      id_vertex
+    ].y +
+    sine_frame
+  );
+
+  data_vertex.position_texture.y = (
+    vertices[
+      id_vertex
+    ].z +
+    sine_frame
+  );
+
   return data_vertex;
 }
 
 fragment float4 zoe_player_arm_fragment(
-  struct data_vertex data_vertex [[stage_in]]
+  struct data_vertex data_vertex [[stage_in]],
+  metal::texture2d<half> texture [[ texture(0) ]]
 ) {
+  constexpr metal::sampler sampler_texture(
+    metal::t_address::repeat,
+    metal::r_address::repeat,
+    metal::s_address::repeat
+  );
+
+  float4 texture_colour = float4(
+    texture.sample(
+      sampler_texture,
+      data_vertex.position_texture
+    )
+  );
+
   return float4(
-    data_vertex.colour.r * data_vertex.brightness,
-    data_vertex.colour.g * data_vertex.brightness,
-    data_vertex.colour.b * data_vertex.brightness,
+    (
+      texture_colour.r >= 0.98f
+      ? texture_colour.r * data_vertex.colour.r * data_vertex.brightness
+      : 0.0f
+    ),
+    (
+      texture_colour.g >= 0.98f
+      ? texture_colour.g * data_vertex.colour.g * data_vertex.brightness
+      : 0.0f
+    ),
+    (
+      texture_colour.b >= 0.98f
+      ? texture_colour.b * data_vertex.colour.b * data_vertex.brightness
+      : 0.0f
+    ),
     mesh_player_colour_a
   );
 }

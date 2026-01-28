@@ -2,6 +2,9 @@
 
 #include <mesh/mesh_player.h>
 
+#include <math_c_pi.h>
+#include <math_c_sine.h>
+
 #include <metil_rendering/metil_renderer_data_frame.h>
 #include <metil_rendering/metil_renderer_data_model_object.h>
 #include <metil_rendering/metil_renderer_vertex_index_parameter.h>
@@ -10,6 +13,7 @@
 
 struct data_vertex {
   float4 position [[position]];
+  float2 position_texture;
   float brightness;
 };
 
@@ -66,16 +70,90 @@ struct data_vertex {
     )
   );
 
+  float sine_frame = (
+    math_c_sine(
+      data_frame->frame,
+      math_c_pi
+    )
+  );
+
+  data_vertex.position_texture.x = (
+    positions[
+      id_vertex
+    ].x +
+    positions[
+      id_vertex
+    ].y +
+    sine_frame
+  );
+
+  data_vertex.position_texture.y = (
+    positions[
+      id_vertex
+    ].z +
+    sine_frame
+  );
+
   return data_vertex;
 }
 
 fragment float4 zoe_player_body_fragment(
-  struct data_vertex data_vertex [[stage_in]]
+  struct data_vertex data_vertex [[stage_in]],
+  metal::texture2d<half> texture [[ texture(0) ]]
 ) {
-  return float4(
-    mesh_player_colour_r * data_vertex.brightness,
-    mesh_player_colour_g * data_vertex.brightness,
-    mesh_player_colour_b * data_vertex.brightness,
-    mesh_player_colour_a
+  constexpr metal::sampler sampler_texture(
+    metal::t_address::repeat,
+    metal::r_address::repeat,
+    metal::s_address::repeat
   );
+
+  float4 texture_colour = float4(
+    texture.sample(
+      sampler_texture,
+      data_vertex.position_texture
+    )
+  );
+
+  if (
+    texture_colour.r == texture_colour.g &&
+    texture_colour.g == texture_colour.b
+  ) {
+    return float4(
+      (
+        texture_colour.r >= 0.99f
+        ? texture_colour.r * mesh_player_colour_r * data_vertex.brightness * 0.1f
+        : 0.0f
+      ),
+      (
+        texture_colour.g >= 0.99f
+        ? texture_colour.g * mesh_player_colour_g * data_vertex.brightness * 0.1f
+        : 0.0f
+      ),
+      (
+        texture_colour.b >= 0.99f
+        ? texture_colour.b * mesh_player_colour_b * data_vertex.brightness * 0.1f
+        : 0.0f
+      ),
+      mesh_player_colour_a
+    );
+  } else {
+    return float4(
+      (
+        texture_colour.r >= 0.99f
+        ? texture_colour.r * mesh_player_colour_r * data_vertex.brightness
+        : 0.0f
+      ),
+      (
+        texture_colour.g >= 0.99f
+        ? texture_colour.g * mesh_player_colour_g * data_vertex.brightness
+        : 0.0f
+      ),
+      (
+        texture_colour.b >= 0.99f
+        ? texture_colour.b * mesh_player_colour_b * data_vertex.brightness
+        : 0.0f
+      ),
+      mesh_player_colour_a
+    );
+  }
 }
