@@ -305,8 +305,9 @@ void scene_intro_hill_initialize(
   );
 
   zoe_object_tree_initialize(
+    metil,
     metil_object_tree_zoe,
-    (void*) 0,
+    0,
     (struct math_c_vector2_float) {
       .x = 33.3f,
       .y = 333.5f
@@ -314,7 +315,7 @@ void scene_intro_hill_initialize(
     scene->textures[
       scene_intro_hill_textures_tree
     ],
-    metil->renderer_interface.metal_device
+    213
   );
 
   metil_object_tree_zoe->position.y = 100.0f;
@@ -327,6 +328,7 @@ void scene_intro_hill_initialize(
   );
 
   zoe_object_tree_initialize(
+    metil,
     metil_object_tree_zoe_mirror,
     &metil_object_tree_zoe->mesh,
     (struct math_c_vector2_float) {
@@ -336,7 +338,7 @@ void scene_intro_hill_initialize(
     scene->textures[
       scene_intro_hill_textures_tree
     ],
-    metil->renderer_interface.metal_device
+    312
   );
 
   metil_object_tree_zoe_mirror->position.y = 100.0f;

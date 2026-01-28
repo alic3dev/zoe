@@ -461,7 +461,7 @@ void zoe_scene_intro_forest_threaded_trees_initialization(
     &rand_source,
     (
       scene_intro_forest_tree_thread_data->length *
-      4
+      5
     ),
     rand_mode_bytes,
     rand_source_type_divisive
@@ -491,13 +491,14 @@ void zoe_scene_intro_forest_threaded_trees_initialization(
       metil_object_tree
     );
 
-    unsigned short int offset_byte = (
-      index_renderable * 4
+    unsigned int offset_byte = (
+      index_renderable * 5
     );
 
     zoe_object_tree_initialize(
+      metil,
       metil_object_tree,
-      (void*) 0,
+      0,
       (struct math_c_vector2_float) {
         .x = 5.0f,
         .y = 250.0f
@@ -505,7 +506,13 @@ void zoe_scene_intro_forest_threaded_trees_initialization(
       scene->textures[
         textures_scene_intro_forest_tree
       ],
-      metil->renderer_interface.metal_device
+      (
+        rand_result.bytes[
+          offset_byte +
+          4
+        ] *
+        index_renderable
+      )
     );
     
     metil_object_tree->position.x = (

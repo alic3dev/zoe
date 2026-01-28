@@ -1,3 +1,6 @@
+#include <mesh/mesh_tree.h>
+#include <zoe_metal/zoe_wave.h>
+
 #include <metil_rendering/metil_renderer_data_frame.h>
 #include <metil_rendering/metil_renderer_data_object.h>
 #include <metil_rendering/metil_renderer_vertex_index_parameter.h>
@@ -32,9 +35,60 @@ struct data_vertex {
 
   data_vertex.position = (
     data_object->view_model_matrix_projection *
-    positions[
-      id_vertex
-    ]
+    (
+      positions[
+        id_vertex
+      ] +
+      (
+        id_vertex >= zoe_mesh_tree_length_vertices_trunk
+        ? (
+          zoe_wave_get(
+            data_frame->time_elapsed,
+            (
+              id_vertex *
+              3 +
+              data_object->noise
+            ),
+            (
+              (float)
+              (
+                id_vertex %
+                5 +
+                1
+              ) /
+              5.0f *
+              1050.0f
+            ),
+            (
+              (float)
+              (
+                id_vertex %
+                5 +
+                1
+              ) /
+              5.0f *
+              0.76
+            )
+          )
+        )
+        : (
+          zoe_wave_get(
+            data_frame->time_elapsed,
+            (
+              id_vertex +
+              data_object->noise
+            ),
+            511.4f,
+            (
+              (float)
+              id_vertex /
+              (float)
+              zoe_mesh_tree_length_vertices_trunk
+            ) * 0.464
+          )
+        )
+      )
+    )
   );
 
   data_vertex.brightness = (
@@ -49,7 +103,9 @@ struct data_vertex {
         data_object->position.z,
         1.0f
       ) +
-      positions[id_vertex]
+      positions[
+        id_vertex
+      ]
     ),
     metal::float4(
       data_frame->position_player.x,

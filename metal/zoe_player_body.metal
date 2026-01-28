@@ -1,3 +1,5 @@
+#include <zoe_metal/zoe_shakiness.h>
+
 #include <mesh/mesh_player.h>
 
 #include <metil_rendering/metil_renderer_data_frame.h>
@@ -43,7 +45,17 @@ struct data_vertex {
 
   data_vertex.position = (
     data_object->view_model_matrix_projection *
-    positions[id_vertex]
+    (
+      positions[
+        id_vertex
+      ] +
+      zoe_shakiness_get(
+        data_frame->time_elapsed,
+        id_vertex,
+        300,
+        1.0f
+      )
+    )
   );
 
   data_vertex.brightness = (
