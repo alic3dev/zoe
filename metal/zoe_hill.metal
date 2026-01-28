@@ -65,7 +65,11 @@ struct data_vertex {
 
   float sine_frame = (
     math_c_sine(
-      data_frame->frame,
+      (
+        (float)
+        data_frame->frame /
+        1000.0f
+      ),
       math_c_pi
     )
   );
@@ -100,7 +104,7 @@ fragment float4 zoe_hill_fragment(
   float4 texture_colour = float4(
     texture.sample(
       sampler_texture,
-      data_vertex.position_texture
+      data_vertex.position_texture / 1000.0f
     )
   );
 

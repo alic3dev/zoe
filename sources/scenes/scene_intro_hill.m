@@ -14,11 +14,15 @@
 #include <textures/zoe_texture_static.h>
 #include <zoe_pipeline_index.h>
 
+#include <math_c_pi.h>
+#include <math_c_sine.h>
+
 #include <metil.h>
 #include <metil_audio/metil_audio_io_proc.h>
 #include <metil_audio/metil_audio_io_proc_data.h>
 #include <metil_collision/metil_collision_uncollide/metil_collision_uncollide_circular.h>
 #include <metil_group.h>
+#include <metil_mesh/metil_mesh_mushroom.h>
 #include <metil_object/metil_object.h>
 #include <metil_object/metil_object_buffer.h>
 #include <metil_object/metil_object_text.h>
@@ -141,6 +145,7 @@ void scene_intro_hill_initialize(
         );
 
         break;
+      case scene_intro_hill_index_renderable_group_mushrooms:
       case scene_intro_hill_index_renderable_group_text: {
         metil_renderable_initialize_at_index(
           scene->renderables,
@@ -160,6 +165,118 @@ void scene_intro_hill_initialize(
         break;
       }
     }
+  }
+
+  struct metil_group* metil_group_mushrooms = (
+    scene->renderables[
+      scene_intro_hill_index_renderable_group_mushrooms
+    ].renderable
+  );
+
+  metil_group_add_length_initialize(
+    metil_group_mushrooms,
+    333,
+    metil_renderable_type_object
+  );
+
+  for (
+    unsigned short int index_mushroom = 0;
+    index_mushroom < metil_group_mushrooms->length;
+    ++index_mushroom
+  ) {
+    struct metil_object* metil_object_mushroom = (
+      metil_group_mushrooms->renderables[
+        index_mushroom
+      ]->renderable
+    );
+
+    metil_mesh_mushroom_initialize(
+      &metil_object_mushroom->mesh,
+      (struct math_c_vector3_float) {
+        .x = 10.0f,
+        .y = -10.0f,
+        .z = 10.0f
+      },
+      (struct math_c_vector2_unsigned_short_int) {
+        .x = 100,
+        .y = 100
+      }
+    );
+
+    float angle = (
+      (float)
+      index_mushroom /
+      (
+        (float)
+        metil_group_mushrooms->length /
+        50.0f
+      ) *
+      math_c_pi
+    );
+
+    float distance = (
+      (float)
+      index_mushroom /
+      (
+        (float)
+        metil_group_mushrooms->length /
+        10.0f
+      ) *
+      100.0f +
+      200.0f
+    );
+
+    metil_object_mushroom->index_pipeline_render = (
+      zoe_pipeline_index_mushroom
+    );
+
+    metil_object_mushroom->position.x = (
+      math_c_sine(
+        angle,
+        math_c_pi
+      ) *
+      distance
+    );
+
+    metil_object_mushroom->position.z = (
+      math_c_cosine(
+        angle,
+        math_c_pi
+      ) *
+      distance
+    );
+
+    struct math_c_vector2_float position_percentage = {
+      .x = (
+        math_c_absolute_float(
+          metil_object_mushroom->position.x / (
+            length_vertices_hill_x -
+            1
+          )
+        ) / 2.0f
+      ),
+      .y = (
+        math_c_absolute_float(
+          metil_object_mushroom->position.z / (
+            length_vertices_hill_y -
+            1
+          )
+        ) / 2.0f
+      )
+    };
+
+    metil_object_mushroom->position.y = (
+      hill_y_value_get(
+        &position_percentage
+      ) +
+      -metil_object_mushroom->mesh.size.y /
+      2.0f
+    );
+
+    metil_object_buffers_initialize(
+      metil_object_mushroom,
+      metil->renderer_interface.metal_device
+    );
   }
 
   scene->length_textures = (

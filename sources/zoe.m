@@ -176,6 +176,18 @@ void zoe_renderer_on_initialize(
     ]
   ];
 
+  zoe_pipeline_index_mushroom = [
+    metil->renderer_interface.renderer
+    pipeline_add: [
+      metil->library.library
+      newFunctionWithName: @"zoe_mushroom_fragment"
+    ]
+    function_vertex: [
+      metil->library.library
+      newFunctionWithName: @"zoe_mushroom_vertex"
+    ]
+  ];
+
   zoe_pipeline_index_text = [
     metil->renderer_interface.renderer
     pipeline_add: [
