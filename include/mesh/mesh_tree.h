@@ -3,15 +3,22 @@
 
 #include <math_c_vector.h>
 
+#ifndef __METAL_VERSION__
 #include <metil_mesh/metil_mesh.h>
+#endif
 
 #define zoe_mesh_tree_length_segments_height 10
 #define zoe_mesh_tree_length_vertices_radius 10
-#define zoe_mesh_tree_length_vertices_trunk zoe_mesh_tree_length_segments_height * zoe_mesh_tree_length_vertices_radius
+#define zoe_mesh_tree_length_vertices_trunk (\
+  zoe_mesh_tree_length_segments_height *\
+  zoe_mesh_tree_length_vertices_radius\
+)
 
+#ifndef __METAL_VERSION__
 void mesh_tree_initialize(
   struct metil_mesh* _Nonnull,
   struct math_c_vector2_float* _Nonnull
 );
+#endif
 
 #endif

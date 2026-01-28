@@ -1,3 +1,5 @@
+#include <zoe_metal/zoe_wave.h>
+
 #include <metil_rendering/metil_renderer_data_frame.h>
 #include <metil_rendering/metil_renderer_data_object.h>
 #include <metil_rendering/metil_renderer_vertex_index_parameter.h>
@@ -32,9 +34,17 @@ struct data_vertex {
 
   data_vertex.position = (
     data_object->view_model_matrix_projection *
-    positions[
-      id_vertex
-    ]
+    (
+      positions[
+        id_vertex
+      ] +
+      zoe_wave_get(
+        data_frame->time_elapsed,
+        id_vertex,
+        3000,
+        1.1f
+      )
+    )
   );
 
   data_vertex.brightness = (

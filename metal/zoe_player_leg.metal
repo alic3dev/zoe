@@ -1,3 +1,5 @@
+#include <zoe_metal/zoe_shakiness.h>
+
 #include <mesh/mesh_player.h>
 #include <mesh/mesh_player_leg.h>
 
@@ -11,6 +13,7 @@
 struct data_vertex {
   float4 position [[position]];
   float brightness;
+  float4 colour;
 };
 
 [[vertex]] struct data_vertex zoe_player_leg_vertex(
@@ -57,7 +60,15 @@ struct data_vertex {
 
   data_vertex.position = (
     data_object->view_model_matrix_projection *
-    position_vertex
+    (
+      position_vertex +
+      zoe_shakiness_get(
+        data_frame->time_elapsed,
+        (id_vertex + 1) * 13,
+        333,
+        1.3f
+      )
+    )
   );
 
   unsigned char index_segment_y = (
@@ -85,6 +96,15 @@ struct data_vertex {
     )
   );
 
+  data_vertex.colour = (
+    zoe_shakiness_get(
+      data_frame->time_elapsed,
+      (id_vertex + 1) * 13,
+      333,
+      1.3f
+    )
+  );
+
   return data_vertex;
 }
 
@@ -92,9 +112,9 @@ fragment float4 zoe_player_leg_fragment(
   struct data_vertex data_vertex [[stage_in]]
 ) {
   return float4(
-    mesh_player_colour_r * data_vertex.brightness,
-    mesh_player_colour_g * data_vertex.brightness,
-    mesh_player_colour_b * data_vertex.brightness,
+    data_vertex.colour.r * data_vertex.brightness,
+    data_vertex.colour.g * data_vertex.brightness,
+    data_vertex.colour.b * data_vertex.brightness,
     mesh_player_colour_a
   );
 }

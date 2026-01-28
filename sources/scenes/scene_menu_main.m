@@ -192,8 +192,9 @@ void scene_menu_main_initialize(
   );
 
   zoe_object_tree_initialize(
+    metil,
     metil_object,
-    (void*) 0,
+    0,
     (struct math_c_vector2_float) {
       .x = 1.0f,
       .y = 66.6f
@@ -201,7 +202,7 @@ void scene_menu_main_initialize(
     scene->textures[
       textures_scene_menu_main_tree
     ],
-    metil->renderer_interface.metal_device
+    0
   );
 
   metil_object = (
