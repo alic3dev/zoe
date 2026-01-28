@@ -140,6 +140,17 @@ struct data_vertex {
     sine_frame
   );
 
+  if (
+    data_object->noise % 2 == 1
+  ) {
+    data_vertex.position_texture = (
+      (
+        data_vertex.position_texture
+      ) /
+      100000.0f
+    );
+  }
+
   return data_vertex;
 }
 

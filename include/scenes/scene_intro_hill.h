@@ -13,7 +13,7 @@
 #endif
 #include <MetalKit/MetalKit.h>
 
-#define scene_intro_hill_length_renderables 6
+#define scene_intro_hill_length_renderables 7
 #define scene_intro_hill_length_group_text_renderables 3
 
 enum scene_intro_hill_index_renderable {
@@ -22,7 +22,8 @@ enum scene_intro_hill_index_renderable {
   scene_intro_hill_index_renderable_player_mirror = 2,
   scene_intro_hill_index_renderable_tree_zoe = 3,
   scene_intro_hill_index_renderable_tree_zoe_mirror = 4,
-  scene_intro_hill_index_renderable_group_text = 5
+  scene_intro_hill_index_renderable_group_mushrooms = 5,
+  scene_intro_hill_index_renderable_group_text = 6
 };
 
 enum scene_intro_hill_index_renderable_group_text_index_renderable {
