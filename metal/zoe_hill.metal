@@ -1,3 +1,6 @@
+#include <math_c_pi.h>
+#include <math_c_sine.h>
+
 #include <metil_rendering/metil_renderer_data_frame.h>
 #include <metil_rendering/metil_renderer_data_object.h>
 #include <metil_rendering/metil_renderer_vertex_index_parameter.h>
@@ -6,6 +9,7 @@
 
 struct data_vertex {
   float4 position [[position]];
+  float2 position_texture;
   float distance;
   float brightness;
 };
@@ -59,12 +63,47 @@ struct data_vertex {
     )
   );
 
+  float sine_frame = (
+    math_c_sine(
+      data_frame->frame,
+      math_c_pi
+    )
+  );
+
+  data_vertex.position_texture.x = (
+    positions[
+      id_vertex
+    ].x +
+    sine_frame
+  );
+
+  data_vertex.position_texture.y = (
+    positions[
+      id_vertex
+    ].z +
+    sine_frame
+  );
+
   return data_vertex;
 }
 
 fragment float4 zoe_hill_fragment(
-  struct data_vertex data_vertex [[stage_in]]
+  struct data_vertex data_vertex [[stage_in]],
+  metal::texture2d<half> texture [[ texture(0) ]]
 ) {
+  constexpr metal::sampler sampler_texture(
+    metal::t_address::repeat,
+    metal::r_address::repeat,
+    metal::s_address::repeat
+  );
+
+  float4 texture_colour = float4(
+    texture.sample(
+      sampler_texture,
+      data_vertex.position_texture
+    )
+  );
+
   float brightness = metal::fmin(
     metal::fmax(
       1.0f - (
@@ -77,9 +116,9 @@ fragment float4 zoe_hill_fragment(
   );
 
   return float4(
-    brightness * data_vertex.brightness,
-    brightness * data_vertex.brightness,
-    brightness * data_vertex.brightness,
+    texture_colour.r * brightness * data_vertex.brightness,
+    texture_colour.g * brightness * data_vertex.brightness,
+    texture_colour.b * brightness * data_vertex.brightness,
     1.0f
   );
 }

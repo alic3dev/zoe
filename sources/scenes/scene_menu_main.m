@@ -4,6 +4,7 @@
 #include <object/object_ground.h>
 #include <object/object_tree.h>
 #include <scenes/scene_id.h>
+#include <textures/zoe_texture_static.h>
 #include <zoe_pipeline_index.h>
 
 #include <metil.h>
@@ -104,52 +105,35 @@ void scene_menu_main_initialize(
   scene->length_textures = 5;
   scene->textures = realloc(
     scene->textures,
-    sizeof(id<MTLTexture>) *
+    sizeof(
+      id<MTLTexture>
+    ) *
     scene->length_textures
   );
 
-  MTKTextureLoader* texture_loader = [
-    [MTKTextureLoader alloc]
-    initWithDevice: (
-      metil->renderer_interface.metal_device
-    )
-  ];
-
   scene->textures[
     textures_scene_menu_main_ground
-  ] = [texture_loader
-    newTextureWithContentsOfURL: [NSURL
-      fileURLWithPath:@"0028.png"
-      isDirectory: 0
-      relativeToURL: [NSURL
-        fileURLWithPath:[NSString
-          stringWithUTF8String: metil->paths.directory_textures
-        ]
-        isDirectory: 1
-      ]
-    ]
-    options: (void*) 0
-    error: (void*) 0
-  ];
+  ] = (
+    zoe_texture_static_generate(
+      (struct math_c_vector2_unsigned_short_int) {
+        .x = 300,
+        .y = 300
+      },
+      metil->renderer_interface.metal_device
+    )
+  );
 
   scene->textures[
     textures_scene_menu_main_tree
-  ] = [texture_loader
-    newTextureWithContentsOfURL: [NSURL
-      fileURLWithPath:@"zoef.png"
-      isDirectory: 0
-      relativeToURL: [NSURL
-        fileURLWithPath:[NSString
-          stringWithUTF8String: metil->paths.directory_textures
-        ]
-        isDirectory: 1
-      ]
-    ]
-    options: (void*) 0
-    error: (void*) 0
-  ];
-
-  [texture_loader release];
+  ] = (
+    zoe_texture_static_generate(
+      (struct math_c_vector2_unsigned_short_int) {
+        .x = 300, 
+        .y = 300
+      },
+      metil->renderer_interface.metal_device
+    )
+  );
 
   for (
     unsigned int index_renderable = 0;
