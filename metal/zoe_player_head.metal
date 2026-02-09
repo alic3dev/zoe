@@ -54,13 +54,7 @@ struct data_vertex {
     (
       vertices[
         id_vertex
-      ] +
-      zoe_shakiness_get(
-        data_frame->time_elapsed,
-        (id_vertex + 1) * 13,
-        333,
-        1.3f
-      )
+      ]
     )
   );
 

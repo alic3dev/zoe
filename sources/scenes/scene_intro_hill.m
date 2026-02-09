@@ -8,6 +8,7 @@
 #include <input/input_movement.h>
 #include <mesh/mesh_hill.h>
 #include <model/model_player.h>
+#include <model/model_zoe.h>
 #include <object/object_hill.h>
 #include <object/object_tree.h>
 #include <scenes/scene_id.h>
@@ -138,6 +139,7 @@ void scene_intro_hill_initialize(
     ) {
       case scene_intro_hill_index_renderable_player:
       case scene_intro_hill_index_renderable_player_mirror:
+      case scene_intro_hill_index_renderable_zoe:
         metil_renderable_initialize_at_index(
           scene->renderables,
           index_renderable,
@@ -377,11 +379,24 @@ void scene_intro_hill_initialize(
     1
   );
 
+  struct metil_model* metil_model_zoe = (
+    scene->renderables[
+      scene_intro_hill_index_renderable_zoe
+    ].renderable
+  );
+
+  zoe_model_zoe_initialize(
+    metil,
+    metil_model_zoe
+  );
+
   struct metil_object* metil_object_hill = (
     scene->renderables[
       scene_intro_hill_index_renderable_hill
     ].renderable
   );
+
+  metil_object_hill->visible = 0;
 
   zoe_object_hill_initialize(
     metil_object_hill,
