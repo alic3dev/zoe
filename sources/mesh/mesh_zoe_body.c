@@ -118,22 +118,24 @@ void mesh_zoe_body_initialize(
     2.0f
   );
 
-  unsigned int length_segments_leg = 160;
-  unsigned int length_segments_leg_radial = 160;
+  float multiplier_vertex = 2;
+
+  unsigned int length_segments_leg = 40 * multiplier_vertex;
+  unsigned int length_segments_leg_radial = 40 * multiplier_vertex;
   unsigned int length_vertices_leg = (
     length_segments_leg *
     length_segments_leg_radial
   );
 
-  unsigned int length_segments_hips = 80;
-  unsigned int length_segments_hips_radial = 80;
+  unsigned int length_segments_hips = 20 * multiplier_vertex;
+  unsigned int length_segments_hips_radial = 40 * multiplier_vertex;
   unsigned int length_vertices_hips = (
     length_segments_hips *
     length_segments_hips_radial
   );
 
-  unsigned int length_segments_waist = 160;
-  unsigned int length_segments_waist_radial = 160;
+  unsigned int length_segments_waist = 40 * multiplier_vertex;
+  unsigned int length_segments_waist_radial = 40 * multiplier_vertex;
   unsigned int length_vertices_torso = (
     length_segments_waist *
     length_segments_waist_radial
@@ -225,6 +227,10 @@ void mesh_zoe_body_initialize(
         0.0f
       );
 
+      float percentage_thigh = (
+        0.0f
+      );
+
       if (
         percentage_segment_leg < 0.5f
       ) {
@@ -276,7 +282,7 @@ void mesh_zoe_body_initialize(
           percentage_calf
         );
       } else {
-        float percentage_thigh = (
+        percentage_thigh = (
           (
             percentage_segment_leg -
             0.5f
@@ -308,6 +314,56 @@ void mesh_zoe_body_initialize(
         );
       }
 
+      float radius_x = (
+        radius
+      );
+
+      float radius_z = (
+        radius
+      );
+
+      if (
+        percentage_thigh >= 0.9f
+      ) {
+        radius_x = (
+          radius_x +
+          radius_x *
+          (0.1f - (1.0f - percentage_thigh)) *
+          0.04f
+        );
+        
+        if (
+          percentage_segment_radial_leg >= 0.25f &&
+          percentage_segment_radial_leg <= 0.75f &&
+          (
+            (
+              index_leg == 0 &&
+              percentage_segment_radial_leg >= 0.5f
+            ) ||
+            (
+              index_leg == 1 &&
+              percentage_segment_radial_leg <= 0.5f
+            )
+          )
+        ) {
+          radius_z = (
+            radius_z -
+            radius_z *
+            (0.1f - (1.0f - percentage_thigh)) *
+            (
+              (
+                1.0f -
+                math_c_sine(
+                  percentage_segment_radial_leg / 0.5f * math_c_pi_half,
+                  math_c_pi
+                )
+              ) *
+              20.0f
+            )
+          );
+        }
+      }
+
       float angle = (
         percentage_segment_radial_leg *
         math_c_pi_doubled
@@ -320,7 +376,7 @@ void mesh_zoe_body_initialize(
           angle,
           math_c_pi
         ) *
-        radius
+        radius_x
       );
 
       metil_mesh_zoe_body->vertices[
@@ -336,7 +392,7 @@ void mesh_zoe_body_initialize(
           angle,
           math_c_pi
         ) *
-        radius
+        radius_z
       );
 
       metil_mesh_zoe_body->vertices[
@@ -346,24 +402,10 @@ void mesh_zoe_body_initialize(
       );
 
       if (
-        percentage_segment_leg < 0.5f
+        percentage_segment_leg >= 0.5f
       ) {
-        radius = (
-          radius_calf
-        );
-      } else {
-        if (
-          percentage_segment_leg < 0.6f
-        ) {
-          percentage_segment_leg = (
-            percentage_segment_leg +
-            // 0.125f
-            0
-          );
-        }
-
-        radius = (
-          radius +
+        radius_x = (
+          radius_x +
           math_c_sine(
             (
               (
@@ -389,7 +431,7 @@ void mesh_zoe_body_initialize(
           metil_mesh_zoe_body->vertices[
             index_vertex
           ].x -
-          radius
+          radius_x
         );
       } else {
         metil_mesh_zoe_body->vertices[
@@ -398,7 +440,7 @@ void mesh_zoe_body_initialize(
           metil_mesh_zoe_body->vertices[
             index_vertex
           ].x +
-          radius
+          radius_x
         );
       }
       
@@ -480,13 +522,104 @@ void mesh_zoe_body_initialize(
       0.6f
     );
 
+    float percentage_width = (
+      (
+        metil_mesh_zoe_body->vertices[
+          index_vertex
+        ].x +
+        radius
+      ) /
+      (
+        radius *
+        2.0f
+      )
+    );
+
     if (
       metil_mesh_zoe_body->vertices[
         index_vertex
-      ].z < 0.0f
+      ].z > 0.0f
     ) {
+      if (
+        percentage_width >= 0.15f &&
+        percentage_width <= 0.85f
+      ) {
+
+        if (
+          percentage_segment_hips <= 0.25f
+        ) {
+          metil_mesh_zoe_body->vertices[
+            index_vertex
+          ].z = (
+            metil_mesh_zoe_body->vertices[
+              index_vertex
+            ].z -
+            metil_mesh_zoe_body->vertices[
+              index_vertex
+            ].z *
+            math_c_minimum_float(
+              1.0f,
+              (1.0f - (
+                  percentage_segment_hips / 0.25f)) *
+              math_c_absolute_float(
+                math_c_tangent(
+                  (
+                    (
+                      percentage_width -
+                      0.15f
+                    ) /
+                    0.7f *
+                    math_c_pi
+                  ),
+                  math_c_pi
+                )
+              ) /
+              8.0f
+            ) *
+            (
+              (0.25f - percentage_segment_hips) / 0.25f
+            )
+          );
+        } else if (
+          percentage_segment_hips < 0.4f
+        ) {
+          // metil_mesh_zoe_body->vertices[
+          //   index_vertex
+          // ].z = (
+          //   metil_mesh_zoe_body->vertices[
+          //     index_vertex
+          //   ].z -
+          //   metil_mesh_zoe_body->vertices[
+          //     index_vertex
+          //   ].z *
+          //   math_c_minimum_float(
+          //     1.0f,
+          //     ((
+          //       math_c_minimum_float(
+          //         percentage_segment_hips - 0.25f,
+          //         0.15f) / 0.15f)) *
+          //     math_c_absolute_float(
+          //       math_c_tangent(
+          //         (
+          //           (
+          //             percentage_width -
+          //             0.25f
+          //           ) /
+          //           0.5f *
+          //           math_c_pi
+          //         ),
+          //         math_c_pi
+          //       )
+          //     ) /
+          //     8.0f
+          //   )
+          // );
+        }
+      }
+    } else {
       float radius_butt_value = (
         math_c_sine(
+          math_c_sine(
           (
             math_c_sine(
               (
@@ -497,26 +630,14 @@ void mesh_zoe_body_initialize(
             ) *
             math_c_pi
           ),
+          math_c_pi),
           math_c_pi
         ) *
         radius_butt
       );
 
-      float percentage_butt_width = (
-        (
-          metil_mesh_zoe_body->vertices[
-            index_vertex
-          ].x +
-          radius
-        ) /
-        (
-          radius *
-          2.0f
-        )
-      );
-
       float percentage_buttocks_width = (
-        percentage_butt_width
+        percentage_width
       );
 
       if (
@@ -553,6 +674,50 @@ void mesh_zoe_body_initialize(
         ) *
         radius_butt_value
       );
+
+      if (
+        percentage_width >= 0.25f &&
+        percentage_width <= 0.75f
+      ) {
+        metil_mesh_zoe_body->vertices[
+          index_vertex
+        ].z = (
+          metil_mesh_zoe_body->vertices[
+            index_vertex
+          ].z -
+          metil_mesh_zoe_body->vertices[
+            index_vertex
+          ].z *
+          math_c_minimum_float(
+            1.0f,
+            (
+              1.0f -
+              math_c_sine(
+                (
+                  percentage_segment_hips *
+                  math_c_pi_half
+                ),
+                math_c_pi
+              )
+            ) *
+            math_c_absolute_float(
+              math_c_tangent(
+                (
+                  (
+                    percentage_width -
+                    0.25f
+                  ) /
+                  0.5f *
+                  math_c_pi
+                ),
+                math_c_pi
+              )
+            ) /
+            8.0f
+          ) *
+          (1.0f - percentage_segment_hips)
+        );
+      }
     }
 
     metil_mesh_zoe_body->vertices[

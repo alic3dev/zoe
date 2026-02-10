@@ -80,7 +80,7 @@ void scene_intro_hill_initialize(
   // );
 
   metil->rendering_properties.camera.height = (
-    8.0f
+    4.0f
   );
   //   metil_camera_height_default *
   //   4.0f
@@ -518,6 +518,8 @@ void scene_intro_hill_initialize(
           metil,
           metil_group_text_group,
           "t h i s,     i s   n o t     yo u r      t r e e"
+          
+           "i wrote this its all my tree <3 "
         );
 
         break;
@@ -526,6 +528,12 @@ void scene_intro_hill_initialize(
   }
 
   metil_model_player->visible = 0;
+  metil_model_player_mirror->visible = 0;
+
+  scene->player.speed_movement = (
+    scene->player.speed_movement /
+    4.0f
+  );
 }
 
 void scene_intro_hill_poll(
