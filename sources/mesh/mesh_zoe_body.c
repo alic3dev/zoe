@@ -8,8 +8,6 @@
 
 #include <metil_mesh/metil_mesh.h>
 
-#include <stdio.h>
-
 void mesh_zoe_body_initialize(
   struct metil_mesh* metil_mesh_zoe_body
 ) {
@@ -21,14 +19,19 @@ void mesh_zoe_body_initialize(
 
   // leg measurements
 
+  float circumference_ankle = (
+    2.0f
+  );
+
   float diameter_ankle = (
-    1.0f
+    circumference_ankle / 
+    math_c_pi
   );
 
   float length_leg = (
     // height /
     3.0f *
-    diameter_ankle
+    circumference_ankle
   );
 
   float length_calf = (
@@ -47,7 +50,7 @@ void mesh_zoe_body_initialize(
 
   float diameter_calf = (
     diameter_ankle *
-    1.6f
+    1.75f
   );
 
   float radius_calf = (
@@ -65,19 +68,12 @@ void mesh_zoe_body_initialize(
     2.0f
   );
 
-  float gap_thigh = (
-    // diameter_ankle *
-    // 0.25f
-    0.0f
-  );
-
   float diameter_hips = (
     diameter_thigh *
-    2.0f +
-    gap_thigh
+    2.0f
   );
 
-  float radius_hip = (
+  float radius_hips = (
     diameter_hips /
     2.0f
   );
@@ -86,10 +82,25 @@ void mesh_zoe_body_initialize(
     length_calf
   );
 
+  float length_torso = (
+    length_leg *
+    0.75f
+  );
+
+  float length_head = (
+    length_leg *
+    0.25f
+  );
+
   // waist measurements
   float diameter_waist = (
     diameter_hips *
-    0.95f
+    0.90f
+  );
+
+  float radius_waist = (
+    diameter_waist /
+    2.0f
   );
 
   unsigned int length_segments_leg = 40;
@@ -99,16 +110,26 @@ void mesh_zoe_body_initialize(
     length_segments_leg_radial
   );
 
+  unsigned int length_segments_waist = 40;
+  unsigned int length_segments_waist_radial = 40;
+  unsigned int length_vertices_torso = (
+    length_segments_waist *
+    length_segments_waist_radial
+  );
+
   metil_mesh_zoe_body->length_indices = (
     length_vertices_leg *
     // 6 *
     2 * // 2 legs
+    2 +
+    length_vertices_torso *
     2
   );
 
   metil_mesh_zoe_body->length_vertices = (
     length_vertices_leg *
-    2
+    2 +
+    length_vertices_torso
   );
 
   clic3_memory_reallocate_raw(
@@ -131,7 +152,7 @@ void mesh_zoe_body_initialize(
     )
   );
 
-  unsigned int index_vertex = (
+  unsigned long int index_vertex = (
     0
   );
 
@@ -247,7 +268,11 @@ void mesh_zoe_body_initialize(
           (
             radius_calf -
             radius_ankle *
-            0.125f
+            0.125f *
+            (
+              1.0f -
+              percentage_thigh
+            )
           )
         );
 
@@ -307,7 +332,8 @@ void mesh_zoe_body_initialize(
         ) {
           percentage_segment_leg = (
             percentage_segment_leg +
-            0.125f
+            // 0.125f
+            0
           );
         }
 
@@ -359,6 +385,109 @@ void mesh_zoe_body_initialize(
   }
 
   for (
+    unsigned int index_vertex_torso = 0;
+    index_vertex_torso < length_vertices_torso;
+    ++index_vertex_torso
+  ) {
+    unsigned int index_segment_waist = (
+      index_vertex_torso /
+      length_segments_waist_radial
+    );
+
+    unsigned int index_segment_radial_waist = (
+      index_vertex_torso %
+      length_segments_waist_radial
+    );
+
+    float percentage_segment_waist = (
+      (float) index_segment_waist /
+      (float) (
+        length_segments_waist -
+        1
+      )
+    );
+
+    float percentage_segment_radial_waist = (
+      (float) index_segment_radial_waist /
+      (float) (
+        length_segments_waist_radial -
+        1
+      )
+    );
+
+    float asdf = (
+      math_c_sine(
+        (
+          percentage_segment_waist *
+          math_c_pi
+        ),
+        math_c_pi
+      )
+    );
+
+    float radius = (
+      (
+        radius_hips *
+        (
+          1.0f -
+          asdf
+        )
+      ) +
+      (
+        radius_waist *
+        asdf
+      )
+    );
+
+    float angle = (
+      percentage_segment_radial_waist *
+      math_c_pi_doubled
+    );
+
+    metil_mesh_zoe_body->vertices[
+      index_vertex
+    ].x = (
+      math_c_sine(
+        angle,
+        math_c_pi
+      ) *
+      radius
+    );
+
+    metil_mesh_zoe_body->vertices[
+      index_vertex
+    ].y = (
+      length_leg +
+      (
+        percentage_segment_waist *
+        length_torso
+      )
+    );
+
+    metil_mesh_zoe_body->vertices[
+      index_vertex
+    ].z = (
+      math_c_cosine(
+        angle,
+        math_c_pi
+      ) *
+      radius *
+      0.6f
+    );
+
+    metil_mesh_zoe_body->vertices[
+      index_vertex
+    ].w = (
+      1.0f
+    );
+
+    index_vertex = (
+      index_vertex +
+      1
+    );
+  }
+
+  for (
     unsigned int index_indices = 0;
     index_indices < metil_mesh_zoe_body->length_indices;
     ++index_indices
@@ -374,4 +503,6 @@ void mesh_zoe_body_initialize(
       )
     );
   }
+
+
 }
