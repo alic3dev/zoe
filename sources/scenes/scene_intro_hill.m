@@ -75,14 +75,16 @@ void scene_intro_hill_initialize(
     metil->configuration.rendering_properties.brightness_text
   );
 
-  metil->rendering_properties.camera.mode = (
-    metil_camera_mode_third_person
-  );
+  // metil->rendering_properties.camera.mode = (
+  //   metil_camera_mode_third_person
+  // );
 
   metil->rendering_properties.camera.height = (
-    metil_camera_height_default *
-    4.0f
+    8.0f
   );
+  //   metil_camera_height_default *
+  //   4.0f
+  // );
 
   metil_scene_initialize_with_renderables(
     metil,
@@ -522,6 +524,8 @@ void scene_intro_hill_initialize(
       }
     }
   }
+
+  metil_model_player->visible = 0;
 }
 
 void scene_intro_hill_poll(
@@ -531,6 +535,7 @@ void scene_intro_hill_poll(
   struct scene_intro_hill_data* scene_intro_hill_data = (
     scene->data
   );
+
 
   metil_scene_poll_default(
     metil,
