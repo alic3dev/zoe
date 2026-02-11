@@ -80,7 +80,7 @@ void scene_intro_hill_initialize(
   // );
 
   metil->rendering_properties.camera.height = (
-    6.0f
+    10.0f
   );
   //   metil_camera_height_default *
   //   4.0f
