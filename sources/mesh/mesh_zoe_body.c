@@ -737,26 +737,26 @@ void mesh_zoe_body_initialize(
     index_vertex_torso < length_vertices_torso;
     ++index_vertex_torso
   ) {
-    unsigned int index_segment_waist = (
+    unsigned int index_segment_torso = (
       index_vertex_torso /
       length_segments_waist_radial
     );
 
-    unsigned int index_segment_radial_waist = (
+    unsigned int index_segment_radial_torso = (
       index_vertex_torso %
       length_segments_waist_radial
     );
 
-    float percentage_segment_waist = (
-      (float) index_segment_waist /
+    float percentage_segment_torso = (
+      (float) index_segment_torso /
       (float) (
         length_segments_waist -
         1
       )
     );
 
-    float percentage_segment_radial_waist = (
-      (float) index_segment_radial_waist /
+    float percentage_segment_radial_torso = (
+      (float) index_segment_radial_torso /
       (float) (
         length_segments_waist_radial -
         1
@@ -766,7 +766,7 @@ void mesh_zoe_body_initialize(
     float curve_waist = (
       math_c_sine(
         (
-          percentage_segment_waist *
+          percentage_segment_torso *
           math_c_pi
         ),
         math_c_pi
@@ -788,7 +788,7 @@ void mesh_zoe_body_initialize(
     );
 
     float angle = (
-      percentage_segment_radial_waist *
+      percentage_segment_radial_torso *
       math_c_pi_doubled
     );
 
@@ -808,7 +808,7 @@ void mesh_zoe_body_initialize(
       length_leg +
       length_hips +
       (
-        percentage_segment_waist *
+        percentage_segment_torso *
         length_torso
       )
     );
@@ -823,6 +823,216 @@ void mesh_zoe_body_initialize(
       radius *
       0.6f
     );
+
+    float curvature_spine = (
+      0.1f
+    );
+
+    metil_mesh_zoe_body->vertices[
+      index_vertex
+    ].z = (
+      metil_mesh_zoe_body->vertices[
+        index_vertex
+      ].z +
+      (
+        math_c_sine(
+          (
+            percentage_segment_torso *
+            math_c_pi
+          ),
+          math_c_pi
+        ) *
+        curvature_spine *
+        radius_waist
+      )
+    );
+
+    float percentage_torso_width = (
+      (
+        metil_mesh_zoe_body->vertices[
+          index_vertex
+        ].x +
+        radius
+      ) /
+      (
+        radius *
+        2.0f
+      )
+    );
+
+    if (
+      metil_mesh_zoe_body->vertices[
+        index_vertex
+      ].z >= 0.0f &&
+      percentage_segment_torso <= 0.6f
+    ) {
+      float radius_stomach = (
+        0.125f
+      );
+
+      metil_mesh_zoe_body->vertices[
+        index_vertex
+      ].z = (
+        metil_mesh_zoe_body->vertices[
+          index_vertex
+        ].z +
+        (
+          math_c_sine(
+            (
+              percentage_torso_width *
+              math_c_pi
+            ),
+            math_c_pi
+          ) *
+            math_c_sine(
+              (
+                (
+                  (
+                    math_c_sine(
+                      (
+                        (
+                          percentage_segment_torso /
+                          0.6f
+                        ) *
+                        math_c_pi_half
+                      ),
+                      math_c_pi
+                    )
+                  )
+                ) *
+                math_c_pi
+              ),
+              math_c_pi
+          ) *
+          radius_stomach
+        )
+      );
+    }
+
+    if (
+      metil_mesh_zoe_body->vertices[
+        index_vertex
+      ].z >= 0.0f &&
+      percentage_segment_torso >= 0.65f
+    ) {
+      float radius_breast = (
+        0.5f
+      );
+
+      float radius_breast_value = (
+        math_c_sine(
+          math_c_sine(
+            (
+              math_c_sine(
+                (
+                  (
+                    percentage_segment_torso -
+                    0.65f
+                  ) / 0.35f *
+                  math_c_pi_half
+                ),
+                math_c_pi
+              ) *
+              math_c_pi
+            ),
+            math_c_pi
+          ),
+          math_c_pi
+        ) *
+        radius_breast
+      );
+      
+      float percentage_segment_breast = (
+        (
+          percentage_segment_torso -
+          0.65f
+        ) /
+        0.35f
+      );
+
+      if (
+        percentage_segment_breast <= 0.25f
+      ) {
+        radius_breast_value = (
+          radius_breast_value *
+          (
+            1.0f -
+            (
+              0.25f -
+              percentage_segment_breast
+            ) *
+            3.0f
+          )
+        );
+      }
+
+      // .
+      //  .
+      //   .
+      //     .
+      //   ..
+      // .
+
+
+      float percentage_breast_width = (
+        percentage_torso_width
+      );
+
+      if (
+        percentage_breast_width > 0.5f
+      ) {
+        percentage_breast_width = (
+          0.5f -
+          (
+            percentage_breast_width -
+            0.5f
+          )
+        );
+      }
+
+      percentage_breast_width = (
+        1.0f -
+        (
+          percentage_breast_width / 
+          0.5f
+        )
+      );
+
+      metil_mesh_zoe_body->vertices[
+        index_vertex
+      ].z = (
+        metil_mesh_zoe_body->vertices[
+          index_vertex
+        ].z +
+        (
+          (
+            math_c_sine(
+              (
+                percentage_breast_width * 
+                math_c_pi_half
+              ),
+              math_c_pi
+            ) *
+            0.75f +
+            math_c_sine(
+              (
+                math_c_sine(
+                  (
+                    (1.0f - percentage_breast_width) *
+                    math_c_pi_half
+                  ),
+                  math_c_pi
+                ) * 
+                math_c_pi
+              ),
+              math_c_pi
+            ) *
+            0.25f
+          ) *
+          radius_breast_value
+        )
+      );
+    }
 
     metil_mesh_zoe_body->vertices[
       index_vertex
@@ -852,79 +1062,4 @@ void mesh_zoe_body_initialize(
       )
     );
   }
-
-
 }
-
-
-// this is a decent enough boob/breast shape, saving this for later
-// if (
-//       metil_mesh_zoe_body->vertices[
-//         index_vertex
-//       ].z < 0.0f
-//     ) {
-//       float radius_butt_value = (
-//         math_c_sine(
-//           (
-//             math_c_sine(
-//               (
-//                 percentage_segment_hips *
-//                 math_c_pi_half
-//               ),
-//               math_c_pi
-//             ) *
-//             math_c_pi
-//           ),
-//           math_c_pi
-//         ) *
-//         radius_butt *
-//         5.0f
-//       );
-
-//       float percentage_buttocks_width = (
-//         (
-//           metil_mesh_zoe_body->vertices[
-//             index_vertex
-//           ].x +
-//           radius
-//         ) /
-//         (
-//           radius *
-//           2.0f
-//         )
-//       );
-
-//       if (
-//         percentage_buttocks_width > 0.5f
-//       ) {
-//         percentage_buttocks_width = (
-//           percentage_buttocks_width -
-//           0.5f
-//         );
-//       }
-
-//       percentage_buttocks_width = (
-//         percentage_buttocks_width / 
-//         0.5f
-//       );
-
-//       metil_mesh_zoe_body->vertices[
-//         index_vertex
-//       ].z = (
-//         metil_mesh_zoe_body->vertices[
-//           index_vertex
-//         ].z -
-//         math_c_sine(
-//           math_c_sine(
-//             (
-//               percentage_buttocks_width *
-//               math_c_pi
-//             ),
-//             math_c_pi
-//           ) * math_c_pi_half,
-//           math_c_pi
-//         ) *
-//         radius_butt_value
-//       );
-//     }
-
