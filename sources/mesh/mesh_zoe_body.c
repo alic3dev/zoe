@@ -119,9 +119,24 @@ void mesh_zoe_body_initialize(
   );
 
   // arm measurements
+  float radius_shoulder = (
+    radius_ankle
+  );
+
+  float diameter_shoulder = (
+    radius_shoulder *
+    2.0f
+  );
+
   float length_arm = (
-    length_torso +
-    length_hips
+    (
+      length_torso +
+      length_hips
+    )
+  );
+
+  float length_shoulder = (
+    radius_ankle
   );
   
   float length_upper_arm = (
@@ -136,10 +151,6 @@ void mesh_zoe_body_initialize(
   float radius_upperarm = (
     radius_ankle *
     1.1f
-  );
-
-  float radius_shoulder = (
-    radius_ankle
   );
 
   float radius_elbow = (
@@ -159,56 +170,107 @@ void mesh_zoe_body_initialize(
 
   float multiplier_vertex = 2;
 
-  unsigned int length_segments_leg = 40 * multiplier_vertex;
-  unsigned int length_segments_leg_radial = 40 * multiplier_vertex;
+  unsigned int length_segments_default = (
+    40
+  );
+
+  unsigned int length_segments_leg = (
+    length_segments_default *
+    multiplier_vertex
+  );
+  unsigned int length_segments_leg_radial = (
+    length_segments_default *
+    multiplier_vertex
+  );
   unsigned int length_vertices_leg = (
     length_segments_leg *
     length_segments_leg_radial
   );
 
-  unsigned int length_segments_hips = 20 * multiplier_vertex;
-  unsigned int length_segments_hips_radial = 40 * multiplier_vertex;
+  unsigned int length_segments_hips = (
+    length_segments_default /
+    2 *
+    multiplier_vertex
+  );
+  unsigned int length_segments_hips_radial = (
+    length_segments_default *
+    multiplier_vertex
+  );
   unsigned int length_vertices_hips = (
     length_segments_hips *
     length_segments_hips_radial
   );
 
-  unsigned int length_segments_waist = 40 * multiplier_vertex;
-  unsigned int length_segments_waist_radial = 40 * multiplier_vertex;
+  unsigned int length_segments_waist = (
+    length_segments_default *
+    multiplier_vertex
+  );
+  unsigned int length_segments_waist_radial = (
+    length_segments_default *
+    multiplier_vertex
+  );
   unsigned int length_vertices_torso = (
     length_segments_waist *
     length_segments_waist_radial
   );
 
-  unsigned int length_segments_forearm = 40 * multiplier_vertex;
-  unsigned int length_segments_forearm_radial = 40 * multiplier_vertex;
+  unsigned int length_segments_upper_arm = (
+    length_segments_default *
+    multiplier_vertex
+  );
+  unsigned int length_segments_upper_arm_radial = (
+    length_segments_default *
+    multiplier_vertex
+  );
+  unsigned int length_vertices_upper_arm = (
+    length_segments_upper_arm *
+    length_segments_upper_arm_radial
+  );
+
+  unsigned int length_segments_forearm = (
+    length_segments_default *
+    multiplier_vertex
+  );
+  unsigned int length_segments_forearm_radial = (
+    length_segments_default *
+    multiplier_vertex
+  );
   unsigned int length_vertices_forearm = (
     length_segments_forearm *
     length_segments_forearm_radial
   );
 
-  unsigned int length_segments_upper_arm = 40 * multiplier_vertex;
-  unsigned int length_segments_upper_arm_radial = 40 * multiplier_vertex;
-  unsigned int length_vertices_upper_arm = (
-    length_segments_forearm *
-    length_segments_forearm_radial
+  unsigned int length_segments_shoulder = (
+    length_segments_default /
+    6 *
+    multiplier_vertex
+  );
+  unsigned int length_segments_shoulder_radial = (
+    length_segments_default *
+    multiplier_vertex
+  );
+  unsigned int length_vertices_shoulder = (
+    length_segments_shoulder *
+    length_segments_shoulder_radial
   );
 
   unsigned int length_vertices_arm = (
-    length_vertices_forearm +
-    length_vertices_upper_arm
+    length_vertices_upper_arm +
+    length_vertices_forearm
   );
 
   metil_mesh_zoe_body->length_indices = (
-    length_vertices_leg *
-    2 * // 2 legs
-    2 +
-    length_vertices_hips *
-    2 +
-    length_vertices_torso *
-    2 +
-    length_vertices_arm *
-    2 * // 2 arms
+    (
+      length_vertices_leg *
+      2 + // 2 legs
+      length_vertices_hips +
+      length_vertices_torso +
+      (
+        length_vertices_shoulder +
+        length_vertices_arm
+      ) *
+      2
+    ) *
     2
   );
 
@@ -217,7 +279,10 @@ void mesh_zoe_body_initialize(
     2 + // 2 legs
     length_vertices_hips +
     length_vertices_torso +
-    length_vertices_arm *
+    (
+      length_vertices_shoulder +
+      length_vertices_arm
+    ) *
     2 // 2 arms
   );
 
@@ -1072,6 +1137,271 @@ void mesh_zoe_body_initialize(
     ++index_arm
   ) {
     for (
+      unsigned int index_vertex_shoulder = 0;
+      index_vertex_shoulder < length_vertices_shoulder;
+      ++index_vertex_shoulder
+    ) {
+      unsigned int index_segment_shoulder = (
+        index_vertex_shoulder /
+        length_segments_shoulder_radial
+      );
+
+      unsigned int index_segment_shoulder_radial = (
+        index_vertex_shoulder %
+        length_segments_shoulder_radial
+      );
+
+      float percentage_segment_shoulder_radial = (
+        (float) index_segment_shoulder_radial /
+        (float) (
+          length_segments_shoulder_radial -
+          1
+        )
+      );
+
+      float percentage_segment_shoulder = (
+        (float) index_segment_shoulder /
+        (float) (
+          length_segments_shoulder -
+          1
+        )
+      );
+
+      float angle = (
+        percentage_segment_shoulder_radial *
+        math_c_pi_doubled
+      );
+
+      float radius_x;
+      float radius_z;
+      
+      if (
+        percentage_segment_shoulder_radial >= 0.5f
+      ) {
+        radius_x = (
+          radius_shoulder
+        );
+
+        radius_z = (
+          math_c_sine(
+            (
+              math_c_sine(
+                (
+                  math_c_sine(
+                    (
+                      (
+                        1.0f -
+                        percentage_segment_shoulder
+                      ) *
+                      math_c_pi_half
+                    ),
+                    math_c_pi
+                  ) *
+                  math_c_pi_half
+                ),
+                math_c_pi
+              ) *
+              math_c_pi_half
+            ),
+            math_c_pi
+          ) *
+          radius_shoulder
+        );
+      } else {
+        radius_x = (
+          math_c_sine(
+            (
+              math_c_sine(
+                (
+                  (
+                    1.0f -
+                    percentage_segment_shoulder
+                  ) *
+                  math_c_pi_half
+                ),
+                math_c_pi
+              ) *
+              math_c_pi_half
+            ),
+            math_c_pi
+          ) *
+          radius_shoulder
+        );
+
+        radius_z = (
+          math_c_sine(
+            (
+              math_c_sine(
+                (
+                  math_c_sine(
+                    (
+                      (
+                        1.0f -
+                        percentage_segment_shoulder
+                      ) *
+                      math_c_pi_half
+                    ),
+                    math_c_pi
+                  ) *
+                  math_c_pi_half
+                ),
+                math_c_pi
+              ) *
+              math_c_pi_half
+            ),
+            math_c_pi
+          ) *
+          radius_shoulder
+        );
+      }
+
+      metil_mesh_zoe_body->vertices[
+        index_vertex
+      ].x = (
+        radius_hips +
+        math_c_sine(
+          angle,
+          math_c_pi
+        ) *
+        radius_x +
+        radius_upperarm
+      );
+
+      metil_mesh_zoe_body->vertices[
+        index_vertex
+      ].y = (
+        length_leg +
+        length_hips +
+        length_torso +
+        (
+          length_shoulder *
+          percentage_segment_shoulder
+        ) -
+        (
+          radius_shoulder /
+          4.0f
+        )
+      );
+
+      metil_mesh_zoe_body->vertices[
+        index_vertex
+      ].z = (
+        math_c_cosine(
+          angle,
+          math_c_pi
+        ) *
+        radius_z
+      );
+
+      if (
+        percentage_segment_shoulder_radial > 0.5f
+      ) {
+        float percentage_shoulder_width_half = (
+          percentage_segment_shoulder_radial -
+          0.5f
+        );
+
+        if (
+          percentage_shoulder_width_half > 0.25f
+        ) {
+          percentage_shoulder_width_half = (
+            0.25f -
+            (
+              percentage_shoulder_width_half -
+              0.25f
+            )
+          );
+        }
+
+        percentage_shoulder_width_half = (
+          percentage_shoulder_width_half /
+          0.25f
+        );
+
+        float additive_shoulder_z_smoothed = (
+          math_c_sine(
+            (
+              (
+                1.0f -
+                (
+                  percentage_segment_shoulder *
+                  0.75f
+                )
+              ) *
+              (
+                percentage_shoulder_width_half
+              ) *
+              math_c_sine(
+                (
+                  percentage_segment_shoulder
+                ),
+                math_c_pi
+              ) *
+              math_c_pi_half
+            ),
+            math_c_pi
+          ) *
+          (
+            radius_shoulder -
+            math_c_absolute_float(
+              metil_mesh_zoe_body->vertices[
+                index_vertex
+              ].z
+            )
+          ) /
+          2.0f
+        );
+
+        if (
+          metil_mesh_zoe_body->vertices[
+            index_vertex
+          ].z >= 0.0f
+        ) {
+          metil_mesh_zoe_body->vertices[
+            index_vertex
+          ].z = (
+            metil_mesh_zoe_body->vertices[
+              index_vertex
+            ].z +
+            additive_shoulder_z_smoothed
+          );
+        } else {
+          metil_mesh_zoe_body->vertices[
+            index_vertex
+          ].z = (
+            metil_mesh_zoe_body->vertices[
+              index_vertex
+            ].z -
+            additive_shoulder_z_smoothed
+          );
+        }
+      }
+
+      metil_mesh_zoe_body->vertices[
+        index_vertex
+      ].w = (
+        1.0f
+      );
+
+      if (
+        index_arm == 0
+      ) {
+        metil_mesh_zoe_body->vertices[
+          index_vertex
+        ].x = -(
+          metil_mesh_zoe_body->vertices[
+            index_vertex
+          ].x
+        );
+      }
+
+      index_vertex = (
+        index_vertex +
+        1
+      );
+    }
+
+    for (
       unsigned int index_vertex_upper_arm = 0;
       index_vertex_upper_arm < length_vertices_upper_arm;
       ++index_vertex_upper_arm
@@ -1098,8 +1428,10 @@ void mesh_zoe_body_initialize(
       float percentage_segment_upper_arm = (
         (float) index_segment_upper_arm /
         (
-          (float) length_segments_upper_arm -
-          1
+          (float) (
+            length_segments_upper_arm -
+            1
+          )
         )
       );
 
@@ -1107,18 +1439,17 @@ void mesh_zoe_body_initialize(
         math_c_sine(
           (
             percentage_segment_upper_arm *
-            math_c_pi
+            math_c_pi_half
           ),
           math_c_pi
-        ) *
-        radius_upperarm
+        )
       );
 
       radius = (
         (1.0f - radius) *
-        radius_elbow +
+        radius_shoulder +
         radius *
-        radius_shoulder
+        radius_elbow
       );
 
       if (
@@ -1164,6 +1495,10 @@ void mesh_zoe_body_initialize(
         (
           length_upper_arm *
           percentage_segment_upper_arm
+        ) -
+        (
+          radius_shoulder /
+          4.0f
         )
       );
 
@@ -1332,6 +1667,10 @@ void mesh_zoe_body_initialize(
         (
           length_forearm *
           percentage_segment_forearm
+        ) -
+        (
+          radius_shoulder /
+          4.0f
         )
       );
 
