@@ -168,6 +168,45 @@ void mesh_zoe_body_initialize(
     0.8f
   );
 
+  float radius_hand = (
+    radius_wrist *
+    1.25f
+  );
+
+  float radius_finger = (
+    radius_hand *
+    0.225f
+  );
+
+  float radius_thumb = (
+    radius_finger *
+    1.25f
+  );
+
+  float length_hand = (
+    length_forearm /
+    3.0f
+  );
+
+  float length_finger_index = (
+    length_hand
+  );
+
+  float length_finger_middle = (
+    length_finger_index *
+    1.125f
+  );
+
+  float length_finger_ring = (
+    length_finger_index *
+    0.9875f
+  );
+
+  float length_finger_pinky = (
+    length_finger_index *
+    0.98f
+  );
+
   float multiplier_vertex = 2;
 
   unsigned int length_segments_default = (
