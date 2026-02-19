@@ -20,8 +20,6 @@ void mesh_zoe_body_initialize(
     metil_mesh_zoe_body
   );
 
-  // float height = 3.5f * 0.8f;
-
   // leg measurements
 
   float circumference_ankle = (
@@ -33,8 +31,20 @@ void mesh_zoe_body_initialize(
     math_c_pi
   );
 
+  float length_foot = (
+    circumference_ankle
+  );
+
+  float diameter_foot = (
+    diameter_ankle
+  );
+
+  float radius_foot = (
+    diameter_ankle /
+    2.0f
+  );
+
   float length_leg = (
-    // height /
     3.0f *
     circumference_ankle
   );
@@ -213,6 +223,19 @@ void mesh_zoe_body_initialize(
     40
   );
 
+  unsigned int length_segments_foot = (
+    length_segments_default *
+    multiplier_vertex
+  );
+  unsigned int length_segments_foot_radial = (
+    length_segments_default *
+    multiplier_vertex
+  );
+  unsigned int length_vertices_foot = (
+    length_segments_foot *
+    length_segments_foot_radial
+  );
+
   unsigned int length_segments_leg = (
     length_segments_default *
     multiplier_vertex
@@ -300,6 +323,8 @@ void mesh_zoe_body_initialize(
 
   metil_mesh_zoe_body->length_indices = (
     (
+      // length_vertices_foot *
+      // 2 +
       length_vertices_leg *
       2 + // 2 legs
       length_vertices_hips +
@@ -314,6 +339,8 @@ void mesh_zoe_body_initialize(
   );
 
   metil_mesh_zoe_body->length_vertices = (
+    // length_vertices_foot *
+    // 2 +
     length_vertices_leg *
     2 + // 2 legs
     length_vertices_hips +
@@ -347,6 +374,14 @@ void mesh_zoe_body_initialize(
 
   unsigned long int index_vertex = (
     0
+  );
+
+  float offset_height = (
+    0.0f
+  );
+
+  offset_height = (
+    radius_foot
   );
 
   for (
@@ -548,7 +583,8 @@ void mesh_zoe_body_initialize(
       metil_mesh_zoe_body->vertices[
         index_vertex
       ].y = (
-        position_leg_segment_y
+        position_leg_segment_y +
+        offset_height
       );
 
       metil_mesh_zoe_body->vertices[
@@ -617,6 +653,11 @@ void mesh_zoe_body_initialize(
     }
   }
 
+  offset_height = (
+    offset_height +
+    length_leg
+  );
+
   for (
     unsigned int index_vertex_hips = 0;
     index_vertex_hips < length_vertices_hips;
@@ -670,7 +711,7 @@ void mesh_zoe_body_initialize(
     metil_mesh_zoe_body->vertices[
       index_vertex
     ].y = (
-      length_leg +
+      offset_height +
       (
         percentage_segment_hips *
         length_hips
@@ -864,6 +905,11 @@ void mesh_zoe_body_initialize(
     );
   }
 
+  offset_height = (
+    offset_height +
+    length_hips
+  );
+
   for (
     unsigned int index_vertex_torso = 0;
     index_vertex_torso < length_vertices_torso;
@@ -937,8 +983,7 @@ void mesh_zoe_body_initialize(
     metil_mesh_zoe_body->vertices[
       index_vertex
     ].y = (
-      length_leg +
-      length_hips +
+      offset_height +
       (
         percentage_segment_torso *
         length_torso
@@ -1170,6 +1215,11 @@ void mesh_zoe_body_initialize(
     );
   }
 
+  offset_height = (
+    offset_height +
+    length_torso
+  );
+
   for (
     unsigned int index_arm = 0;
     index_arm < 2;
@@ -1309,9 +1359,7 @@ void mesh_zoe_body_initialize(
       metil_mesh_zoe_body->vertices[
         index_vertex
       ].y = (
-        length_leg +
-        length_hips +
-        length_torso +
+        offset_height +
         (
           length_shoulder *
           percentage_segment_shoulder
@@ -1528,9 +1576,7 @@ void mesh_zoe_body_initialize(
       metil_mesh_zoe_body->vertices[
         index_vertex
       ].y = (
-        length_leg +
-        length_hips +
-        length_torso -
+        offset_height -
         (
           length_upper_arm *
           percentage_segment_upper_arm
@@ -1699,9 +1745,7 @@ void mesh_zoe_body_initialize(
       metil_mesh_zoe_body->vertices[
         index_vertex
       ].y = (
-        length_leg +
-        length_hips +
-        length_torso -
+        offset_height -
         length_upper_arm -
         (
           length_forearm *
