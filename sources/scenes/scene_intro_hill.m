@@ -142,7 +142,7 @@ void scene_intro_hill_initialize(
     ) {
       case scene_intro_hill_index_renderable_player:
       case scene_intro_hill_index_renderable_player_mirror:
-      
+      case scene_intro_hill_index_renderable_zoe:
         metil_renderable_initialize_at_index(
           scene->renderables,
           index_renderable,
@@ -382,27 +382,15 @@ void scene_intro_hill_initialize(
     1
   );
 
-  struct metil_object* metil_object_zoe = (
+  struct metil_model* metil_model_zoe = (
     scene->renderables[
       scene_intro_hill_index_renderable_zoe
     ].renderable
   );
 
-  mesh_zoe_body_initialize(
-    &metil_object_zoe->mesh
-  );
-
-  metil_object_zoe->type_primitive = (
-    MTLPrimitiveTypeLineStrip
-  );
-
-  metil_object_zoe->index_pipeline_render = (
-    zoe_pipeline_index_zoe_body
-  );
-
-  metil_object_buffers_initialize(
-    metil_object_zoe,
-    metil->renderer_interface.metal_device
+  zoe_model_zoe_initialize(
+    metil,
+    metil_model_zoe
   );
 
   struct metil_object* metil_object_hill = (
