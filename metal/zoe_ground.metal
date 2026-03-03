@@ -98,25 +98,8 @@ struct data_vertex {
 }
 
 fragment float4 zoe_ground_fragment(
-  struct data_vertex data_vertex [[stage_in]],
-  metal::texture2d<half> texture [[ texture(0) ]]
+  struct data_vertex data_vertex [[stage_in]]
 ) {
-  constexpr metal::sampler sampler_texture(
-    metal::t_address::repeat,
-    metal::r_address::repeat,
-    metal::s_address::repeat
-  );
-
-  float4 texture_colour = float4(
-    texture.sample(
-      sampler_texture,
-      (
-        data_vertex.position_texture *
-        100.0f
-      )
-    )
-  );
-
   float brightness = metal::fmin(
     metal::fmax(
       1.0f - (
@@ -129,9 +112,9 @@ fragment float4 zoe_ground_fragment(
   );
 
   return float4(
-    texture_colour.r * brightness * data_vertex.brightness,
-    texture_colour.g * brightness * data_vertex.brightness,
-    texture_colour.b * brightness * data_vertex.brightness,
+    brightness * data_vertex.brightness,
+    brightness * data_vertex.brightness,
+    brightness * data_vertex.brightness,
     1.0f
   );
 }

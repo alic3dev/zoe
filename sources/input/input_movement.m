@@ -40,7 +40,8 @@ void zoe_input_movement(
     ] == 1 ||
     metil->input.keydown_map[
       metil_keycode_o
-    ] == 1
+    ] == 1 ||
+    metil->input.controller_state.triangle != 0.0f
   ) {
     data_player->actions = (
       data_player->actions |
