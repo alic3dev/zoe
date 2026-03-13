@@ -86,7 +86,7 @@ void scene_menu_main_initialize(
   rand_initialize(
     &data_scene->rand_parameters,
     &data_scene->rand_result,
-    &data_scene->rand_source, 
+    &data_scene->rand_source,
     4,
     rand_mode_bytes,
     rand_source_type_divisive
@@ -128,7 +128,7 @@ void scene_menu_main_initialize(
   ] = (
     zoe_texture_static_generate(
       (struct math_c_vector2_unsigned_short_int) {
-        .x = 300, 
+        .x = 300,
         .y = 300
       },
       metil->renderer_interface.metal_device
@@ -154,7 +154,7 @@ void scene_menu_main_initialize(
   );
 
   zoe_object_ground_initialize(
-    metil_object, 
+    metil_object,
     (struct math_c_vector3_float) {
       .x = 500.0f,
       .y = 5000.0f,
@@ -194,7 +194,7 @@ void scene_menu_main_initialize(
       2
     ].renderable
   );
-  
+
   metil_object_text_initialize(
     metil,
     metil_object,
@@ -313,14 +313,14 @@ void scene_menu_main_poll(
       data->rand_result.bytes[1]
     ) % 1000)
   );
-      
+
   data_object_menu_item->noise = 0;
 
   if (
     data->time_started != 0
   ) {
     unsigned long int time_delta = (
-      scene->time - 
+      scene->time -
       data->time_started
     );
 
@@ -373,7 +373,7 @@ void scene_menu_main_poll(
           metil->configuration.debug_log_level,
           "scene_menu_main:exiting\n"
         );
-        
+
         #if target_os_ios
         metil_termination_terminate(
           &metil->termination
@@ -529,7 +529,7 @@ int scene_menu_main_io_proc(
 
     float* buffer_out = audio_buffer_current.mData;
     unsigned long int count_channel_out = audio_buffer_current.mNumberChannels;
-    
+
     for (
       unsigned int index_frame = 0;
       index_frame < frame_count;
@@ -571,7 +571,7 @@ int scene_menu_main_io_proc(
       );
     }
   }
-  
+
   return 0;
 }
 #else
@@ -670,7 +670,7 @@ OSStatus scene_menu_main_io_proc(
     float* buffer_out = audio_buffer_current.mData;
     unsigned long int size_buffer_out = audio_buffer_current.mDataByteSize / sizeof(float);
     unsigned long int count_channel_out = audio_buffer_current.mNumberChannels;
-    
+
     for (
       unsigned long int index_buffer_out = 0;
       index_buffer_out < size_buffer_out;

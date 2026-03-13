@@ -18,7 +18,7 @@ void zoe_object_tree_initialize(
   struct metil_mesh* metil_mesh_clone_source,
   struct math_c_vector2_float size,
   id<MTLTexture> texture,
-  unsigned int noise 
+  unsigned int noise
 ) {
   if (
     metil_mesh_clone_source != 0
