@@ -42,7 +42,7 @@ void mesh_tree_initialize(
   );
 
   mesh->length_indices = (
-    (zoe_mesh_tree_length_segments_height - 1) * 
+    (zoe_mesh_tree_length_segments_height - 1) *
     zoe_mesh_tree_length_vertices_radius *
     6
   );
@@ -136,7 +136,7 @@ void mesh_tree_initialize(
         M_PI *
         2.0f
       );
-      
+
       mesh->vertices[index_vertex].x = (
         cosf(
           angle
@@ -250,13 +250,13 @@ void mesh_tree_initialize(
     ) + 5;
 
     mesh->length_vertices = (
-      mesh->length_vertices + 
+      mesh->length_vertices +
       (count_joints_branch * 4)
     );
 
     mesh->length_indices = (
-      mesh->length_indices + 
-      (count_joints_branch * 24) 
+      mesh->length_indices +
+      (count_joints_branch * 24)
     );
 
     mesh->vertices = realloc(
@@ -299,7 +299,7 @@ void mesh_tree_initialize(
       ++index_joint_branch
     ) {
       offset_byte = (
-        offset_byte + 
+        offset_byte +
         6
       );
 
@@ -314,12 +314,11 @@ void mesh_tree_initialize(
         size->x /
         10.0f
       );
-      
+
       mesh->vertices[index_vertex].x = position_joint_branch.x - thickness;
       mesh->vertices[index_vertex].y = position_joint_branch.y;
       mesh->vertices[index_vertex].z = position_joint_branch.z - thickness;
       mesh->vertices[index_vertex].w = 1.0f;
-      
 
       mesh->vertices[index_vertex + 1].x = position_joint_branch.x;
       mesh->vertices[index_vertex + 1].y = position_joint_branch.y + thickness;
