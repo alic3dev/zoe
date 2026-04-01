@@ -51,7 +51,7 @@ struct data_vertex {
   struct data_vertex data_vertex;
 
   float4 position_vertex = (
-    metil_model_object_position_calcluate(
+    metil_model_object_position_calculate(
       id_vertex,
       &vertices[
         id_vertex
