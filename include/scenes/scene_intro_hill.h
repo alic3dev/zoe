@@ -33,13 +33,14 @@ enum scene_intro_hill_index_renderable_group_text_index_renderable {
   scene_intro_hill_index_renderable_group_text_index_renderable_tree_not_yours = 2
 };
 
-#define scene_intro_hill_length_textures 3
+#define scene_intro_hill_length_textures 0x04
 
 enum scene_intro_hill_textures {
-  scene_intro_hill_textures_hill = 0,
-  scene_intro_hill_textures_tree = 1,
-  scene_intro_hill_textures_player = 2,
-  scene_intro_hill_textures_player_mirror = 2
+  scene_intro_hill_textures_hill          = 0x00,
+  scene_intro_hill_textures_tree          = 0x01,
+  scene_intro_hill_textures_player        = 0x02,
+  scene_intro_hill_textures_player_mirror = 0x02,
+  scene_intro_hill_textures_lighting      = 0x03
 };
 
 struct scene_intro_hill_data {

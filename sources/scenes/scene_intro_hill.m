@@ -7,12 +7,11 @@
 #include <group/group_text_with_backing.h>
 #include <input/input_movement.h>
 #include <mesh/mesh_hill.h>
-#include <mesh/mesh_zoe_body.h>
-#include <model/model_player.h>
 #include <model/model_zoe.h>
 #include <object/object_hill.h>
 #include <object/object_tree.h>
 #include <scenes/scene_id.h>
+#include <textures/zoe_texture_hill_lighting.h>
 #include <textures/zoe_texture_static.h>
 #include <zoe_pipeline_index.h>
 
@@ -75,16 +74,14 @@ void scene_intro_hill_initialize(
     metil->configuration.rendering_properties.brightness_text
   );
 
-  // metil->rendering_properties.camera.mode = (
-  //   metil_camera_mode_third_person
-  // );
+  metil->rendering_properties.camera.mode = (
+     metil_camera_mode_third_person
+  );
 
   metil->rendering_properties.camera.height = (
-    10.0f
+    metil_camera_height_default *
+    4.0f
   );
-  //   metil_camera_height_default *
-  //   4.0f
-  // );
 
   metil_scene_initialize_with_renderables(
     metil,
@@ -199,7 +196,7 @@ void scene_intro_hill_initialize(
       &metil_object_mushroom->mesh,
       (struct math_c_vector3_float) {
         .x = 10.0f,
-        .y = -10.0f,
+        .y = 10.0f,
         .z = 10.0f
       },
       (struct math_c_vector2_unsigned_short_int) {
@@ -274,7 +271,7 @@ void scene_intro_hill_initialize(
       hill_y_value_get(
         &position_percentage
       ) +
-      -metil_object_mushroom->mesh.size.y /
+      metil_object_mushroom->mesh.size.y /
       2.0f
     );
 
@@ -332,24 +329,29 @@ void scene_intro_hill_initialize(
     )
   );
 
+  scene->textures[
+    scene_intro_hill_textures_lighting
+  ] = (
+    zoe_texture_hill_lighting_generate(
+      metil_group_mushrooms,
+      metil->renderer_interface.metal_device
+    )
+  );
+
   struct metil_model* metil_model_player = (
     scene->renderables[
       scene_intro_hill_index_renderable_player
     ].renderable
   );
 
-  zoe_model_player_initialize(
+  zoe_model_zoe_initialize(
     metil,
-    metil_model_player,
-    scene->textures[
-      scene_intro_hill_textures_player
-    ],
-    0
+    metil_model_player
   );
 
   struct metil_object* metil_object_player_body = &(
     metil_model_player->objects[
-      zoe_model_player_object_index_body
+      0x00
     ]
   );
 
@@ -373,13 +375,9 @@ void scene_intro_hill_initialize(
     ].renderable
   );
 
-  zoe_model_player_initialize(
+  zoe_model_zoe_initialize(
     metil,
-    metil_model_player_mirror,
-    scene->textures[
-      scene_intro_hill_textures_player_mirror
-    ],
-    1
+    metil_model_player_mirror
   );
 
   struct metil_model* metil_model_zoe = (
@@ -399,8 +397,6 @@ void scene_intro_hill_initialize(
     ].renderable
   );
 
-  metil_object_hill->visible = 0;
-
   zoe_object_hill_initialize(
     metil_object_hill,
     scene->textures[
@@ -408,6 +404,9 @@ void scene_intro_hill_initialize(
     ],
     scene->textures[
       scene_intro_hill_textures_tree
+    ],
+    scene->textures[
+      scene_intro_hill_textures_lighting
     ],
     metil->renderer_interface.metal_device
   );
@@ -514,14 +513,6 @@ void scene_intro_hill_initialize(
       }
     }
   }
-
-  metil_model_player->visible = 0;
-  metil_model_player_mirror->visible = 0;
-
-  scene->player.speed_movement = (
-    scene->player.speed_movement /
-    4.0f
-  );
 }
 
 void scene_intro_hill_poll(
@@ -531,7 +522,6 @@ void scene_intro_hill_poll(
   struct scene_intro_hill_data* scene_intro_hill_data = (
     scene->data
   );
-
 
   metil_scene_poll_default(
     metil,
@@ -635,6 +625,54 @@ void scene_intro_hill_poll(
     100.0f
   );
 
+  struct metil_model* metil_model_player = (
+    scene->renderables[
+      scene_intro_hill_index_renderable_player
+    ].renderable
+  );
+
+  struct metil_model* metil_model_player_mirror = (
+    scene->renderables[
+      scene_intro_hill_index_renderable_player_mirror
+    ].renderable
+  );
+  
+  struct metil_model* metil_model_zoe = (
+    scene->renderables[
+      scene_intro_hill_index_renderable_zoe
+    ].renderable
+  );
+
+  metil_model_player->position.x = (
+    scene->player.position.x
+  );
+
+  metil_model_player->position.y = (
+    scene->player.position.y
+  );
+
+  metil_model_player->position.z = (
+    scene->player.position.z
+  );
+
+  metil_model_player->rotation.y = (
+    -scene->player.rotation.y
+  );
+
+  metil_model_player_mirror->rotation.y = (
+    -metil_model_player->rotation.y
+  );
+
+  metil_model_player_mirror->position.x = (
+    -metil_model_player->position.x
+  );
+  metil_model_player_mirror->position.y = (
+    metil_model_player->position.y
+  );
+
+  metil_model_player_mirror->position.z = (
+    -metil_model_player->position.z
+  );
   struct metil_object* metil_object_tree;
 
   for (
