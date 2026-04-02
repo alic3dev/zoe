@@ -7,10 +7,11 @@ enum zoe_data_player_action {
 };
 
 enum zoe_data_player_attributes {
-  zoe_data_player_attributes_none    = 0b00000000,
-  zoe_data_player_attributes_walking = 0b00000001,
-  zoe_data_player_attributes_running = 0b00000010,
-  zoe_data_player_attributes_jumping = 0b00000100
+  zoe_data_player_attributes_none     = 0b00000000,
+  zoe_data_player_attributes_walking  = 0b00000001,
+  zoe_data_player_attributes_sneaking =
+0b00000010,  zoe_data_player_attributes_running  = 0b00000100,
+  zoe_data_player_attributes_jumping  = 0b00001000
 };
 
 struct zoe_data_player {
