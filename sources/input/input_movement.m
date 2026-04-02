@@ -16,9 +16,21 @@ void zoe_input_movement(
   unsigned long int time,
   unsigned long int time_delta
 ) {
-  struct data_player* data_player = (
+  struct zoe_data_player* zoe_data_player = (
     metil_player->data
   );
+
+  zoe_data_player->attributes = (
+    zoe_data_player->attributes &
+    (
+      0b11111111 ^
+      (
+        zoe_data_player_attributes_walking  |
+        zoe_data_player_attributes_sneaking |
+        zoe_data_player_attributes_running
+      )
+    )
+  ); 
 
   float speed_original = (
     metil_player->speed_movement
@@ -43,9 +55,9 @@ void zoe_input_movement(
     ] == 1 ||
     metil->input.controller_state.triangle != 0.0f
   ) {
-    data_player->actions = (
-      data_player->actions |
-      data_player_action_select
+    zoe_data_player->actions = (
+      zoe_data_player->actions |
+      zoe_data_player_action_select
     );
   }
 
@@ -58,6 +70,11 @@ void zoe_input_movement(
       metil_player->speed_movement *
       (metil->input.controller_state.l2 + 1.0f)
     );
+
+    zoe_data_player->attributes = (
+      zoe_data_player->attributes |
+      zoe_data_player_attributes_running
+    );
   } else if (
     metil->input.controller_state.available == 1 &&
     metil->input.controller_state.l2 < 0.1f &&
@@ -65,48 +82,64 @@ void zoe_input_movement(
   ) {
     metil_player->speed_movement = (
       metil_player->speed_movement / (
-        metil->input.controller_state.l3 + 1.0f
+        metil->input.controller_state.l3 +
+        0x01
       )
     );
-  } else if (
+
+    zoe_data_player->attributes = (
+      zoe_data_player->attributes |
+      zoe_data_player_attributes_sneaking
+    );  } else if (
     (
       metil->input.keydown_map[
         metil_keycode_option_right
-      ] == 1 ||
+      ] == 0x01 ||
       metil->input.keydown_map[
         metil_keycode_control
-      ] == 1
+      ] == 0x01
     )  && (
       metil->input.keydown_map[
         metil_keycode_shift_left
-      ] == 0 &&
+      ] == 0x00 &&
       metil->input.keydown_map[
         metil_keycode_shift_right
-      ] == 0
+      ] == 0x00
     )
   ) {
     metil_player->speed_movement = (
-      metil_player->speed_movement / 2.0f
+      metil_player->speed_movement /
+      0x02
+    );
+
+    zoe_data_player->attributes = (
+      zoe_data_player->attributes |
+      zoe_data_player_attributes_sneaking
     );
   } else if (
     (
       metil->input.keydown_map[
         metil_keycode_option_right
-      ] == 0 &&
+      ] == 0x00 &&
       metil->input.keydown_map[
         metil_keycode_control
-      ] == 0
+      ] == 0x00
     ) && (
       metil->input.keydown_map[
         metil_keycode_shift_left
-      ] == 1 ||
+      ] == 0x01 ||
       metil->input.keydown_map[
         metil_keycode_shift_right
-      ] == 1
+      ] == 0x01
     )
   ) {
     metil_player->speed_movement = (
       metil_player->speed_movement * 2.0f
+    );
+
+    zoe_data_player->attributes = (
+      zoe_data_player->attributes |
+      zoe_data_player_attributes_running
     );
   }
 
@@ -384,6 +417,33 @@ void zoe_input_movement(
     );
   }
 
+  if (
+    (
+      movement.x !=
+      0x00
+    ) ||
+    (
+      movement.z !=
+      0x00
+    )
+  ) {
+    zoe_data_player->attributes = (
+      zoe_data_player->attributes |
+      zoe_data_player_attributes_walking
+    );
+  } else {
+    zoe_data_player->attributes = (
+      zoe_data_player->attributes &
+      (
+        0b11111111 ^
+        (
+          zoe_data_player_attributes_walking  |
+          zoe_data_player_attributes_sneaking |
+          zoe_data_player_attributes_running
+        )
+      )
+    );
+  }
   metil_player->position.x = (
     metil_player->position.x + (
       movement.x *
@@ -417,16 +477,30 @@ void zoe_input_movement(
       speed_delta *
       5.0f
     );
-  }
 
-  if (
-    metil_player->position.y < metil_player->position_y_floor
-  ) {
-    metil_player->position.y = (
-      metil_player->position_y_floor
+    zoe_data_player->attributes = (
+      zoe_data_player->attributes |
+      zoe_data_player_attributes_jumping
     );
+  } else {
+    if (
+      metil_player->position.y <
+      metil_player->position_y_floor
+    ) {
+      metil_player->position.y = (
+        metil_player->position_y_floor
+      );
 
-    metil_player->velocity.y = 0.0f;
+      metil_player->velocity.y = 0.0f;
+    }
+
+    zoe_data_player->attributes = (
+      zoe_data_player->attributes &
+      (
+        0b11111111 ^
+        zoe_data_player_attributes_jumping
+      )
+    );
   }
 
   metil_player->speed_movement = (

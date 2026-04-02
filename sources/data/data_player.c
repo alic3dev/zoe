@@ -1,13 +1,18 @@
 #include <data/data_player.h>
 
-void data_player_initialize(
-  struct data_player* data_player
+void zoe_data_player_initialize(
+  struct zoe_data_player* zoe_data_player
 ) {
-  data_player->actions = (
-    data_player_action_none
+  zoe_data_player->actions = (
+    zoe_data_player_action_none
+  );
+
+  zoe_data_player->attributes = (
+    zoe_data_player_attributes_none
   );
 }
 
-void data_player_destroy(
-  struct data_player* data_player
-) {}
+void zoe_data_player_destroy(
+  struct zoe_data_player* zoe_data_player
+) {
+}

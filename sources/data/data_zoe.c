@@ -2,18 +2,18 @@
 
 #include <data/data_player.h>
 
-void data_zoe_initialize(
-  struct data_zoe* data_zoe
+void zoe_data_zoe_initialize(
+  struct zoe_data_zoe* zoe_data_zoe
 ) {
-  data_player_initialize(
-    &data_zoe->player
+  zoe_data_player_initialize(
+    &zoe_data_zoe->player
   );
 }
 
 void data_zoe_destroy(
-  struct data_zoe* data_zoe
+  struct zoe_data_zoe* zoe_data_zoe
 ) {
-  data_player_destroy(
-    &data_zoe->player
+  zoe_data_player_destroy(
+    &zoe_data_zoe->player
   );
 }

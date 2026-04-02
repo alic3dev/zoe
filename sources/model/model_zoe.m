@@ -1,17 +1,25 @@
 #include <model/model_zoe.h>
 
+#include <animation/zoe/animation_zoe_running.h>
+#include <data/data_player.h>
 #include <mesh/mesh_zoe_body.h>
 #include <zoe_pipeline_index.h>
+
+#include <clic3_memory.h>
 
 #include <math_c_absolute.h>
 #include <math_c_minimum.h>
 #include <math_c_vector.h>
 
 #include <metil.h>
+#include <metil_animation/metil_animation.h>
 #include <metil_model/metil_model.h>
+#include <metil_player/metil_player.h>
 #include <metil_positioning.h>
 #include <metil_rendering/metil_camera/metil_camera.h>
+#include <metil_scenes/metil_scene.h>
 #include <metil_scenes/metil_scene_controller.h>
+
 
 #include <Metal/MTLDevice.h>
 #include <Metal/MTLTexture.h>
@@ -297,6 +305,28 @@ void zoe_model_zoe_initialize(
   metil_model->poll = (
     zoe_model_zoe_poll
   );
+
+  metil_model->data = (
+    clic3_memory_allocate_raw(
+      sizeof(
+        struct zoe_model_data
+      )
+    )
+  );
+
+  struct zoe_model_data* zoe_model_data = (
+    metil_model->data
+  );
+
+  zoe_animation_zoe_running_initialize(
+    &zoe_model_data->animations[
+      zoe_model_animation_index_running
+    ]
+  );
+
+  zoe_model_data->index_animation = (
+    zoe_model_animation_index_none
+  );
 }
 
 void zoe_model_zoe_poll(
@@ -307,9 +337,77 @@ void zoe_model_zoe_poll(
   matrix_float4x4* matrix_player_projection,
   struct metil_camera* metil_camera
 ) {
-  struct metil_scene_controller* scene_controller = (
+  struct metil_scene_controller* metil_scene_controller = (
     metil->scene_controller
   );
+
+  struct metil_scene* metil_scene = (
+    &metil_scene_controller->scene
+  );
+
+  struct metil_player* metil_player = (
+    &metil_scene->player
+  );
+
+  struct zoe_data_player* zoe_data_player = (
+    metil_player->data
+  );
+
+  struct zoe_model_data* zoe_model_data = (
+    metil_model->data
+  );
+
+  unsigned char index_animation_previous = (
+    zoe_model_data->index_animation
+  );
+
+  if (
+    zoe_data_player->attributes &
+    zoe_data_player_attributes_jumping
+  ) {
+    zoe_model_data->index_animation = (
+      zoe_model_animation_index_jumping
+    );
+  } else if (    zoe_data_player->attributes &
+    zoe_data_player_attributes_walking
+  ) {
+    if (
+      zoe_data_player->attributes &
+      zoe_data_player_attributes_sneaking
+    ) {
+      zoe_model_data->index_animation = (
+        zoe_model_animation_index_sneaking
+      );
+    } else if (
+      zoe_data_player->attributes &
+      zoe_data_player_attributes_running
+    ) {
+      zoe_model_data->index_animation = (
+        zoe_model_animation_index_running
+      );
+    } else {
+      zoe_model_data->index_animation = (
+        zoe_model_animation_index_walking
+      );
+    }
+  } else {
+    zoe_model_data->index_animation = (
+      zoe_model_animation_index_none
+    );
+  }
+
+  if (
+    zoe_model_data->index_animation !=
+    index_animation_previous
+  ) {
+    // end previous animation here
+    // then
+    // start new animation here
+  } else if (    zoe_model_data->index_animation !=
+    zoe_model_animation_index_none
+  ) {
+    // poll animation here
+  }
 
   metil_joint_propagate(
     &metil_model->joints[

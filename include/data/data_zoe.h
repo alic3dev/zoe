@@ -3,12 +3,12 @@
 
 #include <data/data_player.h>
 
-struct data_zoe {
-  struct data_player player;
+struct zoe_data_zoe {
+  struct zoe_data_player player;
 };
 
-void data_zoe_initialize(
-  struct data_zoe*
+void zoe_data_zoe_initialize(
+  struct zoe_data_zoe*
 );
 
 #endif

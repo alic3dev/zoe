@@ -62,7 +62,7 @@ void scene_intro_hill_initialize(
   struct metil* metil,
   struct metil_scene* scene
 ) {
-  struct data_zoe* data_zoe = (
+  struct zoe_data_zoe* zoe_data_zoe = (
     metil->data
   );
 
@@ -94,7 +94,7 @@ void scene_intro_hill_initialize(
   );
 
   scene->player.data = (
-    &data_zoe->player
+    &zoe_data_zoe->player
   );
 
   scene->player.rotation.x = -0.3f;
@@ -528,7 +528,7 @@ void scene_intro_hill_poll(
     scene
   );
 
-  struct data_player* data_player = (
+  struct zoe_data_player* zoe_data_player = (
     scene->player.data
   );
 
@@ -741,13 +741,22 @@ void scene_intro_hill_poll(
       );
 
       if (
-        index_tree == 0 &&
-        metil_group_text_tree->visible != 0 &&
-        data_player->actions & data_player_action_select
+        (
+          index_tree ==
+          0x00
+        ) &&
+        (
+          metil_group_text_tree->visible !=
+          0x00
+        ) &&
+        (
+          zoe_data_player->actions &
+          zoe_data_player_action_select
+        )
       ) {
-        data_player->actions = (
-          data_player->actions ^
-          data_player_action_select
+        zoe_data_player->actions = (
+          zoe_data_player->actions ^
+          zoe_data_player_action_select
         );
 
         metil_scene_controller_scene_change(
@@ -759,7 +768,9 @@ void scene_intro_hill_poll(
         return;
       }
     } else {
-      metil_group_text_tree->visible = 0;
+      metil_group_text_tree->visible = (
+        0x00
+      );
     }
   }
 
