@@ -1,11 +1,11 @@
-#include <animation/zoe/animation_zoe_running.h>
+#include <animation/zoe/animation_zoe_jumping.h>
 
 #include <metil_animation/metil_animation.h>
 #include <metil_model/metil_model.h>
 #include <metil_object/metil_object.h>
 #include <metil_rendering/metil_renderable_type.h>
 
-void zoe_animation_zoe_running_initialize(
+void zoe_animation_zoe_jumping_initialize(
   struct metil_animation* metil_animation
 ) {
   metil_animation_initialize(
@@ -17,19 +17,19 @@ void zoe_animation_zoe_running_initialize(
   );
 
   metil_animation->start = (
-    zoe_animation_zoe_running_start
+    zoe_animation_zoe_jumping_start
   );
 
   metil_animation->poll = (
-    zoe_animation_zoe_running_poll
+    zoe_animation_zoe_jumping_poll
   );
 
   metil_animation->end = (
-    zoe_animation_zoe_running_end
+    zoe_animation_zoe_jumping_end
   );
 }
 
-void zoe_animation_zoe_running_start(
+void zoe_animation_zoe_jumping_start(
   struct metil_animation* metil_animation,
   enum metil_renderable_type metil_renderable_type,
   void* metil_renderable
@@ -37,7 +37,7 @@ void zoe_animation_zoe_running_start(
   
 }
 
-void zoe_animation_zoe_running_poll(
+void zoe_animation_zoe_jumping_poll(
   struct metil_animation* metil_animation,
   enum metil_renderable_type metil_renderable_type,
   void* metil_renderable,
@@ -45,7 +45,7 @@ void zoe_animation_zoe_running_poll(
 ) {
 }
 
-void zoe_animation_zoe_running_end(
+void zoe_animation_zoe_jumping_end(
   struct metil_animation* metil_animation,
   enum metil_renderable_type metil_renderable_type,
   void* metil_renderable

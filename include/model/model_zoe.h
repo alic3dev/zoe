@@ -25,13 +25,14 @@ enum zoe_model_joint_index {
   zoe_model_joint_index_ankle_right = 0x0d
 };
 
-#define zoe_model_length_animations 0x04
+#define zoe_model_length_animations 0x05
 
 enum zoe_model_animation_index {
-  zoe_model_animation_index_sneaking = 0x00,
-  zoe_model_animation_index_walking  = 0x01,
-  zoe_model_animation_index_running  = 0x02,
-  zoe_model_animation_index_jumping =  0x03,
+  zoe_model_animation_index_idle     = 0x00,
+  zoe_model_animation_index_sneaking = 0x01,
+  zoe_model_animation_index_walking  = 0x02,
+  zoe_model_animation_index_running  = 0x03,
+  zoe_model_animation_index_jumping  = 0x04,
   zoe_model_animation_index_none     = 0xff
 };
 

@@ -1,6 +1,10 @@
 #include <model/model_zoe.h>
 
+#include <animation/zoe/animation_zoe_idle.h>
+#include <animation/zoe/animation_zoe_jumping.h>
 #include <animation/zoe/animation_zoe_running.h>
+#include <animation/zoe/animation_zoe_sneaking.h>
+#include <animation/zoe/animation_zoe_walking.h>
 #include <data/data_player.h>
 #include <mesh/mesh_zoe_body.h>
 #include <zoe_pipeline_index.h>
@@ -17,6 +21,7 @@
 #include <metil_player/metil_player.h>
 #include <metil_positioning.h>
 #include <metil_rendering/metil_camera/metil_camera.h>
+#include <metil_rendering/metil_renderable_type.h>
 #include <metil_scenes/metil_scene.h>
 #include <metil_scenes/metil_scene_controller.h>
 
@@ -318,9 +323,33 @@ void zoe_model_zoe_initialize(
     metil_model->data
   );
 
+  zoe_animation_zoe_idle_initialize(
+    &zoe_model_data->animations[
+      zoe_model_animation_index_idle
+    ]
+  );
+
+  zoe_animation_zoe_sneaking_initialize(
+    &zoe_model_data->animations[
+      zoe_model_animation_index_sneaking
+    ]
+  );
+
+  zoe_animation_zoe_walking_initialize(
+    &zoe_model_data->animations[
+      zoe_model_animation_index_walking
+    ]
+  );
+
   zoe_animation_zoe_running_initialize(
     &zoe_model_data->animations[
       zoe_model_animation_index_running
+    ]
+  );
+
+  zoe_animation_zoe_jumping_initialize(
+    &zoe_model_data->animations[
+      zoe_model_animation_index_jumping
     ]
   );
 
@@ -400,13 +429,42 @@ void zoe_model_zoe_poll(
     zoe_model_data->index_animation !=
     index_animation_previous
   ) {
-    // end previous animation here
-    // then
-    // start new animation here
-  } else if (    zoe_model_data->index_animation !=
+    if (
+      index_animation_previous !=
+      zoe_model_animation_index_none
+    ) {
+      metil_animation_end(
+        &zoe_model_data->animations[
+          index_animation_previous
+        ],
+        metil_renderable_type_model,
+        metil_model
+      );
+    }
+
+    if (
+      zoe_model_data->index_animation !=
+      zoe_model_animation_index_none
+    ) {
+      metil_animation_start(
+        &zoe_model_data->animations[
+          zoe_model_data->index_animation
+        ],
+        metil_renderable_type_model,
+        metil_model
+      );
+    }
+  } else if (
+    zoe_model_data->index_animation !=
     zoe_model_animation_index_none
   ) {
-    // poll animation here
+    metil_animation_poll(
+      &zoe_model_data->animations[
+        zoe_model_data->index_animation
+      ],
+      metil_renderable_type_model,
+      metil_model
+    );
   }
 
   metil_joint_propagate(
