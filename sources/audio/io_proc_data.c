@@ -20,7 +20,7 @@ struct io_proc_data* io_proc_data_create(
   rand_initialize(
     &io_proc_data->rand_parameters,
     &io_proc_data->rand_result,
-    &io_proc_data->rand_source, 
+    &io_proc_data->rand_source,
     length,
     rand_mode_bytes,
     rand_source_type_divisive
@@ -45,7 +45,7 @@ struct io_proc_data* io_proc_data_create(
       // rand_source_divisive_data->value = (
       //   rand_source_divisive_data->seed
       // );
-      
+
       break;
     }
     default: {

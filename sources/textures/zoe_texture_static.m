@@ -76,7 +76,7 @@ id<MTLTexture> zoe_texture_static_generate(
   rand_initialize(
     &rand_parameters,
     &rand_result,
-    &rand_source, 
+    &rand_source,
     (
       texture_descriptor.width *
       texture_descriptor.height *
@@ -101,7 +101,7 @@ id<MTLTexture> zoe_texture_static_generate(
       unsigned int index_y = 0;
       index_y < texture_descriptor.height;
       ++index_y
-    ) { 
+    ) {
       unsigned int index_pixel = (
         index_x *
         4 +
@@ -135,7 +135,7 @@ id<MTLTexture> zoe_texture_static_generate(
             rand_result.length
           ]
         );
-        
+
         pixel_bytes[
           index_pixel +
           metil_image_offset_rgba_8_g
@@ -148,7 +148,7 @@ id<MTLTexture> zoe_texture_static_generate(
             rand_result.length
           ]
         );
-        
+
         pixel_bytes[
           index_pixel +
           metil_image_offset_rgba_8_b
@@ -176,7 +176,7 @@ id<MTLTexture> zoe_texture_static_generate(
           ? 0xff
           : 0x00
         );
-        
+
         pixel_bytes[
           index_pixel +
           metil_image_offset_rgba_8_g
@@ -191,7 +191,7 @@ id<MTLTexture> zoe_texture_static_generate(
           ? 0xff
           : 0x00
         );
-        
+
         pixel_bytes[
           index_pixel +
           metil_image_offset_rgba_8_b
@@ -207,7 +207,7 @@ id<MTLTexture> zoe_texture_static_generate(
           : 0x00
         );
       }
-      
+
       pixel_bytes[
         index_pixel +
         metil_image_offset_rgba_8_a

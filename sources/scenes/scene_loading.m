@@ -20,7 +20,7 @@ void scene_loading_initialize(
   unsigned char id_scene
 ) {
   static struct data_scene_loading* data_scene_loading;
-  
+
   data_scene_loading = (
     clic3_memory_allocate_raw(
       sizeof(
@@ -34,7 +34,7 @@ void scene_loading_initialize(
   data_scene_loading->id_scene = (
     id_scene
   );
-  
+
   zoe_loading_map_initialize(
     &data_scene_loading->loading_map,
     data_scene_loading->id_scene
@@ -60,7 +60,7 @@ void scene_loading_initialize(
 
     return;
   }
-  
+
   metil_scene_initialize_with_renderables(
     metil,
     metil_scene_loading,
@@ -78,7 +78,6 @@ void scene_loading_initialize(
       0
     ].renderable
   );
-
 
   metil_mesh_square_initialize(
     &metil_object_loading_screen->mesh,

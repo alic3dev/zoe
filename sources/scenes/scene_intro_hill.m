@@ -157,7 +157,7 @@ void scene_intro_hill_initialize(
           index_renderable,
           metil_renderable_type_group
         );
-        
+
         break;
       }
       default: {
@@ -659,7 +659,7 @@ void scene_intro_hill_poll(
             scene_intro_hill_index_renderable_group_text_index_renderable_tree_hello
           ]->renderable
         );
-        
+
         break;
       }
       default:
@@ -828,7 +828,7 @@ int scene_intro_hill_io_proc(
 
     float* buffer_out = audio_buffer_current.mData;
     unsigned long int count_channel_out = audio_buffer_current.mNumberChannels;
-    
+
     for (
       unsigned int index_frame = 0;
       index_frame < frame_count;
@@ -870,7 +870,7 @@ int scene_intro_hill_io_proc(
       );
     }
   }
-  
+
   return 0;
 }
 #else
@@ -934,7 +934,7 @@ OSStatus scene_intro_hill_io_proc(
       sizeof(float)
     );
     unsigned long int count_channel_out = audio_buffer_current.mNumberChannels;
-    
+
     for (
       unsigned long int index_buffer_out = 0;
       index_buffer_out < size_buffer_out;
