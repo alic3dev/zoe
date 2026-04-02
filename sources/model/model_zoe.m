@@ -35,12 +35,12 @@ void zoe_model_zoe_initialize(
 ) {
   metil_model_objects_add_length(
     metil_model,
-    1
+    0x01
   );
 
   struct metil_object* metil_object_zoe_body = &(
     metil_model->objects[
-      0
+      0x00
     ]
   );
 
@@ -212,6 +212,85 @@ void zoe_model_zoe_initialize(
   metil_joint_attach(
     metil_joint_knee_right,
     metil_joint_ankle_right
+  );
+
+  metil_joint_neck->position.y = (
+    metil_object_zoe_body->mesh.size.y
+  );
+
+  metil_joint_shoulder_left->position.y = (
+    metil_object_zoe_body->mesh.size.y
+  );
+
+  metil_joint_shoulder_left->position.x = (
+    -metil_object_zoe_body->mesh.size.x
+  );
+
+  metil_joint_shoulder_right->position.y = (
+    metil_object_zoe_body->mesh.size.y
+  );
+
+  metil_joint_shoulder_right->position.x = (
+    metil_object_zoe_body->mesh.size.x
+  );
+
+  metil_joint_elbow_left->position.x = (
+    -metil_object_zoe_body->mesh.size.x
+  );
+
+  metil_joint_elbow_left->position.y = (
+    metil_object_zoe_body->mesh.size.y *
+    0.75f
+  );
+
+  metil_joint_elbow_right->position.x = (
+    metil_object_zoe_body->mesh.size.x
+  );
+
+  metil_joint_elbow_right->position.y = (
+    metil_object_zoe_body->mesh.size.y *
+    0.75f
+  );
+
+  metil_joint_hips->position.y = (
+    metil_object_zoe_body->mesh.size.y *
+    0.5f
+  );
+
+  metil_joint_hip_left->position.x = (
+    -metil_object_zoe_body->mesh.size.x
+  );
+
+  metil_joint_hip_left->position.y = (
+    metil_object_zoe_body->mesh.size.y *
+    0.5f
+  );
+
+  metil_joint_hip_right->position.x = (
+    metil_object_zoe_body->mesh.size.x
+  );
+
+  metil_joint_hip_right->position.y = (
+    metil_object_zoe_body->mesh.size.y *
+    0.5f
+  );
+
+  metil_joint_knee_left->position.x = (
+    -metil_object_zoe_body->mesh.size.x
+  );
+
+  metil_joint_knee_left->position.y = (
+    metil_object_zoe_body->mesh.size.y *
+    0.25f
+  );
+
+  metil_joint_knee_right->position.x = (
+    metil_object_zoe_body->mesh.size.x
+  );
+
+  metil_joint_knee_right->position.y = (
+    metil_object_zoe_body->mesh.size.y *
+    0.25f
   );
 
   unsigned char index_joint;
