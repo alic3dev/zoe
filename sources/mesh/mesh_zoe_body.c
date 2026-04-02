@@ -217,139 +217,119 @@ void mesh_zoe_body_initialize(
     0.98f
   );
 
-  float multiplier_vertex = 2;
+  float multiplier_vertex = (
+    mesh_zoe_body_multiplier_vertex
+  );
 
   unsigned int length_segments_default = (
-    8
+    mesh_zoe_body_length_segments
   );
 
   unsigned int length_segments_foot = (
-    length_segments_default *
-    multiplier_vertex
+    mesh_zoe_body_length_segments_foot
   );
+
   unsigned int length_segments_foot_radial = (
-    length_segments_default *
-    multiplier_vertex
+    mesh_zoe_body_length_segments_foot_radial
   );
+
   unsigned int length_vertices_foot = (
-    length_segments_foot *
-    length_segments_foot_radial
+    mesh_zoe_body_length_vertices_foot
   );
 
   unsigned int length_segments_leg = (
-    length_segments_default *
-    multiplier_vertex
+    mesh_zoe_body_length_segments_leg
   );
+
   unsigned int length_segments_leg_radial = (
-    length_segments_default *
-    multiplier_vertex
+    mesh_zoe_body_length_segments_leg_radial
   );
+
   unsigned int length_vertices_leg = (
-    length_segments_leg *
-    length_segments_leg_radial
+    mesh_zoe_body_length_vertices_leg
   );
 
   unsigned int length_segments_hips = (
-    length_segments_default /
-    2 *
-    multiplier_vertex
+    mesh_zoe_body_length_segments_hips
   );
+
   unsigned int length_segments_hips_radial = (
-    length_segments_default *
-    multiplier_vertex
+    mesh_zoe_body_length_segments_hips_radial
   );
+
   unsigned int length_vertices_hips = (
-    length_segments_hips *
-    length_segments_hips_radial
+    mesh_zoe_body_length_vertices_hips
   );
 
   unsigned int length_segments_waist = (
-    length_segments_default *
-    multiplier_vertex
+    mesh_zoe_body_length_segments_waist
   );
+
   unsigned int length_segments_waist_radial = (
-    length_segments_default *
-    multiplier_vertex
+    mesh_zoe_body_length_segments_waist_radial
   );
+
   unsigned int length_vertices_torso = (
-    length_segments_waist *
-    length_segments_waist_radial
+    mesh_zoe_body_length_vertices_torso
   );
 
   unsigned int length_segments_upper_arm = (
-    length_segments_default *
-    multiplier_vertex
+    mesh_zoe_body_length_segments_upper_arm
   );
+
   unsigned int length_segments_upper_arm_radial = (
-    length_segments_default *
-    multiplier_vertex
+    mesh_zoe_body_length_segments_upper_arm_radial
   );
+
   unsigned int length_vertices_upper_arm = (
-    length_segments_upper_arm *
-    length_segments_upper_arm_radial
+    mesh_zoe_body_length_vertices_upper_arm
   );
 
   unsigned int length_segments_forearm = (
-    length_segments_default *
-    multiplier_vertex
+    mesh_zoe_body_length_segments_forearm
   );
+
   unsigned int length_segments_forearm_radial = (
-    length_segments_default *
-    multiplier_vertex
+    mesh_zoe_body_length_segments_forearm_radial
   );
+
   unsigned int length_vertices_forearm = (
-    length_segments_forearm *
-    length_segments_forearm_radial
+    mesh_zoe_body_length_vertices_forearm
   );
 
   unsigned int length_segments_shoulder = (
-    length_segments_default /
-    6 *
-    multiplier_vertex
+    mesh_zoe_body_length_segments_shoulder
   );
+
   unsigned int length_segments_shoulder_radial = (
-    length_segments_default *
-    multiplier_vertex
+    mesh_zoe_body_length_segments_shoulder_radial
   );
+
   unsigned int length_vertices_shoulder = (
-    length_segments_shoulder *
-    length_segments_shoulder_radial
+    mesh_zoe_body_length_vertices_shoulder
   );
 
   unsigned int length_vertices_arm = (
-    length_vertices_upper_arm +
-    length_vertices_forearm
+    mesh_zoe_body_length_vertices_arm
   );
 
   metil_mesh_zoe_body->length_indices = (
     (
-      // length_vertices_foot *
-      // 2 +
       length_vertices_leg *
-      2 + // 2 legs
+      0x02 +
       length_vertices_hips +
       length_vertices_torso +
       (
         length_vertices_shoulder +
         length_vertices_arm
       ) *
-      2
+      0x02
     ) *
-    3
+    0x03
   );
 
   metil_mesh_zoe_body->length_vertices = (
-    // length_vertices_foot *
-    // 2 +
-    length_vertices_leg *
-    2 + // 2 legs
-    length_vertices_hips +
-    length_vertices_torso +
-    (
-      length_vertices_shoulder +
-      length_vertices_arm
-    ) *
-    2 // 2 arms
+    mesh_zoe_body_length_vertices
   );
 
   clic3_memory_reallocate_raw(
