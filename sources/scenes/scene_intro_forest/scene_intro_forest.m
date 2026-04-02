@@ -3,7 +3,7 @@
 #include <audio/io_proc_data.h>
 #include <data/data_zoe.h>
 #include <input/input_movement.h>
-#include <model/model_player.h>
+#include <model/model_zoe.h>
 #include <object/object_ground.h>
 #include <object/object_tree.h>
 #include <scenes/scene_id.h>
@@ -227,18 +227,14 @@ void scene_intro_forest_initialize(
     ].renderable
   );
 
-  zoe_model_player_initialize(
+  zoe_model_zoe_initialize(
     metil,
-    metil_model_player,
-    scene->textures[
-      textures_scene_intro_forest_player
-    ],
-    0
+    metil_model_player
   );
 
   struct metil_object* metil_object_player_body = &(
     metil_model_player->objects[
-      zoe_model_player_object_index_body
+      0x00
     ]
   );
 
@@ -262,13 +258,9 @@ void scene_intro_forest_initialize(
     ].renderable
   );
 
-  zoe_model_player_initialize(
+  zoe_model_zoe_initialize(
     metil,
-    metil_model_player_mirror,
-    scene->textures[
-      textures_scene_intro_forest_player
-    ],
-    1
+    metil_model_player_mirror
   );
 
   struct metil_object* metil_object_ground = (

@@ -33,7 +33,7 @@ struct data_vertex {
       metil_renderer_vertex_index_parameter_data_object
     )
   ]],
-  unsigned int id_vertex [[vertex_id]]
+  unsigned int index_vertex [[vertex_id]]
 ) {
   struct data_vertex data_vertex;
 
@@ -41,22 +41,22 @@ struct data_vertex {
     data_object->view_model_matrix_projection *
     (
       positions[
-        id_vertex
+        index_vertex
       ] +
       (
-        id_vertex >= zoe_mesh_tree_length_vertices_trunk
+        index_vertex >= zoe_mesh_tree_length_vertices_trunk
         ? (
           zoe_wave_get(
             data_frame->time_elapsed,
             (
-              id_vertex *
+              index_vertex *
               3 +
               data_object->noise
             ),
             (
               (float)
               (
-                id_vertex %
+                index_vertex %
                 5 +
                 1
               ) /
@@ -66,7 +66,7 @@ struct data_vertex {
             (
               (float)
               (
-                id_vertex %
+                index_vertex %
                 5 +
                 1
               ) /
@@ -79,13 +79,13 @@ struct data_vertex {
           zoe_wave_get(
             data_frame->time_elapsed,
             (
-              id_vertex +
+              index_vertex +
               data_object->noise
             ),
             511.4f,
             (
               (float)
-              id_vertex /
+              index_vertex /
               (float)
               zoe_mesh_tree_length_vertices_trunk
             ) * 0.464
@@ -96,7 +96,46 @@ struct data_vertex {
   );
 
   data_vertex.brightness = (
-    data_frame->brightness
+    data_frame->brightness *
+    (
+      (
+        (
+          index_vertex %
+          0x03
+        ) >
+        0x01
+      )
+      ? (
+        (
+          positions[
+            index_vertex
+          ].y <=
+          2.0f
+        )
+        ? (
+          1.0f -
+          (
+            positions[
+              index_vertex
+            ].y /
+            2.0f *
+            0.1f
+          )
+        )
+        : (
+          0.90f -
+          (
+            (float)
+            (
+              index_vertex %
+              5
+            ) /
+            5.0f
+          )
+        )
+      )
+      : 1.0f
+    )
   );
 
   data_vertex.distance = metal::distance(
@@ -108,7 +147,7 @@ struct data_vertex {
         1.0f
       ) +
       positions[
-        id_vertex
+        index_vertex
       ]
     ),
     metal::float4(
@@ -128,14 +167,14 @@ struct data_vertex {
 
   data_vertex.position_texture.x = (
     positions[
-      id_vertex
+      index_vertex
     ].x +
     sine_frame
   );
 
   data_vertex.position_texture.y = (
     positions[
-      id_vertex
+      index_vertex
     ].z +
     sine_frame
   );

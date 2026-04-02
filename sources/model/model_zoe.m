@@ -1,4 +1,4 @@
-#include <model/model_player.h>
+#include <model/model_zoe.h>
 
 #include <mesh/mesh_zoe_body.h>
 #include <zoe_pipeline_index.h>

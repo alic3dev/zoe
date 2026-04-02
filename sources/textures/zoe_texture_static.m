@@ -111,6 +111,7 @@ id<MTLTexture> zoe_texture_static_generate(
       );
 
       unsigned char coloured = (
+        0x00 /*
         rand_result.bytes[
           (
             index_pixel +
@@ -118,6 +119,7 @@ id<MTLTexture> zoe_texture_static_generate(
           ) %
           rand_result.length
         ] >= 0x20
+        */
       );
 
       if (
