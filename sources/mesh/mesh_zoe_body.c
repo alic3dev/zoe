@@ -367,7 +367,7 @@ void mesh_zoe_body_initialize(
     )
   );
 
-  unsigned long int index_vertex = (
+  unsigned int index_vertex = (
     0
   );
 
@@ -1808,7 +1808,8 @@ void mesh_zoe_body_initialize(
             0x02
           )
           ? (
-            index_indices %            0x03
+            index_indices %
+            0x03
           )
           : (
             length_segments_default *
