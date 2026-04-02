@@ -1,8 +1,19 @@
 # zoe
 
-<img width="1966" height="1250" alt="Screenshot 2025-12-07 at 18 50 44" src="https://github.com/user-attachments/assets/3c45fe1a-a852-4070-a79d-f298b1857829" />
-<img width="1966" height="1250" alt="Screenshot 2025-12-07 at 18 50 39" src="https://github.com/user-attachments/assets/5e574c4a-73c1-475f-b4e9-9087f24fbe7b" />
-<img width="1966" height="1250" alt="Screenshot 2025-12-07 at 18 50 50" src="https://github.com/user-attachments/assets/7ec3bd2b-b281-4a0f-ab66-5d0802e62ede" />
+## fasctyre
+
+<img width="1966" height="1250" alt="zf" src="https://github.com/user-attachments/assets/a228afd8-657e-41d9-a644-9720799e3f8c" />
+<img width="1966" height="1250" alt="zf" src="https://github.com/user-attachments/assets/4462af27-2ee1-46cb-b760-466e393527d3" />
+<img width="1966" height="1250" alt="zf" src="https://github.com/user-attachments/assets/bb19998f-9bb3-4ce1-a4f4-3d34cad46445" />
+<img width="1966" height="1250" alt="zf" src="https://github.com/user-attachments/assets/96031b14-71ca-44ad-b20c-99a125096b68" />
+<img width="1966" height="1250" alt="zf" src="https://github.com/user-attachments/assets/6cce8078-82bf-4565-929a-aa5cd67ebb5a" />
+<img width="1966" height="1250" alt="zf" src="https://github.com/user-attachments/assets/2acc2462-1171-4168-9973-b1f132925b87" />
+<img width="1966" height="1250" alt="zf" src="https://github.com/user-attachments/assets/bc7eccc8-fe11-4d73-9d17-89f6e4448961" />
+
+https://github.com/user-attachments/assets/9b712717-8f51-4e06-9556-e7db2414c88b
+
+
+https://github.com/user-attachments/assets/b5b36c17-aee4-423b-bab9-2fa33223646e
 
 ## requirements
 
