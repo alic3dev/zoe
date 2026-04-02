@@ -12,3 +12,4 @@ unsigned short int zoe_pipeline_index_mushroom = 0;
 unsigned short int zoe_pipeline_index_text = 0;
 unsigned short int zoe_pipeline_index_text_backing = 0;
 unsigned short int zoe_pipeline_index_tree = 0;
+unsigned short int zoe_pipeline_index_zoe_body = 0;

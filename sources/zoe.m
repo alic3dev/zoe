@@ -224,6 +224,18 @@ void zoe_renderer_on_initialize(
     ]
   ];
 
+  zoe_pipeline_index_zoe_body = [
+    metil->renderer_interface.renderer
+    pipeline_add: [
+      metil->library.library
+      newFunctionWithName: @"zoe_zoe_body_fragment"
+    ]
+    function_vertex: [
+      metil->library.library
+      newFunctionWithName: @"zoe_zoe_body_vertex"
+    ]
+  ];
+
   metil->text_defaults.object_text_index_pipeline_render = (
     zoe_pipeline_index_text
   );

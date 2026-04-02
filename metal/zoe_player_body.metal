@@ -52,13 +52,7 @@ struct data_vertex {
     (
       positions[
         id_vertex
-      ] +
-      zoe_shakiness_get(
-        data_frame->time_elapsed,
-        id_vertex,
-        300,
-        1.0f
-      )
+      ]
     )
   );
 

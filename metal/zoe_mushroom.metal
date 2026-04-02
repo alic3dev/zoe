@@ -45,20 +45,21 @@ struct data_vertex {
     id_vertex <= 5000
   ) {
     data_vertex.colour.r = 1.0f;
-    data_vertex.colour.g = 0.0f;
-    data_vertex.colour.b = 0.0f;
+    data_vertex.colour.g = 1.0f;
+    data_vertex.colour.b = 1.0f;
 
     if (
       id_vertex % 32 == 0 &&
       id_vertex >= 100
     ) {
-      data_vertex.colour.g = 1.0f;
-      data_vertex.colour.b = 1.0f;
+      data_vertex.colour.x = 0.0f;
+      data_vertex.colour.g = 0.0f;
+      data_vertex.colour.b = 0.0f;
     }
   } else {
-    data_vertex.colour.r = 1.0f;
-    data_vertex.colour.g = 1.0f;
-    data_vertex.colour.b = 0.8f;
+    data_vertex.colour.r = 0.0f;
+    data_vertex.colour.g = 0.0f;
+    data_vertex.colour.b = 0.0f;
   }
 
   return (

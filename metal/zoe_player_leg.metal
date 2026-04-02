@@ -65,13 +65,7 @@ struct data_vertex {
   data_vertex.position = (
     data_object->view_model_matrix_projection *
     (
-      position_vertex +
-      zoe_shakiness_get(
-        data_frame->time_elapsed,
-        (id_vertex + 1) * 13,
-        333,
-        1.3f
-      )
+      position_vertex
     )
   );
 
