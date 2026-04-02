@@ -49,7 +49,7 @@ void scene_intro_forest_initialize(
     zoe_loading_threads_data->scene
   );
 
-  struct data_zoe* data_zoe = (
+  struct zoe_data_zoe* zoe_data_zoe = (
     metil->data
   );
 
@@ -78,7 +78,7 @@ void scene_intro_forest_initialize(
 
   scene->player.rotation.x = -0.3f;
   scene->player.data = (
-    &data_zoe->player
+    &zoe_data_zoe->player
   );
 
   scene->player.poll_input = (

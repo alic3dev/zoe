@@ -16,7 +16,7 @@ void zoe_input_movement(
   unsigned long int time,
   unsigned long int time_delta
 ) {
-  struct data_player* data_player = (
+  struct zoe_data_player* zoe_data_player = (
     metil_player->data
   );
 
@@ -43,9 +43,9 @@ void zoe_input_movement(
     ] == 1 ||
     metil->input.controller_state.triangle != 0.0f
   ) {
-    data_player->actions = (
-      data_player->actions |
-      data_player_action_select
+    zoe_data_player->actions = (
+      zoe_data_player->actions |
+      zoe_data_player_action_select
     );
   }
 

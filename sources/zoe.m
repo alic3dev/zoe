@@ -248,12 +248,12 @@ void zoe_renderer_on_initialize(
   metil->data = (
     clic3_memory_allocate_raw(
       sizeof(
-        struct data_zoe
+        struct zoe_data_zoe
       )
     )
   );
 
-  data_zoe_initialize(
+  zoe_data_zoe_initialize(
     metil->data
   );
 
@@ -273,7 +273,7 @@ void zoe_renderer_on_initialize(
   metil_scene_controller_on_scene_change_add(
     metil_scene_controller,
     zoe_on_scene_change,
-    (void*) 0
+    0x00
   );
 }
 
