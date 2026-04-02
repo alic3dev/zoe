@@ -397,7 +397,8 @@ void zoe_model_zoe_poll(
     zoe_model_data->index_animation = (
       zoe_model_animation_index_jumping
     );
-  } else if (    zoe_data_player->attributes &
+  } else if (
+    zoe_data_player->attributes &
     zoe_data_player_attributes_walking
   ) {
     if (
@@ -421,7 +422,7 @@ void zoe_model_zoe_poll(
     }
   } else {
     zoe_model_data->index_animation = (
-      zoe_model_animation_index_none
+      zoe_model_animation_index_idle
     );
   }
 
