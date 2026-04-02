@@ -34,7 +34,7 @@ void mesh_player_initialize(
   mesh->length_vertices = (
     mesh_player_body_length_vertices
   );
-  
+
   mesh->length_indices = (
     (
       mesh->length_vertices -
@@ -70,7 +70,7 @@ void mesh_player_initialize(
       ((float) (mesh->length_vertices - 2)) *
       M_PI * 2.0f
     );
-    
+
     mesh->vertices[index_vertex].x = cos(angle) * mesh_player_size_half.x;
     mesh->vertices[index_vertex].y = 0;
     mesh->vertices[index_vertex].z = sin(angle) * mesh_player_size_half.x;

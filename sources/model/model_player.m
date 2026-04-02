@@ -66,7 +66,7 @@ void zoe_model_player_initialize(
       zoe_model_player_object_index_arm_right
     ]
   );
-  
+
   metil_model->positioning = (
     metil_positioning_player
   );

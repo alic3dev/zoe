@@ -15,11 +15,11 @@ void mesh_leaf_initialize(
   metil_mesh_leaf->size.x = (
     4.0f
   );
-  
+
   metil_mesh_leaf->size.y = (
     10.0f
   );
-  
+
   metil_mesh_leaf->size.z = (
     1.0f
   );
@@ -185,7 +185,7 @@ void mesh_leaf_initialize(
         length_segments_radial
       )
     );
-    
+
     if (
       index_vertex_stem > 0
     ) {
@@ -253,7 +253,7 @@ void mesh_leaf_initialize(
         M_PI *
         2.0f
       );
-      
+
       metil_mesh_leaf->vertices[
         index_vertex
       ].x = (
@@ -262,7 +262,7 @@ void mesh_leaf_initialize(
         ) *
         radius_stem.x
       );
-      
+
       metil_mesh_leaf->vertices[
         index_vertex
       ].y = (
@@ -373,7 +373,7 @@ void mesh_leaf_initialize(
           length_segments_radial +
           1
         );
-      
+
         metil_mesh_leaf->indices[
           index_index +
           2
@@ -457,8 +457,6 @@ void mesh_leaf_initialize(
     );
   }
 }
-
-
 
 /*
 

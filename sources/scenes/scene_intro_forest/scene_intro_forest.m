@@ -500,7 +500,7 @@ void zoe_scene_intro_forest_threaded_trees_initialization(
         index_renderable
       )
     );
-    
+
     metil_object_tree->position.x = (
       -(metil_object_tree->mesh.size.x / 2.0f) + (
         (((float)((
@@ -684,7 +684,7 @@ int scene_intro_forest_io_proc(
 
     float* buffer_out = audio_buffer_current.mData;
     unsigned long int count_channel_out = audio_buffer_current.mNumberChannels;
-    
+
     for (
       unsigned int index_frame = 0;
       index_frame < frame_count;
@@ -723,7 +723,7 @@ int scene_intro_forest_io_proc(
       }
     }
   }
-  
+
   return 0;
 }
 #else
@@ -781,7 +781,7 @@ OSStatus scene_intro_forest_io_proc(
       sizeof(float)
     );
     unsigned long int count_channel_out = audio_buffer_current.mNumberChannels;
-    
+
     for (
       unsigned long int index_buffer_out = 0;
       index_buffer_out < size_buffer_out;

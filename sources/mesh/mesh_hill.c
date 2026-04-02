@@ -170,7 +170,7 @@ void mesh_hill_initialize(
           &position_percentage
         )
       );
-      
+
       metil_mesh->vertices[
         index_vertex_hill
       ].z = (

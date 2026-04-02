@@ -44,7 +44,7 @@ void zoe_loading_threads_initialize(
   zoe_loading_threads->length = 0;
 
   zoe_loading_threads->progress = 0.0f;
-  
+
   pthread_mutex_init(
     &zoe_loading_threads->mutex_progress,
     0
@@ -82,7 +82,7 @@ void zoe_loading_threads_spawn(
   );
 
   static struct zoe_loading_threads_data* zoe_loading_threads_data;
-  
+
   zoe_loading_threads_data = (
     clic3_memory_allocate_raw(
       sizeof(
