@@ -2,6 +2,7 @@
 #define __zoe_model_model_zoe_h
 
 #include <metil.h>
+#include <metil_animation/metil_animation.h>
 #include <metil_model/metil_model.h>
 #include <metil_rendering/metil_camera/metil_camera.h>
 
@@ -22,6 +23,21 @@ enum zoe_model_joint_index {
   zoe_model_joint_index_knee_right = 0x0b,
   zoe_model_joint_index_ankle_left = 0x0c,
   zoe_model_joint_index_ankle_right = 0x0d
+};
+
+#define zoe_model_length_animations 0x01
+
+enum zoe_model_animation_index {
+  zoe_model_animation_index_running = 0x00,
+  zoe_model_animation_index_none = 0xff
+};
+
+struct zoe_model_data {
+  struct metil_animation animations[
+    zoe_model_length_animations
+  ];
+
+  unsigned int index_animation;
 };
 
 void zoe_model_zoe_initialize(

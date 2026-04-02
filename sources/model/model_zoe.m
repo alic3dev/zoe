@@ -1,13 +1,17 @@
 #include <model/model_zoe.h>
 
+#include <animation/zoe/animation_zoe_running.h>
 #include <mesh/mesh_zoe_body.h>
 #include <zoe_pipeline_index.h>
+
+#include <clic3_memory.h>
 
 #include <math_c_absolute.h>
 #include <math_c_minimum.h>
 #include <math_c_vector.h>
 
 #include <metil.h>
+#include <metil_animation/metil_animation.h>
 #include <metil_model/metil_model.h>
 #include <metil_positioning.h>
 #include <metil_rendering/metil_camera/metil_camera.h>
@@ -296,6 +300,28 @@ void zoe_model_zoe_initialize(
 
   metil_model->poll = (
     zoe_model_zoe_poll
+  );
+
+  metil_model->data = (
+    clic3_memory_allocate_raw(
+      sizeof(
+        struct zoe_model_data
+      )
+    )
+  );
+
+  struct zoe_model_data* zoe_model_data = (
+    metil_model->data
+  );
+
+  zoe_animation_zoe_running_initialize(
+    &zoe_model_data->animations[
+      zoe_model_animation_index_running
+    ]
+  );
+
+  zoe_model_data->index_animation = (
+    zoe_model_animation_index_none
   );
 }
 
