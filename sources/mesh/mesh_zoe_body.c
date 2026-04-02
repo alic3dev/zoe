@@ -217,6 +217,21 @@ void mesh_zoe_body_initialize(
     0.98f
   );
 
+  metil_mesh_zoe_body->size.x = (
+    (
+      diameter_hips +
+      radius_upperarm *
+      0x02
+    ) *
+    0x02
+  );
+
+  metil_mesh_zoe_body->size.y = (
+    length_leg +
+    length_hips +
+    length_torso
+  );
+
   float multiplier_vertex = (
     mesh_zoe_body_multiplier_vertex
   );
@@ -352,7 +367,7 @@ void mesh_zoe_body_initialize(
     )
   );
 
-  unsigned long int index_vertex = (
+  unsigned int index_vertex = (
     0
   );
 
@@ -1793,15 +1808,16 @@ void mesh_zoe_body_initialize(
             0x02
           )
           ? (
-            index_indices
-%
+            index_indices %
             0x03
           )
-          : (            length_segments_default *
+          : (
+            length_segments_default *
             multiplier_vertex
           )
         )
       ) %
-      metil_mesh_zoe_body->length_vertices    );
+      metil_mesh_zoe_body->length_vertices
+    );
   }
 }

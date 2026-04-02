@@ -71,7 +71,7 @@
 )
 
 #define mesh_zoe_body_length_vertices_arm (\
-  mesh_zoe_body_length_vertices_upper_arm *\
+  mesh_zoe_body_length_vertices_upper_arm +\
   mesh_zoe_body_length_vertices_forearm\
 )
 

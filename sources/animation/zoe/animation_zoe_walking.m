@@ -1,5 +1,7 @@
 #include <animation/zoe/animation_zoe_walking.h>
 
+#include <model/model_zoe.h>
+
 #include <metil_animation/metil_animation.h>
 #include <metil_model/metil_model.h>
 #include <metil_object/metil_object.h>
