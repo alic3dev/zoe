@@ -36,7 +36,7 @@ void zoe_model_zoe_initialize(
   );
 
   metil_object_zoe_body->type_primitive = (
-    MTLPrimitiveTypeLineStrip
+    MTLPrimitiveTypeTriangleStrip
   );
 
   metil_object_zoe_body->index_pipeline_render = (

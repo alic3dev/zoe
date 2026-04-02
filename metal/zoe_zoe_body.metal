@@ -10,6 +10,7 @@
 struct data_vertex {
   float4 position [[position]];
   float2 position_texture;
+  float4 colour;
   float brightness;
 };
 
@@ -39,15 +40,15 @@ struct data_vertex {
       metil_renderer_vertex_index_parameter_joints
     )
   ]],
-  unsigned int id_vertex [[vertex_id]]
+  unsigned int index_vertex [[vertex_id]]
 ) {
   struct data_vertex data_vertex;
 
   float4 position_vertex = (
     metil_model_object_position_calculate(
-      id_vertex,
+      index_vertex,
       &vertices[
-        id_vertex
+        index_vertex
       ],
       &data_object->position,
       vertex_joint_map,
@@ -57,9 +58,47 @@ struct data_vertex {
 
   data_vertex.position = (
     data_object->view_model_matrix_projection *
-    vertices[
-      id_vertex
-    ]
+    position_vertex
+  );
+
+  data_vertex.colour.x = (
+   (
+     index_vertex %
+     29
+    ) /
+    29.0f  );
+
+  data_vertex.colour.y = (
+    (
+      (
+        index_vertex *
+        234
+      ) %
+      29
+    ) /
+    29.0f
+  );
+
+  data_vertex.colour.z = (
+    (
+      (
+        index_vertex *
+        890
+      ) %
+      29
+    ) /
+    29.0f
+  );
+
+  data_vertex.colour.w = (
+    (
+      (
+        index_vertex *
+        0x32
+      ) %
+      29
+    ) /
+    29.0f
   );
 
   data_vertex.brightness = (
@@ -72,10 +111,7 @@ struct data_vertex {
 fragment float4 zoe_zoe_body_fragment(
   struct data_vertex data_vertex [[stage_in]]
 ) {
-  return float4(
-    1.0f,
-    1.0f,
-    1.0f,
-    1.0f
+  return (
+    data_vertex.colour
   );
 }

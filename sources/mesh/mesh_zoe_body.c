@@ -220,7 +220,7 @@ void mesh_zoe_body_initialize(
   float multiplier_vertex = 2;
 
   unsigned int length_segments_default = (
-    40
+    8
   );
 
   unsigned int length_segments_foot = (
@@ -335,7 +335,7 @@ void mesh_zoe_body_initialize(
       ) *
       2
     ) *
-    2
+    3
   );
 
   metil_mesh_zoe_body->length_vertices = (
@@ -1800,12 +1800,28 @@ void mesh_zoe_body_initialize(
     metil_mesh_zoe_body->indices[
       index_indices
     ] = (
-      index_indices /
-      2 +
+      (unsigned int)
       (
-        index_indices %
-        2
-      )
-    );
+        index_indices /
+        3 +
+        (
+          (
+            (
+              index_indices %
+              0x03
+            ) <
+            0x02
+          )
+          ? (
+            index_indices
+%
+            0x03
+          )
+          : (            length_segments_default *
+            multiplier_vertex
+          )
+        )
+      ) %
+      metil_mesh_zoe_body->length_vertices    );
   }
 }
