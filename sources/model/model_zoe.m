@@ -43,14 +43,259 @@ void zoe_model_zoe_initialize(
     zoe_pipeline_index_zoe_body
   );
 
+  metil_model_joints_add_length(
+    metil_model,
+    zoe_model_length_joints
+  );
+
   metil_model_vertex_joint_maps_initialize(
     metil_model
   );
+
+  struct metil_joint* metil_joint_neck = (
+    &metil_model->joints[
+      zoe_model_joint_index_neck
+    ]
+  );
+
+  struct metil_joint* metil_joint_shoulder_left = (
+    &metil_model->joints[
+      zoe_model_joint_index_shoulder_left
+    ]
+  );
+
+  struct metil_joint* metil_joint_shoulder_right = (
+    &metil_model->joints[
+      zoe_model_joint_index_shoulder_right
+    ]
+  );
+
+  struct metil_joint* metil_joint_elbow_left = (
+    &metil_model->joints[
+      zoe_model_joint_index_elbow_left
+    ]
+  );
+
+  struct metil_joint* metil_joint_elbow_right = (
+    &metil_model->joints[
+      zoe_model_joint_index_elbow_right
+    ]
+  );
+
+  struct metil_joint* metil_joint_wrist_left = (
+    &metil_model->joints[
+      zoe_model_joint_index_wrist_left
+    ]
+  );
+
+  struct metil_joint* metil_joint_wrist_right = (
+    &metil_model->joints[
+      zoe_model_joint_index_wrist_right
+    ]
+  );
+
+  struct metil_joint* metil_joint_hips = (
+    &metil_model->joints[
+      zoe_model_joint_index_hips
+    ]
+  );
+
+  struct metil_joint* metil_joint_hip_left = (
+    &metil_model->joints[
+      zoe_model_joint_index_hip_left
+    ]
+  );
+
+  struct metil_joint* metil_joint_hip_right = (
+    &metil_model->joints[
+      zoe_model_joint_index_hip_right
+    ]
+  );
+
+  struct metil_joint* metil_joint_knee_left = (
+    &metil_model->joints[
+      zoe_model_joint_index_knee_left
+    ]
+  );
+
+  struct metil_joint* metil_joint_knee_right = (
+    &metil_model->joints[
+      zoe_model_joint_index_knee_right
+    ]
+  );
+
+  struct metil_joint* metil_joint_ankle_left = (
+    &metil_model->joints[
+      zoe_model_joint_index_ankle_left
+    ]
+  );
+
+  struct metil_joint* metil_joint_ankle_right = (
+    &metil_model->joints[
+      zoe_model_joint_index_ankle_right
+    ]
+  );
+
+  metil_joint_attach(
+    metil_joint_neck,
+    metil_joint_shoulder_left
+  );
+  
+  metil_joint_attach(
+    metil_joint_neck,
+    metil_joint_shoulder_right
+  );
+
+  metil_joint_attach(
+    metil_joint_shoulder_left,
+    metil_joint_elbow_left
+  );
+
+  metil_joint_attach(
+    metil_joint_shoulder_right,
+    metil_joint_elbow_right
+  );
+
+  metil_joint_attach(
+    metil_joint_elbow_left,
+    metil_joint_wrist_left
+  );
+
+  metil_joint_attach(
+    metil_joint_elbow_right,
+    metil_joint_wrist_right
+  );
+
+  metil_joint_attach(
+    metil_joint_neck,
+    metil_joint_hips
+  );
+
+  metil_joint_attach(
+    metil_joint_hips,
+    metil_joint_hip_left
+  );
+
+  metil_joint_attach(
+    metil_joint_hips,
+    metil_joint_hip_right
+  );
+
+  metil_joint_attach(
+    metil_joint_hip_left,
+    metil_joint_knee_left
+  );
+
+  metil_joint_attach(
+    metil_joint_hip_right,
+    metil_joint_knee_right
+  );
+
+  metil_joint_attach(
+    metil_joint_knee_left,
+    metil_joint_ankle_left
+  );
+
+  metil_joint_attach(
+    metil_joint_knee_right,
+    metil_joint_ankle_right
+  );
+
+  unsigned char index_joint;
+
+  for (
+    unsigned long int index_vertex = (
+      0x00
+    );
+    (
+      index_vertex <
+      metil_object_zoe_body->mesh.length_vertices
+    );
+    ++index_vertex
+  ) {
+    if (
+      index_vertex <
+      mesh_zoe_body_index_vertex_calf_right_end
+    ) {
+      index_joint = (
+        zoe_model_joint_index_knee_right
+      );
+    } else if (
+      index_vertex <
+      mesh_zoe_body_index_vertex_thigh_right_end
+    ) {
+      index_joint = (
+        zoe_model_joint_index_hip_right
+      );
+    } else if (
+      index_vertex <
+      mesh_zoe_body_index_vertex_calf_left_end
+    ) {
+      index_joint = (
+        zoe_model_joint_index_knee_left
+      );
+    } else if (
+      index_vertex <
+      mesh_zoe_body_index_vertex_thigh_left_end
+    ) {
+      index_joint = (
+        zoe_model_joint_index_hip_left
+      );
+    } else if (
+      index_vertex <
+      mesh_zoe_body_index_vertex_torso_end
+    ) {
+      index_joint = (
+        zoe_model_joint_index_neck
+      );
+    } else if (
+      index_vertex <
+      mesh_zoe_body_index_vertex_upper_arm_left_end
+    ) {
+      index_joint = (
+        zoe_model_joint_index_shoulder_left
+      );
+    } else if (
+      index_vertex <
+      mesh_zoe_body_index_vertex_forearm_left_end
+    ) {
+      index_joint = (
+        zoe_model_joint_index_elbow_left
+      );
+    } else if (
+      index_vertex <
+      mesh_zoe_body_index_vertex_upper_arm_right_end
+    ) { 
+      index_joint = (
+        zoe_model_joint_index_shoulder_right
+      );
+    } else if (
+      index_vertex <
+      mesh_zoe_body_index_vertex_forearm_right_end
+    ) {
+      index_joint = (
+        zoe_model_joint_index_elbow_right
+      );
+    } else {
+      break;
+    }
+
+    metil_model_vertex_joint_attach(
+      metil_model,
+      0x00,
+      index_vertex,
+      index_joint
+    );
+  }
 
   metil_model_buffers_initialize(
     metil,
     metil_model,
     metil->renderer_interface.metal_device
+  );
+
+  metil_model->poll = (
+    zoe_model_zoe_poll
   );
 }
 
@@ -64,6 +309,12 @@ void zoe_model_zoe_poll(
 ) {
   struct metil_scene_controller* scene_controller = (
     metil->scene_controller
+  );
+
+  metil_joint_propagate(
+    &metil_model->joints[
+      zoe_model_joint_index_neck
+    ]
   );
 
   metil_model_poll(
