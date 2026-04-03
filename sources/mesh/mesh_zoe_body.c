@@ -27,7 +27,7 @@ void mesh_zoe_body_initialize(
   );
 
   float diameter_ankle = (
-    circumference_ankle / 
+    circumference_ankle /
     math_c_pi
   );
 
@@ -148,7 +148,7 @@ void mesh_zoe_body_initialize(
   float length_shoulder = (
     radius_ankle
   );
-  
+
   float length_upper_arm = (
     length_arm /
     2.0f
@@ -527,7 +527,7 @@ void mesh_zoe_body_initialize(
           (0.1f - (1.0f - percentage_thigh)) *
           0.04f
         );
-        
+
         if (
           percentage_segment_radial_leg >= 0.25f &&
           percentage_segment_radial_leg <= 0.75f &&
@@ -640,7 +640,7 @@ void mesh_zoe_body_initialize(
           radius_x
         );
       }
-      
+
       index_vertex = (
         index_vertex +
         1
@@ -820,7 +820,7 @@ void mesh_zoe_body_initialize(
         );
       } else {
         percentage_buttocks_width = (
-          percentage_buttocks_width / 
+          percentage_buttocks_width /
           0.5f
         );
       }
@@ -1113,7 +1113,7 @@ void mesh_zoe_body_initialize(
         ) *
         radius_breast
       );
-      
+
       float percentage_segment_breast = (
         (
           percentage_segment_torso -
@@ -1157,7 +1157,7 @@ void mesh_zoe_body_initialize(
       percentage_breast_width = (
         1.0f -
         (
-          percentage_breast_width / 
+          percentage_breast_width /
           0.5f
         )
       );
@@ -1172,7 +1172,7 @@ void mesh_zoe_body_initialize(
           (
             math_c_sine(
               (
-                percentage_breast_width * 
+                percentage_breast_width *
                 math_c_pi_half
               ),
               math_c_pi
@@ -1186,7 +1186,7 @@ void mesh_zoe_body_initialize(
                     math_c_pi_half
                   ),
                   math_c_pi
-                ) * 
+                ) *
                 math_c_pi
               ),
               math_c_pi
@@ -1258,7 +1258,7 @@ void mesh_zoe_body_initialize(
 
       float radius_x;
       float radius_z;
-      
+
       if (
         percentage_segment_shoulder_radial >= 0.5f
       ) {

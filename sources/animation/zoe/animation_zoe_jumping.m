@@ -138,7 +138,7 @@ void zoe_animation_zoe_jumping_poll(
     index_joint_shoulder = (
       zoe_model_joint_index_shoulder_right
     );
-  
+
     index_joint_shoulder_inverse = (
       zoe_model_joint_index_shoulder_left
     );
@@ -214,4 +214,4 @@ void zoe_animation_zoe_jumping_end(
   enum metil_renderable_type metil_renderable_type,
   void* metil_renderable
 ) {
-}  
+}

@@ -30,7 +30,7 @@ void zoe_input_movement(
         zoe_data_player_attributes_running
       )
     )
-  ); 
+  );
 
   float speed_original = (
     metil_player->speed_movement

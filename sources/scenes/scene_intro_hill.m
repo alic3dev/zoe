@@ -508,7 +508,7 @@ void scene_intro_hill_initialize(
           metil,
           metil_group_text_group,
           "t h i s,     i s   n o t     yo u r      t r e e"
-          
+
            "i wrote this its all my tree <3 "
         );
 
@@ -639,7 +639,7 @@ void scene_intro_hill_poll(
       scene_intro_hill_index_renderable_player_mirror
     ].renderable
   );
-  
+
   struct metil_model* metil_model_zoe = (
     scene->renderables[
       scene_intro_hill_index_renderable_zoe

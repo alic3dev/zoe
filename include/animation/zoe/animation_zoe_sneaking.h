@@ -28,4 +28,3 @@ void zoe_animation_zoe_sneaking_end(
 );
 
 #endif
-

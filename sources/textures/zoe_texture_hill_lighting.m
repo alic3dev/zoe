@@ -88,7 +88,7 @@ id<MTLTexture> zoe_texture_hill_lighting_generate(
         texture_descriptor.width *
         0x04
       );
-        
+
       pixel_bytes[
         index_pixel +
         metil_image_offset_rgba_8_r
@@ -122,7 +122,7 @@ id<MTLTexture> zoe_texture_hill_lighting_generate(
   signed char distance_light = (
     0x16
   );
-  
+
   float maximum_distance_lighting = (
     distance_light *
     0x02
@@ -210,11 +210,11 @@ id<MTLTexture> zoe_texture_hill_lighting_generate(
                   ) *
                   math_c_pi_half
                 ),
-                math_c_pi 
+                math_c_pi
             )
           ) *
           0xff
-        ); 
+        );
 
         if (
           (
@@ -238,7 +238,7 @@ id<MTLTexture> zoe_texture_hill_lighting_generate(
           ] = (
             0xff
           );
-    
+
           pixel_bytes[
             index_pixel +
             metil_image_offset_rgba_8_b
@@ -266,7 +266,7 @@ id<MTLTexture> zoe_texture_hill_lighting_generate(
             ] +
             value
           );
-  
+
           pixel_bytes[
             index_pixel +
             metil_image_offset_rgba_8_b

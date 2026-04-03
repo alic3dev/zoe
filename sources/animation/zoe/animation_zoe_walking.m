@@ -47,7 +47,7 @@ void zoe_animation_zoe_walking_start(
     &metil_model->joints[
       zoe_model_joint_index_neck
     ]
-  );  
+  );
 }
 
 void zoe_animation_zoe_walking_poll(
@@ -168,4 +168,4 @@ void zoe_animation_zoe_walking_end(
   enum metil_renderable_type metil_renderable_type,
   void* metil_renderable
 ) {
-}  
+}

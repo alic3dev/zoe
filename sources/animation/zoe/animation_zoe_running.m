@@ -67,4 +67,4 @@ void zoe_animation_zoe_running_end(
   enum metil_renderable_type metil_renderable_type,
   void* metil_renderable
 ) {
-}  
+}
