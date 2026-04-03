@@ -28,4 +28,3 @@ void zoe_animation_zoe_walking_end(
 );
 
 #endif
-

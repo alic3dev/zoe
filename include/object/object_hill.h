@@ -39,7 +39,7 @@ void zoe_object_hill_poll(
   matrix_float4x4* _Nonnull,
   struct metil_camera* _Nonnull
 );
-  
+
 #endif
 
 #endif

@@ -99,7 +99,6 @@ void zoe_animation_zoe_idle_poll(
     0.2f
   );
 
-
   metil_model->joints[
     zoe_model_joint_index_elbow_left
   ].rotation.x = (
@@ -156,4 +155,4 @@ void zoe_animation_zoe_idle_end(
   enum metil_renderable_type metil_renderable_type,
   void* metil_renderable
 ) {
-}  
+}

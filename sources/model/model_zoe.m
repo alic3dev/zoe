@@ -26,7 +26,6 @@
 #include <metil_scenes/metil_scene.h>
 #include <metil_scenes/metil_scene_controller.h>
 
-
 #include <Metal/MTLDevice.h>
 #include <Metal/MTLTexture.h>
 
@@ -155,7 +154,7 @@ void zoe_model_zoe_initialize(
     metil_joint_neck,
     metil_joint_shoulder_left
   );
-  
+
   metil_joint_attach(
     metil_joint_neck,
     metil_joint_shoulder_right
@@ -359,7 +358,7 @@ void zoe_model_zoe_initialize(
     } else if (
       index_vertex <
       mesh_zoe_body_index_vertex_upper_arm_right_end
-    ) { 
+    ) {
       index_joint = (
         zoe_model_joint_index_shoulder_right
       );
@@ -524,13 +523,13 @@ void zoe_model_zoe_poll(
 
       metil_model->position.z = (
         -metil_player->position.z
-      ); 
+      );
 
       metil_model->rotation.y = (
         -metil_player->rotation.y +
         math_c_pi
-      );   
-  
+      );
+
       break;
     }
     default: {

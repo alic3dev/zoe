@@ -43,7 +43,7 @@ void zoe_object_hill_initialize(
   zoe_data_object_hill->size.y = (
     metil_object->mesh.size.y
   );
-  
+
   zoe_data_object_hill->size.z = (
     metil_object->mesh.size.z
   );
@@ -110,5 +110,5 @@ void zoe_object_hill_poll(
       metil->scene_controller
     )->scene.player.position,
     metil_camera
-  );  
+  );
 }

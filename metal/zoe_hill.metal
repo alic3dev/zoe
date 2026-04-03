@@ -113,7 +113,7 @@ struct data_vertex {
       data_object->size.z +
       0.5f
     )
-  ); 
+  );
 
   return (
     data_vertex
