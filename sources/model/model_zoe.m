@@ -31,7 +31,8 @@
 
 void zoe_model_zoe_initialize(
   struct metil* metil,
-  struct metil_model* metil_model
+  struct metil_model* metil_model,
+  unsigned char zoe_model_type
 ) {
   metil_model_objects_add_length(
     metil_model,
@@ -402,6 +403,10 @@ void zoe_model_zoe_initialize(
     metil_model->data
   );
 
+  zoe_model_data->type = (
+    zoe_model_type
+  );
+
   zoe_animation_zoe_idle_initialize(
     &zoe_model_data->animations[
       zoe_model_animation_index_idle
@@ -432,9 +437,27 @@ void zoe_model_zoe_initialize(
     ]
   );
 
-  zoe_model_data->index_animation = (
-    zoe_model_animation_index_none
-  );
+  if (
+    zoe_model_data->type !=
+    zoe_model_type_statue
+  ) {
+    zoe_model_data->index_animation = (
+      zoe_model_animation_index_idle
+    );
+  } else {
+    zoe_model_data->index_animation = (
+      zoe_model_animation_index_none
+    );
+  }
+
+  if (
+    zoe_model_data->type ==
+    zoe_model_type_player
+  ) {
+    metil_model->positioning = (
+      metil_positioning_player
+    );
+  }
 }
 
 void zoe_model_zoe_poll(
@@ -465,44 +488,98 @@ void zoe_model_zoe_poll(
     metil_model->data
   );
 
+  switch (
+    zoe_model_data->type
+  ) {
+    case zoe_model_type_statue: {
+      break;
+    }
+    case zoe_model_type_player: {
+      metil_model->position.x = (
+        metil_player->position.x
+      );
+
+      metil_model->position.y = (
+        metil_player->position.y
+      );
+
+      metil_model->position.z = (
+        metil_player->position.z
+      );
+
+      metil_model->rotation.y = (
+        -metil_player->rotation.y
+      );
+      break;
+    }
+    case zoe_model_type_mirror: {
+      metil_model->position.x = (
+        -metil_player->position.x
+      );
+
+      metil_model->position.y = (
+        metil_player->position.y
+      );
+
+      metil_model->position.z = (
+        -metil_player->position.z
+      ); 
+
+      metil_model->rotation.y = (
+        -metil_player->rotation.y +
+        math_c_pi
+      );   
+  
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+
   unsigned char index_animation_previous = (
     zoe_model_data->index_animation
   );
 
   if (
-    zoe_data_player->attributes &
-    zoe_data_player_attributes_jumping
-  ) {
-    zoe_model_data->index_animation = (
-      zoe_model_animation_index_jumping
-    );
-  } else if (
-    zoe_data_player->attributes &
-    zoe_data_player_attributes_walking
+    zoe_model_data->type !=
+    zoe_model_type_statue
   ) {
     if (
       zoe_data_player->attributes &
-      zoe_data_player_attributes_sneaking
+      zoe_data_player_attributes_jumping
     ) {
       zoe_model_data->index_animation = (
-        zoe_model_animation_index_sneaking
+        zoe_model_animation_index_jumping
       );
     } else if (
       zoe_data_player->attributes &
-      zoe_data_player_attributes_running
+      zoe_data_player_attributes_walking
     ) {
-      zoe_model_data->index_animation = (
-        zoe_model_animation_index_running
-      );
+      if (
+        zoe_data_player->attributes &
+        zoe_data_player_attributes_sneaking
+      ) {
+        zoe_model_data->index_animation = (
+          zoe_model_animation_index_sneaking
+        );
+      } else if (
+        zoe_data_player->attributes &
+        zoe_data_player_attributes_running
+      ) {
+        zoe_model_data->index_animation = (
+          zoe_model_animation_index_running
+        );
+      } else {
+        zoe_model_data->index_animation = (
+          zoe_model_animation_index_walking
+        );
+      }
     } else {
       zoe_model_data->index_animation = (
-        zoe_model_animation_index_walking
+        zoe_model_animation_index_idle
       );
     }
-  } else {
-    zoe_model_data->index_animation = (
-      zoe_model_animation_index_idle
-    );
   }
 
   if (

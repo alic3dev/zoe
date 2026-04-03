@@ -36,17 +36,26 @@ enum zoe_model_animation_index {
   zoe_model_animation_index_none     = 0xff
 };
 
+enum zoe_model_type {
+  zoe_model_type_statue = 0x00,
+  zoe_model_type_player = 0x01,
+  zoe_model_type_mirror = 0x02
+};
+
 struct zoe_model_data {
   struct metil_animation animations[
     zoe_model_length_animations
   ];
 
   unsigned char index_animation;
+
+  unsigned char type;
 };
 
 void zoe_model_zoe_initialize(
   struct metil* _Nonnull,
-  struct metil_model* _Nonnull
+  struct metil_model* _Nonnull,
+  unsigned char
 );
 
 void zoe_model_zoe_poll(

@@ -229,7 +229,8 @@ void scene_intro_forest_initialize(
 
   zoe_model_zoe_initialize(
     metil,
-    metil_model_player
+    metil_model_player,
+    zoe_model_type_player
   );
 
   struct metil_object* metil_object_player_body = &(
@@ -260,7 +261,8 @@ void scene_intro_forest_initialize(
 
   zoe_model_zoe_initialize(
     metil,
-    metil_model_player_mirror
+    metil_model_player_mirror,
+    zoe_model_type_mirror
   );
 
   struct metil_object* metil_object_ground = (
