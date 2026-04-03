@@ -346,7 +346,8 @@ void scene_intro_hill_initialize(
 
   zoe_model_zoe_initialize(
     metil,
-    metil_model_player
+    metil_model_player,
+    zoe_model_type_player
   );
 
   struct metil_object* metil_object_player_body = &(
@@ -377,7 +378,8 @@ void scene_intro_hill_initialize(
 
   zoe_model_zoe_initialize(
     metil,
-    metil_model_player_mirror
+    metil_model_player_mirror,
+    zoe_model_type_mirror
   );
 
   struct metil_model* metil_model_zoe = (
@@ -388,7 +390,8 @@ void scene_intro_hill_initialize(
 
   zoe_model_zoe_initialize(
     metil,
-    metil_model_zoe
+    metil_model_zoe,
+    zoe_model_type_statue
   );
 
   struct metil_object* metil_object_hill = (
@@ -643,36 +646,6 @@ void scene_intro_hill_poll(
     ].renderable
   );
 
-  metil_model_player->position.x = (
-    scene->player.position.x
-  );
-
-  metil_model_player->position.y = (
-    scene->player.position.y
-  );
-
-  metil_model_player->position.z = (
-    scene->player.position.z
-  );
-
-  metil_model_player->rotation.y = (
-    -scene->player.rotation.y
-  );
-
-  metil_model_player_mirror->rotation.y = (
-    -metil_model_player->rotation.y
-  );
-
-  metil_model_player_mirror->position.x = (
-    -metil_model_player->position.x
-  );
-  metil_model_player_mirror->position.y = (
-    metil_model_player->position.y
-  );
-
-  metil_model_player_mirror->position.z = (
-    -metil_model_player->position.z
-  );
   struct metil_object* metil_object_tree;
 
   for (
