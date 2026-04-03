@@ -2,6 +2,7 @@
 
 #include <audio/io_proc_data.h>
 #include <data/data_zoe.h>
+#include <group/group_text_with_backing.h>
 #include <input/input_movement.h>
 #include <model/model_zoe.h>
 #include <object/object_ground.h>
@@ -141,6 +142,57 @@ void scene_intro_forest_initialize(
 
         break;
       }
+      case scene_intro_forest_index_renderable_group_text_place: {
+        metil_renderable_initialize_at_index(
+          scene->renderables,
+          index_renderable,
+          metil_renderable_type_group
+        );
+
+        group_text_with_backing_initialize(
+          metil,
+          scene->renderables[
+            index_renderable
+          ].renderable,
+          "         " 
+        );
+
+        break;
+      }
+      case scene_intro_forest_index_renderable_group_text_used: {
+        metil_renderable_initialize_at_index(
+          scene->renderables,
+          index_renderable,
+          metil_renderable_type_group
+        );
+
+        group_text_with_backing_initialize(
+          metil,
+          scene->renderables[
+            index_renderable
+          ].renderable,
+          "!,,]\\..  2  6   %        t  532 9o         b e"
+        );
+
+        break;
+      }
+      case scene_intro_forest_index_renderable_group_text_this: {
+        metil_renderable_initialize_at_index(
+          scene->renderables,
+          index_renderable,
+          metil_renderable_type_group
+        );
+  
+        group_text_with_backing_initialize(
+          metil,
+          scene->renderables[
+            index_renderable
+          ].renderable,
+          "923#_2s 5o   m2   e t h   i n  g          225   m3#3o  r5  e           15   t  5 5h   .:  a  n    .    .      .         t  h\";   ^ i   s" 
+        );
+
+        break;
+      }
       case scene_intro_forest_index_renderable_ground:
       default: {
         metil_renderable_initialize_at_index(
@@ -274,9 +326,9 @@ void scene_intro_forest_initialize(
   zoe_object_ground_initialize(
     metil_object_ground,
     (struct math_c_vector3_float) {
-      .x = 2000.0f,
-      .y = 500.0f,
-      .z = 2000.0f
+      .x = 16000.0f,
+      .y = 1000.0f,
+      .z = 16000.0f
     },
     scene->textures[
       textures_scene_intro_forest_ground
@@ -603,6 +655,71 @@ void scene_intro_forest_poll(
     metil_collision_player_object_uncollide_circular_xz(
       metil_object_tree,
       &scene->player
+    );
+  }
+
+  struct metil_group* metil_group_text_place = (
+    scene->renderables[
+      scene_intro_forest_index_renderable_group_text_place
+    ].renderable
+  );
+
+  struct metil_group* metil_group_text_used = (
+    scene->renderables[
+      scene_intro_forest_index_renderable_group_text_used
+    ].renderable
+  );
+
+  struct metil_group* metil_group_text_this = (
+    scene->renderables[
+      scene_intro_forest_index_renderable_group_text_this
+    ].renderable
+  );    
+
+  if (
+    scene->time_elapsed <
+    6000
+  ) {
+    metil_group_text_place->visible = (
+      0x01
+    );
+  } else if (
+    scene->time_elapsed < 
+    12000
+  ) {
+    metil_group_text_place->visible = (
+      0x00
+    );
+
+    metil_group_text_used->visible = (
+      0x01
+    );
+  } else if (
+    scene->time_elapsed <
+    24000
+  ) {
+    metil_group_text_place->visible = (
+      0x00
+    );
+
+    metil_group_text_used->visible = (
+      0x00
+    );
+
+    metil_group_text_this->visible = (
+      0x01
+    );
+  } else {
+    metil_group_text_place->visible = (
+      0x00
+    );
+    
+    metil_group_text_used->visible = (
+      0x00
+    );
+    
+    metil_group_text_this->visible = (
+      0x00
     );
   }
 }
