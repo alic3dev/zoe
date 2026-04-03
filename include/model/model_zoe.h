@@ -9,20 +9,20 @@
 #define zoe_model_length_joints 0x0e
 
 enum zoe_model_joint_index {
-  zoe_model_joint_index_neck = 0x00,
-  zoe_model_joint_index_shoulder_left = 0x01,
+  zoe_model_joint_index_neck           = 0x00,
+  zoe_model_joint_index_shoulder_left  = 0x01,
   zoe_model_joint_index_shoulder_right = 0x02,
-  zoe_model_joint_index_elbow_left = 0x03,
-  zoe_model_joint_index_elbow_right = 0x04,
-  zoe_model_joint_index_wrist_left = 0x05,
-  zoe_model_joint_index_wrist_right = 0x06,
-  zoe_model_joint_index_hips = 0x07,
-  zoe_model_joint_index_hip_left = 0x08,
-  zoe_model_joint_index_hip_right = 0x09,
-  zoe_model_joint_index_knee_left = 0x0a,
-  zoe_model_joint_index_knee_right = 0x0b,
-  zoe_model_joint_index_ankle_left = 0x0c,
-  zoe_model_joint_index_ankle_right = 0x0d
+  zoe_model_joint_index_elbow_left     = 0x03,
+  zoe_model_joint_index_elbow_right    = 0x04,
+  zoe_model_joint_index_wrist_left     = 0x05,
+  zoe_model_joint_index_wrist_right    = 0x06,
+  zoe_model_joint_index_hips           = 0x07,
+  zoe_model_joint_index_hip_left       = 0x08,
+  zoe_model_joint_index_hip_right      = 0x09,
+  zoe_model_joint_index_knee_left      = 0x0a,
+  zoe_model_joint_index_knee_right     = 0x0b,
+  zoe_model_joint_index_ankle_left     = 0x0c,
+  zoe_model_joint_index_ankle_right    = 0x0d
 };
 
 #define zoe_model_length_animations 0x05
