@@ -15,24 +15,29 @@
 #endif
 #include <MetalKit/MetalKit.h>
 
-#define scene_intro_forest_length_renderables 4
+#define scene_intro_forest_length_renderables 0x07
 #define scene_intro_forest_length_group_trees_renderables 1000
 
 enum scene_intro_forest_index_renderable {
-  scene_intro_forest_index_renderable_ground = 0,
-  scene_intro_forest_index_renderable_player = 1,
-  scene_intro_forest_index_renderable_player_mirror = 2,
-  scene_intro_forest_index_renderable_group_trees = 3,
+  scene_intro_forest_index_renderable_ground           = 0x00,
+  scene_intro_forest_index_renderable_player           = 0x01,
+  scene_intro_forest_index_renderable_player_mirror    = 0x02,
+  scene_intro_forest_index_renderable_group_trees      = 0x03,
+  scene_intro_forest_index_renderable_group_text_place = 0x04,
+  scene_intro_forest_index_renderable_group_text_used  = 0x05,
+  scene_intro_forest_index_renderable_group_text_this  = 0x06
 };
 
 enum textures_scene_intro_forest {
-  textures_scene_intro_forest_ground = 0,
-  textures_scene_intro_forest_tree = 1,
-  textures_scene_intro_forest_player = 2
+  textures_scene_intro_forest_ground = 0x00,
+  textures_scene_intro_forest_tree   = 0x01,
+  textures_scene_intro_forest_player = 0x02
 };
 
 struct scene_intro_forest_data {
   struct io_proc_data* _Nonnull io_proc_data;
+
+  unsigned char index_text;
 };
 
 struct scene_intro_forest_tree_thread_data {
