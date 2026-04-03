@@ -646,36 +646,6 @@ void scene_intro_hill_poll(
     ].renderable
   );
 
-  metil_model_player->position.x = (
-    scene->player.position.x
-  );
-
-  metil_model_player->position.y = (
-    scene->player.position.y
-  );
-
-  metil_model_player->position.z = (
-    scene->player.position.z
-  );
-
-  metil_model_player->rotation.y = (
-    -scene->player.rotation.y
-  );
-
-  metil_model_player_mirror->rotation.y = (
-    -metil_model_player->rotation.y
-  );
-
-  metil_model_player_mirror->position.x = (
-    -metil_model_player->position.x
-  );
-  metil_model_player_mirror->position.y = (
-    metil_model_player->position.y
-  );
-
-  metil_model_player_mirror->position.z = (
-    -metil_model_player->position.z
-  );
   struct metil_object* metil_object_tree;
 
   for (

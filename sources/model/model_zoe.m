@@ -13,6 +13,7 @@
 
 #include <math_c_absolute.h>
 #include <math_c_minimum.h>
+#include <math_c_pi.h>
 #include <math_c_vector.h>
 
 #include <metil.h>
