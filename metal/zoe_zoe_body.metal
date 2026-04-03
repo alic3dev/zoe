@@ -91,14 +91,7 @@ struct data_vertex {
   );
 
   data_vertex.colour.w = (
-    (
-      (
-        index_vertex *
-        0x32
-      ) %
-      29
-    ) /
-    29.0f
+    0x01
   );
 
   data_vertex.brightness = (
