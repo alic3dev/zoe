@@ -412,8 +412,8 @@ void zoe_input_movement(
     metil_player->velocity.y == 0.0f
   ) {
     metil_player->velocity.y = (
-      speed_original /
-      1.25f
+      speed_original *
+      0.85f
     );
   }
 
@@ -475,7 +475,7 @@ void zoe_input_movement(
       metil_player->velocity.y -
       speed_original *
       speed_delta *
-      5.0f
+      2.5f
     );
 
     zoe_data_player->attributes = (
