@@ -1,5 +1,6 @@
 #include <animation/zoe/animation_zoe_sneaking.h>
 
+#include <animation/zoe/animation_zoe_walking.h>
 #include <model/model_zoe.h>
 
 #include <metil_animation/metil_animation.h>
@@ -12,6 +13,10 @@ void zoe_animation_zoe_sneaking_initialize(
 ) {
   metil_animation_initialize(
     metil_animation
+  );
+
+  metil_animation->length = (
+    2000
   );
 
   metil_animation->loops = (
@@ -36,7 +41,11 @@ void zoe_animation_zoe_sneaking_start(
   enum metil_renderable_type metil_renderable_type,
   void* metil_renderable
 ) {
-  
+  zoe_animation_zoe_walking_start(
+    metil_animation,
+    metil_renderable_type,
+    metil_renderable
+  );
 }
 
 void zoe_animation_zoe_sneaking_poll(
@@ -45,6 +54,12 @@ void zoe_animation_zoe_sneaking_poll(
   void* metil_renderable,
   float progress
 ) {
+  zoe_animation_zoe_walking_poll(
+    metil_animation,
+    metil_renderable_type,
+    metil_renderable,
+    progress
+  );
 }
 
 void zoe_animation_zoe_sneaking_end(
