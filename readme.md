@@ -100,6 +100,10 @@ parameter_1=value_1 parameter_2=value_2 make
 make clean
 ```
 
+## how to say it
+
+you say it like "zo", like "no" with a "z", the "e" is silent
+
 ## copyright | copyleft
 
 > © [copyleft|copyright]->{alic3dev:2025|2026}->[all_rights_reserved|all_lefts_reserved]
