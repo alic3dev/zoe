@@ -165,7 +165,7 @@ endif
 endif
 endif
 
-file_math_c_metalar_sine=${directory_math_c_metalar}/math_c_sine.metalar
+files_math_c_metalars=${wildcard ${directory_math_c_metalar}/*.metalar}
 
 file_metil_metalar_fps_display=${directory_metil_library}/metil_fps_display.metalar
 file_metil_metalar_wireframe=${directory_metil_library}/metil_wireframe.metalar
@@ -319,7 +319,7 @@ ${directory_output_textures}/%: ${directory_textures}/%
 
 ${file_output_metal}: ${file_metalar}
 	mkdir -p ${directory_output_metal}
-	${metallib} ${metal_flags_output} ${file_metalar} ${file_math_c_metalar_sine} ${file_metil_metalar_fps_display} ${file_metil_metalar_wireframe} ${file_metil_metalar_metil_metal_model_object} -o ${file_output_metal}
+	${metallib} ${metal_flags_output} ${file_metalar} ${files_math_c_metalars} ${file_metil_metalar_fps_display} ${file_metil_metalar_wireframe} ${file_metil_metalar_metil_metal_model_object} -o ${file_output_metal}
 
 ${file_metalar}: ${files_air}
 	mkdir -p ${directory_metalar}
