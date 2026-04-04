@@ -16,7 +16,7 @@ void zoe_animation_zoe_sneaking_initialize(
   );
 
   metil_animation->length = (
-    2000
+    0x07d0
   );
 
   metil_animation->loops = (

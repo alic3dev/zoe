@@ -6,7 +6,8 @@ float hill_y_value_get(
   struct math_c_vector2_float* position_percentage
 ) {
   if (
-    position_percentage->x > 0.7f
+    position_percentage->x >
+    0.7f
   ) {
     position_percentage->x = (
       0.7f
@@ -19,7 +20,8 @@ float hill_y_value_get(
   );
 
   if (
-    position_percentage->x < 0.0f
+    position_percentage->x <
+    0.0f
   ) {
     position_percentage->x = (
       0.0f
@@ -32,7 +34,8 @@ float hill_y_value_get(
   );
 
   if (
-    position_percentage->y < 0.0f
+    position_percentage->y <
+    0.0f
   ) {
     position_percentage->y = (
       0.0f

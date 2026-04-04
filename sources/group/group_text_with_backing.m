@@ -31,14 +31,14 @@ void group_text_with_backing_initialize(
   struct metil_object* metil_object_text = (
     metil_group_text_with_backing->renderables[
       metil_group_text_with_backing->length -
-      1
+      0x01
     ]->renderable
   );
 
   struct metil_object* metil_object_text_backing = (
     metil_group_text_with_backing->renderables[
       metil_group_text_with_backing->length -
-      2
+      0x02
     ]->renderable
   );
 
@@ -50,7 +50,8 @@ void group_text_with_backing_initialize(
 
   metil_object_text->position.y = (
     -0.75f +
-    metil_object_text->mesh.size.y / 2.0f
+    metil_object_text->mesh.size.y /
+    0x02
   );
 
   object_text_backing_initialize(
@@ -69,7 +70,7 @@ void group_text_with_backing_initialize(
   );
 
   metil_group_text_with_backing->visible = (
-    0
+    0x00
   );
 }
 
@@ -82,7 +83,7 @@ void group_text_with_backing_visibility_set(
     metil_group_text_with_backing,
     distance,
     proximity,
-    0.0f
+    0x00
   );
 }
 
@@ -101,7 +102,7 @@ void group_text_with_backing_visibility_minimum_maximum_set(
     distance <= minimum
   ) {
     metil_group_text_with_backing->visible = (
-      1
+      0x01
     );
 
     struct metil_object* metil_object_text_backing = (
@@ -141,9 +142,9 @@ void group_text_with_backing_visibility_minimum_maximum_set(
             ) /
             difference
           ),
-          0.0f
+          0x00
         ),
-        1.0f
+        0x01
       )
     );
 
@@ -152,7 +153,7 @@ void group_text_with_backing_visibility_minimum_maximum_set(
     );
   } else {
     metil_group_text_with_backing->visible = (
-      0
+      0x00
     );
   }
 }

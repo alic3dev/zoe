@@ -2,6 +2,8 @@
 
 #include <calculations/hill_y_value.h>
 
+#include <clic3_memory.h>
+
 #include <metil_mesh/metil_mesh.h>
 
 #include <math_c_vector.h>
@@ -13,20 +15,30 @@
 #include <rand_source.h>
 #include <rand_source_type.h>
 
-#include <stdlib.h>
-
 const struct math_c_vector2_unsigned_int mesh_hill_length_vertices = {
-  .x = length_vertices_hill_x,
-  .y = length_vertices_hill_y
+  .x = (
+    length_vertices_hill_x
+  ),
+  .y = (
+    length_vertices_hill_y
+  )
 };
 
 void mesh_hill_initialize(
   struct metil_mesh* metil_mesh
 ) {
   struct math_c_vector3_float size = {
-    .x = mesh_hill_length_vertices.x * 2.0f,
-    .y = 333.3f,
-    .z = mesh_hill_length_vertices.y * 2.0f
+    .x = (
+      mesh_hill_length_vertices.x *
+      2.0f
+    ),
+    .y = (
+      333.3f
+    ),
+    .z = (
+      mesh_hill_length_vertices.y *
+      2.0f
+    )
   };
 
   metil_mesh_initialize(
@@ -48,16 +60,24 @@ void mesh_hill_initialize(
     6
   );
 
-  metil_mesh->vertices = realloc(
-    metil_mesh->vertices,
-    sizeof(struct math_c_vector4_float) *
-    metil_mesh->length_vertices
+  clic3_memory_reallocate_raw(
+    &metil_mesh->vertices,
+    (
+      sizeof(
+        struct math_c_vector4_float
+      ) *
+      metil_mesh->length_vertices
+    )
   );
 
-  metil_mesh->indices = realloc(
-    metil_mesh->indices,
-    sizeof(unsigned int) *
-    metil_mesh->length_indices
+  clic3_memory_reallocate_raw(
+    &metil_mesh->indices,
+    (
+      sizeof(
+        unsigned int
+      ) *
+      metil_mesh->length_indices
+    )
   );
 
   const struct math_c_vector2_float increment_hill = {

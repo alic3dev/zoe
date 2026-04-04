@@ -18,7 +18,7 @@ void zoe_animation_zoe_idle_initialize(
   );
 
   metil_animation->length = (
-    4000
+    0x0fa0
   );
 
   metil_animation->loops = (
@@ -82,7 +82,8 @@ void zoe_animation_zoe_idle_poll(
       2.0f -
       1.0f
     ) *
-    0.05f  );
+    0.05f
+  );
 
   metil_model->joints[
     zoe_model_joint_index_shoulder_left
@@ -146,9 +147,11 @@ void zoe_animation_zoe_idle_poll(
           0.5f
         )
       ) /
-      0.5f *      0.075f
+      0.5f *
+      0.075f
     );
-  }}
+  }
+}
 
 void zoe_animation_zoe_idle_end(
   struct metil_animation* metil_animation,

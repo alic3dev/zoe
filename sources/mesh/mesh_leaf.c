@@ -1,9 +1,11 @@
 #include <mesh/mesh_leaf.h>
 
-#include <metil_mesh/metil_mesh.h>
+#include <clic3_memory.h>
 
-#include <math.h>
-#include <stdlib.h>
+#include <math_c_pi.h>
+#include <math_c_sine.h>
+
+#include <metil_mesh/metil_mesh.h>
 
 void mesh_leaf_initialize(
   struct metil_mesh* metil_mesh_leaf
@@ -101,16 +103,20 @@ void mesh_leaf_initialize(
     3
   );
 
-  metil_mesh_leaf->vertices = realloc(
-    metil_mesh_leaf->vertices,
-    sizeof(struct math_c_vector4_float) *
-    metil_mesh_leaf->length_vertices
+  clic3_memory_reallocate_raw(
+    &metil_mesh_leaf->vertices,
+    (
+      sizeof(struct math_c_vector4_float) *
+      metil_mesh_leaf->length_vertices
+    )
   );
 
-  metil_mesh_leaf->indices = realloc(
-    metil_mesh_leaf->indices,
-    sizeof(unsigned int) *
-    metil_mesh_leaf->length_indices
+  clic3_memory_reallocate_raw(
+    &metil_mesh_leaf->indices,
+    (
+      sizeof(unsigned int) *
+      metil_mesh_leaf->length_indices
+    )
   );
 
   unsigned short int index_vertex = (
@@ -250,15 +256,15 @@ void mesh_leaf_initialize(
           index_radial_segment
         ) /
         (float) (length_segments_radial - 1) *
-        M_PI *
-        2.0f
+        math_c_pi_doubled
       );
 
       metil_mesh_leaf->vertices[
         index_vertex
       ].x = (
-        cos(
-          angle
+        math_c_cosine(
+          angle,
+          math_c_pi
         ) *
         radius_stem.x
       );
@@ -273,8 +279,9 @@ void mesh_leaf_initialize(
       metil_mesh_leaf->vertices[
         index_vertex
       ].z = (
-        sin(
-          angle
+        math_c_sine(
+          angle,
+          math_c_pi
         ) *
         radius_stem.y
       );
