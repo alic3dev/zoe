@@ -167,9 +167,12 @@ endif
 
 files_math_c_metalars=${wildcard ${directory_math_c_metalar}/*.metalar}
 
+file_metil_metalar_metil_metal_colours=${directory_metil_library}/metil_metal_colours.metalar
 file_metil_metalar_fps_display=${directory_metil_library}/metil_fps_display.metalar
 file_metil_metalar_wireframe=${directory_metil_library}/metil_wireframe.metalar
 file_metil_metalar_metil_metal_model_object=${directory_metil_library}/metil_metal_model.metalar
+
+files_metil_metalars=${file_metil_metalar_metil_metal_colours} ${file_metil_metalar_fps_display} ${file_metil_metalar_wireframe} ${file_metil_metalar_metil_metal_model_object}
 
 file_metalar=${directory_metalar}/${name}.metalar
 
@@ -318,7 +321,7 @@ ${directory_output_textures}/%: ${directory_textures}/%
 
 ${file_output_metal}: ${file_metalar}
 	mkdir -p ${directory_output_metal}
-	${metallib} ${metal_flags_output} ${file_metalar} ${files_math_c_metalars} ${file_metil_metalar_fps_display} ${file_metil_metalar_wireframe} ${file_metil_metalar_metil_metal_model_object} -o ${file_output_metal}
+	${metallib} ${metal_flags_output} ${file_metalar} ${files_math_c_metalars} ${files_metil_metalars} -o ${file_output_metal}
 
 ${file_metalar}: ${files_air}
 	mkdir -p ${directory_metalar}
