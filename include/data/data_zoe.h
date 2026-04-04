@@ -2,13 +2,23 @@
 #define __data_data_zoe_h
 
 #include <data/data_player.h>
+#include <renderables/renderables_static.h>
+
+#include <metil.h>
 
 struct zoe_data_zoe {
   struct zoe_data_player player;
+
+  struct zoe_renderables_static renderables_static;
 };
 
 void zoe_data_zoe_initialize(
-  struct zoe_data_zoe*
+  struct metil* _Nonnull,
+  struct zoe_data_zoe* _Nonnull
 );
 
+void zoe_data_zoe_destroy(
+  struct metil* _Nonnull,
+  struct zoe_data_zoe* _Nonnull
+);
 #endif
