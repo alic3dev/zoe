@@ -235,7 +235,7 @@ c_flags_includes=-I${directory_include} -I${directory_cer0_include} -I${director
 c_flags_platform=-target ${target_platform} -isysroot ${directory_sdk}
 
 c_flags_objc_debug=-O0 -g -v
-c_flags_debug=${c_flags_objc_debug} -da -Q
+c_flags_debug=${c_flags_objc_debug}
 
 c_flags_c=${c_flags_platform} ${c_flags_includes}
 c_flags_objc=${c_flags_platform} ${c_flags_includes} -x objective-c -fmodules -fconstant-cfstrings
@@ -243,13 +243,12 @@ c_flags_frameworks=${addprefix -framework ,${frameworks}}
 c_flags_output=${c_flags_platform} ${c_flags_frameworks}
 
 ifeq (${debug}, 1)
-	c_flags_c:=${c_flags_c} ${c_flags_debug}
-	c_flags_objc:=${c_flags_objc} ${c_flags_objc_debug}
-	c_flags_output:=${c_flags_output} ${c_flags_objc_debug}
+c_flags_c:=${c_flags_c} ${c_flags_debug}c_flags_objc:=${c_flags_objc} ${c_flags_objc_debug}
+c_flags_output:=${c_flags_output} ${c_flags_objc_debug}
 else
-	c_flags_c:=${c_flags_c} -O3
-	c_flags_objc:=${c_flags_objc} -O3
-	c_flags_output:=${c_flags_output} -O3
+c_flags_c:=${c_flags_c} -O3
+c_flags_objc:=${c_flags_objc} -O3
+c_flags_output:=${c_flags_output} -O3
 endif
 
 ifeq (${target_device},iphone)
