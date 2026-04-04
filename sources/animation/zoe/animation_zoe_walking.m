@@ -71,7 +71,8 @@ void zoe_animation_zoe_walking_poll(
   );
 
   if (
-    progress <= 0.5f
+    progress <=
+    0.5f
   ) {
     metil_model->joints[
       zoe_model_joint_index_hip_left

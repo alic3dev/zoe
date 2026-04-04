@@ -7,6 +7,10 @@
 #include <textures/zoe_texture_static.h>
 #include <zoe_pipeline_index.h>
 
+#include <math_c_minimum.h>
+#include <math_c_pi.h>
+#include <math_c_sine.h>
+
 #include <metil.h>
 #include <metil_audio/metil_audio_io_proc.h>
 #include <metil_audio/metil_audio_io_proc_data.h>
@@ -39,9 +43,6 @@
 #else
 #include <CoreAudio/CoreAudio.h>
 #endif
-
-#include <math.h>
-
 const unsigned long int scene_menu_main_time_scene_transition = (
   3333
 );
@@ -259,16 +260,33 @@ void scene_menu_main_poll(
 ) {
   float rotation_player_x_updated = (
     scene->player.rotation.x +
-    (0.00001f * sin(
-      ((0.6f - (scene->player.rotation.x - 0.3f)) / 0.6f) *
-      M_PI_2
-    )) *
+    (
+      0.00001f *
+      math_c_sine(
+        (
+          (
+            (
+              0.6f -
+              (
+                scene->player.rotation.x -
+                0.3f
+              )
+            ) /
+            0.6f
+          ) *
+          math_c_pi_half
+        ),
+        math_c_pi
+      )
+    ) *
     scene->time_delta
   );
 
-  scene->player.rotation.x = fmin(
-    rotation_player_x_updated,
-    0.9f
+  scene->player.rotation.x = (
+    math_c_minimum_float(
+      rotation_player_x_updated,
+      0.9f
+    )
   );
 
   struct scene_menu_main_data* data = (

@@ -1,5 +1,9 @@
 #include <mesh/mesh_tree.h>
 
+#include <clic3_memory.h>
+
+#include <math_c_pi.h>
+#include <math_c_sine.h>
 #include <math_c_vector.h>
 
 #include <metil_mesh/metil_mesh.h>
@@ -10,9 +14,6 @@
 #include <rand_result.h>
 #include <rand_source.h>
 #include <rand_source_type.h>
-
-#include <math.h>
-#include <stdlib.h>
 
 void mesh_tree_initialize(
   struct metil_mesh* mesh,
@@ -47,16 +48,24 @@ void mesh_tree_initialize(
     6
   );
 
-  mesh->vertices = realloc(
-    mesh->vertices,
-    sizeof(struct math_c_vector4_float) *
-    mesh->length_vertices
+  clic3_memory_reallocate_raw(
+    &mesh->vertices,
+    (
+      sizeof(
+        struct math_c_vector4_float
+      ) *
+      mesh->length_vertices
+    )
   );
 
-  mesh->indices = realloc(
-    mesh->indices,
-    sizeof(unsigned int) *
-    mesh->length_indices
+  clic3_memory_reallocate_raw(
+    &mesh->indices,
+    (
+      sizeof(
+        unsigned int
+      ) *
+      mesh->length_indices
+    )
   );
 
   float radius_tenth = (
@@ -114,32 +123,52 @@ void mesh_tree_initialize(
       );
 
       float distance = (
-        fmod(
-          (float) (
-            rand_result.bytes[
-              index_vertex +
-              1
-            ] *
-            rand_result.bytes[
-              index_vertex +
-              2
-            ]
-          ) /
-          1000.0f,
+        (float)
+        (
+          rand_result.bytes[
+            index_vertex +
+            0x01
+          ] *
+          rand_result.bytes[
+            index_vertex +
+            0x02
+          ]
+        ) /
+        1000.0f
+      );
+
+      if (
+        distance >
+        radius_nine_tenths
+      ) {
+        distance = (
+          distance -
+          (
+            (unsigned int)
+            (
+              distance /
+              radius_nine_tenths
+            )
+          ) *
           radius_nine_tenths
-        ) + radius_tenth
+        );
+      }
+
+      distance = (
+        distance +
+        radius_tenth
       );
 
       float angle = (
         (float) index_segment_radius /
         (float) zoe_mesh_tree_length_vertices_radius *
-        M_PI *
-        2.0f
+        math_c_pi_doubled
       );
 
       mesh->vertices[index_vertex].x = (
-        cosf(
-          angle
+        math_c_cosine(
+          angle,
+          math_c_pi
         ) *
         distance
       );
@@ -148,8 +177,9 @@ void mesh_tree_initialize(
         interval_height
       );
       mesh->vertices[index_vertex].z = (
-        sinf(
-          angle
+        math_c_sine(
+          angle,
+          math_c_pi
         ) *
         distance
       );
@@ -259,16 +289,24 @@ void mesh_tree_initialize(
       (count_joints_branch * 24)
     );
 
-    mesh->vertices = realloc(
-      mesh->vertices,
-      sizeof(struct math_c_vector4_float) *
-      mesh->length_vertices
+    clic3_memory_reallocate_raw(
+      &mesh->vertices,
+      (
+        sizeof(
+          struct math_c_vector4_float
+        ) *
+        mesh->length_vertices
+      )
     );
 
-    mesh->indices = realloc(
-      mesh->indices,
-      sizeof(unsigned int) *
-      mesh->length_indices
+    clic3_memory_reallocate_raw(
+      &mesh->indices,
+      (
+        sizeof(
+          unsigned int
+        ) *
+        mesh->length_indices
+      )
     );
 
     float angle = (
@@ -276,7 +314,7 @@ void mesh_tree_initialize(
         rand_result_secondary.bytes[offset_byte + 3] *
         rand_result_secondary.bytes[offset_byte + 4]
       ) % 10000) / 10000.0f) *
-      M_PI * 2.0f
+      math_c_pi_doubled
     );
 
     struct math_c_vector3_float position_joint_branch = {
@@ -372,7 +410,11 @@ void mesh_tree_initialize(
 
         position_joint_branch.x = (
           position_joint_branch.x +
-          cosf(angle) * (length)
+          math_c_cosine(
+            angle,
+            math_c_pi
+          ) *
+          length
         );
 
         position_joint_branch.y = (
@@ -387,7 +429,11 @@ void mesh_tree_initialize(
 
         position_joint_branch.z = (
           position_joint_branch.z +
-          sinf(angle) * (length)
+          math_c_sine(
+            angle,
+            math_c_pi
+          ) *
+          length
         );
 
         angle = (

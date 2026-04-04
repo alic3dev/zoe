@@ -19,7 +19,7 @@
 
 #if target_os_ios
 char* zoe_executable_path = (
-  (void*) 0
+  0x000
 );
 #endif
 
@@ -33,7 +33,9 @@ int main(
 ) {
   #if target_os_ios
   zoe_executable_path = (
-    parameters[0]
+    parameters[
+      0x00
+    ]
   );
 
   metil_view_controller_on_view_did_load = (
@@ -43,8 +45,18 @@ int main(
   return UIApplicationMain(
     length_parameters,
     parameters,
-    NSStringFromClass([metil_application class]),
-    NSStringFromClass([metil_application_delegate class])
+    NSStringFromClass(
+      [
+        metil_application
+        class
+      ]
+    ),
+    NSStringFromClass(
+      [
+        metil_application_delegate
+        class
+      ]
+    )
   );
   #else
   return metil_initialize(
@@ -115,54 +127,6 @@ void zoe_renderer_on_initialize(
     function_vertex: [
       metil->library.library
       newFunctionWithName: @"zoe_loading_screen_vertex"
-    ]
-  ];
-
-  zoe_pipeline_index_player_arm = [
-    metil->renderer_interface.renderer
-    pipeline_add: [
-      metil->library.library
-      newFunctionWithName: @"zoe_player_arm_fragment"
-    ]
-    function_vertex: [
-      metil->library.library
-      newFunctionWithName: @"zoe_player_arm_vertex"
-    ]
-  ];
-
-  zoe_pipeline_index_player_body = [
-    metil->renderer_interface.renderer
-    pipeline_add: [
-      metil->library.library
-      newFunctionWithName: @"zoe_player_body_fragment"
-    ]
-    function_vertex: [
-      metil->library.library
-      newFunctionWithName: @"zoe_player_body_vertex"
-    ]
-  ];
-
-  zoe_pipeline_index_player_head = [
-    metil->renderer_interface.renderer
-    pipeline_add: [
-      metil->library.library
-      newFunctionWithName: @"zoe_player_head_fragment"
-    ]
-    function_vertex: [
-      metil->library.library
-      newFunctionWithName: @"zoe_player_head_vertex"
-    ]
-  ];
-
-  zoe_pipeline_index_player_leg = [
-    metil->renderer_interface.renderer
-    pipeline_add: [
-      metil->library.library
-      newFunctionWithName: @"zoe_player_leg_fragment"
-    ]
-    function_vertex: [
-      metil->library.library
-      newFunctionWithName: @"zoe_player_leg_vertex"
     ]
   ];
 

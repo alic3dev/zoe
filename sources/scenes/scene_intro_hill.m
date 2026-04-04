@@ -56,8 +56,6 @@
 #include <CoreAudio/CoreAudio.h>
 #endif
 
-#include <stdlib.h>
-
 void scene_intro_hill_initialize(
   struct metil* metil,
   struct metil_scene* scene

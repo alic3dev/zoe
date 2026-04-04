@@ -5,8 +5,8 @@
 #include <metil_group.h>
 
 enum group_text_with_backing_index {
-  group_text_with_backing_index_text_backing = 0,
-  group_text_with_backing_index_text = 1
+  group_text_with_backing_index_text_backing = 0x00,
+  group_text_with_backing_index_text         = 0x01
 };
 
 void group_text_with_backing_initialize(

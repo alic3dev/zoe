@@ -5,8 +5,8 @@
 
 #include <metil_mesh/metil_mesh.h>
 
-#define length_vertices_ground_x 100
-#define length_vertices_ground_y 100
+#define length_vertices_ground_x 0x64
+#define length_vertices_ground_y 0x64
 
 extern const struct math_c_vector2_unsigned_int length_vertices_ground;
 

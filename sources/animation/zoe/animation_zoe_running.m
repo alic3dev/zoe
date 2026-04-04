@@ -16,7 +16,7 @@ void zoe_animation_zoe_running_initialize(
   );
 
   metil_animation->length = (
-    750
+    0x02ee
   );
 
   metil_animation->loops = (

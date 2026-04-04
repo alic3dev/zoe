@@ -15,7 +15,7 @@ void zoe_animation_zoe_jumping_initialize(
   );
 
   metil_animation->length = (
-    500
+    0x01f4
   );
 
   metil_animation->loops = (

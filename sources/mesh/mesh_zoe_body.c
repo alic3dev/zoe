@@ -11,8 +11,6 @@
 
 #include <metil_mesh/metil_mesh.h>
 
-#include <stdio.h>
-
 void mesh_zoe_body_initialize(
   struct metil_mesh* metil_mesh_zoe_body
 ) {
