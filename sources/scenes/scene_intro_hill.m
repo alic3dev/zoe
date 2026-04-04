@@ -253,7 +253,8 @@ void scene_intro_hill_initialize(
             length_vertices_hill_x -
             1
           )
-        ) / 2.0f
+        ) /
+        0x02
       ),
       .y = (
         math_c_absolute_float(
@@ -261,7 +262,8 @@ void scene_intro_hill_initialize(
             length_vertices_hill_y -
             1
           )
-        ) / 2.0f
+        ) /
+        0x02
       )
     };
 
@@ -296,8 +298,12 @@ void scene_intro_hill_initialize(
   ] = (
     zoe_texture_static_generate(
       (struct math_c_vector2_unsigned_short_int) {
-        .x = 300,
-        .y = 300
+        .x = (
+          0x012c
+        ),
+        .y = (
+          0x012c
+        )
       },
       metil->renderer_interface.metal_device
     )
@@ -308,8 +314,12 @@ void scene_intro_hill_initialize(
   ] = (
     zoe_texture_static_generate(
       (struct math_c_vector2_unsigned_short_int) {
-        .x = 300,
-        .y = 300
+        .x = (
+          0x012c
+        ),
+        .y = (
+          0x012c
+        )
       },
       metil->renderer_interface.metal_device
     )
@@ -320,8 +330,12 @@ void scene_intro_hill_initialize(
   ] = (
     zoe_texture_static_generate(
       (struct math_c_vector2_unsigned_short_int) {
-        .x = 300,
-        .y = 300
+        .x = (
+          0x012c
+        ),
+        .y = (
+          0x012c
+        )
       },
       metil->renderer_interface.metal_device
     )
@@ -356,7 +370,7 @@ void scene_intro_hill_initialize(
 
   scene->player.size.x = (
     metil_object_player_body->mesh.size.x /
-    2.0f
+    0x02
   );
 
   scene->player.size.y = (
@@ -365,7 +379,7 @@ void scene_intro_hill_initialize(
 
   scene->player.size.z = (
     metil_object_player_body->mesh.size.z /
-    2.0f
+    0x02
   );
 
   struct metil_model* metil_model_player_mirror = (
@@ -421,7 +435,7 @@ void scene_intro_hill_initialize(
   zoe_object_tree_initialize(
     metil,
     metil_object_tree_zoe,
-    0,
+    0x00,
     (struct math_c_vector2_float) {
       .x = 33.3f,
       .y = 333.5f
@@ -429,7 +443,7 @@ void scene_intro_hill_initialize(
     scene->textures[
       scene_intro_hill_textures_tree
     ],
-    213
+    0xd5
   );
 
   metil_object_tree_zoe->position.y = 100.0f;
@@ -707,8 +721,8 @@ void scene_intro_hill_poll(
       group_text_with_backing_visibility_minimum_maximum_set(
         metil_group_text_tree,
         distance_proximity_text_tree,
-        25.0f,
-        20.0f
+        0x01f4,
+        0x00c8
       );
 
       if (

@@ -165,11 +165,14 @@ endif
 endif
 endif
 
-file_math_c_metalar_sine=${directory_math_c_metalar}/math_c_sine.metalar
+files_math_c_metalars=${wildcard ${directory_math_c_metalar}/*.metalar}
 
+file_metil_metalar_metil_metal_colours=${directory_metil_library}/metil_metal_colours.metalar
 file_metil_metalar_fps_display=${directory_metil_library}/metil_fps_display.metalar
 file_metil_metalar_wireframe=${directory_metil_library}/metil_wireframe.metalar
 file_metil_metalar_metil_metal_model_object=${directory_metil_library}/metil_metal_model.metalar
+
+files_metil_metalars=${file_metil_metalar_metil_metal_colours} ${file_metil_metalar_fps_display} ${file_metil_metalar_wireframe} ${file_metil_metalar_metil_metal_model_object}
 
 file_metalar=${directory_metalar}/${name}.metalar
 
@@ -235,7 +238,7 @@ c_flags_includes=-I${directory_include} -I${directory_cer0_include} -I${director
 c_flags_platform=-target ${target_platform} -isysroot ${directory_sdk}
 
 c_flags_objc_debug=-O0 -g -v
-c_flags_debug=${c_flags_objc_debug} -da -Q
+c_flags_debug=${c_flags_objc_debug}
 
 c_flags_c=${c_flags_platform} ${c_flags_includes}
 c_flags_objc=${c_flags_platform} ${c_flags_includes} -x objective-c -fmodules -fconstant-cfstrings
@@ -243,13 +246,12 @@ c_flags_frameworks=${addprefix -framework ,${frameworks}}
 c_flags_output=${c_flags_platform} ${c_flags_frameworks}
 
 ifeq (${debug}, 1)
-	c_flags_c:=${c_flags_c} ${c_flags_debug}
-	c_flags_objc:=${c_flags_objc} ${c_flags_objc_debug}
-	c_flags_output:=${c_flags_output} ${c_flags_objc_debug}
+c_flags_c:=${c_flags_c} ${c_flags_debug}c_flags_objc:=${c_flags_objc} ${c_flags_objc_debug}
+c_flags_output:=${c_flags_output} ${c_flags_objc_debug}
 else
-	c_flags_c:=${c_flags_c} -O3
-	c_flags_objc:=${c_flags_objc} -O3
-	c_flags_output:=${c_flags_output} -O3
+c_flags_c:=${c_flags_c} -O3
+c_flags_objc:=${c_flags_objc} -O3
+c_flags_output:=${c_flags_output} -O3
 endif
 
 ifeq (${target_device},iphone)
@@ -319,7 +321,7 @@ ${directory_output_textures}/%: ${directory_textures}/%
 
 ${file_output_metal}: ${file_metalar}
 	mkdir -p ${directory_output_metal}
-	${metallib} ${metal_flags_output} ${file_metalar} ${file_math_c_metalar_sine} ${file_metil_metalar_fps_display} ${file_metil_metalar_wireframe} ${file_metil_metalar_metil_metal_model_object} -o ${file_output_metal}
+	${metallib} ${metal_flags_output} ${file_metalar} ${files_math_c_metalars} ${files_metil_metalars} -o ${file_output_metal}
 
 ${file_metalar}: ${files_air}
 	mkdir -p ${directory_metalar}

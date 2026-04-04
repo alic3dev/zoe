@@ -2,8 +2,6 @@
 #include <metil_rendering/metil_renderer_data_object.h>
 #include <metil_rendering/metil_renderer_vertex_index_parameter.h>
 
-#include <metal_stdlib>
-
 struct data_vertex {
   float4 position [[position]];
   float4 colour;

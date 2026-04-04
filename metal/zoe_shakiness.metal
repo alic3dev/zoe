@@ -1,3 +1,5 @@
+#include <zoe_metal/zoe_shakiness.h>
+
 float4 zoe_shakiness_get(
   unsigned long int time,
   unsigned long int offset,
