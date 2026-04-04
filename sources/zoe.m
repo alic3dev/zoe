@@ -71,7 +71,9 @@ void zoe_renderer_on_initialize(
   struct metil* metil,
   void* data
 ) {
-  metil->player_defaults.speed_movement = 64.0f;
+  metil->player_defaults.speed_movement = (
+    0x40
+  );
 
   metil_library_initialize(
     &metil->library,
@@ -240,10 +242,21 @@ void zoe_renderer_on_initialize(
     zoe_pipeline_index_text
   );
 
-  metil->rendering_properties.colour_clear.x = 0.0324f;
-  metil->rendering_properties.colour_clear.y = 0.0424f;
-  metil->rendering_properties.colour_clear.z = 0.0649f;
-  metil->rendering_properties.colour_clear.w = 1.0f;
+  metil->rendering_properties.colour_clear.x = (
+    0.0324f
+  );
+
+  metil->rendering_properties.colour_clear.y = (
+    0.0424f
+  );
+
+  metil->rendering_properties.colour_clear.z = (
+    0.0649f
+  );
+
+  metil->rendering_properties.colour_clear.w = (
+    0x01
+  );
 
   metil->data = (
     clic3_memory_allocate_raw(
@@ -254,6 +267,7 @@ void zoe_renderer_on_initialize(
   );
 
   zoe_data_zoe_initialize(
+    metil,
     metil->data
   );
 
@@ -305,6 +319,14 @@ void zoe_on_scene_change(
 void zoe_destroy(
   struct metil* metil
 ) {
+  struct zoe_data_zoe* zoe_data_zoe = (
+    metil->data
+  );
+
+  zoe_data_zoe_destroy(
+    metil,
+    zoe_data_zoe
+  );  
   clic3_memory_free_raw(
     metil->data
   );
