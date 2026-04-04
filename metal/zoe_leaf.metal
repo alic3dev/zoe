@@ -1,12 +1,10 @@
+#include <metil_metal/metil_metal_colours.h>
 #include <metil_rendering/metil_renderer_data_frame.h>
 #include <metil_rendering/metil_renderer_data_object.h>
 #include <metil_rendering/metil_renderer_vertex_index_parameter.h>
 
-#include <metal_stdlib>
-
 struct data_vertex {
   float4 position [[position]];
-  float2 position_texture;
   float brightness;
 };
 
@@ -26,34 +24,61 @@ struct data_vertex {
       metil_renderer_vertex_index_parameter_data_object
     )
   ]],
-  unsigned int id_vertex [[vertex_id]]
+  unsigned int index_vertex [[vertex_id]]
 ) {
   struct data_vertex data_vertex;
 
   data_vertex.position = (
     data_object->view_model_matrix_projection *
     positions[
-      id_vertex
+      index_vertex
     ]
   );
 
   data_vertex.brightness = (
-    data_frame->brightness * (
-      (float) id_vertex / 20.0f
+    data_frame->brightness *
+    (
+      (float)
+      index_vertex /
+      20.0f
     )
   );
 
-  return data_vertex;
+  return (
+    data_vertex
+  );
 }
 
 fragment float4 zoe_leaf_fragment(
   struct data_vertex data_vertex [[stage_in]]
 ) {
+  float4 colour =
+(
+    float4(
+      0x00,
+      data_vertex.brightness,
+      0x00,
+      0x01
+    )
+  );
 
-  return float4(
-    0.0f * data_vertex.brightness,
-    metal::fmod(1.0f * data_vertex.brightness, 1.0f),
-    0.0f * data_vertex.brightness,
-    1.0f
+  if (
+    colour.y >
+    0x01
+  ) {
+    colour.y = (
+      colour.y -
+      (int)
+      colour.y
+    );
+  }
+
+  metil_metal_colours_float4_brightness_apply(
+    &colour,
+    data_vertex.brightness
+  );
+
+  return (
+    colour
   );
 }

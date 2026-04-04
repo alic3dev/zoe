@@ -5,7 +5,7 @@
 #include <metil_rendering/metil_renderer_data_model_object.h>
 #include <metil_rendering/metil_renderer_vertex_index_parameter.h>
 
-#include <metal_stdlib>
+#include <metal_texture>
 
 struct data_vertex {
   float4 position [[position]];

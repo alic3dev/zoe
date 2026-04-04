@@ -1,8 +1,9 @@
+#include <metil_metal/metil_metal_colours.h>
 #include <metil_rendering/metil_renderer_data_frame.h>
 #include <metil_rendering/metil_renderer_data_object.h>
 #include <metil_rendering/metil_renderer_vertex_index_parameter.h>
 
-#include <metal_stdlib>
+#include <metal_texture>
 
 struct data_vertex {
   float4 position [[position]];
@@ -26,40 +27,58 @@ struct data_vertex {
       metil_renderer_vertex_index_parameter_data_object
     )
   ]],
-  unsigned int id_vertex [[vertex_id]]
+  unsigned int index_vertex [[vertex_id]]
 ) {
   struct data_vertex data_vertex;
 
-  data_vertex.position = data_object->view_model_matrix_projection * positions[id_vertex];
+  data_vertex.position = (
+    data_object->view_model_matrix_projection *
+    positions[
+      index_vertex
+    ]
+  );
 
-  data_vertex.position_texture.x = id_vertex % 2;
-  data_vertex.position_texture.y = id_vertex % 2;
+  data_vertex.position_texture.x = (
+    index_vertex %
+    0x02
+  );
 
-  data_vertex.brightness = data_frame->brightness;
+  data_vertex.position_texture.y = (
+    index_vertex %
+    0x02
+  );
 
-  return data_vertex;
+  data_vertex.brightness = (
+    data_frame->brightness
+  );
+
+  return (
+    data_vertex
+  );
 }
 
 fragment float4 zoe_default_fragment(
-  struct data_vertex data_vertex [[stage_in]],
-  metal::texture2d<half> texture [[ texture(0) ]]
+  struct data_vertex data_vertex [[ stage_in ]],
+  metal::texture2d<float> texture [[ texture(0x00) ]]
 ) {
   constexpr metal::sampler sampler_texture(
     metal::filter::linear,
     metal::mip_filter::linear
   );
 
-  float4 texture_colour = float4(
+  float4 texture_sample = (
     texture.sample(
       sampler_texture,
       data_vertex.position_texture
     )
   );
 
-  return float4(
-    texture_colour[0] * data_vertex.brightness,
-    texture_colour[1] * data_vertex.brightness,
-    texture_colour[2] * data_vertex.brightness,
-    texture_colour[3]
+  metil_metal_colours_float4_brightness_apply(
+    &texture_sample,
+    data_vertex.brightness
+  );
+
+  return (
+    texture_sample
   );
 }

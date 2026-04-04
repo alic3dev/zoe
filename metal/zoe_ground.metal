@@ -1,17 +1,17 @@
 #include <zoe_metal/zoe_wave.h>
 
+#include <math_c_bound.h>
 #include <math_c_pi.h>
 #include <math_c_sine.h>
+#include <math_c_vector.h>
+#include <math_c_vector_distance.h>
 
 #include <metil_rendering/metil_renderer_data_frame.h>
 #include <metil_rendering/metil_renderer_data_object.h>
 #include <metil_rendering/metil_renderer_vertex_index_parameter.h>
 
-#include <metal_stdlib>
-
 struct data_vertex {
   float4 position [[position]];
-  float2 position_texture;
   float distance;
   float brightness;
 };
@@ -32,7 +32,7 @@ struct data_vertex {
       metil_renderer_vertex_index_parameter_data_object
     )
   ]],
-  unsigned int id_vertex [[vertex_id]]
+  unsigned int index_vertex [[vertex_id]]
 ) {
   struct data_vertex data_vertex;
 
@@ -40,12 +40,12 @@ struct data_vertex {
     data_object->view_model_matrix_projection *
     (
       positions[
-        id_vertex
+        index_vertex
       ] +
       zoe_wave_get(
         data_frame->time_elapsed,
-        id_vertex,
-        3000,
+        index_vertex,
+        0x0bb8,
         1.1f
       )
     )
@@ -55,66 +55,73 @@ struct data_vertex {
     data_frame->brightness
   );
 
-  data_vertex.distance = metal::distance(
-    metal::float4(
-      metal::float4(
-        data_object->position.x,
-        data_object->position.y,
-        data_object->position.z,
-        1.0f
-      ) +
-      positions[id_vertex]
+  struct math_c_vector3_float position_raw = {
+    .x = (
+      data_object->position.x +
+      positions[
+        index_vertex
+      ].x
     ),
-    metal::float4(
-      data_frame->position_player.x,
-      data_frame->position_player.y,
-      data_frame->position_player.z,
-      1.0f
+    .y = (
+      data_object->position.y +
+      positions[
+        index_vertex
+      ].y
+    ),
+    .z = (
+      data_object->position.z +
+      positions[
+        index_vertex
+      ].z
+    )
+  };
+
+  struct math_c_vector3_float position_player = {
+    .x = (
+      data_frame->position_player.x
+    ),
+    .y = (
+      data_frame->position_player.y
+    ),
+    .z = (
+      data_frame->position_player.z
+    )
+  };
+
+  data_vertex.distance = (
+    math_c_vector3_distance_float(
+      &position_raw,
+      &position_player
     )
   );
 
-  float sine_frame = (
-    math_c_sine(
-      data_frame->frame,
-      math_c_pi
-    )
+  return (
+    data_vertex
   );
-
-  data_vertex.position_texture.x = (
-    positions[
-      id_vertex
-    ].x +
-    sine_frame
-  );
-
-  data_vertex.position_texture.y = (
-    positions[
-      id_vertex
-    ].z +
-    sine_frame
-  );
-
-  return data_vertex;
 }
 
 fragment float4 zoe_ground_fragment(
   struct data_vertex data_vertex [[stage_in]]
 ) {
-  float brightness = metal::fmin(
-    metal::fmax(
-      1.0f - (
-        data_vertex.distance /
-        1000.0f
+  float brightness = (
+    math_c_bound_float(
+      (
+        0x01 -
+        (
+          data_vertex.distance /
+          1000.0f
+        )
       ),
-      0.0f
-    ),
-    1.0f
+      0x01,
+      0x00
+    ) *
+    data_vertex.brightness
   );
 
   return float4(
-    brightness * data_vertex.brightness,
-    brightness * data_vertex.brightness,
-    brightness * data_vertex.brightness,
-    1.0f
+    brightness,
+    brightness,
+    brightness,
+    0x01
   );
 }

@@ -1,14 +1,16 @@
 #include <mesh/mesh_tree.h>
 #include <zoe_metal/zoe_wave.h>
 
+#include <math_c_bound.h>
 #include <math_c_pi.h>
 #include <math_c_sine.h>
+#include <math_c_vector.h>
+#include <math_c_vector_distance.h>
 
+#include <metil_metal/metil_metal_colours.h>
 #include <metil_rendering/metil_renderer_data_frame.h>
 #include <metil_rendering/metil_renderer_data_object.h>
 #include <metil_rendering/metil_renderer_vertex_index_parameter.h>
-
-#include <metal_stdlib>
 
 struct data_vertex {
   float4 position [[position]];
@@ -138,23 +140,42 @@ struct data_vertex {
     )
   );
 
-  data_vertex.distance = metal::distance(
-    metal::float4(
-      metal::float4(
-        data_object->position.x,
-        data_object->position.y,
-        data_object->position.z,
-        1.0f
-      ) +
+  struct math_c_vector3_float position_raw = {
+    .x = (
+      data_object->position.x +
       positions[
         index_vertex
-      ]
+      ].x
     ),
-    metal::float4(
-      data_frame->position_player.x,
-      data_frame->position_player.y,
-      data_frame->position_player.z,
-      1.0f
+    .y = (
+      data_object->position.y +
+      positions[
+        index_vertex
+      ].y
+    ),
+    .z = (
+      data_object->position.z +
+      positions[
+        index_vertex
+      ].z
+    )
+  };
+  
+  struct math_c_vector3_float position_player = {
+    .x = (
+      data_frame->position_player.x
+    ),
+    .y = (
+      data_frame->position_player.y
+    ),
+    .z = (
+      data_frame->position_player.z
+    )
+  };
+  data_vertex.distance = (
+    math_c_vector3_distance_float_fastest(
+      &position_player,
+      &position_raw
     )
   );
 
@@ -180,34 +201,54 @@ struct data_vertex {
   );
 
   if (
-    data_object->noise % 2 == 1
+    (
+      data_object->noise %
+      0x02
+    ) ==
+    0x01
   ) {
     data_vertex.position_texture = (
-      (
-        data_vertex.position_texture
-      ) /
+      data_vertex.position_texture /
       100000.0f
     );
   }
 
-  return data_vertex;
+  return (
+    data_vertex
+  );
 }
 
 fragment float4 zoe_tree_fragment(
   struct data_vertex data_vertex [[stage_in]]
 ) {
-  float brightness = metal::fmin(
-    metal::fmax(
-      1.0f - data_vertex.distance / 1000.0f,
-      0.0f
-    ),
-    1.0f
+  float brightness = (
+    math_c_bound_float(      (
+        1.0f -
+        (
+          data_vertex.distance /
+          1000.0f
+        )
+      ),
+      0x01,
+      0x00
+    )
   );
 
-  return float4(
-    brightness * data_vertex.brightness,
-    brightness * data_vertex.brightness,
-    brightness * data_vertex.brightness,
-    1.0f
+  float4 colour = (
+    float4(
+      data_vertex.brightness,
+      data_vertex.brightness,
+      data_vertex.brightness,
+      0x01
+    )
+  );
+
+  metil_metal_colours_float4_brightness_apply(
+    &colour,
+    brightness
+  );
+
+  return (
+    colour
   );
 }
