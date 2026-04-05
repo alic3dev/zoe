@@ -1,6 +1,8 @@
 #ifndef __zoe_data_data_player_h
 #define __zoe_data_data_player_h
 
+#include <items/zoe_item.h>
+
 enum zoe_data_player_action {
   zoe_data_player_action_none   = 0b00000000,
   zoe_data_player_action_select = 0b00000001
@@ -17,6 +19,9 @@ enum zoe_data_player_attributes {
 struct zoe_data_player {
   unsigned char actions;
   unsigned char attributes;
+
+  struct zoe_item* item_primary;
+  struct zoe_item* item_secondary;
 };
 
 void zoe_data_player_initialize(
