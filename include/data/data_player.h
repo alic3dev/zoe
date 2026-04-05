@@ -1,7 +1,9 @@
 #ifndef __zoe_data_data_player_h
 #define __zoe_data_data_player_h
 
+#include <inventory/zoe_inventory.h>
 #include <items/zoe_item.h>
+#include <weapons/zoe_weapon.h>
 
 enum zoe_data_player_action {
   zoe_data_player_action_none   = 0b00000000,
@@ -20,8 +22,13 @@ struct zoe_data_player {
   unsigned char actions;
   unsigned char attributes;
 
+  struct zoe_weapon* weapon_primary;
+  struct zoe_weapon* weapon_secondary;
+
   struct zoe_item* item_primary;
   struct zoe_item* item_secondary;
+
+  struct zoe_inventory inventory;
 };
 
 void zoe_data_player_initialize(
