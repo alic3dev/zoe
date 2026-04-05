@@ -3,6 +3,7 @@
 
 #include <data/data_player.h>
 #include <renderables/renderables_static.h>
+#include <save_files/zoe_save_files.h>
 
 #include <metil.h>
 
@@ -10,6 +11,8 @@ struct zoe_data_zoe {
   struct zoe_data_player player;
 
   struct zoe_renderables_static renderables_static;
+
+  struct zoe_save_files save_files;
 };
 
 void zoe_data_zoe_initialize(
