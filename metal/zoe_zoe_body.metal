@@ -62,32 +62,19 @@ struct data_vertex {
   );
 
   data_vertex.colour.x = (
-   (
-     index_vertex %
-     29
-    ) /
-    29.0f  );
+    (
+     (0x03 + index_vertex) %
+     4
+    ) 
+    < 0x02
+  );
 
   data_vertex.colour.y = (
-    (
-      (
-        index_vertex *
-        234
-      ) %
-      29
-    ) /
-    29.0f
+    data_vertex.colour.x
   );
 
   data_vertex.colour.z = (
-    (
-      (
-        index_vertex *
-        890
-      ) %
-      29
-    ) /
-    29.0f
+    data_vertex.colour.y
   );
 
   data_vertex.colour.w = (
@@ -98,7 +85,9 @@ struct data_vertex {
     data_frame->brightness
   );
 
-  return data_vertex;
+  return (
+    data_vertex
+  );
 }
 
 fragment float4 zoe_zoe_body_fragment(

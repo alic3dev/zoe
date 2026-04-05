@@ -5,7 +5,7 @@
 
 #define mesh_zoe_body_multiplier_vertex 0x02
 
-#define mesh_zoe_body_length_segments 0x08
+#define mesh_zoe_body_length_segments 0x0a
 
 #define mesh_zoe_body_length_segments_multiplied (\
   mesh_zoe_body_multiplier_vertex *\

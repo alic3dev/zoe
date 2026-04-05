@@ -338,7 +338,7 @@ void mesh_zoe_body_initialize(
       ) *
       0x02
     ) *
-    0x03
+    0x06
   );
 
   metil_mesh_zoe_body->length_vertices = (
@@ -1790,32 +1790,94 @@ void mesh_zoe_body_initialize(
     index_indices < metil_mesh_zoe_body->length_indices;
     ++index_indices
   ) {
-    metil_mesh_zoe_body->indices[
-      index_indices
-    ] = (
-      (unsigned int)
-      (
-        index_indices /
-        3 +
-        (
+    switch (
+      index_indices %
+      6
+    ) {
+      case 0x00: {
+        metil_mesh_zoe_body->indices[
+          index_indices
+        ] = (
           (
-            (
-              index_indices %
-              0x03
-            ) <
-            0x02
-          )
-          ? (
-            index_indices %
-            0x03
-          )
-          : (
+            index_indices /
+            0x06
+          ) %
+          metil_mesh_zoe_body->length_vertices
+        );
+        break;
+      }
+      case 0x01: {
+        metil_mesh_zoe_body->indices[
+          index_indices
+        ] = (
+          (
+            index_indices /
+            0x06 +
+            0x01
+          ) %
+          metil_mesh_zoe_body->length_vertices
+        );
+        break;
+      }
+      case 0x02: {
+        metil_mesh_zoe_body->indices[
+          index_indices
+        ] = (
+          (unsigned long int)
+          (
+            index_indices /
+            0x06 +
             length_segments_default *
             multiplier_vertex
-          )
-        )
-      ) %
-      metil_mesh_zoe_body->length_vertices
-    );
+          ) %
+          metil_mesh_zoe_body->length_vertices
+        );
+        break;
+      }
+      case 0x03: {
+        metil_mesh_zoe_body->indices[
+          index_indices
+        ] = (
+          (
+            index_indices /
+            0x06 +
+            0x01
+          ) %
+          metil_mesh_zoe_body->length_vertices
+        );
+        break;
+      }
+      case 0x04: {
+        metil_mesh_zoe_body->indices[
+          index_indices
+        ] = (
+          (unsigned long int)
+          (
+            index_indices /
+            0x06 +
+            length_segments_default *
+            multiplier_vertex
+          ) %
+          metil_mesh_zoe_body->length_vertices
+        );
+        break;
+      }
+      case 0x05: {
+        metil_mesh_zoe_body->indices[
+          index_indices
+        ] = (
+          (unsigned long int)
+          (
+            index_indices /
+            0x06 +
+            length_segments_default *
+            multiplier_vertex +
+            0x01
+          ) %
+          metil_mesh_zoe_body->length_vertices
+        );
+        break;
+      }
+    }
   }
 }
