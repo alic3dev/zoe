@@ -251,10 +251,6 @@ unsigned char zoe_save_files_load(
     }
   }
 
-  clic3_memory_free_raw(
-    zoe_save_files->path_directory_save_files
-  );
-
   return (
     0x00
   );
