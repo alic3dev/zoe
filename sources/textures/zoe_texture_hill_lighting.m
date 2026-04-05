@@ -68,7 +68,7 @@ id<MTLTexture> zoe_texture_hill_lighting_generate(
   );
 
   unsigned char minimum_brightness = (
-    0x01
+    0x00
   );
 
   for (
@@ -246,7 +246,8 @@ id<MTLTexture> zoe_texture_hill_lighting_generate(
             0xff
           );
         } else {
-          pixel_bytes[            index_pixel +
+          pixel_bytes[
+            index_pixel +
             metil_image_offset_rgba_8_r
           ] = (
             pixel_bytes[

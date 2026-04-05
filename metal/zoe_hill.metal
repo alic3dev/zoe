@@ -1,6 +1,7 @@
 #include <object/object_hill.h>
 
 #include <math_c_bound.h>
+#include <math_c_maximum.h>
 #include <math_c_pi.h>
 #include <math_c_sine.h>
 
@@ -164,6 +165,56 @@ fragment float4 zoe_hill_fragment(
     )
   );
 
+  uint2 size_texture = {
+    uint2(
+      texture_lighting.get_width(
+        0x00
+      ),
+      texture_lighting.get_height(
+        0x00
+      )
+    )
+  };
+
+  float4 val = (
+    texture_lighting.read(
+      size_texture
+    )
+  );
+
+  float brightness_distance = (    (1.0f - math_c_sine(
+      math_c_sine(
+        math_c_bound_float(
+          (
+            data_vertex.distance /
+            1000.0f
+          ),
+          1.0f,
+          0.0f
+        ) * math_c_pi_half,
+        math_c_pi
+      ) *
+      math_c_pi_half,
+      math_c_pi
+    )) *
+    0.01f
+  );
+
+  texture_sample_lighting.x = (
+    math_c_maximum_float(
+      texture_sample_lighting.x,
+      brightness_distance
+    )
+  );
+
+  texture_sample_lighting.y = (
+    texture_sample_lighting.x
+  );
+
+  texture_sample_lighting.z = (
+    texture_sample_lighting.y
+  );
+
   float4 textures = (
     texture_colour *
     texture_secondary_colour *
@@ -176,8 +227,8 @@ fragment float4 zoe_hill_fragment(
 
   metil_metal_colours_float4_brightness_apply(
     &textures,
-    data_vertex.brightness
-  );
+    data_vertex.brightness  );
+
   return (
     textures
   );
