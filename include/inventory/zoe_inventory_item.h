@@ -10,7 +10,7 @@ struct zoe_inventory_item {
   enum zoe_inventory_item_type type;
 
   void* item;
-}
+};
 
 #endif
 
