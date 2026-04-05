@@ -176,12 +176,6 @@ fragment float4 zoe_hill_fragment(
     )
   };
 
-  float4 val = (
-    texture_lighting.read(
-      size_texture
-    )
-  );
-
   float brightness_distance = (
     (
       1.0f -
