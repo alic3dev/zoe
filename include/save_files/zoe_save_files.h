@@ -10,12 +10,31 @@ struct zoe_save_files {
   unsigned long int saved_at[
     zoe_save_files_length_save_files
   ];
+
   unsigned char used[
+    zoe_save_files_length_save_files
+  ];
+
+  char* path_directory_save_files;
+  char* path_save_file[
     zoe_save_files_length_save_files
   ];
 };
 
+unsigned char zoe_save_files_initialize(
+  struct zoe_save_files*
+);
+
 unsigned char zoe_save_files_load(
+  struct zoe_save_files*
+);
+
+char* zoe_save_files_save_file_path_resolve(
+  char*,
+  unsigned char
+);
+
+void zoe_save_files_destroy(
   struct zoe_save_files*
 );
 
