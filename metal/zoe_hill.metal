@@ -182,21 +182,30 @@ fragment float4 zoe_hill_fragment(
     )
   );
 
-  float brightness_distance = (    (1.0f - math_c_sine(
+  float brightness_distance = (
+    (
+      1.0f -
       math_c_sine(
-        math_c_bound_float(
-          (
-            data_vertex.distance /
-            1000.0f
-          ),
-          1.0f,
-          0.0f
-        ) * math_c_pi_half,
+        (
+          math_c_sine(
+            (
+              math_c_bound_float(
+                (
+                  data_vertex.distance /
+                  1000.0f
+                ),
+                1.0f,
+                0.0f
+              ) *
+              math_c_pi_half
+            ),
+            math_c_pi
+          ) *
+          math_c_pi_half
+        ),
         math_c_pi
-      ) *
-      math_c_pi_half,
-      math_c_pi
-    )) *
+      )
+    ) *
     0.01f
   );
 
@@ -227,7 +236,8 @@ fragment float4 zoe_hill_fragment(
 
   metil_metal_colours_float4_brightness_apply(
     &textures,
-    data_vertex.brightness  );
+    data_vertex.brightness
+  );
 
   return (
     textures
