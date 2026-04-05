@@ -222,7 +222,8 @@ fragment float4 zoe_tree_fragment(
   struct data_vertex data_vertex [[stage_in]]
 ) {
   float brightness = (
-    math_c_bound_float(      (
+    math_c_bound_float(
+      (
         1.0f -
         (
           data_vertex.distance /
