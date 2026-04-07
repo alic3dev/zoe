@@ -8,6 +8,8 @@ enum zoe_item_type {
 };
 
 struct zoe_item {
+  unsigned short int id;
+
   enum zoe_item_type type;
 };
 
