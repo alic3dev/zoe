@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/syslimits.h>
-#include <sys/stat.h>  
+#include <sys/stat.h>
 
 unsigned char zoe_save_files_initialize(
   struct zoe_save_files* zoe_save_files
@@ -67,7 +67,7 @@ unsigned char zoe_save_files_initialize(
       zoe_save_files_path_directory_save_files
     )
   );
-  
+
   zoe_save_files->path_directory_save_files = (
     realpath(
       path_directory_save_files_unresolved,
@@ -164,7 +164,6 @@ unsigned char zoe_save_files_initialize(
   );
 }
 
-
 unsigned char zoe_save_files_load(
   struct zoe_save_files* zoe_save_files
 ) {  if (
@@ -190,7 +189,7 @@ unsigned char zoe_save_files_load(
       zoe_save_files->path_save_file[
         index_save_file
       ]
-    );    
+    );
 
     zoe_save_files->path_save_file[
       index_save_file

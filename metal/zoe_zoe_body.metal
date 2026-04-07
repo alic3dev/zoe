@@ -65,7 +65,7 @@ struct data_vertex {
     (
      (0x03 + index_vertex) %
      4
-    ) 
+    )
     < 0x02
   );
 

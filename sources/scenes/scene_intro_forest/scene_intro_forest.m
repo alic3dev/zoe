@@ -154,7 +154,7 @@ void scene_intro_forest_initialize(
           scene->renderables[
             index_renderable
           ].renderable,
-          "         " 
+          "         "
         );
 
         break;
@@ -182,13 +182,13 @@ void scene_intro_forest_initialize(
           index_renderable,
           metil_renderable_type_group
         );
-  
+
         group_text_with_backing_initialize(
           metil,
           scene->renderables[
             index_renderable
           ].renderable,
-          "923#_2s 5o   m2   e t h   i n  g          225   m3#3o  r5  e           15   t  5 5h   .:  a  n    .    .      .         t  h\";   ^ i   s" 
+          "923#_2s 5o   m2   e t h   i n  g          225   m3#3o  r5  e           15   t  5 5h   .:  a  n    .    .      .         t  h\";   ^ i   s"
         );
 
         break;
@@ -674,7 +674,7 @@ void scene_intro_forest_poll(
     scene->renderables[
       scene_intro_forest_index_renderable_group_text_this
     ].renderable
-  );    
+  );
 
   if (
     scene->time_elapsed <
@@ -684,7 +684,7 @@ void scene_intro_forest_poll(
       0x01
     );
   } else if (
-    scene->time_elapsed < 
+    scene->time_elapsed <
     12000
   ) {
     metil_group_text_place->visible = (
@@ -713,11 +713,11 @@ void scene_intro_forest_poll(
     metil_group_text_place->visible = (
       0x00
     );
-    
+
     metil_group_text_used->visible = (
       0x00
     );
-    
+
     metil_group_text_this->visible = (
       0x00
     );

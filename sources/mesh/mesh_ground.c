@@ -32,11 +32,11 @@ void mesh_ground_initialize(
   mesh->size.x = (
     size->x
   );
-  
+
   mesh->size.y = (
     size->y
   );
-  
+
   mesh->size.z = (
     size->z
   );
@@ -120,7 +120,7 @@ void mesh_ground_initialize(
   unsigned int offset_byte = (
     0x00
   );
-  
+
   for (
     unsigned int index_x = (
       0x00

@@ -32,4 +32,3 @@ void zoe_inventory_destroy(
     zoe_inventory->items
   );
 }
-

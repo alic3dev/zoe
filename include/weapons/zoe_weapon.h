@@ -18,7 +18,7 @@ enum zoe_weapon_type {
 
 enum zoe_weapon_durability_type {
   zoe_weapon_durability_type_breakable   = 0x00,
-  zoe_weapon_durability_type_unbreakable = 0x01  
+  zoe_weapon_durability_type_unbreakable = 0x01
 };
 
 struct zoe_weapon {
@@ -31,4 +31,3 @@ struct zoe_weapon {
 };
 
 #endif
-

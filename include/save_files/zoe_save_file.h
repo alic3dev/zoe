@@ -20,4 +20,3 @@ unsigned char zoe_save_file_load(
 );
 
 #endif
-

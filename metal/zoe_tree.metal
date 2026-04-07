@@ -160,7 +160,7 @@ struct data_vertex {
       ].z
     )
   };
-  
+
   struct math_c_vector3_float position_player = {
     .x = (
       data_frame->position_player.x
