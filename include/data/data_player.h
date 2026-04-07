@@ -22,11 +22,11 @@ struct zoe_data_player {
   unsigned char actions;
   unsigned char attributes;
 
-  struct zoe_weapon* weapon_primary;
-  struct zoe_weapon* weapon_secondary;
+  struct zoe_inventory_item* weapon_primary;
+  struct zoe_inventory_item* weapon_secondary;
 
-  struct zoe_item* item_primary;
-  struct zoe_item* item_secondary;
+  struct zoe_inventory_item* item_primary;
+  struct zoe_inventory_item* item_secondary;
 
   struct zoe_inventory inventory;
 };
