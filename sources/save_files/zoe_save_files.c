@@ -13,6 +13,10 @@
 unsigned char zoe_save_files_initialize(
   struct zoe_save_files* zoe_save_files
 ) {
+  zoe_save_files->selected_slot = (
+    0x00
+  );
+
   zoe_save_files->path_directory_save_files = (
     0x00
   );
