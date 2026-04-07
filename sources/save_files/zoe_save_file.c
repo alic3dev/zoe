@@ -208,20 +208,20 @@ unsigned char zoe_save_file_save(
 
     &zoe_data_player->inventory.items[
         index_item
-      ].type,
+      ]->type,
       enum zoe_inventory_item_type
     );
 
     switch (
       zoe_data_player->inventory.items[
         index_item
-      ].type
+      ]->type
     ) {
       case zoe_inventory_item_type_item: {
         struct zoe_item* zoe_item = (
           zoe_data_player->inventory.items[
             index_item
-          ].item
+          ]->item
         );
 
         bytes_save(
@@ -235,7 +235,7 @@ unsigned char zoe_save_file_save(
         struct zoe_weapon* zoe_weapon = (
           zoe_data_player->inventory.items[
             index_item
-          ].item
+          ]->item
         );
 
         bytes_save(
