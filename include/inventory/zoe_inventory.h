@@ -10,5 +10,12 @@ struct zoe_inventory {
   struct zoe_inventory_item* items;
 };
 
-#endif
+void zoe_inventory_initialize(
+  struct zoe_inventory*
+);
 
+void zoe_inventory_destroy(
+  struct zoe_inventory*
+);
+
+#endif
