@@ -165,17 +165,6 @@ fragment float4 zoe_hill_fragment(
     )
   );
 
-  uint2 size_texture = {
-    uint2(
-      texture_lighting.get_width(
-        0x00
-      ),
-      texture_lighting.get_height(
-        0x00
-      )
-    )
-  };
-
   float brightness_distance = (
     (
       1.0f -
