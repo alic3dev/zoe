@@ -205,8 +205,7 @@ unsigned char zoe_save_file_save(
     ++index_item
   ) {
     bytes_save(
-
-    &zoe_data_player->inventory.items[
+      &zoe_data_player->inventory.items[
         index_item
       ]->type,
       enum zoe_inventory_item_type

@@ -7,10 +7,15 @@
 #include <model/model_zoe.h>
 #include <object/object_ground.h>
 #include <object/object_tree.h>
+#include <save_files/zoe_save_file.h>
 #include <scenes/scene_id.h>
 #include <textures/zoe_texture_static.h>
+#include <weapons/zoe_weapon.h>
+#include <weapons/zoe_weapon_knife.h>
 #include <zoe_loading_threads.h>
 #include <zoe_pipeline_index.h>
+
+#include <clic3_bytes.h>
 
 #include <metil_audio/metil_audio_io_proc.h>
 #include <metil_audio/metil_audio_io_proc_data.h>
@@ -54,6 +59,50 @@ void scene_intro_forest_initialize(
     metil->data
   );
 
+  struct zoe_data_player* zoe_data_player = (
+    &zoe_data_zoe->player
+  );
+
+  static struct zoe_weapon* weapon_knife;
+
+  weapon_knife = (
+    clic3_memory_allocate_raw(
+      sizeof(
+        struct zoe_weapon
+      )
+    )
+  );
+
+  clic3_bytes_copy(
+    weapon_knife,
+    (
+      (struct zoe_weapon*)
+      &zoe_weapon_knife
+    ),
+    sizeof(
+      struct zoe_weapon
+    )
+  );
+
+  zoe_inventory_item_add(
+    &zoe_data_player->inventory,
+    zoe_inventory_item_type_weapon,
+    weapon_knife
+  );
+
+  zoe_data_player->weapon_primary = (
+    zoe_data_player->inventory.items[
+      zoe_data_player->inventory.length_items -
+      0x01
+    ]
+  );
+
+  zoe_save_file_save(
+    &zoe_data_zoe->save_files,
+
+   zoe_data_player,
+    0x00  );
+
   metil->rendering_properties.brightness = (
     metil->configuration.rendering_properties.brightness
   );
@@ -79,7 +128,7 @@ void scene_intro_forest_initialize(
 
   scene->player.rotation.x = -0.3f;
   scene->player.data = (
-    &zoe_data_zoe->player
+    zoe_data_player
   );
 
   scene->player.poll_input = (
