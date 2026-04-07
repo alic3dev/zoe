@@ -112,8 +112,12 @@ unsigned char zoe_save_file_save(
     zoe_data_player->item_primary !=
     0x00
   ) {
+    struct zoe_item* zoe_item_primary = (
+      zoe_data_player->item_primary->item
+    );
+
     bytes_save(
-      &zoe_data_player->item_primary->id,
+      &zoe_item_primary->id,
       unsigned short int
     );
   } else {
@@ -127,8 +131,12 @@ unsigned char zoe_save_file_save(
     zoe_data_player->item_secondary !=
     0x00
   ) {
+    struct zoe_item* zoe_item_secondary = (
+      zoe_data_player->item_secondary->item
+    );
+
     bytes_save(
-      &zoe_data_player->item_secondary->id,
+      &zoe_item_secondary->id,
       unsigned short int
     );
   } else {
@@ -142,8 +150,12 @@ unsigned char zoe_save_file_save(
     zoe_data_player->weapon_primary !=
     0x00
   ) {
+    struct zoe_weapon* zoe_weapon_primary = (
+      zoe_data_player->weapon_primary->item
+    );
+
     bytes_save(
-      &zoe_data_player->weapon_primary->id,
+      &zoe_weapon_primary->id,
       unsigned short int
     );
   } else {
@@ -157,8 +169,12 @@ unsigned char zoe_save_file_save(
     zoe_data_player->weapon_secondary !=
     0x00
   ) {
+    struct zoe_weapon* zoe_weapon_secondary = (
+      zoe_data_player->weapon_secondary->item
+    );
+
     bytes_save(
-      &zoe_data_player->weapon_secondary->id,
+      &zoe_weapon_secondary->id,
       unsigned short int
     );
   } else {
