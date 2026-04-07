@@ -3,10 +3,32 @@
 #include <data/data_player.h>
 #include <save_files/zoe_save_files.h>
 
+#include <clic3_bytes.h>
+#include <clic3_memory.h>
+
 #include <metil_debug/metil_debug_log.h>
 
-
 #include <stdio.h>
+
+#define bytes_save(value,type)\
+  clic3_bytes_copy(\
+    (\
+      bytes_save_file +\
+      offset_byte\
+    ),\
+    value,\
+    sizeof(\
+      type\
+    )\
+  );\
+  \
+  offset_byte = (\
+    offset_byte +\
+    sizeof(\
+      type\
+    )\
+  );
+
 unsigned char zoe_save_file_save(
   struct zoe_save_files* zoe_save_files,
   struct zoe_data_player* zoe_data_player,
@@ -34,7 +56,8 @@ unsigned char zoe_save_file_save(
     );
   }
 
-  FILE* file_save_file = (    fopen(
+  FILE* file_save_file = (
+    fopen(
       zoe_save_files->path_save_file[
         index_save_file
       ],
@@ -56,9 +79,174 @@ unsigned char zoe_save_file_save(
     );
   }
 
+  unsigned short int length_bytes_save_file = (
+    sizeof(
+      unsigned short int
+    ) *
+    (
+      0x04 +
+      zoe_data_player->inventory.length_items
+    ) +
+    sizeof(
+      enum zoe_inventory_item_type
+    ) *
+    zoe_data_player->inventory.length_items +
+    0x02
+  );
+
+  unsigned char* bytes_save_file = (
+    clic3_memory_allocate_raw(
+      length_bytes_save_file
+    )
+  );
+
+  unsigned short int offset_byte = (
+    0x00
+  );
+
+  unsigned short int id_null = (
+    0x00
+  );
+
+  if (
+    zoe_data_player->item_primary !=
+    0x00
+  ) {
+    bytes_save(
+      &zoe_data_player->item_primary->id,
+      unsigned short int
+    );
+  } else {
+    bytes_save(
+      &id_null,
+      unsigned short int
+    );
+  }
+
+  if (
+    zoe_data_player->item_secondary !=
+    0x00
+  ) {
+    bytes_save(
+      &zoe_data_player->item_secondary->id,
+      unsigned short int
+    );
+  } else {
+    bytes_save(
+      &id_null,
+      unsigned short int
+    );
+  }
+
+  if (
+    zoe_data_player->weapon_primary !=
+    0x00
+  ) {
+    bytes_save(
+      &zoe_data_player->weapon_primary->id,
+      unsigned short int
+    );
+  } else {
+    bytes_save(
+      &id_null,
+      unsigned short int
+    );
+  }
+
+  if (
+    zoe_data_player->weapon_secondary !=
+    0x00
+  ) {
+    bytes_save(
+      &zoe_data_player->weapon_secondary->id,
+      unsigned short int
+    );
+  } else {
+    bytes_save(
+      &id_null,
+      unsigned short int
+    );
+  }
+
+  bytes_save(
+    &zoe_data_player->inventory.length_items,
+    unsigned char
+  );
+
+  bytes_save(
+    &zoe_data_player->inventory.length_maximum_items,
+    unsigned char
+  );
+
+  for (
+    unsigned char index_item = (
+      0x00
+    );
+    (
+      index_item <
+      zoe_data_player->inventory.length_items
+    );
+    ++index_item
+  ) {
+    bytes_save(
+     
+    &zoe_data_player->inventory.items[
+        index_item
+      ].type,
+      enum zoe_inventory_item_type
+    );
+
+    switch (
+      zoe_data_player->inventory.items[
+        index_item
+      ].type
+    ) {
+      case zoe_inventory_item_type_item: {
+        struct zoe_item* zoe_item = (
+          zoe_data_player->inventory.items[
+            index_item
+          ].item
+        );
+
+        bytes_save(
+          &zoe_item->id,
+          unsigned short int
+        );
+
+        break;
+      }
+      case zoe_inventory_item_type_weapon: {
+        struct zoe_weapon* zoe_weapon = (
+          zoe_data_player->inventory.items[
+            index_item
+          ].item
+        );
+
+        bytes_save(
+          &zoe_weapon->id,
+          unsigned short int
+        );      
+
+        break;
+      }
+    }
+  }
+
+  fwrite(
+    bytes_save_file,
+    length_bytes_save_file,
+    0x01,
+    file_save_file
+  );
+
+  clic3_memory_free(
+    bytes_save_file
+  );
+
   fclose(
     file_save_file
   );
+
   return (
     0x00
   );
