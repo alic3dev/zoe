@@ -99,9 +99,9 @@ void scene_intro_forest_initialize(
 
   zoe_save_file_save(
     &zoe_data_zoe->save_files,
-
-   zoe_data_player,
-    0x00  );
+    zoe_data_player,
+    0x00
+  );
 
   metil->rendering_properties.brightness = (
     metil->configuration.rendering_properties.brightness
@@ -126,7 +126,10 @@ void scene_intro_forest_initialize(
     scene_intro_forest_length_renderables
   );
 
-  scene->player.rotation.x = -0.3f;
+  scene->player.rotation.x = (
+    -0.3f
+  );
+
   scene->player.data = (
     zoe_data_player
   );

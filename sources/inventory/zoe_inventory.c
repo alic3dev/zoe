@@ -106,7 +106,7 @@ unsigned char zoe_inventory_item_add(
 
   return (
     0x00
-  ); 
+  );
 }
 
 void zoe_inventory_destroy(

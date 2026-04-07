@@ -8,4 +8,3 @@ const struct zoe_weapon* zoe_weapon_mapping_id_to_structure(
 );
 
 #endif
-

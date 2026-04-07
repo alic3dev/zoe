@@ -6,4 +6,3 @@
 extern const struct zoe_weapon zoe_weapon_knife;
 
 #endif
-
