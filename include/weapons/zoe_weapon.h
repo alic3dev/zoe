@@ -22,6 +22,8 @@ enum zoe_weapon_durability_type {
 };
 
 struct zoe_weapon {
+  unsigned short int id;
+
   enum zoe_weapon_handedness handedness;
   enum zoe_weapon_type type;
   enum zoe_weapon_durability_type durability_type;
