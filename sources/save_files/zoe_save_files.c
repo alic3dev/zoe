@@ -170,7 +170,8 @@ unsigned char zoe_save_files_initialize(
 
 unsigned char zoe_save_files_load(
   struct zoe_save_files* zoe_save_files
-) {  if (
+) {
+  if (
     zoe_save_files->path_directory_save_files ==
     0x00
   ) {
@@ -178,6 +179,10 @@ unsigned char zoe_save_files_load(
       0x01
     );
   }
+
+  unsigned char slot_selected = (
+    0x00
+  );
 
   for (
     unsigned char index_save_file = (
@@ -210,6 +215,19 @@ unsigned char zoe_save_files_load(
       ] ==
       0x00
     ) {
+      if (
+        slot_selected ==
+        0x00
+      ) {
+        slot_selected = (
+          0x01
+        );
+
+        zoe_save_files->selected_slot = (
+          index_save_file
+        );
+      }
+
       continue;
     }
 
