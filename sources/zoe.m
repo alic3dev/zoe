@@ -290,7 +290,7 @@ void zoe_destroy(
   zoe_data_zoe_destroy(
     metil,
     zoe_data_zoe
-  );  
+  );
   clic3_memory_free_raw(
     metil->data
   );

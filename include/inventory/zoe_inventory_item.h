@@ -13,4 +13,3 @@ struct zoe_inventory_item {
 };
 
 #endif
-

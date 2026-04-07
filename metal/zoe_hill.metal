@@ -215,7 +215,7 @@ fragment float4 zoe_hill_fragment(
 
   textures.w = (
     0x01
-  ); 
+  );
 
   metil_metal_colours_float4_brightness_apply(
     &textures,

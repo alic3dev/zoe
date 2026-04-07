@@ -189,7 +189,7 @@ unsigned char zoe_save_file_save(
     ++index_item
   ) {
     bytes_save(
-     
+
     &zoe_data_player->inventory.items[
         index_item
       ].type,
@@ -225,7 +225,7 @@ unsigned char zoe_save_file_save(
         bytes_save(
           &zoe_weapon->id,
           unsigned short int
-        );      
+        );
 
         break;
       }
