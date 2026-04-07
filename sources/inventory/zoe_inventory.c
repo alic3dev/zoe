@@ -22,7 +22,8 @@ void zoe_inventory_initialize(
       ) *
       zoe_inventory->length_items
     )
-  );}
+  );
+}
 
 void zoe_inventory_destroy(
   struct zoe_inventory* zoe_inventory
