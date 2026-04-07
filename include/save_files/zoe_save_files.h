@@ -7,6 +7,8 @@
 #define zoe_save_files_length_save_files 0x05
 
 struct zoe_save_files {
+  unsigned char selected_slot;
+
   unsigned long int saved_at[
     zoe_save_files_length_save_files
   ];
