@@ -7,6 +7,7 @@
 #include <animation/zoe/animation_zoe_walking.h>
 #include <data/data_player.h>
 #include <mesh/mesh_zoe_body.h>
+#include <mesh/mesh_zoe_hair.h>
 #include <zoe_pipeline_index.h>
 
 #include <clic3_memory.h>
@@ -36,7 +37,7 @@ void zoe_model_zoe_initialize(
 ) {
   metil_model_objects_add_length(
     metil_model,
-    0x01
+    0x02
   );
 
   struct metil_object* metil_object_zoe_body = &(
@@ -45,16 +46,31 @@ void zoe_model_zoe_initialize(
     ]
   );
 
+  struct metil_object* metil_object_zoe_hair = &(
+    metil_model->objects[
+      0x01
+    ]
+  );
+
   mesh_zoe_body_initialize(
     &metil_object_zoe_body->mesh
   );
 
-  /*metil_object_zoe_body->type_primitive = (
-    MTLPrimitiveTypeTriangleStrip
-  );*/
+  mesh_zoe_hair_initialize(
+    &metil_object_zoe_hair->mesh
+  );
+
+  metil_object_zoe_hair->position.y = (
+    metil_object_zoe_body->mesh.size.y +
+    1.0f
+  );
 
   metil_object_zoe_body->index_pipeline_render = (
     zoe_pipeline_index_zoe_body
+  );
+
+  metil_object_zoe_hair->index_pipeline_render = (
+    zoe_pipeline_index_zoe_hair
   );
 
   metil_model_joints_add_length(

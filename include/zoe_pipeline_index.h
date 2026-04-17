@@ -10,5 +10,6 @@ extern unsigned short int zoe_pipeline_index_text;
 extern unsigned short int zoe_pipeline_index_text_backing;
 extern unsigned short int zoe_pipeline_index_tree;
 extern unsigned short int zoe_pipeline_index_zoe_body;
+extern unsigned short int zoe_pipeline_index_zoe_hair;
 
 #endif
