@@ -1,0 +1,18 @@
+#ifndef __zoe_enemies_zoe_enemy_auop_h
+#define __zoe_enemies_zoe_enemy_auop_h
+
+#include <enemies/zoe_enemy.h>
+
+#include <metil.h>
+#include <metil_rendering/metil_renderable.h>
+
+#define zoe_enemy_auop_default_health_maximum 0x05
+#define zoe_enemy_auop_default_health zoe_enemy_auop_default_health_maximum
+
+void zoe_enemy_auop_initialize(
+  struct metil* _Nonnull,
+  struct zoe_enemy* _Nonnull,
+  struct metil_renderable* _Nonnull
+);
+
+#endif
