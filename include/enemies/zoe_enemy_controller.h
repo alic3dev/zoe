@@ -9,7 +9,7 @@
 
 struct zoe_enemy_controller {
   struct metil_group* _Nonnull group_enemies;
-  struct zoe_enemy* _Nonnull enemies;
+  struct zoe_enemy* _Nonnull * _Nonnull enemies;
   unsigned int* _Nonnull length_enemies;
 
   unsigned int count_enemies_killed;
@@ -32,7 +32,7 @@ void zoe_enemy_controller_enemy_remove_at_index(
   unsigned int
 );
 
-void zoe_enemy_controller_enemy_add_length(
+void zoe_enemy_controller_enemies_add_length(
   struct metil* _Nonnull,
   struct zoe_enemy_controller* _Nonnull,
   unsigned int
@@ -43,6 +43,11 @@ void zoe_enemy_controller_damage_at_index(
   struct zoe_enemy_controller* _Nonnull,
   struct zoe_damage* _Nonnull,
   unsigned int
+);
+
+void zoe_enemy_controller_destroy(
+  struct metil* _Nonnull,
+  struct zoe_enemy_controller* _Nonnull
 );
 
 #endif

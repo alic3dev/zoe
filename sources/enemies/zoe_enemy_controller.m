@@ -20,11 +20,32 @@ void zoe_enemy_controller_initialize(
   zoe_enemy_controller->enemies = (
     clic3_memory_allocate_raw(
       sizeof(
-        struct zoe_enemy
+        void*
       ) *
       *zoe_enemy_controller->length_enemies
     )
   );
+
+  for (
+    unsigned int index_enemy = (
+      0x00
+    );
+    (
+      index_enemy <
+      *zoe_enemy_controller->length_enemies
+    );
+    ++index_enemy
+  ) {
+    zoe_enemy_controller->enemies[
+      index_enemy
+    ] = (
+      clic3_memory_allocate_raw(
+        sizeof(
+          struct zoe_enemy
+        )
+      )
+    );
+  }
 
   zoe_enemy_controller->count_enemies_killed = (
     0x00
@@ -49,6 +70,27 @@ void zoe_enemy_controller_enemy_add(
     zoe_enemy_controller->group_enemies,
     metil_renderable_enemy
   );
+
+  clic3_memory_reallocate_raw(
+    &zoe_enemy_controller->enemies,
+    (
+      sizeof(
+        void*
+      ) *
+      *zoe_enemy_controller->length_enemies
+    )
+  );
+
+  zoe_enemy_controller->enemies[
+    *zoe_enemy_controller->length_enemies -
+    0x01
+  ] = (
+    clic3_memory_allocate_raw(
+      sizeof(
+        struct zoe_enemy
+      )
+    )
+  );
 }
 
 void zoe_enemy_controller_enemy_remove_at_index(
@@ -56,21 +98,130 @@ void zoe_enemy_controller_enemy_remove_at_index(
   struct zoe_enemy_controller* zoe_enemy_controller,
   unsigned int index_enemy
 ) {
-  metil_group_destroy_renderable_at_index(
+  metil_renderable_destroy(
     metil,
-    zoe_enemy_controller->group_enemies,
-    index_enemy
-  );}
+    zoe_enemy_controller->group_enemies->renderables[
+      index_enemy
+    ]
+  );
+
+  clic3_memory_free_raw(
+    zoe_enemy_controller->group_enemies->renderables[
+      index_enemy
+    ]
+  );
+
+  zoe_enemy_destroy(
+    metil,
+    zoe_enemy_controller->enemies[
+      index_enemy
+    ]
+  );
+
+  clic3_memory_free_raw(
+    zoe_enemy_controller->enemies[
+      index_enemy
+    ]
+  );
+
+  zoe_enemy_controller->group_enemies->length = (
+    *zoe_enemy_controller->length_enemies -
+    0x01
+  );
+
+  for (
+    unsigned int index_enemy_shift = (
+      index_enemy
+    );
+    (
+      index_enemy_shift <
+      *zoe_enemy_controller->length_enemies
+    );
+    ++index_enemy_shift
+  ) {
+    zoe_enemy_controller->group_enemies->renderables[
+      index_enemy_shift
+    ] = (
+      zoe_enemy_controller->group_enemies->renderables[
+        index_enemy_shift +
+        0x01
+      ]
+    );
+
+    zoe_enemy_controller->enemies[
+      index_enemy_shift
+    ] = (
+      zoe_enemy_controller->enemies[
+        index_enemy_shift +
+        0x01
+      ]
+    );
+  }
+
+  clic3_memory_reallocate_raw(
+    &zoe_enemy_controller->group_enemies,
+    (
+      sizeof(
+        void*
+      ) *
+      *zoe_enemy_controller->length_enemies
+    )
+  );
+
+  clic3_memory_reallocate_raw(
+    &zoe_enemy_controller->enemies,
+    (
+      sizeof(
+        void*
+      ) *
+      *zoe_enemy_controller->length_enemies
+    )
+  );
+}
 
 void zoe_enemy_controller_enemies_add_length(
   struct metil* metil,
   struct zoe_enemy_controller* zoe_enemy_controller,
   unsigned int length
 ) {
+  unsigned int length_starting = (
+    *zoe_enemy_controller->length_enemies
+  );
+
   metil_group_add_length_unallocated(
     zoe_enemy_controller->group_enemies,
     length
   );
+
+  clic3_memory_reallocate_raw(
+    &zoe_enemy_controller->enemies,
+    (
+      sizeof(
+        void*
+      ) *
+      *zoe_enemy_controller->length_enemies
+    )
+  );
+
+  for (
+    unsigned int index_enemy = (
+      length_starting
+    );
+    (
+      index_enemy <
+      *zoe_enemy_controller->length_enemies
+    );
+    ++index_enemy
+  ) {    zoe_enemy_controller->enemies[
+      index_enemy
+    ] = (
+      clic3_memory_allocate_raw(
+        sizeof(
+          struct zoe_enemy
+        )
+      )
+    );
+  }
 }
 
 void zoe_enemy_controller_damage_at_index(
@@ -79,7 +230,7 @@ void zoe_enemy_controller_damage_at_index(
   struct zoe_damage* zoe_damage,
   unsigned int index_enemy
 ) {
-  struct zoe_enemy* zoe_enemy = &(
+  struct zoe_enemy* zoe_enemy = (
     zoe_enemy_controller->enemies[
       index_enemy
     ]
@@ -100,4 +251,38 @@ void zoe_enemy_controller_damage_at_index(
       zoe_enemy_controller,
       index_enemy
     );
-  }}
+  }
+}
+
+void zoe_enemy_controller_destroy(
+  struct metil* metil,
+  struct zoe_enemy_controller* zoe_enemy_controller
+) {
+  for (
+    unsigned int index_enemy = (
+      0x00
+    );
+    (
+      index_enemy <
+      *zoe_enemy_controller->length_enemies
+    );
+    ++index_enemy
+  ) {
+    zoe_enemy_destroy(
+      metil,
+      zoe_enemy_controller->enemies[
+        index_enemy
+      ]
+    );
+
+    clic3_memory_free_raw(
+      zoe_enemy_controller->enemies[
+        index_enemy
+      ]
+    );
+  }
+  
+  clic3_memory_free_raw(
+    zoe_enemy_controller->enemies
+  );
+}
