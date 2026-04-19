@@ -1,5 +1,7 @@
 #include <enemies/zoe_enemy.h>
 
+#include <damage/zoe_damage.h>
+
 #include <clic3_memory.h>
 
 #include <metil.h>
@@ -26,6 +28,10 @@ void zoe_enemy_initialize(
     zoe_enemy_default_poll
   );
 
+  zoe_enemy->damage = (
+    zoe_enemy_default_damage
+  );
+
   zoe_enemy->destroy = (
     zoe_enemy_default_destroy
   );
@@ -45,6 +51,18 @@ void zoe_enemy_poll(
   );
 }
 
+void zoe_enemy_damage(
+  struct metil* metil,
+  struct zoe_enemy* zoe_enemy,
+  struct zoe_damage* zoe_damage
+) {
+  zoe_enemy->damage(
+    metil,
+    zoe_enemy,
+    zoe_damage
+  );
+}
+
 void zoe_enemy_destroy(
   struct metil* metil,
   struct zoe_enemy* zoe_enemy
@@ -59,6 +77,34 @@ void zoe_enemy_default_poll(
   struct metil* metil,
   struct zoe_enemy* zoe_enemy
 ) {
+}
+
+void zoe_enemy_default_damage(
+  struct metil* metil,
+  struct zoe_enemy* zoe_enemy,
+  struct zoe_damage* zoe_damage
+) {
+  unsigned int damage_total = (
+    zoe_damage->amount_primary +
+    zoe_damage->amount_secondary
+  );
+
+  if (
+    (
+      zoe_enemy->health -
+      damage_total
+    ) <
+    0x00
+  ) {
+    zoe_enemy->health = (
+      0x00
+    );
+  } else {
+    zoe_enemy->health = (
+      zoe_enemy->health -
+      damage_total
+    );
+  }
 }
 
 void zoe_enemy_default_destroy(
