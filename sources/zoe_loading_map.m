@@ -116,7 +116,9 @@ unsigned char zoe_scene_loading_loading_initialize_function_no_load(
       break;
   }
 
-  return 1;
+  return (
+    0x01
+  );
 }
 
 float zoe_scene_loading_loading_poll_function_no_load(
@@ -125,7 +127,9 @@ float zoe_scene_loading_loading_poll_function_no_load(
   unsigned char id_scene,
   void** data
 ) {
-  return 1.0f;
+  return (
+    0x01
+  );
 }
 
 void zoe_scene_loading_loading_finished_function_no_load(
@@ -133,4 +137,5 @@ void zoe_scene_loading_loading_finished_function_no_load(
   struct metil_scene* metil_scene,
   unsigned char id_scene,
   void** data
-) {}
+) {
+}
