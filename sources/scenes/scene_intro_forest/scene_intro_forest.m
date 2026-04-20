@@ -2,6 +2,8 @@
 
 #include <audio/io_proc_data.h>
 #include <data/data_zoe.h>
+#include <enemies/zoe_enemy_auop.h>
+#include <enemies/zoe_enemy_controller.h>
 #include <group/group_text_with_backing.h>
 #include <input/input_movement.h>
 #include <model/model_zoe.h>
@@ -185,6 +187,7 @@ void scene_intro_forest_initialize(
         );
         break;
       }
+      case scene_intro_forest_index_renderable_group_enemies:
       case scene_intro_forest_index_renderable_group_trees: {
         metil_renderable_initialize_at_index(
           scene->renderables,
@@ -257,6 +260,14 @@ void scene_intro_forest_initialize(
       }
     }
   }
+
+  zoe_enemy_controller_initialize(
+    metil,
+    &data_scene->enemy_controller,
+    scene->renderables[
+      scene_intro_forest_index_renderable_group_enemies
+    ].renderable
+  );
 
   scene->length_textures = 3;
   scene->textures = realloc(
@@ -680,15 +691,100 @@ void zoe_scene_intro_forest_threaded_trees_initialization(
 
 void scene_intro_forest_poll(
   struct metil* metil,
-  struct metil_scene* scene
+  struct metil_scene* metil_scene
 ) {
   metil_scene_poll_default(
     metil,
-    scene
+    metil_scene
   );
 
+  struct scene_intro_forest_data* scene_intro_forest_data = (
+    metil_scene->data
+  );
+
+  struct zoe_enemy_controller* zoe_enemy_controller = &(
+    scene_intro_forest_data->enemy_controller
+  );
+
+  zoe_enemy_controller_poll(
+    metil,
+    metil_scene,
+    zoe_enemy_controller
+  );
+
+  if (
+    (
+      *zoe_enemy_controller->length_enemies <
+      (
+        metil_scene->time_elapsed /
+        0x03e8
+      )
+    ) &&
+    (
+      *zoe_enemy_controller->length_enemies <
+      0x64
+    )
+  ) {
+    zoe_enemy_controller_enemies_add_length(
+      metil,
+      zoe_enemy_controller,
+      0x01
+    );
+
+    unsigned int index_enemy = (
+      *zoe_enemy_controller->length_enemies -
+      0x01
+    );
+
+    struct metil_renderable* metil_renderable_enemy = (
+      zoe_enemy_controller->group_enemies->renderables[
+        index_enemy
+      ]
+    );
+
+    struct zoe_enemy* zoe_enemy_auop = (
+      zoe_enemy_controller->enemies[
+        index_enemy
+      ]
+    );
+
+    zoe_enemy_auop_initialize(
+      metil,
+      zoe_enemy_auop,
+      metil_renderable_enemy
+    );
+
+    zoe_enemy_auop->position->x = (
+      metil_scene->player.position.x +
+      (
+        metil_scene->time_elapsed %
+        0x20
+      )
+    );
+
+    zoe_enemy_auop->position->z = (
+      metil_scene->player.position.z +
+      (
+        (
+          metil_scene->time_elapsed +
+          0x45
+        ) %
+        0x20
+      ) *
+      (
+        (
+          metil_scene->time_delta %
+          0x02
+        ) ==
+        0x00
+        ? -0x01
+        :  0x01
+      )
+    );
+  }
+
   struct metil_group* metil_group_trees = (
-    scene->renderables[
+    metil_scene->renderables[
       scene_intro_forest_index_renderable_group_trees
     ].renderable
   );
@@ -706,37 +802,37 @@ void scene_intro_forest_poll(
 
     metil_collision_player_object_uncollide_circular_xz(
       metil_object_tree,
-      &scene->player
+      &metil_scene->player
     );
   }
 
   struct metil_group* metil_group_text_place = (
-    scene->renderables[
+    metil_scene->renderables[
       scene_intro_forest_index_renderable_group_text_place
     ].renderable
   );
 
   struct metil_group* metil_group_text_used = (
-    scene->renderables[
+    metil_scene->renderables[
       scene_intro_forest_index_renderable_group_text_used
     ].renderable
   );
 
   struct metil_group* metil_group_text_this = (
-    scene->renderables[
+    metil_scene->renderables[
       scene_intro_forest_index_renderable_group_text_this
     ].renderable
   );
 
   if (
-    scene->time_elapsed <
+    metil_scene->time_elapsed <
     6000
   ) {
     metil_group_text_place->visible = (
       0x01
     );
   } else if (
-    scene->time_elapsed <
+    metil_scene->time_elapsed <
     12000
   ) {
     metil_group_text_place->visible = (
@@ -747,7 +843,7 @@ void scene_intro_forest_poll(
       0x01
     );
   } else if (
-    scene->time_elapsed <
+    metil_scene->time_elapsed <
     24000
   ) {
     metil_group_text_place->visible = (
@@ -782,6 +878,11 @@ void scene_intro_forest_destroy(
 ) {
   struct scene_intro_forest_data* scene_intro_forest_data = (
     metil_scene->data
+  );
+
+  zoe_enemy_controller_destroy(
+    metil,
+    &scene_intro_forest_data->enemy_controller
   );
 
   struct io_proc_data* io_proc_data = (

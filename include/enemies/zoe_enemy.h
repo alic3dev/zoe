@@ -3,8 +3,11 @@
 
 #include <damage/zoe_damage.h>
 
+#include <math_c_vector.h>
+
 #include <metil.h>
 #include <metil_rendering/metil_renderable.h>
+#include <metil_scenes/metil_scene.h>
 
 #define zoe_enemy_default_health_maximum 5
 #define zoe_enemy_default_health zoe_enemy_default_health_maximum
@@ -13,6 +16,7 @@ struct zoe_enemy;
 
 typedef void (*zoe_enemy_function_poll)(
   struct metil* _Nonnull,
+  struct metil_scene* _Nonnull,
   struct zoe_enemy* _Nonnull
 );
 
@@ -33,6 +37,9 @@ struct zoe_enemy {
 
   struct metil_renderable* _Nonnull renderable;
 
+  struct math_c_vector3_float* _Nonnull position;
+  struct math_c_vector3_float* _Nonnull rotation;
+
   zoe_enemy_function_poll _Nonnull poll;
   zoe_enemy_function_damage _Nonnull damage;
   zoe_enemy_function_destroy _Nonnull destroy;
@@ -48,6 +55,7 @@ void zoe_enemy_initialize(
 
 void zoe_enemy_poll(
   struct metil* _Nonnull,
+  struct metil_scene* _Nonnull,
   struct zoe_enemy* _Nonnull
 );
 
@@ -64,6 +72,7 @@ void zoe_enemy_destroy(
 
 void zoe_enemy_default_poll(
   struct metil* _Nonnull,
+  struct metil_scene* _Nonnull,
   struct zoe_enemy* _Nonnull
 );
 

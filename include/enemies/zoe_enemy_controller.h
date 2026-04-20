@@ -6,6 +6,7 @@
 
 #include <metil.h>
 #include <metil_group.h>
+#include <metil_scenes/metil_scene.h>
 
 struct zoe_enemy_controller {
   struct metil_group* _Nonnull group_enemies;
@@ -43,6 +44,12 @@ void zoe_enemy_controller_damage_at_index(
   struct zoe_enemy_controller* _Nonnull,
   struct zoe_damage* _Nonnull,
   unsigned int
+);
+
+void zoe_enemy_controller_poll(
+  struct metil* _Nonnull,
+  struct metil_scene* _Nonnull,
+  struct zoe_enemy_controller* _Nonnull
 );
 
 void zoe_enemy_controller_destroy(

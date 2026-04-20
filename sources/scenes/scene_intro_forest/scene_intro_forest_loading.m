@@ -35,10 +35,12 @@ unsigned char zoe_scene_intro_forest_loading_initialize_function(
   zoe_loading_threads_spawn(
     zoe_loading_threads,
     scene_intro_forest_initialize,
-    0
+    0x00
   );
 
-  return 0;
+  return (
+    0x00
+  );
 }
 
 float zoe_scene_intro_forest_loading_poll_function(

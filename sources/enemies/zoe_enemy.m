@@ -6,6 +6,7 @@
 
 #include <metil.h>
 #include <metil_rendering/metil_renderable.h>
+#include <metil_scenes/metil_scene.h>
 
 void zoe_enemy_initialize(
   struct metil* metil,
@@ -43,10 +44,12 @@ void zoe_enemy_initialize(
 
 void zoe_enemy_poll(
   struct metil* metil,
+  struct metil_scene* metil_scene,
   struct zoe_enemy* zoe_enemy
 ) {
   zoe_enemy->poll(
     metil,
+    metil_scene,
     zoe_enemy
   );
 }
@@ -75,6 +78,7 @@ void zoe_enemy_destroy(
 
 void zoe_enemy_default_poll(
   struct metil* metil,
+  struct metil_scene* metil_scene,
   struct zoe_enemy* zoe_enemy
 ) {
 }
@@ -111,16 +115,6 @@ void zoe_enemy_default_destroy(
   struct metil* metil,
   struct zoe_enemy* zoe_enemy
 ) {
-  if (
-    zoe_enemy->renderable !=
-    0x00
-  ) {
-    metil_renderable_destroy(
-      metil,
-      zoe_enemy->renderable
-    );
-  }
-
   clic3_memory_free(
     zoe_enemy->data
   );

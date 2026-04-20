@@ -2,7 +2,9 @@
 
 #include <clic3_memory.h>
 
+#include <metil.h>
 #include <metil_group.h>
+#include <metil_scenes/metil_scene.h>
 
 void zoe_enemy_controller_initialize(
   struct metil* metil,
@@ -251,6 +253,49 @@ void zoe_enemy_controller_damage_at_index(
       zoe_enemy_controller,
       index_enemy
     );
+  }
+}
+
+void zoe_enemy_controller_poll(
+  struct metil* metil,
+  struct metil_scene* metil_scene,
+  struct zoe_enemy_controller* zoe_enemy_controller
+) {
+  for (
+    unsigned int index_enemy = (
+      0x00
+    );
+    (
+      index_enemy <
+      *zoe_enemy_controller->length_enemies
+    );
+  ) {
+    struct zoe_enemy* zoe_enemy = (
+      zoe_enemy_controller->enemies[
+        index_enemy
+      ]
+    );
+
+    zoe_enemy_poll(
+      metil,
+      metil_scene,
+      zoe_enemy
+    );
+
+    if (
+      zoe_enemy->health ==
+      0x00
+    ) {
+      zoe_enemy_controller_enemy_remove_at_index(
+        metil,
+        zoe_enemy_controller,
+        index_enemy
+      );
+    } else {      index_enemy = (
+        index_enemy +
+        0x01
+      );
+    }
   }
 }
 
