@@ -67,6 +67,10 @@ void zoe_enemy_auop_initialize(
     zoe_enemy_object->rotation
   );
 
+  zoe_enemy_auop->size = &(
+    zoe_enemy_object->mesh.size
+  );
+
   zoe_enemy_auop->poll = (
     zoe_enemy_auop_poll
   );
