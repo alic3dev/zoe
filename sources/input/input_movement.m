@@ -107,7 +107,7 @@ void zoe_input_movement(
         );
       }
     }
-  } 
+  }
 
   if (
     metil->input.controller_state.available == 1 &&

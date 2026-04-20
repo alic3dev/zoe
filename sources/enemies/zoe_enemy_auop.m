@@ -25,7 +25,7 @@ void zoe_enemy_auop_initialize(
   zoe_enemy_auop->health_maximum = (
     zoe_enemy_auop_default_health_maximum
   );
-  
+
   zoe_enemy_auop->health = (
     zoe_enemy_auop_default_health
   );

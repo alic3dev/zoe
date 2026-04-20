@@ -39,4 +39,4 @@ struct zoe_damage* zoe_weapon_damage_flat(
   return (
     zoe_damage
   );
-}  
+}

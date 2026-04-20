@@ -214,7 +214,8 @@ void zoe_enemy_controller_enemies_add_length(
       *zoe_enemy_controller->length_enemies
     );
     ++index_enemy
-  ) {    zoe_enemy_controller->enemies[
+  ) {
+    zoe_enemy_controller->enemies[
       index_enemy
     ] = (
       clic3_memory_allocate_raw(
@@ -263,7 +264,7 @@ unsigned char zoe_enemy_controller_damage_at_index(
       0x01
     );
   }
- 
+
   return (
     0x00
   );
@@ -275,7 +276,6 @@ void zoe_enemy_controller_attack(
   struct zoe_enemy_controller* zoe_enemy_controller,
   struct zoe_weapon* zoe_weapon
 ) {
-
   struct math_c_vector3_float* position_player = &(
     metil_player->position
   );
@@ -332,6 +332,7 @@ void zoe_enemy_controller_attack(
       clic3_memory_free_raw(
         zoe_damage
       );
+
       if (
         killed_enemy !=
         0x00
@@ -339,11 +340,11 @@ void zoe_enemy_controller_attack(
         continue;
       }
     }
-  
+
     index_enemy = (
       index_enemy +
       0x01
-    );  
+    );
   }
 }
 
@@ -418,7 +419,7 @@ void zoe_enemy_controller_destroy(
       ]
     );
   }
-  
+
   clic3_memory_free_raw(
     zoe_enemy_controller->enemies
   );

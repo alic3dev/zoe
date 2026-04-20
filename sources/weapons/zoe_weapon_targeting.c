@@ -35,4 +35,4 @@ float zoe_weapon_targeting_frontal_radial_half(
     ) /
     zoe_weapon->range
   );
-}  
+}
