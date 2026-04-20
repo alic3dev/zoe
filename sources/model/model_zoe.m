@@ -86,8 +86,7 @@ void zoe_model_zoe_initialize(
   );
 
   metil_object_zoe_hair->position.y = (
-    metil_object_zoe_body->mesh.size.y +
-    1.0f
+    metil_object_zoe_body->mesh.size.y
   );
 
   metil_object_zoe_body->index_pipeline_render = (
