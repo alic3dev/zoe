@@ -37,6 +37,11 @@ struct zoe_data_player {
   struct zoe_inventory_item* item_primary;
   struct zoe_inventory_item* item_secondary;
 
+  unsigned long int time_weapon_primary;
+  unsigned long int time_weapon_secondary;
+  unsigned long int time_item_primary;
+  unsigned long int time_item_secondary;
+
   struct zoe_inventory inventory;
 };
 
