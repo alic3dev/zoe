@@ -63,27 +63,48 @@ void mesh_zoe_hair_initialize(
       0x03
     );
 
-    float angle = -(
-      (float)
-      index_segment /
-      (float)
-      (length_segments - 0x01)
-    ) + math_c_pi_half;
+    float angle = (
+      -(
+        (float)
+        index_segment /
+        (float)
+        (
+          length_segments -
+          0x01
+        )
+      ) +
+      math_c_pi_half
+    );
 
     float radius = (
       1.25f +
-      math_c_sine((
-        angle - math_c_pi_half) * math_c_pi * 10.548f,
+      math_c_sine(
+        (
+          (
+            angle -
+            math_c_pi_half
+          ) *
+          math_c_pi *
+          10.548f
+        ),
         math_c_pi
-      )
-* 0.2f    );    metil_mesh_zoe_hair->vertices[
+      ) *
+      0.2f
+    );
+    
+    metil_mesh_zoe_hair->vertices[
       offset_index_vertex
     ].x = (
       math_c_sine(
-        angle * math_c_pi,
+        (
+          angle *
+          math_c_pi
+        ),
         math_c_pi
-      ) * radius
+      ) *
+      radius
     );
+
     metil_mesh_zoe_hair->vertices[
       offset_index_vertex
     ].y = (
@@ -94,10 +115,14 @@ void mesh_zoe_hair_initialize(
       offset_index_vertex
     ].z = (
       math_c_cosine(
-        angle * math_c_pi,
+        (
+          angle *
+          math_c_pi
+        ),
         math_c_pi
-      )
-* radius    );
+      ) *
+      radius
+    );
 
     angle = (
       angle -
@@ -109,9 +134,14 @@ void mesh_zoe_hair_initialize(
       0x01
     ].x = (
       math_c_sine(
-        angle * math_c_pi,
+        (
+          angle *
+          math_c_pi
+        ),
         math_c_pi
-      ) * radius * 0.5f
+      ) *
+      radius *
+      0.5f
     );
 
     metil_mesh_zoe_hair->vertices[
@@ -126,9 +156,14 @@ void mesh_zoe_hair_initialize(
       0x01
     ].z = (
       math_c_cosine(
-        angle * math_c_pi,
+        (
+          angle *
+          math_c_pi
+        ),
         math_c_pi
-      ) * radius * 0.1f
+      ) *
+      radius *
+      0.1f
     );
 
     angle = (
@@ -141,9 +176,13 @@ void mesh_zoe_hair_initialize(
       0x02
     ].x = (
       math_c_sine(
-        angle * math_c_pi,
+        (
+          angle *
+          math_c_pi
+        ),
         math_c_pi
-      ) * radius
+      ) *
+      radius
     );
 
     metil_mesh_zoe_hair->vertices[
@@ -158,10 +197,14 @@ void mesh_zoe_hair_initialize(
       0x02
     ].z = (
       math_c_cosine(
-        angle * math_c_pi,
+        (
+          angle *
+          math_c_pi
+        ),
         math_c_pi
-      )
-* radius    );
+      ) *
+      radius
+    );
   }
 
   for (
