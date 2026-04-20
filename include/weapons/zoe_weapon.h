@@ -3,6 +3,8 @@
 
 #include <damage/zoe_damage.h>
 
+#include <math_c_vector.h>
+
 enum zoe_weapon_handedness {
   zoe_weapon_handedness_left  = 0x00,
   zoe_weapon_handedness_right = 0x01,
@@ -23,6 +25,21 @@ enum zoe_weapon_durability_type {
   zoe_weapon_durability_type_unbreakable = 0x01
 };
 
+struct zoe_weapon;
+
+typedef float (*zoe_weapon_function_targeting) (
+  struct zoe_weapon*,
+  struct math_c_vector3_float*,
+  struct math_c_vector3_float*,
+  struct math_c_vector3_float*,
+  struct math_c_vector3_float*
+);
+
+typedef struct zoe_damage* (*zoe_weapon_function_damage) (
+  struct zoe_weapon*,
+  float
+);
+
 struct zoe_weapon {
   unsigned short int id;
 
@@ -30,6 +47,12 @@ struct zoe_weapon {
   enum zoe_weapon_type type;
   enum zoe_weapon_durability_type durability_type;
   unsigned int durability;
+
+  zoe_weapon_function_targeting targeting;
+  zoe_weapon_function_damage damage;
+
+  float range;
+  unsigned int rate;
 
   unsigned char type_damage_primary;
   unsigned char type_damage_secondary;
