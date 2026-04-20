@@ -698,6 +698,14 @@ void scene_intro_forest_poll(
     metil_scene
   );
 
+  struct zoe_data_zoe* zoe_data_zoe = (
+    metil->data
+  );
+
+  struct zoe_data_player* zoe_data_player = &(
+    zoe_data_zoe->player
+  );
+
   struct scene_intro_forest_data* scene_intro_forest_data = (
     metil_scene->data
   );
@@ -705,6 +713,23 @@ void scene_intro_forest_poll(
   struct zoe_enemy_controller* zoe_enemy_controller = &(
     scene_intro_forest_data->enemy_controller
   );
+
+  if (
+    zoe_data_player->actions &
+    zoe_data_player_action_attack_primary
+  ) {
+    zoe_data_player->actions = (
+      zoe_data_player->actions -
+      zoe_data_player_action_attack_primary
+    );
+
+    zoe_enemy_controller_attack(
+      metil,
+      &metil_scene->player,
+      zoe_enemy_controller,
+      zoe_data_player->weapon_primary->item
+    );
+  }
 
   zoe_enemy_controller_poll(
     metil,

@@ -69,7 +69,7 @@ void mesh_zoe_hair_initialize(
       (float)
       (length_segments - 0x01)
     ) + math_c_pi_half;
-  
+
     float radius = (
       1.25f +
       math_c_sine((
@@ -89,7 +89,7 @@ void mesh_zoe_hair_initialize(
     ].y = (
       -1.0f
     );
-  
+
     metil_mesh_zoe_hair->vertices[
       offset_index_vertex
     ].z = (
@@ -145,14 +145,14 @@ void mesh_zoe_hair_initialize(
         math_c_pi
       ) * radius
     );
-    
+
     metil_mesh_zoe_hair->vertices[
       offset_index_vertex +
       0x02
     ].y = (
       -1.0f
     );
-  
+
     metil_mesh_zoe_hair->vertices[
       offset_index_vertex +
       0x02

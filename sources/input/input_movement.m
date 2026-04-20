@@ -62,6 +62,54 @@ void zoe_input_movement(
   }
 
   if (
+    (
+      (
+        zoe_data_player->actions &
+        zoe_data_player_action_attack_primary
+      ) ==
+      0x00
+    ) &&
+    (
+      metil->input.cursor.down !=
+      0x00
+    ) ||
+    metil->input.controller_state.available == 1 &&
+    metil->input.controller_state.r2 >= 0.1f
+  ) {
+    if (
+      (
+        zoe_data_player->weapon_primary !=
+        0x00
+      ) &&
+      (
+        zoe_data_player->weapon_primary->item !=
+        0x00
+      )
+    ) {
+      struct zoe_weapon* zoe_weapon = (
+        zoe_data_player->weapon_primary->item
+      );
+
+      if (
+        time >=
+        (
+          zoe_data_player->time_weapon_primary +
+          zoe_weapon->rate
+        )
+      ) {
+        zoe_data_player->actions = (
+          zoe_data_player->actions |
+          zoe_data_player_action_attack_primary
+        );
+
+        zoe_data_player->time_weapon_primary = (
+          time
+        );
+      }
+    }
+  }
+
+  if (
     metil->input.controller_state.available == 1 &&
     metil->input.controller_state.l2 >= 0.1f &&
     metil->input.controller_state.l3 == 0.0f

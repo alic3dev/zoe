@@ -39,6 +39,7 @@ struct zoe_enemy {
 
   struct math_c_vector3_float* _Nonnull position;
   struct math_c_vector3_float* _Nonnull rotation;
+  struct math_c_vector3_float* _Nonnull size;
 
   zoe_enemy_function_poll _Nonnull poll;
   zoe_enemy_function_damage _Nonnull damage;
