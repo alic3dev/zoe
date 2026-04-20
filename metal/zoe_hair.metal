@@ -62,15 +62,22 @@ struct data_vertex {
   );
 
   data_vertex.colour.x = (
-    0.0f
-  );
+0.001f +
+    (float) (
+    (index_vertex * 0xb) % 0xf) / 0xf * 0.003f
++
+    (float) ((index_vertex / 0x03) %0xa0) / 0xa0 * 0.002f  );
 
   data_vertex.colour.y = (
-    0.0f
+    0.001f + (float)(
+    (
+      index_vertex) %
+      0x0a
+    ) / 0x0a * 0.002f
   );
 
   data_vertex.colour.z = (
-    0.001f +
+    0.002f +
     (
       (float)
       (
@@ -78,12 +85,12 @@ struct data_vertex {
         0x8
       ) /
       0x07
-    )
-*
-    0.007f  );
+    ) *    0.007f +
+    (1.0f - (float) ((index_vertex / 0x03) % 0xa0) / 0xa0) * 0.002f
+  );
 
   data_vertex.colour.w = (
-    0.95f
+    0.99f
   );
 
   data_vertex.brightness = (
