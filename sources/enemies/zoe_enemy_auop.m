@@ -77,8 +77,15 @@ void zoe_enemy_auop_poll(
   struct metil_scene* metil_scene,
   struct zoe_enemy* zoe_enemy_auop
 ) {
+  float amount = (
+    (float)
+    metil_scene->time_delta *
+    0.01f
+  );
+
   zoe_enemy_auop->position->x = (
     zoe_enemy_auop->position->x +
+    (float)
     (
       (
         zoe_enemy_auop->position->x >
@@ -86,11 +93,12 @@ void zoe_enemy_auop_poll(
       )
       ? -0x01
       :  0x01
-    )
-  );
+    ) *
+    amount  );
 
   zoe_enemy_auop->position->z = (
     zoe_enemy_auop->position->z +
+    (float)
     (
       (
         zoe_enemy_auop->position->z >
@@ -98,6 +106,7 @@ void zoe_enemy_auop_poll(
       )
       ? -0x01
       :  0x01
-    )
+    ) *
+    amount
   );
 }
