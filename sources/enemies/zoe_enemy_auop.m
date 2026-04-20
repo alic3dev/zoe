@@ -53,4 +53,12 @@ void zoe_enemy_auop_initialize(
     zoe_enemy_object,
     metil->renderer_interface.metal_device
   );
+
+  zoe_enemy_auop->position = &(
+    zoe_enemy_object->position
+  );
+
+  zoe_enemy_auop->rotation = &(
+    zoe_enemy_object->rotation
+  );
 }

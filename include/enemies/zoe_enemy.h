@@ -3,6 +3,8 @@
 
 #include <damage/zoe_damage.h>
 
+#include <math_c_vector.h>
+
 #include <metil.h>
 #include <metil_rendering/metil_renderable.h>
 
@@ -32,6 +34,9 @@ struct zoe_enemy {
   unsigned short int health_maximum;
 
   struct metil_renderable* _Nonnull renderable;
+
+  struct math_c_vector3_float* _Nonnull position;
+  struct math_c_vector3_float* _Nonnull rotation;
 
   zoe_enemy_function_poll _Nonnull poll;
   zoe_enemy_function_damage _Nonnull damage;
