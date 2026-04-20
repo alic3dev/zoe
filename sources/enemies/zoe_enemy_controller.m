@@ -291,13 +291,12 @@ void zoe_enemy_controller_poll(
         zoe_enemy_controller,
         index_enemy
       );
-    }
-else {
-      index_enemy = (
+    } else {      index_enemy = (
         index_enemy +
         0x01
       );
-    }  }
+    }
+  }
 }
 
 void zoe_enemy_controller_destroy(

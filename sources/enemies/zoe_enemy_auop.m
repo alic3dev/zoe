@@ -99,4 +99,5 @@ void zoe_enemy_auop_poll(
       ? -0x01
       :  0x01
     )
-  );  }
+  );
+}
