@@ -1,6 +1,8 @@
 #ifndef __zoe_weapons_zoe_weapon_h
 #define __zoe_weapons_zoe_weapon_h
 
+#include <damage/zoe_damage.h>
+
 enum zoe_weapon_handedness {
   zoe_weapon_handedness_left  = 0x00,
   zoe_weapon_handedness_right = 0x01,
@@ -28,6 +30,12 @@ struct zoe_weapon {
   enum zoe_weapon_type type;
   enum zoe_weapon_durability_type durability_type;
   unsigned int durability;
+
+  unsigned char type_damage_primary;
+  unsigned char type_damage_secondary;
+
+  unsigned int amount_damage_base_primary;
+  unsigned int amount_damage_base_secondary;
 };
 
 #endif

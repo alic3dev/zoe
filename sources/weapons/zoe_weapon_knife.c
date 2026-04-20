@@ -1,5 +1,6 @@
 #include <weapons/zoe_weapon_knife.h>
 
+#include <damage/zoe_damage_type.h>
 #include <weapons/zoe_weapon.h>
 #include <weapons/zoe_weapon_id.h>
 
@@ -17,6 +18,18 @@ const struct zoe_weapon zoe_weapon_knife = {
     zoe_weapon_durability_type_unbreakable
   ),
   .durability = (
+    0x00
+  ),
+  .type_damage_primary = (
+    zoe_damage_type_basic
+  ),
+  .type_damage_secondary = (
+    zoe_damage_type_none
+  ),
+  .amount_damage_base_primary = (
+    0x01
+  ),
+  .amount_damage_base_secondary = (
     0x00
   )
 };
