@@ -2,9 +2,14 @@
 
 #include <enemies/zoe_enemy.h>
 
+#include <math_c_vector.h>
+
 #include <metil_mesh/metil_mesh_box.h>
 #include <metil_object/metil_object.h>
+#include <metil_player/metil_player.h>
 #include <metil_rendering/metil_renderable.h>
+#include <metil_scenes/metil_scene.h>
+#include <metil_scenes/metil_scene_controller.h>
 
 void zoe_enemy_auop_initialize(
   struct metil* metil,
@@ -41,7 +46,7 @@ void zoe_enemy_auop_initialize(
         0x04
       ),
       .y = (
-        0x04
+        0x08
       ),
       .z = (
         0x04
@@ -61,4 +66,37 @@ void zoe_enemy_auop_initialize(
   zoe_enemy_auop->rotation = &(
     zoe_enemy_object->rotation
   );
+
+  zoe_enemy_auop->poll = (
+    zoe_enemy_auop_poll
+  );
 }
+
+void zoe_enemy_auop_poll(
+  struct metil* metil,
+  struct metil_scene* metil_scene,
+  struct zoe_enemy* zoe_enemy_auop
+) {
+  zoe_enemy_auop->position->x = (
+    zoe_enemy_auop->position->x +
+    (
+      (
+        zoe_enemy_auop->position->x >
+        metil_scene->player.position.x
+      )
+      ? -0x01
+      :  0x01
+    )
+  );
+
+  zoe_enemy_auop->position->z = (
+    zoe_enemy_auop->position->z +
+    (
+      (
+        zoe_enemy_auop->position->z >
+        metil_scene->player.position.z
+      )
+      ? -0x01
+      :  0x01
+    )
+  );  }
