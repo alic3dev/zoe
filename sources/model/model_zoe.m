@@ -19,6 +19,7 @@
 
 #include <metil.h>
 #include <metil_animation/metil_animation.h>
+#include <metil_mesh/metil_mesh_sphere.h>
 #include <metil_model/metil_model.h>
 #include <metil_player/metil_player.h>
 #include <metil_positioning.h>
@@ -37,7 +38,7 @@ void zoe_model_zoe_initialize(
 ) {
   metil_model_objects_add_length(
     metil_model,
-    0x02
+    0x03
   );
 
   struct metil_object* metil_object_zoe_body = &(
@@ -46,9 +47,15 @@ void zoe_model_zoe_initialize(
     ]
   );
 
-  struct metil_object* metil_object_zoe_hair = &(
+  struct metil_object* metil_object_zoe_head = &(
     metil_model->objects[
       0x01
+    ]
+  );
+
+  struct metil_object* metil_object_zoe_hair = &(
+    metil_model->objects[
+      0x02
     ]
   );
 
@@ -56,8 +63,26 @@ void zoe_model_zoe_initialize(
     &metil_object_zoe_body->mesh
   );
 
+  metil_mesh_sphere_initialize(
+    &metil_object_zoe_head->mesh,
+    1.6f,
+    (struct math_c_vector2_unsigned_short_int) {
+      .x = (
+        mesh_zoe_body_length_segments
+      ),
+      .y = (
+        mesh_zoe_body_length_segments
+      )
+    }
+  );
+
   mesh_zoe_hair_initialize(
     &metil_object_zoe_hair->mesh
+  );
+
+  metil_object_zoe_head->position.y = (
+    metil_object_zoe_body->mesh.size.y +
+    metil_object_zoe_head->mesh.size.y
   );
 
   metil_object_zoe_hair->position.y = (
@@ -66,6 +91,10 @@ void zoe_model_zoe_initialize(
   );
 
   metil_object_zoe_body->index_pipeline_render = (
+    zoe_pipeline_index_zoe_body
+  );
+
+  metil_object_zoe_head->index_pipeline_render = (
     zoe_pipeline_index_zoe_body
   );
 
