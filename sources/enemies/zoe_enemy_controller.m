@@ -126,7 +126,7 @@ void zoe_enemy_controller_enemy_remove_at_index(
     ]
   );
 
-  zoe_enemy_controller->group_enemies->length = (
+  *zoe_enemy_controller->length_enemies = (
     *zoe_enemy_controller->length_enemies -
     0x01
   );
@@ -161,7 +161,7 @@ void zoe_enemy_controller_enemy_remove_at_index(
   }
 
   clic3_memory_reallocate_raw(
-    &zoe_enemy_controller->group_enemies,
+    &zoe_enemy_controller->group_enemies->renderables,
     (
       sizeof(
         void*
@@ -226,7 +226,7 @@ void zoe_enemy_controller_enemies_add_length(
   }
 }
 
-void zoe_enemy_controller_damage_at_index(
+unsigned char zoe_enemy_controller_damage_at_index(
   struct metil* metil,
   struct zoe_enemy_controller* zoe_enemy_controller,
   struct zoe_damage* zoe_damage,
@@ -238,7 +238,7 @@ void zoe_enemy_controller_damage_at_index(
     ]
   );
 
-  zoe_enemy->damage(
+  zoe_enemy_damage(
     metil,
     zoe_enemy,
     zoe_damage
@@ -253,6 +253,97 @@ void zoe_enemy_controller_damage_at_index(
       zoe_enemy_controller,
       index_enemy
     );
+
+    zoe_enemy_controller->count_enemies_killed = (
+      zoe_enemy_controller->count_enemies_killed +
+      0x01
+    );
+
+    return (
+      0x01
+    );
+  }
+ 
+  return (
+    0x00
+  );
+}
+
+void zoe_enemy_controller_attack(
+  struct metil* metil,
+  struct metil_player* metil_player,
+  struct zoe_enemy_controller* zoe_enemy_controller,
+  struct zoe_weapon* zoe_weapon
+) {
+
+  struct math_c_vector3_float* position_player = &(
+    metil_player->position
+  );
+
+  struct math_c_vector3_float* rotation_player = &(
+    metil_player->rotation
+  );
+
+  for (
+    unsigned int index_enemy = (
+      0x00
+    );
+    (
+      index_enemy <
+      *zoe_enemy_controller->length_enemies
+    );
+  ) {
+    struct zoe_enemy* zoe_enemy = (
+      zoe_enemy_controller->enemies[
+        index_enemy
+      ]
+    );
+
+    float distance_ranged = (
+      zoe_weapon->targeting(
+        zoe_weapon,
+        position_player,
+        rotation_player,
+        zoe_enemy->position,
+        zoe_enemy->size
+      )
+    );
+
+    struct zoe_damage* zoe_damage = (
+      zoe_weapon->damage(
+        zoe_weapon,
+        distance_ranged
+      )
+    );
+
+    if (
+      zoe_damage !=
+      0x00
+    ) {
+      unsigned char killed_enemy = (
+        zoe_enemy_controller_damage_at_index(
+          metil,
+          zoe_enemy_controller,
+          zoe_damage,
+          index_enemy
+        )
+      );
+
+      clic3_memory_free_raw(
+        zoe_damage
+      );
+      if (
+        killed_enemy !=
+        0x00
+      ) {
+        continue;
+      }
+    }
+  
+    index_enemy = (
+      index_enemy +
+      0x01
+    );  
   }
 }
 
@@ -291,7 +382,8 @@ void zoe_enemy_controller_poll(
         zoe_enemy_controller,
         index_enemy
       );
-    } else {      index_enemy = (
+    } else {
+      index_enemy = (
         index_enemy +
         0x01
       );

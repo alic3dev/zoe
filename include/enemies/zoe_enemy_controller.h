@@ -3,9 +3,11 @@
 
 #include <damage/zoe_damage.h>
 #include <enemies/zoe_enemy.h>
+#include <weapons/zoe_weapon.h>
 
 #include <metil.h>
 #include <metil_group.h>
+#include <metil_player/metil_player.h>
 #include <metil_scenes/metil_scene.h>
 
 struct zoe_enemy_controller {
@@ -39,11 +41,18 @@ void zoe_enemy_controller_enemies_add_length(
   unsigned int
 );
 
-void zoe_enemy_controller_damage_at_index(
+unsigned char zoe_enemy_controller_damage_at_index(
   struct metil* _Nonnull,
   struct zoe_enemy_controller* _Nonnull,
   struct zoe_damage* _Nonnull,
   unsigned int
+);
+
+void zoe_enemy_controller_attack(
+  struct metil* _Nonnull,
+  struct metil_player* _Nonnull,
+  struct zoe_enemy_controller* _Nonnull,
+  struct zoe_weapon* _Nonnull
 );
 
 void zoe_enemy_controller_poll(
