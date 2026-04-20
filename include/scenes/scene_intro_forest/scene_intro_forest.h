@@ -2,6 +2,7 @@
 #define __zoe_scenes_scene_intro_forest_scene_intro_forest_h
 
 #include <audio/io_proc_data.h>
+#include <enemies/zoe_enemy_controller.h>
 #include <zoe_loading_threads.h>
 
 #include <metil_group.h>
@@ -15,17 +16,18 @@
 #endif
 #include <MetalKit/MetalKit.h>
 
-#define scene_intro_forest_length_renderables 0x07
+#define scene_intro_forest_length_renderables 0x08
 #define scene_intro_forest_length_group_trees_renderables 1000
 
 enum scene_intro_forest_index_renderable {
   scene_intro_forest_index_renderable_ground           = 0x00,
   scene_intro_forest_index_renderable_player           = 0x01,
   scene_intro_forest_index_renderable_player_mirror    = 0x02,
-  scene_intro_forest_index_renderable_group_trees      = 0x03,
-  scene_intro_forest_index_renderable_group_text_place = 0x04,
-  scene_intro_forest_index_renderable_group_text_used  = 0x05,
-  scene_intro_forest_index_renderable_group_text_this  = 0x06
+  scene_intro_forest_index_renderable_group_enemies    = 0x03,
+  scene_intro_forest_index_renderable_group_trees      = 0x04,
+  scene_intro_forest_index_renderable_group_text_place = 0x05,
+  scene_intro_forest_index_renderable_group_text_used  = 0x06,
+  scene_intro_forest_index_renderable_group_text_this  = 0x07
 };
 
 enum textures_scene_intro_forest {
@@ -36,6 +38,8 @@ enum textures_scene_intro_forest {
 
 struct scene_intro_forest_data {
   struct io_proc_data* _Nonnull io_proc_data;
+
+  struct zoe_enemy_controller enemy_controller;
 
   unsigned char index_text;
 };
