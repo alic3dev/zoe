@@ -11,14 +11,14 @@ function jetil_zoe_initialize(
 
       jetil_initialize(
         element_canvas,
-        example_on_initialized
+        jetil_zoe_on_initialized
       );
     },
     0x00
   );
 }
 
-function example_on_initialized(
+function jetil_zoe_on_initialized(
   jetil_structure
 ) {
   if (
