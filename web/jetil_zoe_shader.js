@@ -1,4 +1,12 @@
-var jetil_shader_default = (
+var jetil_zoe_shader_name_vertex = (
+  "jetil_zoe_shader_vertex"
+);
+
+var jetil_zoe_shader_name_fragment = (
+  "jetil_zoe_shader_fragment"
+);
+
+var jetil_zoe_shader = (
 `
 struct data_vertex {
   @builtin(position) vertex: vec4<f32>,
@@ -10,7 +18,7 @@ struct data_vertex {
 
 ${jetil_shader_interpolative_defaults}
 
-@vertex fn ${jetil_shader_default_name_vertex}(
+@vertex fn ${jetil_zoe_shader_name_vertex}(
   @location(${jetil_shader_index_vertex}) vertex: vec4<f32>,
   @location(${jetil_shader_index_data_object_colour}) data_object_colour: vec4<f32>,
   @location(${jetil_shader_index_data_object_position}) data_object_position: vec4<f32>,
@@ -54,34 +62,16 @@ ${jetil_shader_interpolative_defaults}
 
   data_vertex_output.colour = (
     vec4<f32>(
-      (
-        data_object_colour[0] *
-        jetil_data_frame[
-          ${
-            jetil_data_frame_buffer_index_time
-          }
-        ]
-      ),
-      (
-        (
-          data_object_colour[1] *
-          0.75f
-        ) +
-        (
-          data_object_colour[1] *
-          0.25f *
-          (
-            jetil_data_frame[
-              ${
-                jetil_data_frame_buffer_index_time_delta
-              }
-            ] % 100
-          ) /
-          100.0f
-        )
-      ),
-      data_object_colour[2],
-      data_object_colour[3]
+      data_object_colour[
+        0x00
+      ],      data_object_colour[
+        0x01
+      ],      data_object_colour[
+        0x02
+      ],
+      data_object_colour[
+        0x03
+      ]
     )
   );
 
@@ -90,160 +80,50 @@ ${jetil_shader_interpolative_defaults}
   );
 }
 
-@fragment fn ${jetil_shader_default_name_fragment}(
+@fragment fn ${jetil_zoe_shader_name_fragment}(
   data_vertex_input: data_vertex
 ) -> @location(0) vec4<f32> {
-  var distance: f32 = (
-    (
-      data_vertex_input.vertex_raw.z +
-      0.625f
-    ) /
-    1.25f
-  ) % 1.0f;
-
-  if (
-    distance < 0.0f
-  ) {
-    distance = (
-      0.0f
-    );
-  }
-
   var brightness: f32 = (
     (
-      distance *
-      0.70f
-    ) +
-    0.30f
-  );
-
-  var colour = (
-    vec4<f32>(
-      (
-        0.9f *
-        data_vertex_input.colour.r *
-        abs(
-          data_vertex_input.vertex_raw.x /
-          (
-            0.5f +
-            (
-              (
-                data_vertex_input.index_vertex *
-                12.0f +
-                jetil_data_frame[
-                  ${jetil_data_frame_buffer_index_frame}
-                ] +
-                50
-              ) %
-              100
-            ) /
-            1000.0f
-          )
-        ) +
-        0.1
-      ),
-      (
-        0.9f *
-        data_vertex_input.colour.g *
-        abs(
-          data_vertex_input.vertex_raw.z /
-          (
-            0.5f +
-            (
-              (
-                data_vertex_input.index_vertex *
-                14.123f +
-                jetil_data_frame[
-                  ${jetil_data_frame_buffer_index_frame}
-                ] +
-                86
-              ) %
-              100
-            ) /
-            1000.0f
-          )
-        ) +
-        0.1
-      ),
-      (
-        (
-          data_vertex_input.colour.b *
-          abs(
-            data_vertex_input.vertex_raw.y /
-            (
-              0.5f +
-              (
-                data_vertex_input.index_instance *
-                5.234f
-              ) /
-              500.0f
-            )
-          )
-        ) *
-        0.9f +
-        0.1f
-      ),
-      data_vertex_input.colour.a
-    )
+      data_vertex_input.index_vertex +
+      data_vertex_input.index_instance
+    ) /
+    100.0f
   );
 
   if (
-    colour.r > 1.0f
+    brightness >
+    0x01
   ) {
-    colour.r = (
-      colour.r -
-      floor(
-        colour.r
+    brightness = (
+      brightness -
+      f32(
+        i32(
+          brightness
+        )
       )
     );
   }
 
-  if (
-    colour.g > 1.0f
-  ) {
-    colour.g = (
-      colour.g -
-      floor(
-        colour.g
-      )
-    );
-  }
-
-  if (
-    colour.b > 1.0f
-  ) {
-    colour.b = (
-      colour.b -
-      floor(
-        colour.b
-      )
-    );
-  }
-
+  brightness = (
+    brightness *
+    jetil_data_frame[
+      ${jetil_data_frame_buffer_index_brightness}
+    ]
+  );
   return (
     vec4<f32>(
       (
-        colour.r *
-        brightness *
-        jetil_data_frame[
-          ${jetil_data_frame_buffer_index_brightness}
-        ]
+        data_vertex_input.colour.x *
+        brightness      ),
+      (
+        data_vertex_input.colour.y *
+        brightness
       ),
       (
-        colour.g *
-        brightness *
-        jetil_data_frame[
-          ${jetil_data_frame_buffer_index_brightness}
-        ]
-      ),
-      (
-        colour.b *
-        brightness *
-        jetil_data_frame[
-          ${jetil_data_frame_buffer_index_brightness}
-        ]
-      ),
-      colour.a
+        data_vertex_input.colour.z *
+        brightness      ),
+      data_vertex_input.colour.a
     )
   );
 }

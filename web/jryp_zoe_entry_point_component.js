@@ -5,7 +5,12 @@ jryp.components.jryp_zoe_entry_point_component = {
   ) {
     return [
       "main",
-      "zoe",
+      await jryp.jryp_component_insert(
+        "jryp_zoe_title_component"
+      ),
+      await jryp.jryp_component_insert(
+        "jryp_zoe_description_component"
+      ),
       await jryp.jryp_component_insert(
         "jryp_zoe_jetil_display_component"
       )

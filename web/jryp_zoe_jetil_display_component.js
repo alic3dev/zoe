@@ -10,6 +10,7 @@ jryp.components.jryp_zoe_jetil_display_component = {
     jetil_zoe_initialize(
       id_canvas_jetil_zoe
     );
+
     return [
       [
         "canvas",

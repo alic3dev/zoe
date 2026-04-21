@@ -43,13 +43,13 @@ function jetil_zoe_scene_initialize(
     jetil_mesh_sphere_initialize(
       jetil_structure,
       jetil_mesh,
-      0x0a,
+      0x64,
       {
         x: (
-          0x64
+          0x164
         ),
         y: (
-          0x64
+          0x164
         )
       }
     );
@@ -58,7 +58,7 @@ function jetil_zoe_scene_initialize(
       index_renderable /
       (
         jetil_scene.length_renderables -
-        1
+        0x01
       )
     );
 
@@ -66,13 +66,13 @@ function jetil_zoe_scene_initialize(
       jetil_vector_index_x
     ] = (
       percentage *
-      2.0
+      0x02
     );
 
     jetil_object.position[
       jetil_vector_index_y
     ] = (
-      10.0
+      0x0a
     );
 
     jetil_object.rotation[
@@ -87,7 +87,7 @@ function jetil_zoe_scene_initialize(
     ] = (
       index_renderable *
       Math.PI /
-      2.0
+      0x02
     );
 
     jetil_object_buffers_initialize(
@@ -99,20 +99,30 @@ function jetil_zoe_scene_initialize(
       jetil_object.data_object
     );
 
-    jetil_object_buffer_data_object[0] = (
-      0.5
+    jetil_object_buffer_data_object[
+      0x00
+    ] = (
+      0x01
     );
 
-    jetil_object_buffer_data_object[1] = (
-      0.2
+    jetil_object_buffer_data_object[
+      0x01
+    ] = (
+      0x01
     );
 
-    jetil_object_buffer_data_object[2] = (
-      1.0
+    jetil_object_buffer_data_object[
+      0x02
+    ] = (
+      0x01
     );
 
     jetil_object.poll = (
       example_jetil_scene_object_poll
+    );
+
+    jetil_object.index_pipeline = (
+      jetil_zoe_pipeline_index_zoe
     );
   }
 
@@ -120,6 +130,18 @@ function jetil_zoe_scene_initialize(
     jetil_vector_index_z
   ] = (
     -0x64
+  );
+
+  jetil_scene.poll = (
+    jetil_scene_zoe_poll
+  );
+}
+function jetil_scene_zoe_poll(
+  jetil_structure,
+  jetil_scene
+) {  jetil_player_buffers_write(
+    jetil_structure,
+    jetil_scene.player
   );
 }
 

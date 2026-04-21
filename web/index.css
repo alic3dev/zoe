@@ -9,3 +9,17 @@ body {
   font-family: Monaco, monospace;
   font-size: 10px;
 }
+
+a,
+a:link,
+a:visited {
+  color: #00aaff;
+}
+
+a:hover {
+  color: #00ddff;
+}
+
+a:active {
+  color: #00eeff;
+}
