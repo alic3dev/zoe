@@ -64,9 +64,11 @@ ${jetil_shader_interpolative_defaults}
     vec4<f32>(
       data_object_colour[
         0x00
-      ],      data_object_colour[
+      ],
+      data_object_colour[
         0x01
-      ],      data_object_colour[
+      ],
+      data_object_colour[
         0x02
       ],
       data_object_colour[
@@ -111,18 +113,21 @@ ${jetil_shader_interpolative_defaults}
       ${jetil_data_frame_buffer_index_brightness}
     ]
   );
+
   return (
     vec4<f32>(
       (
         data_vertex_input.colour.x *
-        brightness      ),
+        brightness
+      ),
       (
         data_vertex_input.colour.y *
         brightness
       ),
       (
         data_vertex_input.colour.z *
-        brightness      ),
+        brightness
+      ),
       data_vertex_input.colour.a
     )
   );
