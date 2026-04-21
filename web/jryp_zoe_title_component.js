@@ -22,7 +22,7 @@ jryp.components.jryp_zoe_title_component = {
       "line-height"  : "min(25dvh, 25dvw)",
       "pointerEvents": "none",
       "userSelect"   : "none",
-      "color"        : "#ffffff",
+      "color"        : "var(--colour_white)",
       "zIndex"       : "1"
     };
   }
