@@ -49,7 +49,7 @@ jryp.components.jryp_zoe_description_component = {
       "padding"      : "20px",
       "font-size"    : "10px",
       "line-height"  : "10px",
-      "color"        : "#ffffff",
+      "color"        : "var(--colour_white)",
       "zIndex"       : "1"
     };
   }

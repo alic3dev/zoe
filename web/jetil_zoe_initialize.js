@@ -11,14 +11,14 @@ function jetil_zoe_initialize(
 
       jetil_initialize(
         element_canvas,
-        example_on_initialized
+        jetil_zoe_on_initialized
       );
     },
     0x00
   );
 }
 
-function example_on_initialized(
+function jetil_zoe_on_initialized(
   jetil_structure
 ) {
   if (
@@ -55,6 +55,11 @@ function example_on_initialized(
       0x00
     );
 
+    jetil_zoe_bind_layout_index_zoe = (
+      jetil_structure.rendering_properties.bind.layouts_pipeline.length -
+      0x01
+    );
+
     var jetil_descriptor_pipeline_render_zoe = (
       jetil_descriptor_pipeline_render_initialize(
         jetil_structure,
@@ -70,7 +75,7 @@ function example_on_initialized(
         jetil_zoe_shader_name_vertex,
         jetil_zoe_shader_name_fragment,
         jetil_primitive_type_default,
-        0x00
+        jetil_zoe_bind_layout_index_zoe
       )
     );
 
