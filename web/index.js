@@ -1,4 +1,3 @@
-
 var jryp_id_entry_point = (
   "jryp_entry_point"
 );

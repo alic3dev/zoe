@@ -1,3 +1,12 @@
+:root {
+  --colour_black: #000000;
+  --colour_white: #ffffff;
+
+  --colour_cyan: #00eeff;
+  --colour_cyan_dark: #00ddff;
+  --colour_cyan_darker: #00aaff;
+}
+
 html,
 body {
   height: 100dvh;
@@ -6,6 +15,10 @@ body {
   padding: 0;
   margin: 0;
 
+  background: var(
+    --colour_black
+  );
+
   font-family: Monaco, monospace;
   font-size: 10px;
 }
@@ -13,13 +26,19 @@ body {
 a,
 a:link,
 a:visited {
-  color: #00aaff;
+  color: var(
+    --colour_cyan_darker
+  );
 }
 
 a:hover {
-  color: #00ddff;
+  color: var(
+    --colour_cyan_dark
+  );
 }
 
 a:active {
-  color: #00eeff;
+  color: var(
+    --colour_cyan
+  );
 }
