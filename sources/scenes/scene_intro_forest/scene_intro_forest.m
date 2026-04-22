@@ -18,6 +18,7 @@
 #include <zoe_pipeline_index.h>
 
 #include <clic3_bytes.h>
+#include <clic3_memory.h>
 
 #include <metil_audio/metil_audio_io_proc.h>
 #include <metil_audio/metil_audio_io_proc_data.h>
@@ -29,8 +30,6 @@
 #include <metil_rendering/metil_camera/metil_camera_mode.h>
 #include <metil_rendering/metil_renderer_interface.h>
 #include <metil_scenes/metil_scene.h>
-
-#include <clic3_memory.h>
 
 #include <rand_clean.h>
 #include <rand_functions.h>
@@ -119,7 +118,7 @@ void scene_intro_forest_initialize(
 
   metil->rendering_properties.camera.height = (
     metil_camera_height_default *
-    4.0f
+    0x04
   );
 
   metil_scene_initialize_with_renderables(
@@ -154,12 +153,14 @@ void scene_intro_forest_initialize(
 
   struct io_proc_data* io_proc_data = (
     io_proc_data_create(
-      41000,
-      1
+      metil->audio.audio_output.sample_rate,
+      0x01
     )
   );
 
-  data_scene->io_proc_data = io_proc_data;
+  data_scene->io_proc_data = (
+    io_proc_data
+  );
 
   metil_audio_io_proc_add_with_data(
     &metil->audio,
@@ -167,12 +168,22 @@ void scene_intro_forest_initialize(
     io_proc_data
   );
 
-  scene->poll = scene_intro_forest_poll;
-  scene->destroy = scene_intro_forest_destroy;
+  scene->poll = (
+    scene_intro_forest_poll
+  );
+
+  scene->destroy = (
+    scene_intro_forest_destroy
+  );
 
   for (
-    unsigned short int index_renderable = 0;
-    index_renderable < scene->length_renderables;
+    unsigned short int index_renderable = (
+      0x00
+    );
+    (
+      index_renderable <
+      scene->length_renderables
+    );
     ++index_renderable
   ) {
     switch (
@@ -185,6 +196,7 @@ void scene_intro_forest_initialize(
           index_renderable,
           metil_renderable_type_model
         );
+
         break;
       }
       case scene_intro_forest_index_renderable_group_enemies:
@@ -269,15 +281,25 @@ void scene_intro_forest_initialize(
     ].renderable
   );
 
-  scene->length_textures = 3;
-  scene->textures = realloc(
-    scene->textures,
-    sizeof(id<MTLTexture>) *
-    scene->length_textures
+  scene->length_textures = (
+    0x03
+  );
+
+  clic3_memory_reallocate_raw(
+    &scene->textures,
+    (
+      sizeof(
+        id<MTLTexture>
+      ) *
+      scene->length_textures
+    )
   );
 
   MTKTextureLoader* texture_loader = [
-    [MTKTextureLoader alloc]
+    [
+      MTKTextureLoader
+      alloc
+    ]
     initWithDevice: (
       metil->renderer_interface.metal_device
     )
@@ -288,8 +310,12 @@ void scene_intro_forest_initialize(
   ] = (
     zoe_texture_static_generate(
       (struct math_c_vector2_unsigned_short_int) {
-        .x = 300,
-        .y = 300
+        .x = (
+          0x012c
+        ),
+        .y = (
+          0x012c
+        )
       },
       metil->renderer_interface.metal_device
     )
@@ -305,8 +331,12 @@ void scene_intro_forest_initialize(
   ] = (
     zoe_texture_static_generate(
       (struct math_c_vector2_unsigned_short_int) {
-        .x = 300,
-        .y = 300
+        .x = (
+          0x012c
+        ),
+        .y = (
+          0x012c
+        )
       },
       metil->renderer_interface.metal_device
     )
@@ -322,8 +352,12 @@ void scene_intro_forest_initialize(
   ] = (
     zoe_texture_static_generate(
       (struct math_c_vector2_unsigned_short_int) {
-        .x = 300,
-        .y = 300
+        .x = (
+          0x012c
+        ),
+        .y = (
+          0x012c
+        )
       },
       metil->renderer_interface.metal_device
     )
@@ -334,7 +368,10 @@ void scene_intro_forest_initialize(
     0.1f
   );
 
-  [texture_loader release];
+  [
+    texture_loader
+    release
+  ];
 
   struct metil_model* metil_model_player = (
     scene->renderables[
@@ -356,7 +393,7 @@ void scene_intro_forest_initialize(
 
   scene->player.size.x = (
     metil_object_player_body->mesh.size.x /
-    2.0f
+    0x02
   );
 
   scene->player.size.y = (
@@ -365,7 +402,7 @@ void scene_intro_forest_initialize(
 
   scene->player.size.z = (
     metil_object_player_body->mesh.size.z /
-    2.0f
+    0x02
   );
 
   struct metil_model* metil_model_player_mirror = (
@@ -389,9 +426,15 @@ void scene_intro_forest_initialize(
   zoe_object_ground_initialize(
     metil_object_ground,
     (struct math_c_vector3_float) {
-      .x = 16000.0f,
-      .y = 1000.0f,
-      .z = 16000.0f
+      .x = (
+        0x3e80
+      ),
+      .y = (
+        0x03e8
+      ),
+      .z = (
+        0x3e80
+      )
     },
     scene->textures[
       textures_scene_intro_forest_ground
@@ -425,8 +468,13 @@ void scene_intro_forest_initialize(
   );
 
   for (
-    unsigned char index_thread = 0;
-    index_thread < metil->system_information.cores_cpu;
+    unsigned char index_thread = (
+      0x00
+    );
+    (
+      index_thread <
+      metil->system_information.cores_cpu
+    );
     ++index_thread
   ) {
     unsigned short int offset = (
@@ -445,7 +493,7 @@ void scene_intro_forest_initialize(
     if (
       index_thread == (
         metil->system_information.cores_cpu -
-        1
+        0x01
       )
     ) {
       length = (
@@ -462,7 +510,8 @@ void scene_intro_forest_initialize(
       (
         offset +
         length
-      ) > metil_group_trees->length
+      ) >
+      metil_group_trees->length
     ) {
       length = (
         metil_group_trees->length -
@@ -504,22 +553,27 @@ void scene_intro_forest_initialize(
   }
 
   for (
-    unsigned char index_thread = 0;
-    index_thread < metil->system_information.cores_cpu;
+    unsigned char index_thread = (
+      0x00
+    );
+    (
+      index_thread <
+      metil->system_information.cores_cpu
+    );
     ++index_thread
   ) {
     pthread_join(
       zoe_loading_threads_data->loading_threads->threads[
         index_thread +
-        1
+        0x01
       ],
-      0
+      0x00
     );
   }
 
   zoe_loading_threads_progress_set(
     zoe_loading_threads_data,
-    1.0f
+    0x01
   );
 }
 
@@ -556,7 +610,7 @@ void zoe_scene_intro_forest_threaded_trees_initialization(
     &rand_source,
     (
       scene_intro_forest_tree_thread_data->length *
-      5
+      0x05
     ),
     rand_mode_bytes,
     rand_source_type_divisive
@@ -587,7 +641,8 @@ void zoe_scene_intro_forest_threaded_trees_initialization(
     );
 
     unsigned int offset_byte = (
-      index_renderable * 5
+      index_renderable *
+      0x05
     );
 
     zoe_object_tree_initialize(
@@ -595,8 +650,12 @@ void zoe_scene_intro_forest_threaded_trees_initialization(
       metil_object_tree,
       0,
       (struct math_c_vector2_float) {
-        .x = 5.0f,
-        .y = 250.0f
+        .x = (
+          0x05
+        ),
+        .y = (
+          0xfa
+        )
       },
       scene->textures[
         textures_scene_intro_forest_tree
@@ -604,64 +663,94 @@ void zoe_scene_intro_forest_threaded_trees_initialization(
       (
         rand_result.bytes[
           offset_byte +
-          4
+          0x04
         ] *
         index_renderable
       )
     );
 
     metil_object_tree->position.x = (
-      -(metil_object_tree->mesh.size.x / 2.0f) + (
-        (((float)((
+      -(
+        metil_object_tree->mesh.size.x /
+        0x02
+      ) + (
+        (
           (
-            rand_result.bytes[
-              offset_byte
-            ] %
-            0xfe +
-            0x01
-          ) *
-          (
-            rand_result.bytes[
-              offset_byte +
-              2
-            ] %
-            0xfe +
-            0x01
-          )
-        ) % 10000) / 5000.0f) - 1.0f) * 0.7f *
+            (float)
+            (
+              (
+                (
+                  rand_result.bytes[
+                    offset_byte
+                  ] %
+                  0xfe +
+                  0x01
+                ) *
+                (
+                  rand_result.bytes[
+                    offset_byte +
+                    0x02
+                  ] %
+                  0xfe +
+                  0x01
+                )
+              ) %
+              0x2710
+            ) /
+            0x1388
+          ) -
+          0x01
+        ) *
+        0.7f *
         (
           metil_object_tree->mesh.size.x - (
             size_bounds->x /
-            2.0f
+            0x02
           )
         )
       )
     );
 
     metil_object_tree->position.z = (
-      -(metil_object_tree->mesh.size.z / 2.0f) + (
-        (((float)((
-          (
-            rand_result.bytes[
-              offset_byte +
-              1
-            ]  %
-            0xfe +
-            0x01
-          ) *
-          (
-            rand_result.bytes[
-              offset_byte +
-              3
-            ] %
-            0xfe +
-            0x01
-          )
-        ) % 10000) / 5000.0f) - 1.0f) * 0.7f *
+      -(
+        metil_object_tree->mesh.size.z /
+        0x02
+      ) +
+      (
         (
-          size_bounds->z - (
+          (
+            (float)
+            (
+              (
+                (
+                  rand_result.bytes[
+                    offset_byte +
+                    0x01
+                  ] %
+                  0xfe +
+                  0x01
+                ) *
+                (
+                  rand_result.bytes[
+                    offset_byte +
+                    0x03
+                  ] %
+                  0xfe +
+                  0x01
+                )
+              ) %
+              0x2710
+            ) /
+            0x1388
+          ) -
+          0x01
+        ) *
+        0.7f *
+        (
+          size_bounds->z -
+          (
             size_bounds->z /
-            2.0f
+            0x02
           )
         )
       )
@@ -675,8 +764,9 @@ void zoe_scene_intro_forest_threaded_trees_initialization(
       zoe_loading_threads_data,
       (
         (
-          1.0f /
-          (float) metil_group_trees->length
+          0x01 /
+          (float)
+          metil_group_trees->length
         ) *
         0.55f
       )
@@ -851,14 +941,14 @@ void scene_intro_forest_poll(
 
   if (
     metil_scene->time_elapsed <
-    6000
+    0x1770
   ) {
     metil_group_text_place->visible = (
       0x01
     );
   } else if (
     metil_scene->time_elapsed <
-    12000
+    0x2ee0
   ) {
     metil_group_text_place->visible = (
       0x00
@@ -869,7 +959,7 @@ void scene_intro_forest_poll(
     );
   } else if (
     metil_scene->time_elapsed <
-    24000
+    0x5dc0
   ) {
     metil_group_text_place->visible = (
       0x00
@@ -914,7 +1004,9 @@ void scene_intro_forest_destroy(
     scene_intro_forest_data->io_proc_data
   );
 
-  io_proc_data->destroy = 1;
+  io_proc_data->destroy = (
+    0x01
+  );
 
   metil_scene_destroy_default(
     metil,
@@ -939,7 +1031,8 @@ int scene_intro_forest_io_proc(
   );
 
   if (
-    io_proc_data->destroy == 1
+    io_proc_data->destroy ==
+    0x01
   ) {
     metil_audio_io_proc_remove(
       &metil_audio_io_proc_data->metil->audio,
@@ -951,9 +1044,13 @@ int scene_intro_forest_io_proc(
       &io_proc_data->rand_source
     );
 
-    free(io_proc_data);
+    clic3_memory_free_raw(
+      io_proc_data
+    );
 
-    return 0;
+    return (
+      0x00
+    );
   }
 
   rand_get(
@@ -963,20 +1060,37 @@ int scene_intro_forest_io_proc(
   );
 
   for (
-    unsigned long int index_buffer = 0;
-    index_buffer < output_data->mNumberBuffers;
+    unsigned long int index_buffer = (
+      0x00
+    );
+    (
+      index_buffer <
+      output_data->mNumberBuffers
+    );
     ++index_buffer
   ) {
-    AudioBuffer audio_buffer_current = output_data->mBuffers[
-      index_buffer
-    ];
+    AudioBuffer audio_buffer_current = (
+      output_data->mBuffers[
+        index_buffer
+      ]
+    );
 
-    float* buffer_out = audio_buffer_current.mData;
-    unsigned long int count_channel_out = audio_buffer_current.mNumberChannels;
+    float* buffer_out = (
+      audio_buffer_current.mData
+    );
+
+    unsigned long int count_channel_out = (
+      audio_buffer_current.mNumberChannels
+    );
 
     for (
-      unsigned int index_frame = 0;
-      index_frame < frame_count;
+      unsigned int index_frame = (
+        0x00
+      );
+      (
+        index_frame <
+        frame_count
+      );
       ++index_frame
     ) {
       unsigned long int channel = (
@@ -986,20 +1100,37 @@ int scene_intro_forest_io_proc(
 
       unsigned int offset_byte = (
         index_frame *
-        2
+        0x02
       );
 
       if (
-        channel == 0
+        channel ==
+        0x00
       ) {
-        buffer_out[index_frame] = ((float) ((
-          io_proc_data->rand_result.bytes[
-            offset_byte % 20500
-          ] *
-          io_proc_data->rand_result.bytes[
-            (offset_byte + 1) % 20500
-          ]
-        ) % 10000)) / 100000.0f;
+        buffer_out[
+          index_frame
+        ] = (
+          (
+            (float)
+            (
+              (
+                io_proc_data->rand_result.bytes[
+                  offset_byte %
+                  0x5014
+                ] *
+                io_proc_data->rand_result.bytes[
+                  (
+                    offset_byte +
+                    0x01
+                  ) %
+                  0x5014
+                ]
+              ) %
+              0x2710
+            )
+          ) /
+          0x0186a0
+        );
       } else {
         buffer_out[
           index_frame
@@ -1013,7 +1144,9 @@ int scene_intro_forest_io_proc(
     }
   }
 
-  return 0;
+  return (
+    0x00
+  );
 }
 #else
 OSStatus scene_intro_forest_io_proc(
@@ -1034,7 +1167,8 @@ OSStatus scene_intro_forest_io_proc(
   );
 
   if (
-    io_proc_data->destroy == 1
+    io_proc_data->destroy ==
+    0x01
   ) {
     metil_audio_io_proc_remove(
       &metil_audio_io_proc_data->metil->audio,
@@ -1046,9 +1180,13 @@ OSStatus scene_intro_forest_io_proc(
       &io_proc_data->rand_source
     );
 
-    free(io_proc_data);
+    clic3_memory_free_raw(
+      io_proc_data
+    );
 
-    return 0;
+    return (
+      0x00
+    );
   }
 
   rand_get(
@@ -1058,48 +1196,84 @@ OSStatus scene_intro_forest_io_proc(
   );
 
   for (
-    unsigned long int index_buffer = 0;
-    index_buffer < list_buffer_audio_out->mNumberBuffers;
+    unsigned long int index_buffer = (
+      0x00
+    );
+    (
+      index_buffer <
+      list_buffer_audio_out->mNumberBuffers
+    );
     ++index_buffer
   ) {
-    AudioBuffer audio_buffer_current = list_buffer_audio_out->mBuffers[index_buffer];
+    AudioBuffer audio_buffer_current = (
+      list_buffer_audio_out->mBuffers[
+        index_buffer
+      ]
+    );
 
-    float* buffer_out = audio_buffer_current.mData;
+    float* buffer_out = (
+      audio_buffer_current.mData
+    );
+
     unsigned long int size_buffer_out = (
       audio_buffer_current.mDataByteSize /
-      sizeof(float)
+      sizeof(
+        float
+      )
     );
-    unsigned long int count_channel_out = audio_buffer_current.mNumberChannels;
+
+    unsigned long int count_channel_out = (
+      audio_buffer_current.mNumberChannels
+    );
 
     for (
-      unsigned long int index_buffer_out = 0;
-      index_buffer_out < size_buffer_out;
+      unsigned long int index_buffer_out = (
+        0x00
+      );
+      (
+        index_buffer_out <
+        size_buffer_out
+      );
       ++index_buffer_out
     ) {
       unsigned long int channel = (
         index_buffer_out %
         count_channel_out
       );
+
       unsigned int offset_byte = (
         index_buffer_out *
-        2
+        0x02
       );
 
       if (
-        channel == 0
+        channel ==
+        0x00
       ) {
         buffer_out[
           index_buffer_out
-        ] = ((float) ((
-          io_proc_data->rand_result.bytes[
-            offset_byte %
-            20500
-          ] *
-          io_proc_data->rand_result.bytes[
-            (offset_byte + 1) %
-            20500
-          ]
-        ) % 10000)) / 100000.0f;
+        ] = (
+          (
+            (float)
+            (
+              (
+                io_proc_data->rand_result.bytes[
+                  offset_byte %
+                  0x5014
+                ] *
+                io_proc_data->rand_result.bytes[
+                  (
+                    offset_byte +
+                    0x01
+                  ) %
+                  0x5014
+                ]
+              ) %
+              0x2710
+            )
+          ) /
+          0x0186a0
+        );
       } else {
         buffer_out[
           index_buffer_out
@@ -1111,6 +1285,8 @@ OSStatus scene_intro_forest_io_proc(
     }
   }
 
-  return 0;
+  return (
+    0x00
+  );
 }
 #endif
