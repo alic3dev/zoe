@@ -15,7 +15,8 @@ void object_text_backing_initialize(
   struct metil_object* metil_object_text_backing,
   id<MTLDevice> metal_device,
   struct math_c_vector3_float* size,
-  struct math_c_vector3_float* position
+  struct math_c_vector3_float* position,
+  struct zoe_pipeline_index* zoe_pipeline_index
 ) {
   metil_mesh_rectangle_initialize(
     &metil_object_text_backing->mesh,
@@ -42,7 +43,7 @@ void object_text_backing_initialize(
   );
 
   metil_object_text_backing->index_pipeline_render = (
-    zoe_pipeline_index_text_backing
+    zoe_pipeline_index->text_backing
   );
 
   metil_object_buffers_initialize(

@@ -1,5 +1,6 @@
 #include <scenes/scene_menu_main.h>
 
+#include <data/data_zoe.h>
 #include <menus/menu_main.h>
 #include <object/object_ground.h>
 #include <object/object_tree.h>
@@ -51,6 +52,14 @@ void scene_menu_main_initialize(
   struct metil* metil,
   struct metil_scene* scene
 ) {
+  struct zoe_data_zoe* zoe_data_zoe = (
+    metil->data
+  );
+
+  struct zoe_pipeline_index* zoe_pipeline_index = &(
+    zoe_data_zoe->pipeline_index
+  );
+
   metil_scene_initialize_with_renderables(
     metil,
     scene,
@@ -167,6 +176,7 @@ void scene_menu_main_initialize(
     scene->textures[
       textures_scene_menu_main_tree
     ],
+    zoe_pipeline_index,
     metil->renderer_interface.metal_device
   );
 
@@ -187,7 +197,8 @@ void scene_menu_main_initialize(
     scene->textures[
       textures_scene_menu_main_tree
     ],
-    0
+    0,
+    zoe_pipeline_index
   );
 
   metil_object = (

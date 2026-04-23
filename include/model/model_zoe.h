@@ -1,6 +1,8 @@
 #ifndef __zoe_model_model_zoe_h
 #define __zoe_model_model_zoe_h
 
+#include <zoe_pipeline_index.h>
+
 #include <metil.h>
 #include <metil_animation/metil_animation.h>
 #include <metil_model/metil_model.h>
@@ -55,7 +57,8 @@ struct zoe_model_data {
 void zoe_model_zoe_initialize(
   struct metil* _Nonnull,
   struct metil_model* _Nonnull,
-  unsigned char
+  unsigned char,
+  struct zoe_pipeline_index* _Nonnull
 );
 
 void zoe_model_zoe_poll(

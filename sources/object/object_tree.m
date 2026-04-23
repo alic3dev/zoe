@@ -18,7 +18,8 @@ void zoe_object_tree_initialize(
   struct metil_mesh* metil_mesh_clone_source,
   struct math_c_vector2_float size,
   id<MTLTexture> texture,
-  unsigned int noise
+  unsigned int noise,
+  struct zoe_pipeline_index* zoe_pipeline_index
 ) {
   if (
     metil_mesh_clone_source != 0
@@ -35,7 +36,7 @@ void zoe_object_tree_initialize(
   }
 
   metil_object->index_pipeline_render = (
-    zoe_pipeline_index_tree
+    zoe_pipeline_index->tree
   );
 
   metil_object_buffers_initialize(

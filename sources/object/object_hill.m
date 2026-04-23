@@ -16,6 +16,7 @@ void zoe_object_hill_initialize(
   id<MTLTexture> texture_one,
   id<MTLTexture> texture_two,
   id<MTLTexture> texture_lighting,
+  struct zoe_pipeline_index* zoe_pipeline_index,
   id<MTLDevice> metal_device
 ) {
   mesh_hill_initialize(
@@ -52,7 +53,7 @@ void zoe_object_hill_initialize(
   );
 
   metil_object->index_pipeline_render = (
-    zoe_pipeline_index_hill
+    zoe_pipeline_index->hill
   );
 
   metil_object_texture_add(

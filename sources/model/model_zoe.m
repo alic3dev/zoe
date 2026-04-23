@@ -34,7 +34,8 @@
 void zoe_model_zoe_initialize(
   struct metil* metil,
   struct metil_model* metil_model,
-  unsigned char zoe_model_type
+  unsigned char zoe_model_type,
+  struct zoe_pipeline_index* zoe_pipeline_index
 ) {
   metil_model_objects_add_length(
     metil_model,
@@ -90,15 +91,15 @@ void zoe_model_zoe_initialize(
   );
 
   metil_object_zoe_body->index_pipeline_render = (
-    zoe_pipeline_index_zoe_body
+    zoe_pipeline_index->zoe_body
   );
 
   metil_object_zoe_head->index_pipeline_render = (
-    zoe_pipeline_index_zoe_body
+    zoe_pipeline_index->zoe_body
   );
 
   metil_object_zoe_hair->index_pipeline_render = (
-    zoe_pipeline_index_zoe_hair
+    zoe_pipeline_index->zoe_hair
   );
 
   metil_model_joints_add_length(
