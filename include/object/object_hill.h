@@ -1,6 +1,8 @@
 #ifndef __zoe_object_object_hill_h
 #define __zoe_object_object_hill_h
 
+#include <zoe_pipeline_index.h>
+
 #include <math_c_vector.h>
 
 #include <simd/simd.h>
@@ -28,6 +30,7 @@ void zoe_object_hill_initialize(
   id<MTLTexture> _Nonnull,
   id<MTLTexture> _Nonnull,
   id<MTLTexture> _Nonnull,
+  struct zoe_pipeline_index* _Nonnull,
   id<MTLDevice> _Nonnull
 );
 

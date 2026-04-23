@@ -15,6 +15,7 @@ void zoe_object_ground_initialize(
   struct math_c_vector3_float size,
   id<MTLTexture> texture_one,
   id<MTLTexture> texture_two,
+  struct zoe_pipeline_index* zoe_pipeline_index,
   id<MTLDevice> metal_device
 ) {
   mesh_ground_initialize(
@@ -28,7 +29,7 @@ void zoe_object_ground_initialize(
   );
 
   metil_object->index_pipeline_render = (
-    zoe_pipeline_index_ground
+    zoe_pipeline_index->ground
   );
 
   metil_object_texture_add(

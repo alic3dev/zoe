@@ -60,6 +60,10 @@ void scene_intro_forest_initialize(
     metil->data
   );
 
+  struct zoe_pipeline_index* zoe_pipeline_index = &(
+    zoe_data_zoe->pipeline_index
+  );
+
   struct zoe_data_player* zoe_data_player = (
     &zoe_data_zoe->player
   );
@@ -382,7 +386,8 @@ void scene_intro_forest_initialize(
   zoe_model_zoe_initialize(
     metil,
     metil_model_player,
-    zoe_model_type_player
+    zoe_model_type_player,
+    zoe_pipeline_index
   );
 
   struct metil_object* metil_object_player_body = &(
@@ -414,7 +419,8 @@ void scene_intro_forest_initialize(
   zoe_model_zoe_initialize(
     metil,
     metil_model_player_mirror,
-    zoe_model_type_mirror
+    zoe_model_type_mirror,
+    zoe_pipeline_index
   );
 
   struct metil_object* metil_object_ground = (
@@ -442,6 +448,7 @@ void scene_intro_forest_initialize(
     scene->textures[
       textures_scene_intro_forest_tree
     ],
+    zoe_pipeline_index,
     metil->renderer_interface.metal_device
   );
 
@@ -600,6 +607,14 @@ void zoe_scene_intro_forest_threaded_trees_initialization(
     scene_intro_forest_tree_thread_data->size_bounds
   );
 
+  struct zoe_data_zoe* zoe_data_zoe = (
+    metil->data
+  );
+
+  struct zoe_pipeline_index* zoe_pipeline_index = &(
+    zoe_data_zoe->pipeline_index
+  );
+
   struct rand_parameters rand_parameters;
   struct rand_source rand_source;
   struct rand_result rand_result;
@@ -666,7 +681,8 @@ void zoe_scene_intro_forest_threaded_trees_initialization(
           0x04
         ] *
         index_renderable
-      )
+      ),
+      zoe_pipeline_index
     );
 
     metil_object_tree->position.x = (
@@ -757,7 +773,7 @@ void zoe_scene_intro_forest_threaded_trees_initialization(
     );
 
     metil_object_tree->index_pipeline_render = (
-      zoe_pipeline_index_tree
+      zoe_pipeline_index->tree
     );
 
     zoe_loading_threads_progress_increase(

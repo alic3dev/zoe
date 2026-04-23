@@ -3,6 +3,7 @@
 #include <data/data_player.h>
 #include <renderables/renderables_static.h>
 #include <save_files/zoe_save_files.h>
+#include <zoe_pipeline_index.h>
 
 #include <metil.h>
 
@@ -33,6 +34,10 @@ void zoe_data_zoe_initialize(
       &zoe_data_zoe->save_files
     );
   }
+
+  zoe_pipeline_index_initialize(
+    &zoe_data_zoe->pipeline_index
+  );
 }
 
 void zoe_data_zoe_destroy(

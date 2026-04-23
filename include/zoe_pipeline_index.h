@@ -1,15 +1,23 @@
 #ifndef __zoe_pipeline_index_h
 #define __zoe_pipeline_index_h
 
-extern unsigned short int zoe_pipeline_index_ground;
-extern unsigned short int zoe_pipeline_index_hill;
-extern unsigned short int zoe_pipeline_index_loading_screen;
-extern unsigned short int zoe_pipeline_index_leaf;
-extern unsigned short int zoe_pipeline_index_mushroom;
-extern unsigned short int zoe_pipeline_index_text;
-extern unsigned short int zoe_pipeline_index_text_backing;
-extern unsigned short int zoe_pipeline_index_tree;
-extern unsigned short int zoe_pipeline_index_zoe_body;
-extern unsigned short int zoe_pipeline_index_zoe_hair;
+struct zoe_pipeline_index {
+  unsigned short int ground;
+  unsigned short int hill;
+  unsigned short int loading_screen;
+  unsigned short int leaf;
+  unsigned short int mushroom;
+  unsigned short int text;
+  unsigned short int text_backing;
+  unsigned short int tree;
+  unsigned short int zoe_body;
+  unsigned short int zoe_hair;
+};
+
+#ifndef __METAL_VERSION__
+void zoe_pipeline_index_initialize(
+  struct zoe_pipeline_index*
+);
+#endif
 
 #endif

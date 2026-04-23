@@ -83,6 +83,27 @@ void zoe_renderer_on_initialize(
   struct metil* metil,
   void* data
 ) {
+  metil->data = (
+    clic3_memory_allocate_raw(
+      sizeof(
+        struct zoe_data_zoe
+      )
+    )
+  );
+
+  struct zoe_data_zoe* zoe_data_zoe = (
+    metil->data
+  );
+
+  zoe_data_zoe_initialize(
+    metil,
+    zoe_data_zoe
+  );
+
+  struct zoe_pipeline_index* zoe_pipeline_index = &(
+    zoe_data_zoe->pipeline_index
+  );
+
   metil->player_defaults.speed_movement = (
     0x40
   );
@@ -94,7 +115,7 @@ void zoe_renderer_on_initialize(
     @"zoe_default_vertex"
   );
 
-  zoe_pipeline_index_ground = [
+  zoe_pipeline_index->ground = [
     metil->renderer_interface.renderer
     pipeline_add: [
       metil->library.library
@@ -106,7 +127,7 @@ void zoe_renderer_on_initialize(
     ]
   ];
 
-  zoe_pipeline_index_hill = [
+  zoe_pipeline_index->hill = [
     metil->renderer_interface.renderer
     pipeline_add: [
       metil->library.library
@@ -118,7 +139,7 @@ void zoe_renderer_on_initialize(
     ]
   ];
 
-  zoe_pipeline_index_loading_screen = [
+  zoe_pipeline_index->loading_screen = [
     metil->renderer_interface.renderer
     pipeline_add: [
       metil->library.library
@@ -130,7 +151,7 @@ void zoe_renderer_on_initialize(
     ]
   ];
 
-  zoe_pipeline_index_leaf = [
+  zoe_pipeline_index->leaf = [
     metil->renderer_interface.renderer
     pipeline_add: [
       metil->library.library
@@ -142,7 +163,7 @@ void zoe_renderer_on_initialize(
     ]
   ];
 
-  zoe_pipeline_index_mushroom = [
+  zoe_pipeline_index->mushroom = [
     metil->renderer_interface.renderer
     pipeline_add: [
       metil->library.library
@@ -154,7 +175,7 @@ void zoe_renderer_on_initialize(
     ]
   ];
 
-  zoe_pipeline_index_text = [
+  zoe_pipeline_index->text = [
     metil->renderer_interface.renderer
     pipeline_add: [
       metil->library.library
@@ -166,7 +187,7 @@ void zoe_renderer_on_initialize(
     ]
   ];
 
-  zoe_pipeline_index_text_backing = [
+  zoe_pipeline_index->text_backing = [
     metil->renderer_interface.renderer
     pipeline_add: [
       metil->library.library
@@ -178,7 +199,7 @@ void zoe_renderer_on_initialize(
     ]
   ];
 
-  zoe_pipeline_index_tree = [
+  zoe_pipeline_index->tree = [
     metil->renderer_interface.renderer
     pipeline_add: [
       metil->library.library
@@ -190,7 +211,7 @@ void zoe_renderer_on_initialize(
     ]
   ];
 
-  zoe_pipeline_index_zoe_body = [
+  zoe_pipeline_index->zoe_body = [
     metil->renderer_interface.renderer
     pipeline_add: [
       metil->library.library
@@ -202,7 +223,7 @@ void zoe_renderer_on_initialize(
     ]
   ];
 
-  zoe_pipeline_index_zoe_hair = [
+  zoe_pipeline_index->zoe_hair = [
     metil->renderer_interface.renderer
     pipeline_add: [
       metil->library.library
@@ -215,7 +236,7 @@ void zoe_renderer_on_initialize(
   ];
 
   metil->text_defaults.object_text_index_pipeline_render = (
-    zoe_pipeline_index_text
+    zoe_pipeline_index->text
   );
 
   metil->rendering_properties.colour_clear.x = (
@@ -232,19 +253,6 @@ void zoe_renderer_on_initialize(
 
   metil->rendering_properties.colour_clear.w = (
     0x01
-  );
-
-  metil->data = (
-    clic3_memory_allocate_raw(
-      sizeof(
-        struct zoe_data_zoe
-      )
-    )
-  );
-
-  zoe_data_zoe_initialize(
-    metil,
-    metil->data
   );
 
   metil->destroy = (

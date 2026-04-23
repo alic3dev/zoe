@@ -1,7 +1,7 @@
 #include <group/group_text_with_backing.h>
 
+#include <data/data_zoe.h>
 #include <object/object_text_backing.h>
-
 #include <zoe_pipeline_index.h>
 
 #include <metil.h>
@@ -18,6 +18,14 @@ void group_text_with_backing_initialize(
   struct metil_group* metil_group_text_with_backing,
   char* text
 ) {
+  struct zoe_data_zoe* zoe_data_zoe = (
+    metil->data
+  );
+
+  struct zoe_pipeline_index* zoe_pipeline_index = &(
+    zoe_data_zoe->pipeline_index
+  );
+
   metil_group_add_initialize(
     metil_group_text_with_backing,
     metil_renderable_type_object
@@ -58,15 +66,12 @@ void group_text_with_backing_initialize(
     metil_object_text_backing,
     metil->renderer_interface.metal_device,
     &metil_object_text->mesh.size,
-    &metil_object_text->position
+    &metil_object_text->position,
+    zoe_pipeline_index
   );
 
   metil_object_text->index_pipeline_render = (
-    zoe_pipeline_index_text
-  );
-
-  metil_object_text_backing->index_pipeline_render = (
-    zoe_pipeline_index_text_backing
+    zoe_pipeline_index->text
   );
 
   metil_group_text_with_backing->visible = (

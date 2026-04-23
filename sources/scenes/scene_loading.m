@@ -1,5 +1,6 @@
 #include <scenes/scene_loading.h>
 
+#include <data/data_zoe.h>
 #include <zoe_loading_map.h>
 #include <zoe_pipeline_index.h>
 
@@ -19,6 +20,14 @@ void scene_loading_initialize(
   struct metil_scene* metil_scene_loading,
   unsigned char id_scene
 ) {
+  struct zoe_data_zoe* zoe_data_zoe = (
+    metil->data
+  );
+
+  struct zoe_pipeline_index* zoe_pipeline_index = &(
+    zoe_data_zoe->pipeline_index
+  );
+
   static struct data_scene_loading* data_scene_loading;
 
   data_scene_loading = (
@@ -89,7 +98,7 @@ void scene_loading_initialize(
   );
 
   metil_object_loading_screen->index_pipeline_render = (
-    zoe_pipeline_index_loading_screen
+    zoe_pipeline_index->loading_screen
   );
 
   metil_object_buffers_initialize(
@@ -103,7 +112,9 @@ void scene_loading_initialize(
     ].buffer.contents
   );
 
-  metil_renderer_data_object_loading_screen->noise = 0;
+  metil_renderer_data_object_loading_screen->noise = (
+    0x00
+  );
 
   metil_scene_loading->data = (
     data_scene_loading

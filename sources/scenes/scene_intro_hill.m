@@ -64,6 +64,10 @@ void scene_intro_hill_initialize(
     metil->data
   );
 
+  struct zoe_pipeline_index* zoe_pipeline_index = &(
+    zoe_data_zoe->pipeline_index
+  );
+
   metil->rendering_properties.brightness = (
     metil->configuration.rendering_properties.brightness
   );
@@ -227,7 +231,7 @@ void scene_intro_hill_initialize(
     );
 
     metil_object_mushroom->index_pipeline_render = (
-      zoe_pipeline_index_mushroom
+      zoe_pipeline_index->mushroom
     );
 
     metil_object_mushroom->position.x = (
@@ -359,7 +363,8 @@ void scene_intro_hill_initialize(
   zoe_model_zoe_initialize(
     metil,
     metil_model_player,
-    zoe_model_type_player
+    zoe_model_type_player,
+    zoe_pipeline_index
   );
 
   struct metil_object* metil_object_player_body = &(
@@ -391,7 +396,8 @@ void scene_intro_hill_initialize(
   zoe_model_zoe_initialize(
     metil,
     metil_model_player_mirror,
-    zoe_model_type_mirror
+    zoe_model_type_mirror,
+    zoe_pipeline_index
   );
 
   struct metil_model* metil_model_zoe = (
@@ -403,7 +409,8 @@ void scene_intro_hill_initialize(
   zoe_model_zoe_initialize(
     metil,
     metil_model_zoe,
-    zoe_model_type_statue
+    zoe_model_type_statue,
+    zoe_pipeline_index
   );
 
   struct metil_object* metil_object_hill = (
@@ -423,6 +430,7 @@ void scene_intro_hill_initialize(
     scene->textures[
       scene_intro_hill_textures_lighting
     ],
+    zoe_pipeline_index,
     metil->renderer_interface.metal_device
   );
 
@@ -443,7 +451,8 @@ void scene_intro_hill_initialize(
     scene->textures[
       scene_intro_hill_textures_tree
     ],
-    0xd5
+    0xd5,
+    zoe_pipeline_index
   );
 
   metil_object_tree_zoe->position.y = 100.0f;
@@ -466,7 +475,8 @@ void scene_intro_hill_initialize(
     scene->textures[
       scene_intro_hill_textures_tree
     ],
-    312
+    312,
+    zoe_pipeline_index
   );
 
   metil_object_tree_zoe_mirror->position.y = 100.0f;
