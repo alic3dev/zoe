@@ -106,12 +106,14 @@ void scene_menu_main_initialize(
   );
 
   scene->length_textures = 5;
-  scene->textures = realloc(
-    scene->textures,
-    sizeof(
-      id<MTLTexture>
-    ) *
-    scene->length_textures
+  clic3_memory_reallocate_raw(
+    &scene->textures,
+    (
+      sizeof(
+        id<MTLTexture>
+      ) *
+      scene->length_textures
+    )
   );
 
   scene->textures[
