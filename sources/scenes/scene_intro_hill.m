@@ -289,8 +289,8 @@ void scene_intro_hill_initialize(
     scene_intro_hill_length_textures
   );
 
-  scene->textures = realloc(
-    scene->textures,
+  clic3_memory_reallocate_raw(
+    &scene->textures,
     sizeof(
       id<MTLTexture>
     ) *
@@ -844,7 +844,7 @@ int scene_intro_hill_io_proc(
       &io_proc_data->rand_source
     );
 
-    free(
+    clic3_memory_free_raw(
       io_proc_data
     );
 
@@ -948,7 +948,7 @@ OSStatus scene_intro_hill_io_proc(
       &io_proc_data->rand_source
     );
 
-    free(
+    clic3_memory_free_raw(
       io_proc_data
     );
 
