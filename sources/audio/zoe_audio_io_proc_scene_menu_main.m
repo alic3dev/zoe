@@ -123,7 +123,7 @@ metil_audio_io_proc_macro_definition(
           ]
         ) %
         10000
-      ) /    
+      ) /
       100000.0f *
       volume_multiplier
     );

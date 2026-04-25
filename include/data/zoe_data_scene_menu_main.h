@@ -15,7 +15,7 @@ struct scene_menu_main_data {
   struct metil_menu menu;
 
   unsigned long int time_started;
-  
+
   struct rand_parameters rand_parameters;
   struct rand_source rand_source;
   struct rand_result rand_result;

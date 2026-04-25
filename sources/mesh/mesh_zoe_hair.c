@@ -24,7 +24,7 @@ void mesh_zoe_hair_initialize(
   );
 
   unsigned short int length_segments = (
-    length_segments_radial * 
+    length_segments_radial *
     length_segment_sections
   );
 
@@ -121,7 +121,7 @@ void mesh_zoe_hair_initialize(
       (index_section - 0x01) /
       (float)
       length_segment_sections
-    );  
+    );
 
     float percentage_section_end = (
       (float)
@@ -147,7 +147,7 @@ void mesh_zoe_hair_initialize(
       ) *
       0.2f
     );
-    
+
     metil_mesh_zoe_hair->vertices[
       offset_index_vertex
     ].x = (
@@ -164,7 +164,7 @@ void mesh_zoe_hair_initialize(
     metil_mesh_zoe_hair->vertices[
       offset_index_vertex
     ].y = (
-      lower 
+      lower
       ? (
         height_upper -
         (
@@ -237,7 +237,7 @@ math_c_sine(
         math_c_pi
       ) *
       (
-        lower 
+        lower
         ? radius * 0.9f
         : (
           0.8f        )
