@@ -1,6 +1,7 @@
 #include <enemies/zoe_enemy_auop.h>
 
 #include <enemies/zoe_enemy.h>
+#include <object/zoe_object_auop.h>
 
 #include <math_c_vector.h>
 
@@ -35,40 +36,25 @@ void zoe_enemy_auop_initialize(
     metil_renderable_type_object
   );
 
-  struct metil_object* zoe_enemy_object = (
+  struct metil_object* zoe_enemy_object_auop = (
     zoe_enemy_auop->renderable->renderable
   );
 
-  metil_mesh_box_initialize(
-    &zoe_enemy_object->mesh,
-    (struct math_c_vector3_float) {
-      .x = (
-        0x04
-      ),
-      .y = (
-        0x08
-      ),
-      .z = (
-        0x04
-      )
-    }
-  );
-
-  metil_object_buffers_initialize(
-    zoe_enemy_object,
-    metil->renderer_interface.metal_device
+  zoe_object_auop_initialize(
+    metil,
+    zoe_enemy_object_auop
   );
 
   zoe_enemy_auop->position = &(
-    zoe_enemy_object->position
+    zoe_enemy_object_auop->position
   );
 
   zoe_enemy_auop->rotation = &(
-    zoe_enemy_object->rotation
+    zoe_enemy_object_auop->rotation
   );
 
   zoe_enemy_auop->size = &(
-    zoe_enemy_object->mesh.size
+    zoe_enemy_object_auop->mesh.size
   );
 
   zoe_enemy_auop->poll = (
