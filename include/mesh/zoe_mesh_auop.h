@@ -6,15 +6,25 @@
 #define zoe_mesh_auop_length_segments 0x10
 #define zoe_mesh_auop_length_segment_vertices_radial 0x10
 
-#define zoe_mesh_auop_length_vertices (\
+#define zoe_mesh_auop_length_vertices_segments (\
   zoe_mesh_auop_length_segments *\
-  zoe_mesh_auop_length_segment_vertices_radial +\
-  0x01\
+  zoe_mesh_auop_length_segment_vertices_radial\
+)
+
+#define zoe_mesh_auop_length_vertices (\
+  zoe_mesh_auop_length_vertices_segments +\
+  0x02\
 )
 
 #define zoe_mesh_auop_length_indices (\
-  zoe_mesh_auop_length_vertices *\
-  0x03\
+  (\
+    zoe_mesh_auop_length_segments -\
+    0x01\
+  ) *\
+  zoe_mesh_auop_length_segment_vertices_radial *\
+  0x06 +\
+  zoe_mesh_auop_length_segment_vertices_radial *\
+  0x06\
 )
 
 #define zoe_mesh_auop_height 0x08

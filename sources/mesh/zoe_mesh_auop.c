@@ -4,7 +4,7 @@
 #include <math_c_sine.h>
 
 #include <metil_mesh/metil_mesh.h>
-
+#include <stdio.h>
 void zoe_mesh_auop_initialize(
   struct metil_mesh* zoe_mesh_auop
 ) {
@@ -14,8 +14,51 @@ void zoe_mesh_auop_initialize(
     zoe_mesh_auop_length_indices
   );
 
-  unsigned short int index_vertex;
+  zoe_mesh_auop->size.x = (
+    0x02
+  );
 
+  zoe_mesh_auop->size.y = (
+    zoe_mesh_auop_height
+  );
+
+  zoe_mesh_auop->size.z = (
+    zoe_mesh_auop->size.x /
+    0x03 *
+    0x02
+  );
+
+  unsigned short int index_vertex = (
+    0x00
+  );
+
+  unsigned short int index_index = (
+    0x00
+  );
+
+  zoe_mesh_auop->vertices[
+    index_vertex
+  ].x = (
+    0x00
+  );
+
+  zoe_mesh_auop->vertices[
+    index_vertex
+  ].y = (
+    0x00
+  );
+
+  zoe_mesh_auop->vertices[
+    index_vertex
+  ].z = (
+    0x00
+  );
+
+  zoe_mesh_auop->vertices[
+    index_vertex
+  ].w = (
+    0x01
+  );
   for (
     unsigned char index_segment = (
       0x00
@@ -28,7 +71,8 @@ void zoe_mesh_auop_initialize(
   ) {
     unsigned short int offset_vertex = (
       index_segment *
-      zoe_mesh_auop_length_segment_vertices_radial
+      zoe_mesh_auop_length_segment_vertices_radial +
+      0x01
     );
 
     float percentage_segments = (
@@ -37,6 +81,7 @@ void zoe_mesh_auop_initialize(
       (float)
       zoe_mesh_auop_length_segments
     );
+
     for (
       unsigned char index_segment_vertex_radial = (
         0x00
@@ -57,7 +102,7 @@ void zoe_mesh_auop_initialize(
         index_segment_vertex_radial /
         (float)
         zoe_mesh_auop_length_segment_vertices_radial *
-        math_c_pi
+        math_c_pi_doubled
       );
 
       zoe_mesh_auop->vertices[
@@ -66,7 +111,8 @@ void zoe_mesh_auop_initialize(
         math_c_sine(
           angle,
           math_c_pi
-        )
+        ) *
+        zoe_mesh_auop->size.x
       );
     
       zoe_mesh_auop->vertices[
@@ -82,7 +128,8 @@ void zoe_mesh_auop_initialize(
         math_c_cosine(
           angle,
           math_c_pi
-        )
+        ) *
+        zoe_mesh_auop->size.z
       );
 
       zoe_mesh_auop->vertices[
@@ -90,11 +137,172 @@ void zoe_mesh_auop_initialize(
       ].w = (
         0x01
       );
+
+      if (
+        (
+          index_segment +
+          0x01
+        ) ==
+        zoe_mesh_auop_length_segments
+      ) {
+        continue;
+      }
+
+      zoe_mesh_auop->indices[
+        index_index
+      ] = (
+        index_vertex
+      );
+
+      if (
+        index_segment_vertex_radial ==
+        (
+          zoe_mesh_auop_length_segment_vertices_radial -
+          0x01
+        )
+      ) {
+        zoe_mesh_auop->indices[
+          index_index +
+          0x01
+        ] = (
+          offset_vertex
+        );
+      } else {
+        zoe_mesh_auop->indices[
+          index_index +
+          0x01
+        ] = (
+          index_vertex +
+          0x01
+        );
+      }
+      zoe_mesh_auop->indices[
+        index_index +
+        0x02
+      ] = (
+        index_vertex +
+        zoe_mesh_auop_length_segment_vertices_radial      );
+
+      zoe_mesh_auop->indices[
+        index_index +
+        0x03
+      ] = (
+        zoe_mesh_auop->indices[
+          index_index +
+          0x01
+        ]
+      );
+
+      zoe_mesh_auop->indices[
+        index_index +
+        0x04
+      ] = (
+        zoe_mesh_auop->indices[
+          index_index +
+          0x02
+        ]
+      );
+    
+      zoe_mesh_auop->indices[
+        index_index +
+        0x05
+      ] = (
+        zoe_mesh_auop->indices[
+          index_index +
+          0x01
+        ] +
+        zoe_mesh_auop_length_segment_vertices_radial
+      );
+
+      index_index = (
+        index_index +
+        0x06
+      );
+    }
+  }
+
+  for (
+    unsigned char index_upper_lower = (      0x00
+    );
+    (
+      index_upper_lower <
+      0x02
+    );
+    ++index_upper_lower
+  ) {
+    unsigned short int index_vertex_center;
+    unsigned short int index_vertex_offset;
+
+    if (
+      index_upper_lower ==
+      0x00
+    ) {
+      index_vertex_center = (
+        0x00
+      );
+
+      index_vertex_offset = (
+        0x01
+      );
+    } else {
+      index_vertex_center = (
+        zoe_mesh_auop->length_vertices -
+        0x01
+      );
+
+      index_vertex_offset = (
+        index_vertex_center -
+        zoe_mesh_auop_length_segment_vertices_radial -
+        0x02      );
+    }
+
+    for (
+      unsigned char index_vertex_radial = (
+        0x00
+      );
+      (
+        index_vertex_radial <
+        zoe_mesh_auop_length_segment_vertices_radial
+      );
+      ++index_vertex_radial
+    ) {
+      zoe_mesh_auop->indices[
+        index_index
+      ] = (
+        index_vertex_center
+      );
+
+      zoe_mesh_auop->indices[
+        index_index +
+        0x01
+      ] = (
+        index_vertex_radial +
+        index_vertex_offset
+      );
+
+      zoe_mesh_auop->indices[
+        index_index +
+        0x02
+      ] = (
+        (
+          (
+            index_vertex_radial +
+            0x01
+          ) %
+          zoe_mesh_auop_length_segment_vertices_radial
+        ) +
+        index_vertex_offset
+      );
+
+      index_index = (
+        index_index +
+        0x03
+      );
     }
   }
 
   index_vertex = (
-    zoe_mesh_auop->length_vertices -
+    index_vertex +
     0x01
   );
 
@@ -120,23 +328,5 @@ void zoe_mesh_auop_initialize(
     index_vertex
   ].w = (
     0x01
-  );
-
-  for (
-    unsigned short int index_index = (
-      0x00
-    );
-    (
-      index_index <
-      zoe_mesh_auop->length_indices
-    );
-    ++index_index
-  ) {
-    zoe_mesh_auop->indices[
-      index_index
-    ] = (
-      index_index %
-      zoe_mesh_auop->length_vertices
-    );
-  }    
+  );    
 }
