@@ -2,6 +2,7 @@
 #define __zoe_pipeline_index_h
 
 struct zoe_pipeline_index {
+  unsigned short int auop;
   unsigned short int ground;
   unsigned short int hill;
   unsigned short int loading_screen;

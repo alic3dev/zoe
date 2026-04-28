@@ -98,6 +98,7 @@ void mesh_zoe_hair_initialize(
       index_segment /
       length_segments_radial
     );
+
     float angle = (
       -(
         (float)
@@ -132,6 +133,7 @@ void mesh_zoe_hair_initialize(
       (float)
       length_segment_sections
     );
+
     float radius = (
       1.25f +
       math_c_sine(

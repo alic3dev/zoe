@@ -1,5 +1,6 @@
 #include <enemies/zoe_enemy_auop.h>
 
+#include <data/data_zoe.h>
 #include <enemies/zoe_enemy.h>
 #include <object/zoe_object_auop.h>
 
@@ -17,6 +18,10 @@ void zoe_enemy_auop_initialize(
   struct zoe_enemy* zoe_enemy_auop,
   struct metil_renderable* zoe_enemy_auop_renderable
 ) {
+  struct zoe_data_zoe* zoe_data_zoe = (
+    metil->data
+  );
+
   zoe_enemy_initialize(
     metil,
     zoe_enemy_auop,
@@ -60,7 +65,10 @@ void zoe_enemy_auop_initialize(
   zoe_enemy_auop->poll = (
     zoe_enemy_auop_poll
   );
-}
+
+  zoe_enemy_object_auop->index_pipeline_render = (
+    zoe_data_zoe->pipeline_index.auop
+  );}
 
 void zoe_enemy_auop_poll(
   struct metil* metil,
