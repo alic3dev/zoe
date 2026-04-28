@@ -71,7 +71,7 @@ int main(
 #if target_os_ios
 void zoe_view_controller_on_view_did_load() {
   metil_initialize(
-    1,
+    0x01,
     &zoe_executable_path,
     "zoe",
     zoe_renderer_on_initialize
@@ -114,6 +114,18 @@ void zoe_renderer_on_initialize(
     @"zoe_default_fragment",
     @"zoe_default_vertex"
   );
+
+  zoe_pipeline_index->auop = [
+    metil->renderer_interface.renderer
+    pipeline_add: [
+      metil->library.library
+      newFunctionWithName: @"zoe_auop_fragment"
+    ]
+    function_vertex: [
+      metil->library.library
+      newFunctionWithName: @"zoe_auop_vertex"
+    ]
+  ];  
 
   zoe_pipeline_index->ground = [
     metil->renderer_interface.renderer

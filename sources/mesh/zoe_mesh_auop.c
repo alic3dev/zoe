@@ -23,9 +23,7 @@ void zoe_mesh_auop_initialize(
   );
 
   zoe_mesh_auop->size.z = (
-    zoe_mesh_auop->size.x /
-    0x03 *
-    0x02
+    0x03
   );
 
   unsigned short int index_vertex = (
@@ -59,6 +57,7 @@ void zoe_mesh_auop_initialize(
   ].w = (
     0x01
   );
+
   for (
     unsigned char index_segment = (
       0x00
@@ -105,6 +104,118 @@ void zoe_mesh_auop_initialize(
         math_c_pi_doubled
       );
 
+      float radius_x = (
+        zoe_mesh_auop->size.x
+      );
+
+      float height = (
+        zoe_mesh_auop->size.y
+      );
+  
+      float radius_z = (
+        zoe_mesh_auop->size.z
+      );
+
+      if (
+        (
+          percentage_segments <=
+          0.75f
+        ) &&
+        (
+          (
+            angle <=
+            (
+              math_c_pi *
+              0.5f
+            )
+          ) ||
+          (
+            angle >=
+            (
+              math_c_pi *
+              1.5f
+            )
+          )
+        )
+      ) {
+        radius_z = (
+          radius_z -
+          radius_z *
+          math_c_sine(
+            (
+              percentage_segments /
+              0.75f *
+              math_c_pi_half
+            ),
+            math_c_pi
+          )
+        );
+      }
+    
+      if (
+        percentage_segments >=
+        0.75f
+      ) {
+        float percentage_spanned = (
+          math_c_sine(
+            (
+              (
+                percentage_segments -
+                0.75f
+              ) /
+              0.25f *              math_c_pi_half
+            ),
+            math_c_pi
+          ) *
+          0.25f
+        );
+
+        radius_x = (
+          radius_x -
+          radius_x *
+          percentage_spanned *
+          0x02
+        );
+
+        radius_z = (
+          radius_z -
+          zoe_mesh_auop->size.z *
+          percentage_spanned
+        );
+
+        if (
+          (
+            angle <=
+            (
+              math_c_pi *
+              0.5f            )
+          ) ||
+          (
+            angle >=
+            (
+              math_c_pi *
+              1.5f
+            )
+          )
+        ) {
+          if (
+            angle >=
+            math_c_pi *
+            0.25f
+          ) {
+          height = (
+            height +
+            percentage_spanned *
+            height
+          );
+          }
+  
+          radius_z = (
+            radius_z -
+            zoe_mesh_auop->size.z
+          );
+        }      }
+          
       zoe_mesh_auop->vertices[
         index_vertex
       ].x = (
@@ -112,14 +223,14 @@ void zoe_mesh_auop_initialize(
           angle,
           math_c_pi
         ) *
-        zoe_mesh_auop->size.x
+        radius_x
       );
     
       zoe_mesh_auop->vertices[
         index_vertex
       ].y = (
         percentage_segments *
-        zoe_mesh_auop_height
+        height
       );
 
       zoe_mesh_auop->vertices[
@@ -129,7 +240,7 @@ void zoe_mesh_auop_initialize(
           angle,
           math_c_pi
         ) *
-        zoe_mesh_auop->size.z
+        radius_z
       );
 
       zoe_mesh_auop->vertices[
@@ -181,7 +292,8 @@ void zoe_mesh_auop_initialize(
         0x02
       ] = (
         index_vertex +
-        zoe_mesh_auop_length_segment_vertices_radial      );
+        zoe_mesh_auop_length_segment_vertices_radial
+      );
 
       zoe_mesh_auop->indices[
         index_index +
@@ -222,7 +334,8 @@ void zoe_mesh_auop_initialize(
   }
 
   for (
-    unsigned char index_upper_lower = (      0x00
+    unsigned char index_upper_lower = (
+      0x00
     );
     (
       index_upper_lower <
@@ -253,7 +366,8 @@ void zoe_mesh_auop_initialize(
       index_vertex_offset = (
         index_vertex_center -
         zoe_mesh_auop_length_segment_vertices_radial -
-        0x02      );
+        0x02
+      );
     }
 
     for (
@@ -320,9 +434,8 @@ void zoe_mesh_auop_initialize(
 
   zoe_mesh_auop->vertices[
     index_vertex
-  ].z = (
-    0x00
-  );
+  ].z = -(
+    zoe_mesh_auop->size.z /    0x02  );
   
   zoe_mesh_auop->vertices[
     index_vertex
