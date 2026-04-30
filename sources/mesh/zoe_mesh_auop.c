@@ -111,7 +111,7 @@ void zoe_mesh_auop_initialize(
       float height = (
         zoe_mesh_auop->size.y
       );
-  
+
       float radius_z = (
         zoe_mesh_auop->size.z
       );
@@ -151,7 +151,7 @@ void zoe_mesh_auop_initialize(
           )
         );
       }
-    
+
       if (
         percentage_segments >=
         0.75f
@@ -209,13 +209,13 @@ void zoe_mesh_auop_initialize(
             height
           );
           }
-  
+
           radius_z = (
             radius_z -
             zoe_mesh_auop->size.z
           );
         }      }
-          
+
       zoe_mesh_auop->vertices[
         index_vertex
       ].x = (
@@ -225,7 +225,7 @@ void zoe_mesh_auop_initialize(
         ) *
         radius_x
       );
-    
+
       zoe_mesh_auop->vertices[
         index_vertex
       ].y = (
@@ -314,7 +314,7 @@ void zoe_mesh_auop_initialize(
           0x02
         ]
       );
-    
+
       zoe_mesh_auop->indices[
         index_index +
         0x05
@@ -436,10 +436,10 @@ void zoe_mesh_auop_initialize(
     index_vertex
   ].z = -(
     zoe_mesh_auop->size.z /    0x02  );
-  
+
   zoe_mesh_auop->vertices[
     index_vertex
   ].w = (
     0x01
-  );    
+  );
 }

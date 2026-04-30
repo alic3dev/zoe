@@ -112,7 +112,7 @@ void zoe_enemy_auop_poll(
   zoe_enemy_auop->rotation->y = (
     math_c_angle_from_vector3_float_xz(
       zoe_enemy_auop->position,
-      &metil_scene->player.position  
+      &metil_scene->player.position
     )
   );
 }

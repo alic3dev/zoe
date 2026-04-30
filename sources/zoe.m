@@ -125,7 +125,7 @@ void zoe_renderer_on_initialize(
       metil->library.library
       newFunctionWithName: @"zoe_auop_vertex"
     ]
-  ];  
+  ];
 
   zoe_pipeline_index->ground = [
     metil->renderer_interface.renderer

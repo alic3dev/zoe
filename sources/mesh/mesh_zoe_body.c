@@ -1597,7 +1597,8 @@ void mesh_zoe_body_initialize(
       );
 
       if (
-        index_arm == 0
+        index_arm ==
+        0x00
       ) {
         metil_mesh_zoe_body->vertices[
           index_vertex
@@ -1610,7 +1611,7 @@ void mesh_zoe_body_initialize(
 
       index_vertex = (
         index_vertex +
-        1
+        0x01
       );
     }
 
@@ -1657,7 +1658,10 @@ void mesh_zoe_body_initialize(
       );
 
       radius = (
-        (1.0f - radius) *
+        (
+          0x01 -
+          radius
+        ) *
         radius_elbow +
         radius *
         radius_wrist
