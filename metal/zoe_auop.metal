@@ -178,7 +178,7 @@ fragment float4 zoe_auop_fragment(
   ) {
     colour = (
       float4(
-        0xff,  
+        0xff,
         0xff,
         0x00,
         0x01
