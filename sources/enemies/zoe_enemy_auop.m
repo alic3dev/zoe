@@ -4,6 +4,8 @@
 #include <enemies/zoe_enemy.h>
 #include <object/zoe_object_auop.h>
 
+#include <math_c_absolute.h>
+#include <math_c_pi.h>
 #include <math_c_vector.h>
 
 #include <metil_mesh/metil_mesh_box.h>
@@ -107,5 +109,67 @@ void zoe_enemy_auop_poll(
       :  0x01
     ) *
     amount
+  );
+
+  struct math_c_vector2_float difference = {
+    .x = (
+      zoe_enemy_auop->position->x -
+      metil_scene->player.position.x
+    ),
+    .y = (
+      zoe_enemy_auop->position->z -
+      metil_scene->player.position.z
+    )
+  };
+
+  struct math_c_vector2_float absolutes = {
+    .x = (
+      math_c_absolute_float(
+        difference.x
+      )
+    ),
+    .y = (
+      math_c_absolute_float(
+        difference.y
+      )
+    )
+  };
+
+
+  float total = (
+    absolutes.x +
+    absolutes.y
+  );
+
+  struct math_c_vector2_float ratio = {
+    .x = (
+      difference.x /
+      total
+    ),
+    .y = (
+      difference.y /
+      total
+    )
+  };
+
+  float angle = (
+    (
+      0x01 -
+      (
+        ratio.y +
+        0x01
+      ) /
+      0x02
+    ) *
+    math_c_pi *
+    (
+      ratio.x <
+      0x00
+      ? -1 : 1
+    )
+  );
+
+  zoe_enemy_auop->rotation->y = (
+    angle
   );
 }
