@@ -4,7 +4,10 @@
 #include <enemies/zoe_enemy.h>
 #include <object/zoe_object_auop.h>
 
+#include <math_c_absolute.h>
 #include <math_c_angles.h>
+#include <math_c_modulus.h>
+#include <math_c_pi.h>
 
 #include <metil_mesh/metil_mesh_box.h>
 #include <metil_object/metil_object.h>
@@ -68,7 +71,8 @@ void zoe_enemy_auop_initialize(
 
   zoe_enemy_object_auop->index_pipeline_render = (
     zoe_data_zoe->pipeline_index.auop
-  );}
+  );
+}
 
 void zoe_enemy_auop_poll(
   struct metil* metil,
@@ -81,38 +85,149 @@ void zoe_enemy_auop_poll(
     0.01f
   );
 
-  zoe_enemy_auop->position->x = (
-    zoe_enemy_auop->position->x +
-    (float)
-    (
-      (
-        zoe_enemy_auop->position->x >
-        metil_scene->player.position.x
-      )
-      ? -0x01
-      :  0x01
-    ) *
-    amount
-  );
-
-  zoe_enemy_auop->position->z = (
-    zoe_enemy_auop->position->z +
-    (float)
-    (
-      (
-        zoe_enemy_auop->position->z >
-        metil_scene->player.position.z
-      )
-      ? -0x01
-      :  0x01
-    ) *
-    amount
-  );
-
-  zoe_enemy_auop->rotation->y = (
+  float rotation_y = (
     math_c_angle_from_vector3_float_xz(
       zoe_enemy_auop->position,
       &metil_scene->player.position
     )
+  );
+
+  float distance_a = (
+    zoe_enemy_auop->rotation->y -
+    rotation_y
+  );
+
+  float distance_b = (
+    zoe_enemy_auop->rotation->y -
+    -rotation_y
+  ); 
+
+  if (
+    math_c_absolute_float(
+      distance_a
+    ) <
+    math_c_absolute_float(
+      distance_b
+    )
+  ) {
+    zoe_enemy_auop->rotation->y = (
+      zoe_enemy_auop->rotation->y -
+      distance_a *
+      0.025f *
+      (float)
+      metil_scene->time_delta    );
+  } else {
+    zoe_enemy_auop->rotation->y = (
+      zoe_enemy_auop->rotation->y +
+      distance_b *
+      0.025f *
+      (float)
+      metil_scene->time_delta    );
+  }
+  if (
+    zoe_enemy_auop->rotation->y >=
+    math_c_pi_doubled
+  ) {
+    zoe_enemy_auop->rotation->y = (
+      zoe_enemy_auop->rotation->y -
+      (float)
+      (
+        (unsigned int)
+        (
+          zoe_enemy_auop->rotation->y /
+          math_c_pi_doubled
+        )
+      ) *
+      math_c_pi_doubled
+    );
+  } else if (
+    zoe_enemy_auop->rotation->y <=
+    math_c_pi_doubled
+  ) {
+    zoe_enemy_auop->rotation->y = (
+      zoe_enemy_auop->rotation->y +
+      (float)
+      (
+        (unsigned int)
+        (
+          -zoe_enemy_auop->rotation->y /
+          math_c_pi_doubled
+        )
+      ) *
+      math_c_pi_doubled
+    );  }
+
+  struct math_c_vector2_float ratio = {
+    .y = (
+      math_c_modulus_mirror_float(
+        math_c_absolute_float(
+          zoe_enemy_auop->rotation->y
+        ),
+        math_c_pi
+      ) /
+      math_c_pi
+    )
+  };
+
+  if (
+    ratio.y <=
+    0.5f
+  ) {
+    ratio.y = (
+      0x01 -
+      ratio.y /
+      0.5f
+    );
+
+    ratio.x = (
+      0x01 -
+      ratio.y
+    );  
+  } else {
+    ratio.y = -(
+      (
+        ratio.y -
+        0.5f
+       ) /
+       0.5f
+    );
+  
+    ratio.x = (
+      0x01 -
+      -ratio.y
+    );
+  }
+
+  if (
+    (
+      zoe_enemy_auop->rotation->y >
+      math_c_pi && zoe_enemy_auop->rotation->y < math_c_pi_doubled
+    ) ||
+    (
+      (
+        zoe_enemy_auop->rotation->y >
+        -math_c_pi
+      ) &&
+      (
+        zoe_enemy_auop->rotation->y <
+        0x00
+      )
+    )
+  ) {
+    ratio.x = -(
+      ratio.x
+    );  
+  }
+
+  zoe_enemy_auop->position->x = (
+    zoe_enemy_auop->position->x -
+    ratio.x *
+    amount
+  );
+
+  zoe_enemy_auop->position->z = (
+    zoe_enemy_auop->position->z -
+    ratio.y *
+    amount
   );
 }
