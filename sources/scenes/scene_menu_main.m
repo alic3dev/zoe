@@ -6,6 +6,7 @@
 #include <menus/menu_main.h>
 #include <object/object_ground.h>
 #include <object/object_tree.h>
+#include <save_files/zoe_save_file.h>
 #include <scenes/scene_id.h>
 #include <textures/zoe_texture_static.h>
 #include <zoe_pipeline_index.h>
@@ -56,7 +57,7 @@ void scene_menu_main_initialize(
   metil_scene_initialize_with_renderables(
     metil,
     scene,
-    5
+    0x05
   );
 
   scene->data = (
@@ -264,6 +265,10 @@ void scene_menu_main_poll(
   struct metil* metil,
   struct metil_scene* scene
 ) {
+  struct zoe_data_zoe* zoe_data_zoe = (
+    metil->data
+  );
+
   float rotation_player_x_updated = (
     scene->player.rotation.x +
     (
@@ -325,23 +330,34 @@ void scene_menu_main_poll(
   struct metil_renderer_data_object* data_object_menu_item = data_object_exit;
 
   if (
-    menu->index_current == 1
+    menu->index_current ==
+    0x01
   ) {
     data_object_menu_item_selected = data_object_exit;
     data_object_menu_item = data_object_enter;
   }
 
   data_object_menu_item_selected->noise = (
-    8000 + ((
-      data->rand_result.bytes[0] *
-      data->rand_result.bytes[1]
-    ) % 1000)
+    8000 + (
+      (
+        data->rand_result.bytes[
+          0x00
+        ] *
+        data->rand_result.bytes[
+          0x01
+        ]
+      ) %
+      1000
+    )
   );
 
-  data_object_menu_item->noise = 0;
+  data_object_menu_item->noise = (
+    0x00
+  );
 
   if (
-    data->time_started != 0
+    data->time_started !=
+    0x00
   ) {
     unsigned long int time_delta = (
       scene->time -
@@ -381,7 +397,9 @@ void scene_menu_main_poll(
     menu->index_selected != -1 &&
     menu->handled == 0
   ) {
-    menu->handled = 1;
+    menu->handled = (
+      0x01
+    );
 
     switch (menu->index_selected) {
       case 0:
@@ -390,7 +408,16 @@ void scene_menu_main_poll(
           "scene_menu_main:starting\n"
         );
 
-        data->time_started = scene->time;
+        zoe_save_file_load(
+          &zoe_data_zoe->save_files,
+          &zoe_data_zoe->player,
+          0x00
+        );
+
+        data->time_started = (
+          scene->time
+        );
+
         break;
       case 1:
         metil_debug_log(

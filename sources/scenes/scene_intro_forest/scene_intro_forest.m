@@ -831,6 +831,7 @@ void scene_intro_forest_poll(
 
     zoe_enemy_controller_attack(
       metil,
+      metil_scene,
       &metil_scene->player,
       zoe_enemy_controller,
       zoe_data_player->weapon_primary->item

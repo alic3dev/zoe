@@ -100,7 +100,7 @@ void zoe_enemy_auop_poll(
   float distance_b = (
     zoe_enemy_auop->rotation->y -
     -rotation_y
-  ); 
+  );
 
   if (
     math_c_absolute_float(
@@ -115,14 +115,16 @@ void zoe_enemy_auop_poll(
       distance_a *
       0.025f *
       (float)
-      metil_scene->time_delta    );
+      metil_scene->time_delta
+    );
   } else {
     zoe_enemy_auop->rotation->y = (
       zoe_enemy_auop->rotation->y +
       distance_b *
       0.025f *
       (float)
-      metil_scene->time_delta    );
+      metil_scene->time_delta
+    );
   }
   if (
     zoe_enemy_auop->rotation->y >=
@@ -155,7 +157,8 @@ void zoe_enemy_auop_poll(
         )
       ) *
       math_c_pi_doubled
-    );  }
+    );
+  }
 
   struct math_c_vector2_float ratio = {
     .y = (
@@ -182,7 +185,7 @@ void zoe_enemy_auop_poll(
     ratio.x = (
       0x01 -
       ratio.y
-    );  
+    );
   } else {
     ratio.y = -(
       (
@@ -191,7 +194,7 @@ void zoe_enemy_auop_poll(
        ) /
        0.5f
     );
-  
+
     ratio.x = (
       0x01 -
       -ratio.y
@@ -200,8 +203,14 @@ void zoe_enemy_auop_poll(
 
   if (
     (
-      zoe_enemy_auop->rotation->y >
-      math_c_pi && zoe_enemy_auop->rotation->y < math_c_pi_doubled
+      (
+        zoe_enemy_auop->rotation->y >
+        math_c_pi
+      ) &&
+      (
+        zoe_enemy_auop->rotation->y <
+        math_c_pi_doubled
+      )
     ) ||
     (
       (
@@ -216,7 +225,7 @@ void zoe_enemy_auop_poll(
   ) {
     ratio.x = -(
       ratio.x
-    );  
+    );
   }
 
   zoe_enemy_auop->position->x = (

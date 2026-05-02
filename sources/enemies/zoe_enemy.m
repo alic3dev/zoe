@@ -25,6 +25,14 @@ void zoe_enemy_initialize(
     zoe_enemy_renderable
   );
 
+  zoe_enemy->time_damaged = (
+    0x00
+  );
+
+  zoe_enemy->time_attacked = (
+    0x00
+  );
+
   zoe_enemy->poll = (
     zoe_enemy_default_poll
   );
@@ -56,11 +64,13 @@ void zoe_enemy_poll(
 
 void zoe_enemy_damage(
   struct metil* metil,
+  struct metil_scene* metil_scene,
   struct zoe_enemy* zoe_enemy,
   struct zoe_damage* zoe_damage
 ) {
   zoe_enemy->damage(
     metil,
+    metil_scene,
     zoe_enemy,
     zoe_damage
   );
@@ -85,6 +95,7 @@ void zoe_enemy_default_poll(
 
 void zoe_enemy_default_damage(
   struct metil* metil,
+  struct metil_scene* metil_scene,
   struct zoe_enemy* zoe_enemy,
   struct zoe_damage* zoe_damage
 ) {
@@ -109,6 +120,10 @@ void zoe_enemy_default_damage(
       damage_total
     );
   }
+
+  zoe_enemy->time_damaged = (
+    metil_scene->time_elapsed
+  );
 }
 
 void zoe_enemy_default_destroy(

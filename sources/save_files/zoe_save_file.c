@@ -29,6 +29,28 @@
     )\
   );
 
+#define bytes_read(value,type)\
+  if (\
+    (\
+      ftell(\
+        file_save_file\
+      ) +\
+      sizeof(\
+        type\
+      )\
+    ) <\
+    length_bytes_save_file\
+  ) {\
+    fread(\
+      value,\
+      sizeof(\
+        type\
+      ),\
+      0x00,\
+      file_save_file\
+    );\
+  }\
+
 unsigned char zoe_save_file_save(
   struct zoe_save_files* zoe_save_files,
   struct zoe_data_player* zoe_data_player,
@@ -84,7 +106,7 @@ unsigned char zoe_save_file_save(
       unsigned short int
     ) *
     (
-      0x04 +
+      0x06 +
       zoe_data_player->inventory.length_items
     ) +
     sizeof(
@@ -106,6 +128,16 @@ unsigned char zoe_save_file_save(
 
   unsigned short int id_null = (
     0x00
+  );
+
+  bytes_save(
+    &zoe_data_player->health,
+    unsigned short int
+  );
+
+  bytes_save(
+    &zoe_data_player->health_maximum,
+    unsigned short int
   );
 
   if (
@@ -316,6 +348,31 @@ unsigned char zoe_save_file_load(
       0x01
     );
   }
+
+  fseek(
+    file_save_file,
+    0x00,
+    SEEK_END
+  );
+
+  unsigned int length_bytes_save_file = (
+    ftell(
+      file_save_file
+    )
+  );
+
+  rewind(
+    file_save_file
+  );
+
+  bytes_read(    &zoe_data_player->health,
+    unsigned short int
+  );
+
+  bytes_read(
+    &zoe_data_player->health_maximum,
+    unsigned short int
+  )
 
   fclose(
     file_save_file

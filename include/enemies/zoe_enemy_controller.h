@@ -43,6 +43,7 @@ void zoe_enemy_controller_enemies_add_length(
 
 unsigned char zoe_enemy_controller_damage_at_index(
   struct metil* _Nonnull,
+  struct metil_scene* _Nonnull,
   struct zoe_enemy_controller* _Nonnull,
   struct zoe_damage* _Nonnull,
   unsigned int
@@ -50,6 +51,7 @@ unsigned char zoe_enemy_controller_damage_at_index(
 
 void zoe_enemy_controller_attack(
   struct metil* _Nonnull,
+  struct metil_scene* _Nonnull,
   struct metil_player* _Nonnull,
   struct zoe_enemy_controller* _Nonnull,
   struct zoe_weapon* _Nonnull

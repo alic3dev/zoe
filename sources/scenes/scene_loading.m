@@ -162,13 +162,16 @@ void scene_loading_poll(
   );
 
   if (
-    progress >= 1.0f
+    progress >=
+    0x01
   ) {
     struct data_scene_loading* data_scene_loading = (
       metil_scene_loading->data
     );
 
-    metil_scene_loading->data = 0;
+    metil_scene_loading->data = (
+      0x00
+    );
 
     metil_scene_loading->destroy(
       metil,
