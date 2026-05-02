@@ -22,6 +22,7 @@ typedef void (*zoe_enemy_function_poll)(
 
 typedef void (*zoe_enemy_function_damage)(
   struct metil* _Nonnull,
+  struct metil_scene* _Nonnull,
   struct zoe_enemy* _Nonnull,
   struct zoe_damage* _Nonnull
 );
@@ -62,6 +63,7 @@ void zoe_enemy_poll(
 
 void zoe_enemy_damage(
   struct metil* _Nonnull,
+  struct metil_scene* _Nonnull,
   struct zoe_enemy* _Nonnull,
   struct zoe_damage* _Nonnull
 );
@@ -79,6 +81,7 @@ void zoe_enemy_default_poll(
 
 void zoe_enemy_default_damage(
   struct metil* _Nonnull,
+  struct metil_scene* _Nonnull,
   struct zoe_enemy* _Nonnull,
   struct zoe_damage* _Nonnull
 );

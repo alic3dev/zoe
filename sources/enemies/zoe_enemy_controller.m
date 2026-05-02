@@ -229,6 +229,7 @@ void zoe_enemy_controller_enemies_add_length(
 
 unsigned char zoe_enemy_controller_damage_at_index(
   struct metil* metil,
+  struct metil_scene* metil_scene,
   struct zoe_enemy_controller* zoe_enemy_controller,
   struct zoe_damage* zoe_damage,
   unsigned int index_enemy
@@ -241,7 +242,7 @@ unsigned char zoe_enemy_controller_damage_at_index(
 
   zoe_enemy_damage(
     metil,
-    zoe_enemy,
+    metil_scene,    zoe_enemy,
     zoe_damage
   );
 
@@ -272,6 +273,7 @@ unsigned char zoe_enemy_controller_damage_at_index(
 
 void zoe_enemy_controller_attack(
   struct metil* metil,
+  struct metil_scene* metil_scene,
   struct metil_player* metil_player,
   struct zoe_enemy_controller* zoe_enemy_controller,
   struct zoe_weapon* zoe_weapon
@@ -323,6 +325,7 @@ void zoe_enemy_controller_attack(
       unsigned char killed_enemy = (
         zoe_enemy_controller_damage_at_index(
           metil,
+          metil_scene,
           zoe_enemy_controller,
           zoe_damage,
           index_enemy
