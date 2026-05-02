@@ -84,7 +84,7 @@ unsigned char zoe_save_file_save(
       unsigned short int
     ) *
     (
-      0x04 +
+      0x06 +
       zoe_data_player->inventory.length_items
     ) +
     sizeof(
@@ -106,6 +106,16 @@ unsigned char zoe_save_file_save(
 
   unsigned short int id_null = (
     0x00
+  );
+
+  bytes_save(
+    &zoe_data_player->health,
+    unsigned short int
+  );
+
+  bytes_save(
+    &zoe_data_player->health_maximum,
+    unsigned short int
   );
 
   if (
