@@ -120,7 +120,9 @@ void scene_intro_hill_initialize(
     )
   );
 
-  data_scene->io_proc_data = io_proc_data;
+  data_scene->io_proc_data = (
+    io_proc_data
+  );
 
   metil_audio_io_proc_add_with_data(
     &metil->audio,
