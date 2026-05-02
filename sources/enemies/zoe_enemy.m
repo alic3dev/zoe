@@ -25,6 +25,14 @@ void zoe_enemy_initialize(
     zoe_enemy_renderable
   );
 
+  zoe_enemy->time_damaged = (
+    0x00
+  );
+
+  zoe_enemy->time_attacked = (
+    0x00
+  );
+
   zoe_enemy->poll = (
     zoe_enemy_default_poll
   );
@@ -112,6 +120,10 @@ void zoe_enemy_default_damage(
       damage_total
     );
   }
+
+  zoe_enemy->time_damaged = (
+    metil_scene->time_elapsed
+  );
 }
 
 void zoe_enemy_default_destroy(
