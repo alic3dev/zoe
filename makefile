@@ -178,7 +178,7 @@ files_sources_objc=${shell find ${directory_sources} -name "*.m"}
 files_objects_c=${patsubst ${directory_sources}/%.c,${directory_objects_c}/%.o,${files_sources_c}}
 files_objects_objc=${patsubst ${directory_sources}/%.m,${directory_objects_objc}/%.o,${files_sources_objc}}
 
-files_metal=${wildcard ${directory_metal}/*.metal}
+files_metal=${shell find ${directory_metal} -name "*.metal"}
 files_air=${patsubst ${directory_metal}/%.metal,${directory_air}/%.air,${files_metal}}
 
 ifeq (${target_os},macos)
@@ -264,7 +264,7 @@ ${name}: ${file_output}
 
 ifeq (${target_os},macos)
 ${file_output}: ${files_objects_c} ${files_objects_objc} ${file_output_metal} ${files_storyboards_compiled} ${file_output_info_plist} ${files_textures_resources}
-	mkdir -p ${directory_app_contents_macos}
+	if [[ ! -d ${directory_app_contents_macos} ]]; then mkdir -p ${directory_app_contents_macos}; fi
 	${cc} ${c_flags_output} ${files_objects_c} ${files_objects_objc} ${files_libraries} -o ${file_output}
 ifneq (${debug}, 1)
 	${strip} ${strip_flags} ${file_output}
@@ -290,45 +290,45 @@ endif
 
 ifeq (${target_os},ios)
 ${file_output}: ${files_objects_c} ${files_objects_objc} ${file_output_metal} ${files_storyboards_compiled} ${file_output_info_plist} ${files_textures_resources}
-	mkdir -p ${directory_output}
+	if [[ ! -d ${directory_output} ]]; then mkdir -p ${directory_output}; fi
 	${cc} ${c_flags_platform} ${c_flags_frameworks} ${files_objects_c} ${files_objects_objc} ${files_libraries} -o ${file_output}
 endif
 
 ${directory_output_textures}/%: ${directory_textures}/%
-	mkdir -p ${directory_output_textures}
-	cp $< $@
+	if [[ ! -d ${directory_output_textures} ]]; then mkdir -p ${directory_output_textures}; fi
+	cp ${<} ${@}
 
 ${file_output_metal}: ${file_metalar}
-	mkdir -p ${directory_output_metal}
+	if [[ ! -d ${directory_output_metal} ]]; then mkdir -p ${directory_output_metal}; fi
 	${metallib} ${metal_flags_output} ${file_metalar} ${files_math_c_metalars} ${files_metil_metalars} -o ${file_output_metal}
 
 ${file_metalar}: ${files_air}
-	mkdir -p ${directory_metalar}
+	if [[ ! -d ${directory_metalar} ]]; then mkdir -p ${directory_metalar}; fi
 	if [[ -f ${file_metalar} ]]; then rm ${file_metalar}; fi
 	${metal_ar} -rc ${file_metalar} ${files_air}
 
 ${directory_air}/%.air: ${directory_metal}/%.metal
-	mkdir -p ${directory_air}
-	${metal} ${metal_flags} -c $< -o $@
+	if [[ ! -d ${dir ${@}} ]]; then mkdir -p ${dir ${@}}; fi
+	${metal} ${metal_flags} -c ${<} -o ${@}
 
 ${directory_objects_c}/%.o: ${directory_sources}/%.c
-	mkdir -p "${dir $@}"
-	${cc} ${c_flags_c} -c $< -o $@
+	if [[ ! -d ${dir ${@}} ]]; then mkdir -p "${dir ${@}}"; fi
+	${cc} ${c_flags_c} -c ${<} -o ${@}
 
 ${directory_objects_objc}/%.o: ${directory_sources}/%.m
-	mkdir -p "${dir $@}"
-	${cc} ${c_flags_objc} -c $< -o $@
+	if [[ ! -d ${dir ${@}} ]]; then mkdir -p "${dir ${@}}"; fi
+	${cc} ${c_flags_objc} -c ${<} -o ${@}
 
 ${directory_output_storyboards}/%.storyboardc: ${directory_storyboards}/%.storyboard
-	mkdir -p ${directory_output_storyboards}
+	if [[ ! -d ${dir ${@}} ]]; then mkdir -p ${directory_output_storyboards}; fi
 	ibtool --module ${name} --target-device ${target_device} --minimum-deployment-target ${target_device_version} --output-format human-readable-text $< --compilation-directory ${directory_output_storyboards}	
 
 ${directory_output_storyboards}/%.storyboardc: ${directory_metil_storyboards}/%.storyboard
-	mkdir -p ${directory_output_storyboards}
+	if [[ ! -d ${dir ${@}} ]]; then mkdir -p ${directory_output_storyboards}; fi
 	ibtool --module ${name} --target-device ${target_device} --minimum-deployment-target ${target_device_version} --output-format human-readable-text $< --compilation-directory ${directory_output_storyboards}	
 
 ${file_output_info_plist}: ${file_info_plist}
-	mkdir -p ${directory_output_info_plist}
+	if [[ ! -d ${dir ${@}} ]]; then mkdir -p ${directory_output_info_plist}; fi
 	cp ${file_info_plist} ${file_output_info_plist}
 
 ifeq (${target_os},ios)
