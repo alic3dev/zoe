@@ -56,6 +56,7 @@ audio:volume->{0.27};
 - - [`interrupt_handler`](https://github.com/alic3dev/interrupt_handler)
 - - [`math_c`](https://github.com/alic3dev/math_c)
 - - [`metil`](https://github.com/alic3dev/metil)
+- - [`rand`](https://github.com/alic3dev/rand)
 
 ### build
 
