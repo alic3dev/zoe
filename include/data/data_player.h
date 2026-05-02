@@ -5,6 +5,8 @@
 #include <items/zoe_item.h>
 #include <weapons/zoe_weapon.h>
 
+#define zoe_data_player_default_health_maximum 0x10
+
 enum zoe_data_player_action {
   zoe_data_player_action_none             = 0b00000000,
   zoe_data_player_action_select           = 0b00000001,
@@ -30,6 +32,9 @@ enum zoe_data_player_attributes {
 struct zoe_data_player {
   unsigned char actions;
   unsigned char attributes;
+
+  unsigned short int health;
+  unsigned short int health_maximum;
 
   struct zoe_inventory_item* weapon_primary;
   struct zoe_inventory_item* weapon_secondary;
