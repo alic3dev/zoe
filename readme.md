@@ -57,18 +57,6 @@ audio:volume->{0.27};
 - - [`math_c`](https://github.com/alic3dev/math_c)
 - - [`metil`](https://github.com/alic3dev/metil)
 
-### assets
-
-```zsh
-make pull_assets
-```
-
-#### redownload
-
-```zsh
-make pull_assets_all
-```
-
 ### build
 
 ```zsh
