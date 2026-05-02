@@ -324,11 +324,11 @@ ${directory_output_storyboards}/%.storyboardc: ${directory_storyboards}/%.storyb
 	ibtool --module ${name} --target-device ${target_device} --minimum-deployment-target ${target_device_version} --output-format human-readable-text $< --compilation-directory ${directory_output_storyboards}	
 
 ${directory_output_storyboards}/%.storyboardc: ${directory_metil_storyboards}/%.storyboard
-	if [[ ! -d ${dir ${@} ]]; mkdir -p ${directory_output_storyboards}; fi
+	if [[ ! -d ${dir ${@}} ]]; then mkdir -p ${directory_output_storyboards}; fi
 	ibtool --module ${name} --target-device ${target_device} --minimum-deployment-target ${target_device_version} --output-format human-readable-text $< --compilation-directory ${directory_output_storyboards}	
 
 ${file_output_info_plist}: ${file_info_plist}
-	if [[ ! -d ${dir $@} ]]; then mkdir -p ${directory_output_info_plist}; fi
+	if [[ ! -d ${dir ${@}} ]]; then mkdir -p ${directory_output_info_plist}; fi
 	cp ${file_info_plist} ${file_output_info_plist}
 
 ifeq (${target_os},ios)
