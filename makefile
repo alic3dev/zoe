@@ -19,6 +19,9 @@ endif
 directory_objects_base=objects
 directory_output_base=output
 
+suffix_os=
+suffix_target_build=
+
 ifeq (${target_device},mac)
 target_os=macos
 
@@ -30,6 +33,7 @@ endif
 
 ifeq (${target_device},iphone)
 target_os=ios
+suffix_os=_ios
 
 target_platform=arm64-apple-ios${target_device_version}
 target_platform_metal=air64-apple-ios${target_macos_version_metal}
@@ -41,18 +45,23 @@ directory_objects_os=${directory_objects_base}/${target_os}
 directory_output_os=${directory_output_base}/${target_os}
 
 ifeq (${debug}, 1)
-name:=${name}_debug
-directory_objects=${directory_objects_os}/debug
-directory_output=${directory_output_os}/debug
+target_build=debug
+target_build_library=${target_build}
+suffix_target_build=_debug
+name:=${name}_${target_build}
 else
 ifeq (${release}, 1)
-directory_objects=${directory_objects_os}/release
-directory_output=${directory_output_os}/release
+target_build=release
+target_build_library=${target_build}
 else
-directory_objects=${directory_objects_os}/development
-directory_output=${directory_output_os}/development
+target_build=development
+target_build_library=release
+name:=${name}_${target_build}
 endif
 endif
+
+directory_objects=${directory_objects_os}/${target_build}
+directory_output=${directory_output_os}/${target_build}
 
 directory_metal=metal
 
@@ -95,74 +104,46 @@ directory_textures=textures
 
 directory_cer0=../cer0
 directory_cer0_include=${directory_cer0}/include
+directory_cer0_library=${directory_cer0}/library/${target_os}/${target_build_library}
 
 directory_clic3=../clic3
 directory_clic3_include=${directory_clic3}/include
+directory_clic3_library=${directory_clic3}/library/${target_os}/${target_build_library}
 
 directory_interrupt_handler=../interrupt_handler
 directory_interrupt_handler_include=${directory_interrupt_handler}/include
+directory_interrupt_handler_library=${directory_interrupt_handler}/library/${target_os}/${target_build_library}
 
 directory_math_c=../math_c
 directory_math_c_include=${directory_math_c}/include
+directory_math_c_library=${directory_math_c}/library/${target_os}/${target_build_library}
 directory_math_c_metalar=${directory_math_c}/metalar/${target_os}
 
 directory_metil=../metil
 directory_metil_include=${directory_metil}/include
-directory_metil_library=${directory_metil}/library/${target_os}
+directory_metil_library=${directory_metil}/library/${target_os}/${target_build_library}
 directory_metil_storyboards=${directory_metil}/storyboards
 
 directory_rand=../rand
 directory_rand_include=${directory_rand}/include
+directory_rand_library=${directory_rand}/library/${target_os}/${target_build_library}
 
-ifeq (${debug}, 1)
-directory_cer0_library=${directory_cer0}/library/${target_os}/debug
-directory_clic3_library=${directory_clic3}/library/${target_os}/debug
-directory_interrupt_handler_library=${directory_interrupt_handler}/library/${target_os}/debug
-directory_math_c_library=${directory_math_c}/library/${target_os}/debug
-directory_metil_library:=${directory_metil_library}/debug
-directory_rand_library=${directory_rand}/library/${target_os}/debug
-
-else
-directory_cer0_library=${directory_cer0}/library/${target_os}/release
-directory_clic3_library=${directory_clic3}/library/${target_os}/release
-directory_interrupt_handler_library=${directory_interrupt_handler}/library/${target_os}/release
-directory_math_c_library=${directory_math_c}/library/${target_os}/release
-directory_metil_library:=${directory_metil_library}/release
-directory_rand_library=${directory_rand}/library/${target_os}/release
-endif
+suffix_library=${suffix_os}${suffix_target_build}
 
 ifeq (${target_os},ios)
-file_cer0_library=${directory_cer0_library}/cer0_ios.o
-file_clic3_library=${directory_clic3_library}/clic3_ios.o
-file_interrupt_handler_library=${directory_interrupt_handler_library}/interrupt_handler_ios.o
-file_math_c_library=${directory_math_c_library}/math_c_ios.o
-file_metil_library=${directory_metil_library}/metil.o
-file_rand_library=${directory_rand_library}/rand_ios.o
+file_cer0_library=${directory_cer0_library}/cer0${suffix_library}.o
+file_clic3_library=${directory_clic3_library}/clic3${suffix_library}.o
+file_interrupt_handler_library=${directory_interrupt_handler_library}/interrupt_handler${suffix_library}.o
+file_math_c_library=${directory_math_c_library}/math_c${suffix_library}.o
+file_metil_library=${directory_metil_library}/metil${suffix_target_build}.o
+file_rand_library=${directory_rand_library}/rand${suffix_library}.o
 else
-ifeq (${debug}, 1)
-file_cer0_library=${directory_cer0_library}/cer0_debug.${version_target_cer0}.dylib
-file_clic3_library=${directory_clic3_library}/clic3_debug.${version_target_clic3}.dylib
-file_interrupt_handler_library=${directory_interrupt_handler_library}/interrupt_handler_debug.${version_target_interrupt_handler}.dylib
-file_math_c_library=${directory_math_c_library}/math_c_debug.${version_target_math_c}.dylib
-file_metil_library=${directory_metil_library}/metil_debug.${version_target_metil}.dylib
-file_rand_library=${directory_rand_library}/rand_debug.${version_target_rand}.dylib
-else
-ifeq (${release}, 1)
-file_cer0_library=${directory_cer0_library}/cer0.o
-file_clic3_library=${directory_clic3_library}/clic3.o
-file_interrupt_handler_library=${directory_interrupt_handler_library}/interrupt_handler.o
-file_math_c_library=${directory_math_c_library}/math_c.o
-file_metil_library=${directory_metil_library}/metil.o
-file_rand_library=${directory_rand_library}/rand.o
-else
-file_cer0_library=${directory_cer0_library}/cer0.${version_target_cer0}.dylib
-file_clic3_library=${directory_clic3_library}/clic3.${version_target_clic3}.dylib
-file_interrupt_handler_library=${directory_interrupt_handler_library}/interrupt_handler.${version_target_interrupt_handler}.dylib
-file_math_c_library=${directory_math_c_library}/math_c.${version_target_math_c}.dylib
-file_metil_library=${directory_metil_library}/metil.${version_target_metil}.dylib
-file_rand_library=${directory_rand_library}/rand.${version_target_rand}.dylib
-endif
-endif
+file_cer0_library=${directory_cer0_library}/cer0${suffix_library}.${version_target_cer0}.dylib
+file_clic3_library=${directory_clic3_library}/clic3${suffix_library}.${version_target_clic3}.dylib
+file_interrupt_handler_library=${directory_interrupt_handler_library}/interrupt_handler${suffix_library}.${version_target_interrupt_handler}.dylib
+file_math_c_library=${directory_math_c_library}/math_c${suffix_library}.${version_target_math_c}.dylib
+file_metil_library=${directory_metil_library}/metil${suffix_library}.${version_target_metil}.dylib
+file_rand_library=${directory_rand_library}/rand${suffix_library}.${version_target_rand}.dylib
 endif
 
 files_math_c_metalars=${wildcard ${directory_math_c_metalar}/*.metalar}
@@ -222,9 +203,6 @@ files_content_textures_always=${addprefix ${prefix_content_texture_always}/,${fi
 files_textures=${wildcard ${directory_textures}/*}
 files_textures_resources=${patsubst ${directory_textures}/%,${directory_output_textures}/%,${files_textures}}
 
-url_content=https://content.alic3.dev/${name}
-url_content_textures=${url_content}/textures
-
 frameworks=Metal MetalKit GameController CoreAudio CoreGraphics CoreText
 
 ifeq (${target_os},ios)
@@ -246,7 +224,8 @@ c_flags_frameworks=${addprefix -framework ,${frameworks}}
 c_flags_output=${c_flags_platform} ${c_flags_frameworks}
 
 ifeq (${debug}, 1)
-c_flags_c:=${c_flags_c} ${c_flags_debug}c_flags_objc:=${c_flags_objc} ${c_flags_objc_debug}
+c_flags_c:=${c_flags_c} ${c_flags_debug}
+c_flags_objc:=${c_flags_objc} ${c_flags_objc_debug}
 c_flags_output:=${c_flags_output} ${c_flags_objc_debug}
 else
 c_flags_c:=${c_flags_c} -O3
@@ -401,19 +380,6 @@ else
 run:
 	cd ${dir ${file_output}} && ./${shell basename ${file_output}}
 endif
-
-pull_content: ${directory_textures} ${files_content_textures}
-
-pull_content_all: ${directory_textures} ${files_content_textures_always}
-
-${directory_textures}:
-	mkdir -p ${directory_textures}
-
-${prefix_content_texture}/%:
-	if [[ ! -f ${patsubst ${prefix_content_texture}/%,${directory_textures}/%,$@} ]]; then curl ${patsubst ${prefix_content_texture}/%,${url_content_textures}/%,$@} -o ${patsubst ${prefix_content_texture}/%,${directory_textures}/%,$@}; fi
-
-${prefix_content_texture_always}/%:
-	curl ${patsubst ${prefix_content_texture_always}/%,${url_content_textures}/%,$@} -o ${patsubst ${prefix_content_texture_always}/%,${directory_textures}/%,$@}
 
 clean_all: clean
 
