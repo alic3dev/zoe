@@ -13,6 +13,14 @@ void zoe_data_player_initialize(
     zoe_data_player_attributes_none
   );
 
+  zoe_data_player->health_maximum = (
+    zoe_data_player_default_health_maximum
+  );
+
+  zoe_data_player->health  = (
+    zoe_data_player->health_maximum
+  );
+
   zoe_data_player->item_primary = (
     0x00
   );
