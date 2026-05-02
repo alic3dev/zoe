@@ -50,7 +50,6 @@
       file_save_file\
     );\
   }\
-    
 
 unsigned char zoe_save_file_save(
   struct zoe_save_files* zoe_save_files,
@@ -349,7 +348,7 @@ unsigned char zoe_save_file_load(
       0x01
     );
   }
-  
+
   fseek(
     file_save_file,
     0x00,
