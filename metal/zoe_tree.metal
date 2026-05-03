@@ -1,5 +1,5 @@
-#include <mesh/mesh_tree.h>
-#include <zoe_metal/zoe_wave.h>
+#include <zoe_mesh/mesh_tree.h>
+#include <zoe_metal/effects/zoe_metal_effect_wave.h>
 
 #include <math_c_bound.h>
 #include <math_c_pi.h>
@@ -48,7 +48,7 @@ struct data_vertex {
       (
         index_vertex >= zoe_mesh_tree_length_vertices_trunk
         ? (
-          zoe_wave_get(
+          zoe_metal_effect_wave_get(
             data_frame->time_elapsed,
             (
               index_vertex *
@@ -78,7 +78,7 @@ struct data_vertex {
           )
         )
         : (
-          zoe_wave_get(
+          zoe_metal_effect_wave_get(
             data_frame->time_elapsed,
             (
               index_vertex +

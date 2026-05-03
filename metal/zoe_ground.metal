@@ -1,4 +1,4 @@
-#include <zoe_metal/zoe_wave.h>
+#include <zoe_metal/effects/zoe_metal_effect_wave.h>
 
 #include <math_c_bound.h>
 #include <math_c_pi.h>
@@ -42,7 +42,7 @@ struct data_vertex {
       positions[
         index_vertex
       ] +
-      zoe_wave_get(
+      zoe_metal_effect_wave_get(
         data_frame->time_elapsed,
         index_vertex,
         0x0bb8,

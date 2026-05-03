@@ -1,10 +1,10 @@
 #include <zoe.h>
 
-#include <data/data_zoe.h>
-#include <scenes/scene_id.h>
-#include <scenes/scene_loading.h>
-#include <scenes/scene_menu_main.h>
+#include <zoe_data/data_zoe.h>
 #include <zoe_pipeline_index.h>
+#include <zoe_scenes/scene_id.h>
+#include <zoe_scenes/scene_loading.h>
+#include <zoe_scenes/scene_menu_main.h>
 
 #include <metil_application/metil_application.h>
 #include <metil_application/metil_application_delegate.h>
