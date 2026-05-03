@@ -1,8 +1,8 @@
 #ifndef __zoe_enemies_zoe_enemy_h
 #define __zoe_enemies_zoe_enemy_h
 
-#include <damage/zoe_damage.h>
-#include <data/zoe_data_enemy.h>
+#include <zoe_damage/zoe_damage.h>
+#include <zoe_data/zoe_data_enemy.h>
 
 #include <math_c_vector.h>
 

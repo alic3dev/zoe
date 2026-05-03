@@ -1,7 +1,7 @@
 #ifndef __zoe_weapons_zoe_weapon_targeting_h
 #define __zoe_weapons_zoe_weapon_targeting_h
 
-#include <weapons/zoe_weapon.h>
+#include <zoe_weapons/zoe_weapon.h>
 
 #include <math_c_vector.h>
 

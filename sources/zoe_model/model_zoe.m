@@ -1,13 +1,13 @@
-#include <model/model_zoe.h>
+#include <zoe_model/model_zoe.h>
 
-#include <animation/zoe/animation_zoe_idle.h>
-#include <animation/zoe/animation_zoe_jumping.h>
-#include <animation/zoe/animation_zoe_running.h>
-#include <animation/zoe/animation_zoe_sneaking.h>
-#include <animation/zoe/animation_zoe_walking.h>
-#include <data/data_player.h>
-#include <mesh/mesh_zoe_body.h>
-#include <mesh/mesh_zoe_hair.h>
+#include <zoe_animation/zoe/animation_zoe_idle.h>
+#include <zoe_animation/zoe/animation_zoe_jumping.h>
+#include <zoe_animation/zoe/animation_zoe_running.h>
+#include <zoe_animation/zoe/animation_zoe_sneaking.h>
+#include <zoe_animation/zoe/animation_zoe_walking.h>
+#include <zoe_data/data_player.h>
+#include <zoe_mesh/mesh_zoe_body.h>
+#include <zoe_mesh/mesh_zoe_hair.h>
 #include <zoe_pipeline_index.h>
 
 #include <clic3_memory.h>

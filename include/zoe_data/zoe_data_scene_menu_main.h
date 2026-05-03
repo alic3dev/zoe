@@ -1,7 +1,7 @@
 #ifndef __zoe_data_zoe_data_scene_menu_main_h
 #define __zoe_data_zoe_data_scene_menu_main_h
 
-#include <audio/io_proc_data.h>
+#include <zoe_audio/io_proc_data.h>
 
 #include <metil_menus/metil_menu.h>
 

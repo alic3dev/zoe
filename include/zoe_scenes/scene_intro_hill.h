@@ -1,7 +1,7 @@
 #ifndef __scene_intro_hill_h
 #define __scene_intro_hill_h
 
-#include <audio/io_proc_data.h>
+#include <zoe_audio/io_proc_data.h>
 
 #include <metil.h>
 #include <metil_scenes/metil_scene.h>

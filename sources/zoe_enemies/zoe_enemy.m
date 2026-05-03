@@ -1,7 +1,7 @@
-#include <enemies/zoe_enemy.h>
+#include <zoe_enemies/zoe_enemy.h>
 
-#include <damage/zoe_damage.h>
-#include <data/zoe_data_enemy.h>
+#include <zoe_damage/zoe_damage.h>
+#include <zoe_data/zoe_data_enemy.h>
 
 #include <clic3_memory.h>
 

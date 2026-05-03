@@ -1,8 +1,8 @@
 #ifndef __zoe_scenes_scene_intro_forest_scene_intro_forest_h
 #define __zoe_scenes_scene_intro_forest_scene_intro_forest_h
 
-#include <audio/io_proc_data.h>
-#include <enemies/zoe_enemy_controller.h>
+#include <zoe_audio/io_proc_data.h>
+#include <zoe_enemies/zoe_enemy_controller.h>
 #include <zoe_loading_threads.h>
 
 #include <metil_group.h>

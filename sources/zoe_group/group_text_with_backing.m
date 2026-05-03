@@ -1,7 +1,7 @@
-#include <group/group_text_with_backing.h>
+#include <zoe_group/group_text_with_backing.h>
 
-#include <data/data_zoe.h>
-#include <object/object_text_backing.h>
+#include <zoe_data/data_zoe.h>
+#include <zoe_object/object_text_backing.h>
 #include <zoe_pipeline_index.h>
 
 #include <metil.h>

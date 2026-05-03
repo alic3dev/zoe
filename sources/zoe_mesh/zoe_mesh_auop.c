@@ -1,4 +1,4 @@
-#include <mesh/zoe_mesh_auop.h>
+#include <zoe_mesh/zoe_mesh_auop.h>
 
 #include <math_c_pi.h>
 #include <math_c_sine.h>

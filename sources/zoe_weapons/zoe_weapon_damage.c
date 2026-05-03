@@ -1,7 +1,7 @@
-#include <weapons/zoe_weapon_damage.h>
+#include <zoe_weapons/zoe_weapon_damage.h>
 
-#include <damage/zoe_damage.h>
-#include <weapons/zoe_weapon.h>
+#include <zoe_damage/zoe_damage.h>
+#include <zoe_weapons/zoe_weapon.h>
 
 #include <clic3_memory.h>
 

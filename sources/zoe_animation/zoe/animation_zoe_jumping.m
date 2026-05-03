@@ -1,6 +1,6 @@
-#include <animation/zoe/animation_zoe_jumping.h>
+#include <zoe_animation/zoe/animation_zoe_jumping.h>
 
-#include <model/model_zoe.h>
+#include <zoe_model/model_zoe.h>
 
 #include <metil_animation/metil_animation.h>
 #include <metil_model/metil_model.h>

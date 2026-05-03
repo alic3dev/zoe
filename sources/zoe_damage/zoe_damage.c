@@ -1,4 +1,4 @@
-#include <damage/zoe_damage.h>
+#include <zoe_damage/zoe_damage.h>
 
 void zoe_damage_initialize(
   struct zoe_damage* zoe_damage

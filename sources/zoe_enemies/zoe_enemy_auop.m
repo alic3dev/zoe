@@ -1,8 +1,8 @@
-#include <enemies/zoe_enemy_auop.h>
+#include <zoe_enemies/zoe_enemy_auop.h>
 
-#include <data/data_zoe.h>
-#include <enemies/zoe_enemy.h>
-#include <object/zoe_object_auop.h>
+#include <zoe_data/data_zoe.h>
+#include <zoe_enemies/zoe_enemy.h>
+#include <zoe_object/zoe_object_auop.h>
 
 #include <math_c_absolute.h>
 #include <math_c_angles.h>

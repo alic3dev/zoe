@@ -1,4 +1,4 @@
-#include <menus/menu_main.h>
+#include <zoe_menus/menu_main.h>
 
 #include <metil_menus/metil_menu.h>
 #include <metil_menus/metil_menu_item.h>

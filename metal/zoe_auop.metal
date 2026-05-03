@@ -1,6 +1,6 @@
-#include <data/zoe_data_enemy.h>
-#include <mesh/zoe_mesh_auop.h>
-#include <mesh/mesh_tree.h>
+#include <zoe_data/zoe_data_enemy.h>
+#include <zoe_mesh/zoe_mesh_auop.h>
+#include <zoe_mesh/mesh_tree.h>
 #include <zoe_metal/effects/zoe_metal_effect_damaged.h>
 #include <zoe_metal/zoe_wave.h>
 

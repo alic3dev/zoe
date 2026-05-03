@@ -1,6 +1,6 @@
-#include <object/object_hill.h>
+#include <zoe_object/object_hill.h>
 
-#include <mesh/mesh_hill.h>
+#include <zoe_mesh/mesh_hill.h>
 #include <zoe_pipeline_index.h>
 
 #include <math_c_vector.h>

@@ -1,6 +1,6 @@
-#include <object/zoe_object_auop.h>
+#include <zoe_object/zoe_object_auop.h>
 
-#include <mesh/zoe_mesh_auop.h>
+#include <zoe_mesh/zoe_mesh_auop.h>
 
 #include <metil.h>
 #include <metil_object/metil_object.h>

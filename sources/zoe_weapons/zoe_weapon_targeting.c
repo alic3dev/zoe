@@ -1,6 +1,6 @@
-#include <weapons/zoe_weapon_targeting.h>
+#include <zoe_weapons/zoe_weapon_targeting.h>
 
-#include <weapons/zoe_weapon.h>
+#include <zoe_weapons/zoe_weapon.h>
 
 #include <math_c_vector.h>
 #include <math_c_vector_distance.h>

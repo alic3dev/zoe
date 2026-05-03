@@ -1,19 +1,19 @@
-#include <scenes/scene_intro_hill.h>
+#include <zoe_scenes/scene_intro_hill.h>
 
-#include <audio/io_proc_data.h>
-#include <calculations/hill_y_value.h>
-#include <data/data_player.h>
-#include <data/data_zoe.h>
-#include <group/group_text_with_backing.h>
-#include <input/input_movement.h>
-#include <mesh/mesh_hill.h>
-#include <model/model_zoe.h>
-#include <object/object_hill.h>
-#include <object/object_tree.h>
-#include <scenes/scene_id.h>
-#include <textures/zoe_texture_hill_lighting.h>
-#include <textures/zoe_texture_static.h>
+#include <zoe_audio/io_proc_data.h>
+#include <zoe_calculations/hill_y_value.h>
+#include <zoe_data/data_player.h>
+#include <zoe_data/data_zoe.h>
+#include <zoe_group/group_text_with_backing.h>
+#include <zoe_input/input_movement.h>
+#include <zoe_mesh/mesh_hill.h>
+#include <zoe_model/model_zoe.h>
+#include <zoe_object/object_hill.h>
+#include <zoe_object/object_tree.h>
 #include <zoe_pipeline_index.h>
+#include <zoe_scenes/scene_id.h>
+#include <zoe_textures/zoe_texture_hill_lighting.h>
+#include <zoe_textures/zoe_texture_static.h>
 
 #include <math_c_pi.h>
 #include <math_c_sine.h>

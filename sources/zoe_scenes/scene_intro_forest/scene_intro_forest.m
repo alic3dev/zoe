@@ -1,21 +1,21 @@
-#include <scenes/scene_intro_forest/scene_intro_forest.h>
+#include <zoe_scenes/scene_intro_forest/scene_intro_forest.h>
 
-#include <audio/io_proc_data.h>
-#include <data/data_zoe.h>
-#include <enemies/zoe_enemy_auop.h>
-#include <enemies/zoe_enemy_controller.h>
-#include <group/group_text_with_backing.h>
-#include <input/input_movement.h>
-#include <model/model_zoe.h>
-#include <object/object_ground.h>
-#include <object/object_tree.h>
-#include <save_files/zoe_save_file.h>
-#include <scenes/scene_id.h>
-#include <textures/zoe_texture_static.h>
-#include <weapons/zoe_weapon.h>
-#include <weapons/zoe_weapon_knife.h>
+#include <zoe_audio/io_proc_data.h>
+#include <zoe_data/data_zoe.h>
+#include <zoe_enemies/zoe_enemy_auop.h>
+#include <zoe_enemies/zoe_enemy_controller.h>
+#include <zoe_group/group_text_with_backing.h>
+#include <zoe_input/input_movement.h>
 #include <zoe_loading_threads.h>
+#include <zoe_model/model_zoe.h>
+#include <zoe_object/object_ground.h>
+#include <zoe_object/object_tree.h>
 #include <zoe_pipeline_index.h>
+#include <zoe_save_files/zoe_save_file.h>
+#include <zoe_scenes/scene_id.h>
+#include <zoe_textures/zoe_texture_static.h>
+#include <zoe_weapons/zoe_weapon.h>
+#include <zoe_weapons/zoe_weapon_knife.h>
 
 #include <clic3_bytes.h>
 #include <clic3_memory.h>

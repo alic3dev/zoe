@@ -1,6 +1,6 @@
-#include <scenes/scene_loading.h>
+#include <zoe_scenes/scene_loading.h>
 
-#include <data/data_zoe.h>
+#include <zoe_data/data_zoe.h>
 #include <zoe_loading_map.h>
 #include <zoe_pipeline_index.h>
 

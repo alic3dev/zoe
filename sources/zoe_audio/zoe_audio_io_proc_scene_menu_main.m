@@ -1,6 +1,6 @@
-#include <audio/zoe_audio_io_proc_scene_menu_main.h>
+#include <zoe_audio/zoe_audio_io_proc_scene_menu_main.h>
 
-#include <data/zoe_data_scene_menu_main.h>
+#include <zoe_data/zoe_data_scene_menu_main.h>
 
 #include <clic3_memory.h>
 

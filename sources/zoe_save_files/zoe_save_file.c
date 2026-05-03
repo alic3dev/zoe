@@ -1,7 +1,7 @@
-#include <save_files/zoe_save_file.h>
+#include <zoe_save_files/zoe_save_file.h>
 
-#include <data/data_player.h>
-#include <save_files/zoe_save_files.h>
+#include <zoe_data/data_player.h>
+#include <zoe_save_files/zoe_save_files.h>
 
 #include <clic3_bytes.h>
 #include <clic3_memory.h>

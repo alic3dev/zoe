@@ -1,4 +1,4 @@
-#include <textures/zoe_texture_static.h>
+#include <zoe_textures/zoe_texture_static.h>
 
 #include <clic3_memory.h>
 

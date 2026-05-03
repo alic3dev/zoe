@@ -1,6 +1,6 @@
-#include <mesh/mesh_hill.h>
+#include <zoe_mesh/mesh_hill.h>
 
-#include <calculations/hill_y_value.h>
+#include <zoe_calculations/hill_y_value.h>
 
 #include <clic3_memory.h>
 

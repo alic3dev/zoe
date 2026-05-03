@@ -1,15 +1,15 @@
-#include <scenes/scene_menu_main.h>
+#include <zoe_scenes/scene_menu_main.h>
 
-#include <audio/zoe_audio_io_proc_scene_menu_main.h>
-#include <data/data_zoe.h>
-#include <data/zoe_data_scene_menu_main.h>
-#include <menus/menu_main.h>
-#include <object/object_ground.h>
-#include <object/object_tree.h>
-#include <save_files/zoe_save_file.h>
-#include <scenes/scene_id.h>
-#include <textures/zoe_texture_static.h>
+#include <zoe_audio/zoe_audio_io_proc_scene_menu_main.h>
+#include <zoe_data/data_zoe.h>
+#include <zoe_data/zoe_data_scene_menu_main.h>
+#include <zoe_menus/menu_main.h>
+#include <zoe_object/object_ground.h>
+#include <zoe_object/object_tree.h>
 #include <zoe_pipeline_index.h>
+#include <zoe_save_files/zoe_save_file.h>
+#include <zoe_scenes/scene_id.h>
+#include <zoe_textures/zoe_texture_static.h>
 
 #include <math_c_minimum.h>
 #include <math_c_pi.h>

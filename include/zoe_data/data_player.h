@@ -1,9 +1,9 @@
 #ifndef __zoe_data_data_player_h
 #define __zoe_data_data_player_h
 
-#include <inventory/zoe_inventory.h>
-#include <items/zoe_item.h>
-#include <weapons/zoe_weapon.h>
+#include <zoe_inventory/zoe_inventory.h>
+#include <zoe_items/zoe_item.h>
+#include <zoe_weapons/zoe_weapon.h>
 
 #define zoe_data_player_default_health_maximum 0x0a
 

@@ -1,7 +1,7 @@
-#include <scenes/scene_intro_forest/scene_intro_forest_loading.h>
+#include <zoe_scenes/scene_intro_forest/scene_intro_forest_loading.h>
 
-#include <scenes/scene_intro_forest/scene_intro_forest.h>
 #include <zoe_loading_threads.h>
+#include <zoe_scenes/scene_intro_forest/scene_intro_forest.h>
 
 #include <clic3_memory.h>
 

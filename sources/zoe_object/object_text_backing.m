@@ -1,4 +1,4 @@
-#include <object/object_text_backing.h>
+#include <zoe_object/object_text_backing.h>
 
 #include <zoe_pipeline_index.h>
 

@@ -1,6 +1,6 @@
-#include <inventory/zoe_inventory.h>
+#include <zoe_inventory/zoe_inventory.h>
 
-#include <inventory/zoe_inventory_item.h>
+#include <zoe_inventory/zoe_inventory_item.h>
 
 #include <clic3_memory.h>
 

@@ -1,6 +1,6 @@
-#include <data/data_player.h>
+#include <zoe_data/data_player.h>
 
-#include <inventory/zoe_inventory.h>
+#include <zoe_inventory/zoe_inventory.h>
 
 void zoe_data_player_initialize(
   struct zoe_data_player* zoe_data_player

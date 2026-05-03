@@ -1,7 +1,7 @@
 #ifndef __zoe_damage_zoe_damage_h
 #define __zoe_damage_zoe_damage_h
 
-#include <damage/zoe_damage_type.h>
+#include <zoe_damage/zoe_damage_type.h>
 
 struct zoe_damage {
   unsigned int amount_primary;

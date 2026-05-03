@@ -1,7 +1,7 @@
 #ifndef __zoe_enemies_zoe_enemy_auop_h
 #define __zoe_enemies_zoe_enemy_auop_h
 
-#include <enemies/zoe_enemy.h>
+#include <zoe_enemies/zoe_enemy.h>
 
 #include <metil.h>
 #include <metil_rendering/metil_renderable.h>

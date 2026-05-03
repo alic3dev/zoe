@@ -1,8 +1,8 @@
-#include <weapons/zoe_weapon_mapping.h>
+#include <zoe_weapons/zoe_weapon_mapping.h>
 
-#include <weapons/zoe_weapon.h>
-#include <weapons/zoe_weapon_id.h>
-#include <weapons/zoe_weapon_knife.h>
+#include <zoe_weapons/zoe_weapon.h>
+#include <zoe_weapons/zoe_weapon_id.h>
+#include <zoe_weapons/zoe_weapon_knife.h>
 
 const struct zoe_weapon* zoe_weapon_mapping_id_to_structure(
   unsigned short int id_weapon

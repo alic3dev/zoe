@@ -1,6 +1,6 @@
-#include <object/object_ground.h>
+#include <zoe_object/object_ground.h>
 
-#include <mesh/mesh_ground.h>
+#include <zoe_mesh/mesh_ground.h>
 #include <zoe_pipeline_index.h>
 
 #include <math_c_vector.h>

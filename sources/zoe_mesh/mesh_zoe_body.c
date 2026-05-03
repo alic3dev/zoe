@@ -1,4 +1,4 @@
-#include <mesh/mesh_zoe_body.h>
+#include <zoe_mesh/mesh_zoe_body.h>
 
 #include <clic3_memory.h>
 

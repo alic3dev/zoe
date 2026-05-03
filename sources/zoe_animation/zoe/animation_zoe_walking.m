@@ -1,6 +1,7 @@
-#include <animation/zoe/animation_zoe_walking.h>
+#include <zoe_animation/zoe/animation_zoe_walking.h>
 
-#include <model/model_zoe.h>
+#include <zoe_model/model_zoe.h>
+
 #include <math_c_absolute.h>
 #include <math_c_pi.h>
 #include <math_c_sine.h>

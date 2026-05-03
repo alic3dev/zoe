@@ -1,6 +1,6 @@
-#include <input/input_movement.h>
+#include <zoe_input/input_movement.h>
 
-#include <data/data_player.h>
+#include <zoe_data/data_player.h>
 
 #include <math_c_vector.h>
 

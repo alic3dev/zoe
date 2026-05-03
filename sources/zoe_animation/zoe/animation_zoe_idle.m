@@ -1,6 +1,6 @@
-#include <animation/zoe/animation_zoe_idle.h>
+#include <zoe_animation/zoe/animation_zoe_idle.h>
 
-#include <model/model_zoe.h>
+#include <zoe_model/model_zoe.h>
 
 #include <math_c_pi.h>
 #include <math_c_sine.h>

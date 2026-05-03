@@ -1,8 +1,8 @@
 #ifndef __zoe_save_files_zoe_save_file_h
 #define __zoe_save_files_zoe_save_file_h
 
-#include <data/data_player.h>
-#include <save_files/zoe_save_files.h>
+#include <zoe_data/data_player.h>
+#include <zoe_save_files/zoe_save_files.h>
 
 #define zoe_save_file_debug_log_save_file_inaccessable "save_files_inaccessable"
 #define zoe_save_file_debug_log_save_file_open_failure "failed_to_open_save_file"

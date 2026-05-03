@@ -1,10 +1,10 @@
-#include <weapons/zoe_weapon_knife.h>
+#include <zoe_weapons/zoe_weapon_knife.h>
 
-#include <damage/zoe_damage_type.h>
-#include <weapons/zoe_weapon.h>
-#include <weapons/zoe_weapon_damage.h>
-#include <weapons/zoe_weapon_id.h>
-#include <weapons/zoe_weapon_targeting.h>
+#include <zoe_damage/zoe_damage_type.h>
+#include <zoe_weapons/zoe_weapon.h>
+#include <zoe_weapons/zoe_weapon_damage.h>
+#include <zoe_weapons/zoe_weapon_id.h>
+#include <zoe_weapons/zoe_weapon_targeting.h>
 
 const struct zoe_weapon zoe_weapon_knife = {
   .id = (

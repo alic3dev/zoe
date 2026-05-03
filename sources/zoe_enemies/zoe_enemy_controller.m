@@ -1,4 +1,4 @@
-#include <enemies/zoe_enemy_controller.h>
+#include <zoe_enemies/zoe_enemy_controller.h>
 
 #include <clic3_memory.h>
 
