@@ -1,8 +1,6 @@
 #ifndef __zoe_zoe_scenes_scene_intro_forest_scene_intro_forest_h
 #define __zoe_zoe_scenes_scene_intro_forest_scene_intro_forest_h
 
-#include <zoe_audio/io_proc_data.h>
-#include <zoe_enemies/zoe_enemy_controller.h>
 #include <zoe_loading_threads.h>
 
 #include <metil_group.h>
@@ -34,14 +32,6 @@ enum textures_scene_intro_forest {
   textures_scene_intro_forest_ground = 0x00,
   textures_scene_intro_forest_tree   = 0x01,
   textures_scene_intro_forest_player = 0x02
-};
-
-struct scene_intro_forest_data {
-  struct io_proc_data* _Nonnull io_proc_data;
-
-  struct zoe_enemy_controller enemy_controller;
-
-  unsigned char index_text;
 };
 
 struct scene_intro_forest_tree_thread_data {
