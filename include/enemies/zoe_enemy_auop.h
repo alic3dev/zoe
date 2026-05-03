@@ -7,7 +7,7 @@
 #include <metil_rendering/metil_renderable.h>
 #include <metil_scenes/metil_scene.h>
 
-#define zoe_enemy_auop_default_health_maximum 0x01
+#define zoe_enemy_auop_default_health_maximum 0x04
 #define zoe_enemy_auop_default_health zoe_enemy_auop_default_health_maximum
 
 void zoe_enemy_auop_initialize(
