@@ -1,5 +1,5 @@
-#ifndef __group_text_with_backing_h
-#define __group_text_with_backing_h
+#ifndef __zoe_zoe_group_group_text_with_backing_h
+#define __zoe_zoe_group_group_text_with_backing_h
 
 #include <metil.h>
 #include <metil_group.h>

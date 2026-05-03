@@ -1,5 +1,5 @@
-#ifndef __data_data_zoe_h
-#define __data_data_zoe_h
+#ifndef __zoe_zoe_data_data_zoe_h
+#define __zoe_zoe_data_data_zoe_h
 
 #include <zoe_data/data_player.h>
 #include <zoe_pipeline_index.h>

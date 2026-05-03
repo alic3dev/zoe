@@ -1,5 +1,5 @@
-#ifndef __zoe_enemies_zoe_enemy_auop_h
-#define __zoe_enemies_zoe_enemy_auop_h
+#ifndef __zoe_zoe_enemies_zoe_enemy_auop_h
+#define __zoe_zoe_enemies_zoe_enemy_auop_h
 
 #include <zoe_enemies/zoe_enemy.h>
 

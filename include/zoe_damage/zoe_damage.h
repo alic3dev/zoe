@@ -1,5 +1,5 @@
-#ifndef __zoe_damage_zoe_damage_h
-#define __zoe_damage_zoe_damage_h
+#ifndef __zoe_zoe_damage_zoe_damage_h
+#define __zoe_zoe_damage_zoe_damage_h
 
 #include <zoe_damage/zoe_damage_type.h>
 

@@ -1,5 +1,5 @@
-#ifndef __zoe_audio_zoe_io_proc_scene_menu_main_h
-#define __zoe_audio_zoe_io_proc_scene_menu_main_h
+#ifndef __zoe_zoe_audio_zoe_audio_zoe_io_proc_scene_menu_main_h
+#define __zoe_zoe_audio_zoe_audio_zoe_io_proc_scene_menu_main_h
 
 #include <metil_audio/metil_audio_io_proc.h>
 

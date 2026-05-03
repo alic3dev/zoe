@@ -1,5 +1,5 @@
-#ifndef __zoe_mesh_zoe_mesh_auop_h
-#define __zoe_mesh_zoe_mesh_auop_h
+#ifndef __zoe_zoe_mesh_zoe_mesh_auop_h
+#define __zoe_zoe_mesh_zoe_mesh_auop_h
 
 #ifndef __METAL_VERSION__
 #include <metil_mesh/metil_mesh.h>

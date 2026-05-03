@@ -1,5 +1,5 @@
-#ifndef __zoe_scenes_scene_menu_main_h
-#define __zoe_scenes_scene_menu_main_h
+#ifndef __zoe_zoe_scenes_scene_menu_main_h
+#define __zoe_zoe_scenes_scene_menu_main_h
 
 #include <zoe_audio/io_proc_data.h>
 

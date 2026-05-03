@@ -1,5 +1,5 @@
-#ifndef __object_object_text_backing_h
-#define __object_object_text_backing_h
+#ifndef __zoe_zoe_object_object_text_backing_h
+#define __zoe_zoe_object_object_text_backing_h
 
 #include <zoe_pipeline_index.h>
 

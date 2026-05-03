@@ -1,5 +1,5 @@
-#ifndef __zoe_scenes_scene_intro_forest_scene_intro_forest_loading_h
-#define __zoe_scenes_scene_intro_forest_scene_intro_forest_loading_h
+#ifndef __zoe_zoe_scenes_scene_intro_forest_scene_intro_forest_loading_h
+#define __zoe_zoe_scenes_scene_intro_forest_scene_intro_forest_loading_h
 
 #include <zoe_loading_threads.h>
 

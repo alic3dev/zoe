@@ -1,5 +1,5 @@
-#ifndef __zoe_mesh_mesh_ground_h
-#define __zoe_mesh_mesh_ground_h
+#ifndef __zoe_zoe_mesh_mesh_ground_h
+#define __zoe_zoe_mesh_mesh_ground_h
 
 #include <math_c_vector.h>
 
