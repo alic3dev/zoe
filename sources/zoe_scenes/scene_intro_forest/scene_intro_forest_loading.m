@@ -1,5 +1,6 @@
 #include <zoe_scenes/scene_intro_forest/scene_intro_forest_loading.h>
 
+#include <zoe_data/zoe_data_scene_intro_forest.h>
 #include <zoe_loading_threads.h>
 #include <zoe_scenes/scene_intro_forest/scene_intro_forest.h>
 
@@ -82,5 +83,13 @@ void zoe_scene_intro_forest_loading_finished_function(
 
   zoe_loading_threads_destroy(
     zoe_loading_threads
+  );
+
+  struct zoe_data_scene_intro_forest* zoe_data_scene_intro_forest = (
+    metil_scene->data
+  );
+  
+  zoe_data_scene_intro_forest->attack_effects_controller.time = &(
+    metil_scene->time_elapsed
   );
 }

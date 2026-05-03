@@ -127,6 +127,18 @@ void zoe_renderer_on_initialize(
     ]
   ];
 
+  zoe_pipeline_index->effect_attack_slice = [
+    metil->renderer_interface.renderer
+    pipeline_add: [
+      metil->library.library
+      newFunctionWithName: @"zoe_effect_attack_slice_fragment"
+    ]
+    function_vertex: [
+      metil->library.library
+      newFunctionWithName: @"zoe_effect_attack_slice_vertex"
+    ]
+  ];
+
   zoe_pipeline_index->ground = [
     metil->renderer_interface.renderer
     pipeline_add: [

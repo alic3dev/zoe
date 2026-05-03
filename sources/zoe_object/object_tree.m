@@ -22,7 +22,8 @@ void zoe_object_tree_initialize(
   struct zoe_pipeline_index* zoe_pipeline_index
 ) {
   if (
-    metil_mesh_clone_source != 0
+    metil_mesh_clone_source !=
+    0x00
   ) {
     metil_mesh_clone(
       metil_mesh_clone_source,
