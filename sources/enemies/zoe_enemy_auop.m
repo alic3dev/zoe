@@ -25,32 +25,36 @@ void zoe_enemy_auop_initialize(
     metil->data
   );
 
-  zoe_enemy_initialize(
+  metil_renderable_initialize(
+    zoe_enemy_auop_renderable,
+    metil_renderable_type_object
+  );
+
+  struct metil_object* zoe_enemy_object_auop = (
+    zoe_enemy_auop_renderable->renderable
+  );
+
+  zoe_object_auop_initialize(
+    metil,
+    zoe_enemy_object_auop
+  );
+
+  zoe_enemy_object_auop->index_pipeline_render = (
+    zoe_data_zoe->pipeline_index.auop
+  );
+
+  zoe_enemy_initialize_with_buffer_data(
     metil,
     zoe_enemy_auop,
     zoe_enemy_auop_renderable
-  );
-
-  zoe_enemy_auop->health_maximum = (
-    zoe_enemy_auop_default_health_maximum
   );
 
   zoe_enemy_auop->health = (
     zoe_enemy_auop_default_health
   );
 
-  metil_renderable_initialize(
-    zoe_enemy_auop->renderable,
-    metil_renderable_type_object
-  );
-
-  struct metil_object* zoe_enemy_object_auop = (
-    zoe_enemy_auop->renderable->renderable
-  );
-
-  zoe_object_auop_initialize(
-    metil,
-    zoe_enemy_object_auop
+  zoe_enemy_auop->health_maximum = (
+    zoe_enemy_auop_default_health_maximum
   );
 
   zoe_enemy_auop->position = &(
@@ -67,10 +71,6 @@ void zoe_enemy_auop_initialize(
 
   zoe_enemy_auop->poll = (
     zoe_enemy_auop_poll
-  );
-
-  zoe_enemy_object_auop->index_pipeline_render = (
-    zoe_data_zoe->pipeline_index.auop
   );
 }
 
@@ -238,5 +238,11 @@ void zoe_enemy_auop_poll(
     zoe_enemy_auop->position->z -
     ratio.y *
     amount
+  );
+
+  zoe_enemy_data_poll(
+    metil,
+    metil_scene,
+    zoe_enemy_auop
   );
 }
