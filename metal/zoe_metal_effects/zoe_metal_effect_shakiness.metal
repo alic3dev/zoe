@@ -1,6 +1,6 @@
-#include <zoe_metal/zoe_shakiness.h>
+#include <zoe_metal/effects/zoe_metal_effect_shakiness.h>
 
-float4 zoe_shakiness_get(
+float4 zoe_metal_effect_shakiness_get(
   unsigned long int time,
   unsigned long int offset,
   unsigned long int speed,

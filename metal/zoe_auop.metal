@@ -2,7 +2,7 @@
 #include <zoe_mesh/zoe_mesh_auop.h>
 #include <zoe_mesh/mesh_tree.h>
 #include <zoe_metal/effects/zoe_metal_effect_damaged.h>
-#include <zoe_metal/zoe_wave.h>
+#include <zoe_metal/effects/zoe_metal_effect_wave.h>
 
 #include <math_c_bound.h>
 #include <math_c_pi.h>
@@ -58,7 +58,7 @@ struct data_vertex {
       positions[
         index_vertex
       ] +
-      zoe_wave_get(
+      zoe_metal_effect_wave_get(
         data_frame->time_elapsed,
         index_vertex,
         0xff,
