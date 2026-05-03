@@ -1,9 +1,9 @@
 #include <zoe_loading_map.h>
 
-#include <scenes/scene_id.h>
-#include <scenes/scene_intro_forest/scene_intro_forest_loading.h>
-#include <scenes/scene_intro_hill.h>
-#include <scenes/scene_menu_main.h>
+#include <zoe_scenes/scene_id.h>
+#include <zoe_scenes/scene_intro_forest/scene_intro_forest_loading.h>
+#include <zoe_scenes/scene_intro_hill.h>
+#include <zoe_scenes/scene_menu_main.h>
 
 void zoe_loading_map_initialize(
   struct zoe_loading_map* zoe_loading_map,

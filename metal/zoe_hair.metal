@@ -1,4 +1,4 @@
-#include <zoe_metal/zoe_shakiness.h>
+#include <zoe_metal/effects/zoe_metal_effect_shakiness.h>
 
 #include <metil_metal/metil_metal_model_object.h>
 #include <metil_rendering/metil_renderer_data_frame.h>
