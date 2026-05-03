@@ -15,7 +15,8 @@
 void zoe_enemy_initialize(
   struct metil* metil,
   struct zoe_enemy* zoe_enemy,
-  struct metil_renderable* zoe_enemy_renderable
+  struct metil_renderable* zoe_enemy_renderable,
+  struct zoe_attack_effects_controller* zoe_attack_effects_controller
 ) {
   zoe_enemy->health_maximum = (
     zoe_enemy_default_health_maximum
@@ -55,6 +56,10 @@ void zoe_enemy_initialize(
     zoe_enemy_default_destroy
   );
 
+  zoe_enemy->attack_effects_controller = (
+    zoe_attack_effects_controller
+  );
+
   zoe_enemy->data = (
     0x00
   );
@@ -63,12 +68,14 @@ void zoe_enemy_initialize(
 void zoe_enemy_initialize_with_buffer_data(
   struct metil* metil,
   struct zoe_enemy* zoe_enemy,
-  struct metil_renderable* zoe_enemy_renderable
+  struct metil_renderable* zoe_enemy_renderable,
+  struct zoe_attack_effects_controller* zoe_attack_effects_controller
 ) {
   zoe_enemy_initialize(
     metil,
     zoe_enemy,
-    zoe_enemy_renderable
+    zoe_enemy_renderable,
+    zoe_attack_effects_controller
   );
 
   zoe_enemy_buffer_data_add(

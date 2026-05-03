@@ -1,5 +1,6 @@
 #include <zoe_scenes/scene_intro_forest/scene_intro_forest.h>
 
+#include <zoe_attack_effects/zoe_attack_effects_controller.h>
 #include <zoe_audio/io_proc_data.h>
 #include <zoe_data/data_zoe.h>
 #include <zoe_data/zoe_data_scene_intro_forest.h>
@@ -200,6 +201,7 @@ void scene_intro_forest_initialize(
 
         break;
       }
+      case scene_intro_forest_index_renderable_group_attack_effects:
       case scene_intro_forest_index_renderable_group_enemies:
       case scene_intro_forest_index_renderable_group_trees: {
         metil_renderable_initialize_at_index(
@@ -273,6 +275,14 @@ void scene_intro_forest_initialize(
       }
     }
   }
+
+  zoe_attack_effects_controller_initialize(
+    &zoe_data_scene_intro_forest->attack_effects_controller,
+    scene->renderables[
+      scene_intro_forest_index_renderable_group_attack_effects
+    ].renderable,
+    &scene->time_elapsed
+  );
 
   zoe_enemy_controller_initialize(
     metil,
@@ -817,6 +827,12 @@ void scene_intro_forest_poll(
     zoe_data_scene_intro_forest->enemy_controller
   );
 
+  zoe_attack_effects_controller_poll(
+    metil,
+    metil_scene,
+    &zoe_data_scene_intro_forest->attack_effects_controller
+  );
+
   if (
     zoe_data_player->actions &
     zoe_data_player_action_attack_primary
@@ -832,6 +848,19 @@ void scene_intro_forest_poll(
       &metil_scene->player,
       zoe_enemy_controller,
       zoe_data_player->weapon_primary->item
+    );
+
+    struct zoe_attack_effect* zoe_attack_effect = (
+      zoe_attack_effects_controller_add(
+        &zoe_data_scene_intro_forest->attack_effects_controller
+      )
+    );
+
+    zoe_attack_effect_slice_initialize(
+      metil,
+      zoe_attack_effect,
+      &metil_scene->player.position,
+      &metil_scene->player.rotation
     );
   }
 
@@ -880,7 +909,8 @@ void scene_intro_forest_poll(
     zoe_enemy_auop_initialize(
       metil,
       zoe_enemy_auop,
-      metil_renderable_enemy
+      metil_renderable_enemy,
+      &zoe_data_scene_intro_forest->attack_effects_controller
     );
 
     zoe_enemy_auop->position->x = (
@@ -1007,6 +1037,10 @@ void scene_intro_forest_destroy(
 ) {
   struct zoe_data_scene_intro_forest* zoe_data_scene_intro_forest = (
     metil_scene->data
+  );
+
+  zoe_attack_effects_controller_destroy(
+    &zoe_data_scene_intro_forest->attack_effects_controller
   );
 
   zoe_enemy_controller_destroy(

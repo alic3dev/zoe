@@ -1,6 +1,7 @@
 #ifndef __zoe_zoe_enemies_zoe_enemy_h
 #define __zoe_zoe_enemies_zoe_enemy_h
 
+#include <zoe_attack_effects/zoe_attack_effect_slice.h>
 #include <zoe_damage/zoe_damage.h>
 #include <zoe_data/zoe_data_enemy.h>
 
@@ -59,19 +60,23 @@ struct zoe_enemy {
   zoe_enemy_function_damage _Nonnull damage;
   zoe_enemy_function_destroy _Nonnull destroy;
 
+  struct zoe_attack_effects_controller* _Nonnull attack_effects_controller;
+
   void* _Nullable data;
 };
 
 void zoe_enemy_initialize(
   struct metil* _Nonnull,
   struct zoe_enemy* _Nonnull,
-  struct metil_renderable* _Nonnull
+  struct metil_renderable* _Nonnull,
+  struct zoe_attack_effects_controller* _Nonnull
 );
 
 void zoe_enemy_initialize_with_buffer_data(
   struct metil* _Nonnull,
   struct zoe_enemy* _Nonnull,
-  struct metil_renderable* _Nonnull
+  struct metil_renderable* _Nonnull,
+  struct zoe_attack_effects_controller* _Nonnull
 );
 
 _Nonnull zoe_enemy_function_poll_data zoe_enemy_function_poll_data_get(

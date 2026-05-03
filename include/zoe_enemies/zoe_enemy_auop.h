@@ -1,6 +1,7 @@
 #ifndef __zoe_zoe_enemies_zoe_enemy_auop_h
 #define __zoe_zoe_enemies_zoe_enemy_auop_h
 
+#include <zoe_attack_effects/zoe_attack_effects_controller.h>
 #include <zoe_enemies/zoe_enemy.h>
 
 #include <metil.h>
@@ -13,7 +14,8 @@
 void zoe_enemy_auop_initialize(
   struct metil* _Nonnull,
   struct zoe_enemy* _Nonnull,
-  struct metil_renderable* _Nonnull
+  struct metil_renderable* _Nonnull,
+  struct zoe_attack_effects_controller* _Nonnull
 );
 
 void zoe_enemy_auop_poll(

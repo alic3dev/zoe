@@ -1,5 +1,6 @@
 #include <zoe_enemies/zoe_enemy_auop.h>
 
+#include <zoe_attack_effects/zoe_attack_effects_controller.h>
 #include <zoe_data/data_zoe.h>
 #include <zoe_enemies/zoe_enemy.h>
 #include <zoe_object/zoe_object_auop.h>
@@ -19,7 +20,8 @@
 void zoe_enemy_auop_initialize(
   struct metil* metil,
   struct zoe_enemy* zoe_enemy_auop,
-  struct metil_renderable* zoe_enemy_auop_renderable
+  struct metil_renderable* zoe_enemy_auop_renderable,
+  struct zoe_attack_effects_controller* zoe_enemy_attack_effects_controller
 ) {
   struct zoe_data_zoe* zoe_data_zoe = (
     metil->data
@@ -46,7 +48,8 @@ void zoe_enemy_auop_initialize(
   zoe_enemy_initialize_with_buffer_data(
     metil,
     zoe_enemy_auop,
-    zoe_enemy_auop_renderable
+    zoe_enemy_auop_renderable,
+    zoe_enemy_attack_effects_controller
   );
 
   zoe_enemy_auop->health = (
