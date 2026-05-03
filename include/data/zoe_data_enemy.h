@@ -15,8 +15,10 @@ struct zoe_data_enemy {
   unsigned long int time_damaged;
 };
 
+#ifndef __METAL_VERSION__
 void zoe_data_enemy_initialize(
   struct zoe_data_enemy*
 );
+#endif
 
 #endif
