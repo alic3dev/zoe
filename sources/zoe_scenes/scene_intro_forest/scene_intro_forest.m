@@ -2,6 +2,7 @@
 
 #include <zoe_audio/io_proc_data.h>
 #include <zoe_data/data_zoe.h>
+#include <zoe_data/zoe_data_scene_intro_forest.h>
 #include <zoe_enemies/zoe_enemy_auop.h>
 #include <zoe_enemies/zoe_enemy_controller.h>
 #include <zoe_group/group_text_with_backing.h>
@@ -146,30 +147,26 @@ void scene_intro_forest_initialize(
   scene->data = (
     clic3_memory_allocate_raw(
       sizeof(
-        struct scene_intro_forest_data
+        struct zoe_data_scene_intro_forest
       )
     )
   );
 
-  struct scene_intro_forest_data* data_scene = (
+  struct zoe_data_scene_intro_forest* zoe_data_scene_intro_forest = (
     scene->data
   );
 
-  struct io_proc_data* io_proc_data = (
+  zoe_data_scene_intro_forest->io_proc_data = (
     io_proc_data_create(
       metil->audio.audio_output.sample_rate,
       0x01
     )
   );
 
-  data_scene->io_proc_data = (
-    io_proc_data
-  );
-
   metil_audio_io_proc_add_with_data(
     &metil->audio,
     scene_intro_forest_io_proc,
-    io_proc_data
+    zoe_data_scene_intro_forest->io_proc_data
   );
 
   scene->poll = (
@@ -279,7 +276,7 @@ void scene_intro_forest_initialize(
 
   zoe_enemy_controller_initialize(
     metil,
-    &data_scene->enemy_controller,
+    &zoe_data_scene_intro_forest->enemy_controller,
     scene->renderables[
       scene_intro_forest_index_renderable_group_enemies
     ].renderable
@@ -812,12 +809,12 @@ void scene_intro_forest_poll(
     zoe_data_zoe->player
   );
 
-  struct scene_intro_forest_data* scene_intro_forest_data = (
+  struct zoe_data_scene_intro_forest* zoe_data_scene_intro_forest = (
     metil_scene->data
   );
 
   struct zoe_enemy_controller* zoe_enemy_controller = &(
-    scene_intro_forest_data->enemy_controller
+    zoe_data_scene_intro_forest->enemy_controller
   );
 
   if (
@@ -1008,17 +1005,17 @@ void scene_intro_forest_destroy(
   struct metil* metil,
   struct metil_scene* metil_scene
 ) {
-  struct scene_intro_forest_data* scene_intro_forest_data = (
+  struct zoe_data_scene_intro_forest* zoe_data_scene_intro_forest = (
     metil_scene->data
   );
 
   zoe_enemy_controller_destroy(
     metil,
-    &scene_intro_forest_data->enemy_controller
+    &zoe_data_scene_intro_forest->enemy_controller
   );
 
   struct io_proc_data* io_proc_data = (
-    scene_intro_forest_data->io_proc_data
+    zoe_data_scene_intro_forest->io_proc_data
   );
 
   io_proc_data->destroy = (
