@@ -1,5 +1,5 @@
-#ifndef __zoe_inventory_zoe_inventory_item_h
-#define __zoe_inventory_zoe_inventory_item_h
+#ifndef __zoe_zoe_inventory_zoe_inventory_item_h
+#define __zoe_zoe_inventory_zoe_inventory_item_h
 
 enum zoe_inventory_item_type {
   zoe_inventory_item_type_item   = 0x00,

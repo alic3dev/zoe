@@ -1,5 +1,5 @@
-#ifndef __zoe_scenes_scene_intro_forest_scene_intro_forest_h
-#define __zoe_scenes_scene_intro_forest_scene_intro_forest_h
+#ifndef __zoe_zoe_scenes_scene_intro_forest_scene_intro_forest_h
+#define __zoe_zoe_scenes_scene_intro_forest_scene_intro_forest_h
 
 #include <zoe_audio/io_proc_data.h>
 #include <zoe_enemies/zoe_enemy_controller.h>

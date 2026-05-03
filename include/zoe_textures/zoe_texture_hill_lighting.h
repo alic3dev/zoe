@@ -1,5 +1,5 @@
-#ifndef __zoe_textures_zoe_texture_hill_lighting_h
-#define __zoe_textures_zoe_texture_hill_lighting_h
+#ifndef __zoe_zoe_textures_zoe_texture_hill_lighting_h
+#define __zoe_zoe_textures_zoe_texture_hill_lighting_h
 
 #include <metil_group.h>
 

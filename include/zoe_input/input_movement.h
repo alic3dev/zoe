@@ -1,5 +1,5 @@
-#ifndef __input_input_movement_h
-#define __input_input_movement_h
+#ifndef __zoe_zoe_input_input_movement_h
+#define __zoe_zoe_input_input_movement_h
 
 #include <metil.h>
 #include <metil_player/metil_player.h>

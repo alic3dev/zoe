@@ -1,5 +1,5 @@
-#ifndef __zoe_loading_map_h
-#define __zoe_loading_map_h
+#ifndef __zoe_zoe_loading_map_h
+#define __zoe_zoe_loading_map_h
 
 #include <metil.h>
 #include <metil_scenes/metil_scene.h>

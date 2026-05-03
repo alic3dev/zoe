@@ -1,5 +1,5 @@
-#ifndef __zoe_save_files_zoe_save_file_h
-#define __zoe_save_files_zoe_save_file_h
+#ifndef __zoe_zoe_save_files_zoe_save_file_h
+#define __zoe_zoe_save_files_zoe_save_file_h
 
 #include <zoe_data/data_player.h>
 #include <zoe_save_files/zoe_save_files.h>

@@ -1,5 +1,5 @@
-#ifndef __zoe_object_zoe_object_auop_h
-#define __zoe_object_zoe_object_auop_h
+#ifndef __zoe_zoe_object_zoe_object_auop_h
+#define __zoe_zoe_object_zoe_object_auop_h
 
 #include <metil.h>
 #include <metil_object/metil_object.h>

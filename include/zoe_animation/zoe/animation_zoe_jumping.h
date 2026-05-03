@@ -1,5 +1,5 @@
-#ifndef __zoe_animation_zoe_animation_zoe_jumping_h
-#define __zoe_animation_zoe_animation_zoe_jumping_h
+#ifndef __zoe_zoe_animation_zoe_animation_zoe_jumping_h
+#define __zoe_zoe_animation_zoe_animation_zoe_jumping_h
 
 #include <metil_animation/metil_animation.h>
 #include <metil_rendering/metil_renderable_type.h>

@@ -1,5 +1,5 @@
-#ifndef __zoe_h
-#define __zoe_h
+#ifndef __zoe_zoe_h
+#define __zoe_zoe_h
 
 #include <metil.h>
 

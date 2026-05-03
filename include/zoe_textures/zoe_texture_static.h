@@ -1,5 +1,5 @@
-#ifndef __zoe_textures_zoe_texture_cicuit_h
-#define __zoe_textures_zoe_texture_cicuit_h
+#ifndef __zoe_zoe_textures_zoe_texture_cicuit_h
+#define __zoe_zoe_textures_zoe_texture_cicuit_h
 
 #include <math_c_vector.h>
 
