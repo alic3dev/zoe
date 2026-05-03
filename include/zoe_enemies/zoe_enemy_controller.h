@@ -1,5 +1,5 @@
-#ifndef __zoe_enemies_zoe_enemy_controller_h
-#define __zoe_enemies_zoe_enemy_controller_h
+#ifndef __zoe_zoe_enemies_zoe_enemy_controller_h
+#define __zoe_zoe_enemies_zoe_enemy_controller_h
 
 #include <zoe_damage/zoe_damage.h>
 #include <zoe_enemies/zoe_enemy.h>

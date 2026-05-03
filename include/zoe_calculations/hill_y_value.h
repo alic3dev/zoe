@@ -1,5 +1,5 @@
-#ifndef __hill_y_value_h
-#define __hill_y_value_h
+#ifndef __zoe_zoe_calculations_hill_y_value_h
+#define __zoe_zoe_calculations_hill_y_value_h
 
 #include <math_c_vector.h>
 

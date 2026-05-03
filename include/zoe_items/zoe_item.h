@@ -1,5 +1,5 @@
-#ifndef __zoe_items_zoe_item_h
-#define __zoe_items_zoe_item_h
+#ifndef __zoe_zoe_items_zoe_item_h
+#define __zoe_zoe_items_zoe_item_h
 
 enum zoe_item_type {
   zoe_item_type_consumable = 0x00,

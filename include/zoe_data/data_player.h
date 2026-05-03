@@ -1,5 +1,5 @@
-#ifndef __zoe_data_data_player_h
-#define __zoe_data_data_player_h
+#ifndef __zoe_zoe_data_data_player_h
+#define __zoe_zoe_data_data_player_h
 
 #include <zoe_inventory/zoe_inventory.h>
 #include <zoe_items/zoe_item.h>

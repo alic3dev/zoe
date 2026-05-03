@@ -1,5 +1,5 @@
-#ifndef __zoe_renderables_renderables_static_h
-#define __zoe_renderables_renderables_static_h
+#ifndef __zoe_zoe_renderables_renderables_static_h
+#define __zoe_zoe_renderables_renderables_static_h
 
 #include <metil.h>
 #include <metil_object/metil_object.h>

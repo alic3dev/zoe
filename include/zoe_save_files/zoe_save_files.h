@@ -1,5 +1,5 @@
-#ifndef __zoe_save_files_zoe_save_files_h
-#define __zoe_save_files_zoe_save_files_h
+#ifndef __zoe_zoe_save_files_zoe_save_files_h
+#define __zoe_zoe_save_files_zoe_save_files_h
 
 #define zoe_save_files_path_directory_save_files_parent "/.saves/"
 #define zoe_save_files_path_directory_save_files "/.saves/zoe/"

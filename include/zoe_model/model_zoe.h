@@ -1,5 +1,5 @@
-#ifndef __zoe_model_model_zoe_h
-#define __zoe_model_model_zoe_h
+#ifndef __zoe_zoe_model_model_zoe_h
+#define __zoe_zoe_model_model_zoe_h
 
 #include <zoe_pipeline_index.h>
 

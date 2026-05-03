@@ -1,5 +1,5 @@
-#ifndef __zoe_object_object_hill_h
-#define __zoe_object_object_hill_h
+#ifndef __zoe_zoe_object_object_hill_h
+#define __zoe_zoe_object_object_hill_h
 
 #include <zoe_pipeline_index.h>
 

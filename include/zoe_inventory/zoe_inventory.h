@@ -1,5 +1,5 @@
-#ifndef __zoe_inventory_zoe_inventory_h
-#define __zoe_inventory_zoe_inventory_h
+#ifndef __zoe_zoe_inventory_zoe_inventory_h
+#define __zoe_zoe_inventory_zoe_inventory_h
 
 #include <zoe_inventory/zoe_inventory_item.h>
 

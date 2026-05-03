@@ -1,5 +1,5 @@
-#ifndef __zoe_mesh_leaf_h
-#define __zoe_mesh_leaf_h
+#ifndef __zoe_zoe_mesh_mesh_leaf_h
+#define __zoe_zoe_mesh_mesh_leaf_h
 
 #include <metil_mesh/metil_mesh.h>
 

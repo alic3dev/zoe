@@ -1,5 +1,5 @@
-#ifndef __zoe_weapons_zoe_weapon_knife_h
-#define __zoe_weapons_zoe_weapon_knife_h
+#ifndef __zoe_zoe_weapons_zoe_weapon_knife_h
+#define __zoe_zoe_weapons_zoe_weapon_knife_h
 
 #include <zoe_weapons/zoe_weapon.h>
 

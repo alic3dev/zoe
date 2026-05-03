@@ -1,5 +1,5 @@
-#ifndef __zoe_data_zoe_data_enemy_h
-#define __zoe_data_zoe_data_enemy_h
+#ifndef __zoe_zoe_data_zoe_data_enemy_h
+#define __zoe_zoe_data_zoe_data_enemy_h
 
 #define zoe_data_enemy_buffer_index_default_object (\
   0x03\

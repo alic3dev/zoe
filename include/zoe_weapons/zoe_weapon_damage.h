@@ -1,5 +1,5 @@
-#ifndef __zoe_weapons_zoe_weapon_damage_h
-#define __zoe_weapons_zoe_weapon_damage_h
+#ifndef __zoe_zoe_weapons_zoe_weapon_damage_h
+#define __zoe_zoe_weapons_zoe_weapon_damage_h
 
 #include <zoe_damage/zoe_damage.h>
 #include <zoe_weapons/zoe_weapon.h>

@@ -1,5 +1,5 @@
-#ifndef __io_proc_data_h
-#define __io_proc_data_h
+#ifndef __zoe_zoe_audio_io_proc_data_h
+#define __zoe_zoe_audio_io_proc_data_h
 
 #include <rand_parameters.h>
 #include <rand_result.h>
