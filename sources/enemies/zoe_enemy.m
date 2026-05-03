@@ -228,7 +228,8 @@ void zoe_enemy_default_poll_data_object(
 
   struct zoe_data_enemy* zoe_data_enemy = (
     zoe_object_enemy->buffers_vertex[
-      zoe_data_enemy_buffer_index_default_object
+      zoe_data_enemy_buffer_index_default_object -
+      0x01
     ].buffer.contents
   );
 
