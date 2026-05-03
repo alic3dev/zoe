@@ -3,6 +3,7 @@
 
 struct zoe_pipeline_index {
   unsigned short int auop;
+  unsigned short int effect_attack_slice;
   unsigned short int ground;
   unsigned short int hill;
   unsigned short int loading_screen;
