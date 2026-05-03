@@ -1,5 +1,7 @@
+#include <data/zoe_data_enemy.h>
 #include <mesh/zoe_mesh_auop.h>
 #include <mesh/mesh_tree.h>
+#include <zoe_metal/effects/zoe_metal_effect_damaged.h>
 #include <zoe_metal/zoe_wave.h>
 
 #include <math_c_bound.h>
@@ -15,9 +17,14 @@
 
 struct data_vertex {
   float4 position [[position]];
+
   unsigned int index_vertex;
+
   float distance;
   float brightness;
+
+  unsigned int time_current;
+  unsigned int time_damaged;
 };
 
 [[vertex]] struct data_vertex zoe_auop_vertex(
@@ -34,6 +41,11 @@ struct data_vertex {
   constant struct metil_renderer_data_object* data_object [[
     buffer(
       metil_renderer_vertex_index_parameter_data_object
+    )
+  ]],
+  constant struct zoe_data_enemy* zoe_data_enemy [[
+    buffer(
+      zoe_data_enemy_buffer_index_default_object
     )
   ]],
   unsigned int index_vertex [[vertex_id]]
@@ -143,6 +155,14 @@ struct data_vertex {
     )
   );
 
+  data_vertex.time_current = (
+    data_frame->time_elapsed
+  );
+
+  data_vertex.time_damaged = (
+    zoe_data_enemy->time_damaged
+  );
+
   return (
     data_vertex
   );
@@ -169,11 +189,34 @@ fragment float4 zoe_auop_fragment(
   float4 colour;
 
   if (
-    data_vertex.index_vertex > 0xc8 &&
-    data_vertex.index_vertex < 0xe1 &&
     (
-(      ((data_vertex.index_vertex + 0x01) % zoe_mesh_auop_length_segment_vertices_radial) < 0x0a &&
-      ((data_vertex.index_vertex + 0x01) % zoe_mesh_auop_length_segment_vertices_radial) > 0x06)
+      data_vertex.index_vertex >
+      0xc8
+    ) &&
+    (
+      data_vertex.index_vertex <
+      0xe1
+    ) &&
+    (
+      (
+        (
+          data_vertex.index_vertex +
+          0x01
+        ) %
+        zoe_mesh_auop_length_segment_vertices_radial
+      ) <
+      0x0a
+    )
+ &&
+    (
+      (
+        (
+          data_vertex.index_vertex +
+          0x01
+        ) %
+        zoe_mesh_auop_length_segment_vertices_radial
+      ) >
+      0x06
     )
   ) {
     colour = (
@@ -198,6 +241,12 @@ fragment float4 zoe_auop_fragment(
   metil_metal_colours_float4_brightness_apply(
     &colour,
     brightness
+  );
+
+  zoe_metal_effect_damaged_apply_colours(
+    &colour,
+    data_vertex.time_current,
+    data_vertex.time_damaged
   );
 
   return (
