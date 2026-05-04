@@ -32,6 +32,7 @@
 #include <metil_rendering/metil_camera/metil_camera_mode.h>
 #include <metil_rendering/metil_renderer_interface.h>
 #include <metil_scenes/metil_scene.h>
+#include <metil_scenes/metil_scene_controller.h>
 
 #include <rand_clean.h>
 #include <rand_functions.h>
@@ -869,6 +870,23 @@ void scene_intro_forest_poll(
     metil_scene,
     zoe_enemy_controller
   );
+
+  if (
+    zoe_data_player->health <=
+    0x00
+  ) {
+    zoe_data_player->health = (
+      zoe_data_player->health_maximum
+    );
+
+    metil_scene_controller_scene_change(
+      metil,
+      metil->scene_controller,
+      scene_id_intro_forest
+    );
+
+    return;
+  }
 
   if (
     (
