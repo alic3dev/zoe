@@ -1,5 +1,6 @@
 #include <zoe_enemies/zoe_enemy_auop.h>
 
+#include <zoe_attack_effects/zoe_attack_effect_slice.h>
 #include <zoe_attack_effects/zoe_attack_effects_controller.h>
 #include <zoe_data/data_zoe.h>
 #include <zoe_enemies/zoe_enemy.h>
@@ -9,6 +10,7 @@
 #include <math_c_angles.h>
 #include <math_c_modulus.h>
 #include <math_c_pi.h>
+#include <math_c_vector_distance.h>
 
 #include <metil_mesh/metil_mesh_box.h>
 #include <metil_object/metil_object.h>
@@ -242,6 +244,78 @@ void zoe_enemy_auop_poll(
     ratio.y *
     amount
   );
+
+  if (
+    (
+      metil_scene->time_elapsed -
+      zoe_enemy_auop->time_attacked
+    ) >
+    zoe_enemy_auop->rate_attack
+  ) {
+    float distance = (
+      math_c_vector3_distance_float_fastest(
+        &metil_scene->player.position,
+        zoe_enemy_auop->position
+      )
+    );
+
+    if (
+      distance <=
+      zoe_enemy_auop->range
+    ) {
+      if (
+        zoe_enemy_auop->time_range ==
+        0x00
+      ) {
+        zoe_enemy_auop->time_range = (
+          metil_scene->time_elapsed
+        );
+      } else if (
+        (
+          metil_scene->time_elapsed -
+          zoe_enemy_auop->time_range
+        ) >
+        zoe_enemy_auop->rate_attack
+      ) {
+        struct zoe_attack_effect* zoe_attack_effect = (
+          zoe_attack_effects_controller_add(
+            zoe_enemy_auop->attack_effects_controller
+          )
+        );
+
+        zoe_attack_effect_slice_initialize(
+          metil,
+          zoe_attack_effect,
+          zoe_enemy_auop->position,
+          zoe_enemy_auop->rotation
+        );
+
+        struct zoe_data_zoe* zoe_data_zoe = (
+          metil->data
+        );
+
+        zoe_data_zoe->player.health = (
+          zoe_data_zoe->player.health -
+          (
+            (
+              zoe_data_zoe->player.health ==
+              0x00
+            )
+            ? 0x00
+            : 0x01
+          )
+        );
+
+        zoe_enemy_auop->time_attacked = (
+          metil_scene->time_elapsed
+        );
+      }
+    } else {
+      zoe_enemy_auop->time_range = (
+        0x00
+      );
+    }
+  }
 
   zoe_enemy_data_poll(
     metil,
