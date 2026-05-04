@@ -54,6 +54,11 @@ struct zoe_enemy {
 
   unsigned long int time_damaged;
   unsigned long int time_attacked;
+  unsigned long int time_range;
+
+  unsigned long int rate_attack;
+
+  float range;
 
   zoe_enemy_function_poll _Nonnull poll;
   zoe_enemy_function_poll_data _Nonnull poll_data;

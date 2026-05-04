@@ -38,6 +38,18 @@ void zoe_enemy_initialize(
     0x00
   );
 
+  zoe_enemy->time_range = (
+    0x00
+  );
+
+  zoe_enemy->rate_attack = (
+    0xde
+  );
+
+  zoe_enemy->range = (
+    0x0f
+  );
+
   zoe_enemy->poll = (
     zoe_enemy_default_poll
   );
