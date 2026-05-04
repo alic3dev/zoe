@@ -5,7 +5,7 @@
 #include <zoe_items/zoe_item.h>
 #include <zoe_weapons/zoe_weapon.h>
 
-#define zoe_data_player_default_health_maximum 0x0a
+#define zoe_data_player_default_health_maximum 0x04
 
 enum zoe_data_player_action {
   zoe_data_player_action_none             = 0b00000000,
