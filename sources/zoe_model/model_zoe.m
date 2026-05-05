@@ -6,6 +6,7 @@
 #include <zoe_animation/zoe/animation_zoe_sneaking.h>
 #include <zoe_animation/zoe/animation_zoe_walking.h>
 #include <zoe_data/data_player.h>
+#include <zoe_data/zoe_data_metal_player.h>
 #include <zoe_mesh/mesh_zoe_body.h>
 #include <zoe_mesh/mesh_zoe_hair.h>
 #include <zoe_pipeline_index.h>
@@ -432,8 +433,40 @@ void zoe_model_zoe_initialize(
     metil->renderer_interface.metal_device
   );
 
+  metil_model_buffer_add(
+    metil_model,
+    metil->renderer_interface.metal_device,
+    [
+      metil->renderer_interface.metal_device
+      newBufferWithLength: (
+        sizeof(
+          struct zoe_data_metal_player
+        )
+      )
+      options: MTLResourceStorageModeShared
+    ],
+    metil_object_buffer_type_vertex
+  );
+
+  struct zoe_data_metal_player* zoe_data_metal_player = (
+    metil_model->objects[
+      0x00
+    ].buffers_vertex[
+      metil_object_buffer_default_index_joints +
+      0x01
+    ].buffer.contents
+  );
+
+  zoe_data_metal_player_initialize(
+    zoe_data_metal_player
+  );
+
   metil_model->poll = (
     zoe_model_zoe_poll
+  );
+
+  metil_model->destroy = (
+    metil_model_destroy_nullify_buffers
   );
 
   metil_model->data = (
@@ -625,7 +658,36 @@ void zoe_model_zoe_poll(
         zoe_model_animation_index_idle
       );
     }
-  }
+
+    struct zoe_data_metal_player* zoe_data_metal_player = (
+      metil_model->objects[
+        0x00
+      ].buffers_vertex[
+        metil_object_buffer_default_index_joints +
+        0x01
+      ].buffer.contents
+    );
+
+    zoe_data_metal_player->actions = (
+      zoe_data_player->actions
+    );
+
+    zoe_data_metal_player->attributes = (
+      zoe_data_player->attributes
+    );
+
+    zoe_data_metal_player->health = (
+      zoe_data_player->health
+    );
+
+    zoe_data_metal_player->health_maximum = (
+      zoe_data_player->health_maximum
+    );
+
+
+    zoe_data_metal_player->time_damaged = (
+      zoe_data_player->time_damaged
+    );  }
 
   if (
     zoe_model_data->index_animation !=
