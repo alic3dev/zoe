@@ -21,6 +21,10 @@ void zoe_data_player_initialize(
     zoe_data_player->health_maximum
   );
 
+  zoe_data_player->time_damaged = (
+    0x00
+  );
+
   zoe_data_player->item_primary = (
     0x00
   );
