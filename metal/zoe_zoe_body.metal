@@ -1,3 +1,5 @@
+#include <zoe_data/zoe_data_metal_player.h>
+#include <zoe_metal/effects/zoe_metal_effect_damaged.h>
 #include <zoe_metal/effects/zoe_metal_effect_shakiness.h>
 
 #include <metil_metal/metil_metal_model_object.h>
@@ -40,6 +42,12 @@ struct data_vertex {
       metil_renderer_vertex_index_parameter_joints
     )
   ]],
+  constant struct zoe_data_metal_player* zoe_data_metal_player [[
+    buffer(
+      metil_renderer_vertex_index_parameter_joints +
+      0x01
+    )
+  ]],
   unsigned int index_vertex [[vertex_id]]
 ) {
   struct data_vertex data_vertex;
@@ -61,20 +69,38 @@ struct data_vertex {
     position_vertex
   );
 
-  data_vertex.colour.x = (
+  float percentage_health = (
+    (float)
     (
-     (0x03 + index_vertex) %
-     4
-    )
-    < 0x02
+      (
+        zoe_data_metal_player->health ==
+        zoe_data_metal_player->health_maximum
+      )
+      ? zoe_data_metal_player->health
+      : (
+        zoe_data_metal_player->health -
+        0x01
+      )
+    ) /
+    (float)
+    zoe_data_metal_player->health_maximum
   );
 
+  data_vertex.colour.x = (
+    (      (        0x03 +
+        index_vertex
+      ) %
+      0x04    ) <
+    0x02  );
+
   data_vertex.colour.y = (
-    data_vertex.colour.x
+    data_vertex.colour.x *
+    percentage_health
   );
 
   data_vertex.colour.z = (
-    data_vertex.colour.y
+    data_vertex.colour.y *
+    percentage_health
   );
 
   data_vertex.colour.w = (
