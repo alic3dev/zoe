@@ -36,6 +36,8 @@ struct zoe_data_player {
   unsigned short int health;
   unsigned short int health_maximum;
 
+  unsigned long int time_damaged;
+
   struct zoe_inventory_item* weapon_primary;
   struct zoe_inventory_item* weapon_secondary;
 
