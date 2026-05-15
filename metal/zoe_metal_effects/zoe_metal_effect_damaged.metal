@@ -34,6 +34,11 @@ void zoe_metal_effect_damaged_apply_colours(
     )
   );
 
+  percentage = (
+    percentage *
+    percentage
+  );
+
   colour->x = (
     colour->x
   );
