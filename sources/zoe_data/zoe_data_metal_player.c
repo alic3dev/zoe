@@ -12,11 +12,11 @@ void zoe_data_metal_player_initialize(
   );
 
   zoe_data_metal_player->health = (
-    0x00
+    0x01
   );
 
   zoe_data_metal_player->health_maximum = (
-    0x00
+    0x01
   );
 
   zoe_data_metal_player->time_damaged = (
