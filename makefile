@@ -36,7 +36,7 @@ target_os=ios
 suffix_os=_ios
 
 target_platform=arm64-apple-ios${target_device_version}
-target_platform_metal=air64-apple-ios${target_macos_version_metal}
+target_platform_metal=air64-apple-ios${target_metal_version}
 
 directory_sdk=${shell xcrun --sdk iphoneos${target_device_version} --show-sdk-path}
 endif
