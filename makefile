@@ -321,7 +321,8 @@ ${directory_objects_objc}/%.o: ${directory_sources}/%.m
 
 ${directory_output_storyboards}/%.storyboardc: ${directory_storyboards}/%.storyboard
 	if [[ ! -d ${dir ${@}} ]]; then mkdir -p ${directory_output_storyboards}; fi
-	ibtool --module ${name} --target-device ${target_device} --minimum-deployment-target ${target_device_version} --output-format human-readable-text $< --compilation-directory ${directory_output_storyboards}	
+	ibtool --module ${name} --target-device ${target_device} --minimum-deployment-target ${target_device_version} --output-format human-readable-text $< --compilation-directory ${directory_output_storyboards}
+	if [[ "${@}" != "${directory_output_storyboards}/${name}.storyboardc" ]]; then mv ${@} ${directory_output_storyboards}/${name}.storyboardc; fi	
 
 ${directory_output_storyboards}/%.storyboardc: ${directory_metil_storyboards}/%.storyboard
 	if [[ ! -d ${dir ${@}} ]]; then mkdir -p ${directory_output_storyboards}; fi
@@ -329,7 +330,7 @@ ${directory_output_storyboards}/%.storyboardc: ${directory_metil_storyboards}/%.
 
 ${file_output_info_plist}: ${file_info_plist}
 	if [[ ! -d ${dir ${@}} ]]; then mkdir -p ${directory_output_info_plist}; fi
-	cp ${file_info_plist} ${file_output_info_plist}
+	cat ${file_info_plist} | sed 's/<string>zoe<\/string>/<string>${name}<\/string>/' | sed 's/dev.alic3.zoe/dev.alic3.${name}/'  > ${file_output_info_plist}
 
 ifeq (${target_os},ios)
 ifndef codesigning_id
