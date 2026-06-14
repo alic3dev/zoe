@@ -85,7 +85,7 @@ struct data_vertex {
       );
     }
   } else {
-    data_vertex.colour.z = (
+    data_vertex.colour.x = (
       0x00
     );
     
@@ -110,15 +110,15 @@ fragment float4 zoe_mushroom_fragment(
 ) {
   return float4(
     (
-      data_vertex.colour.r *
+      data_vertex.colour.x *
       data_vertex.brightness
     ),
     (
-      data_vertex.colour.g *
+      data_vertex.colour.y *
       data_vertex.brightness
     ),
     (
-      data_vertex.colour.b *
+      data_vertex.colour.z *
       data_vertex.brightness
     ),
     0x01
