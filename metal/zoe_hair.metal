@@ -96,7 +96,7 @@ struct data_vertex {
       index_vertex %
       0x0a
     ) /
-    0x0a * 
+    0x0a *
     0.002f
   );
 
@@ -115,7 +115,7 @@ struct data_vertex {
     ) *
     0.007f +
     (
-      1.0f - 
+      1.0f -
       (float)
       (
         (

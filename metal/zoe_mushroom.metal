@@ -50,11 +50,11 @@ struct data_vertex {
     data_vertex.colour.x = (
       0x01
     );
-    
+
     data_vertex.colour.y = (
       0x01
     );
-    
+
     data_vertex.colour.z = (
       0x01
     );
@@ -75,11 +75,11 @@ struct data_vertex {
       data_vertex.colour.x = (
         0x00
       );
-      
+
       data_vertex.colour.y = (
         0x00
       );
-      
+
       data_vertex.colour.z = (
         0x00
       );
@@ -88,11 +88,11 @@ struct data_vertex {
     data_vertex.colour.x = (
       0x00
     );
-    
+
     data_vertex.colour.y = (
       0x00
     );
-    
+
     data_vertex.colour.z = (
       0x00
     );

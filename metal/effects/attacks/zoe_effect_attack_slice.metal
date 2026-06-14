@@ -86,7 +86,7 @@
   data_vertex_basic_coloured.colour.y = (
     0x00
   );
- 
+
   data_vertex_basic_coloured.colour.z = (
     0x00
   );
@@ -120,7 +120,7 @@
       0x00
     );
   }
- 
+
   return (
     data_vertex_basic_coloured
   );
