@@ -3,7 +3,9 @@
 #include <metil_rendering/metil_renderer_vertex_index_parameter.h>
 
 struct data_vertex {
-  float4 position [[position]];
+  float4 position [[
+    position
+  ]];
   float4 colour;
   float brightness;
 };
@@ -24,14 +26,16 @@ struct data_vertex {
       metil_renderer_vertex_index_parameter_data_object
     )
   ]],
-  unsigned int id_vertex [[vertex_id]]
+  unsigned int index_vertex [[
+    vertex_id
+  ]]
 ) {
   struct data_vertex data_vertex;
 
   data_vertex.position = (
     data_object->view_model_matrix_projection *
     positions[
-      id_vertex
+      index_vertex
     ]
   );
 
@@ -55,11 +59,15 @@ struct data_vertex {
     data_object->colour.w
   );
 
-  return data_vertex;
+  return (
+    data_vertex
+  );
 }
 
 [[fragment]] float4 zoe_text_backing_fragment(
-  struct data_vertex data_vertex [[stage_in]]
+  struct data_vertex data_vertex [[
+    stage_in
+  ]]
 ) {
   return float4(
     (

@@ -10,7 +10,8 @@ float4 zoe_metal_effect_wave_get(
   float amount
 ) {
   float value = (
-    (float) (
+    (float)
+    (
       time +
       offset
     ) /
@@ -44,7 +45,7 @@ float4 zoe_metal_effect_wave_get(
   );
 
   position_vertex_waved.w = (
-    0.0f
+    0x00
   );
 
   return (

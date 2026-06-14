@@ -28,19 +28,22 @@ struct data_vertex {
       metil_renderer_vertex_index_parameter_data_object
     )
   ]],
-  unsigned int id_vertex [[vertex_id]]
+  unsigned int index_vertex [[
+    vertex_id
+  ]]
 ) {
   struct data_vertex data_vertex;
 
   data_vertex.position = (
     data_object->view_model_matrix_projection *
     positions[
-      id_vertex
+      index_vertex
     ]
   );
 
   data_vertex.noise = (
-    (float) (
+    (float)
+    (
       10000 -
       data_object->noise
     ) /
@@ -48,15 +51,33 @@ struct data_vertex {
   );
 
   data_vertex.position_texture.x = (
-    id_vertex == 0 || id_vertex == 3
-    ? 0
-    : 1
+    (
+      (
+        index_vertex ==
+        0x00
+      ) ||
+      (
+        index_vertex ==
+        0x03
+      )
+    )
+    ? 0x00
+    : 0x01
   );
 
   data_vertex.position_texture.y = (
-    id_vertex == 0 || id_vertex == 1
-    ? 1
-    : 0
+    (
+      (
+        index_vertex ==
+        0x00
+      ) ||
+      (
+        index_vertex ==
+        0x01
+      )
+    )
+    ? 0x01
+    : 0x00
   );
 
   data_vertex.colour.x = (
@@ -79,19 +100,27 @@ struct data_vertex {
     data_frame->brightness_text
   );
 
-  return data_vertex;
+  return (
+    data_vertex
+  );
 }
 
 [[fragment]] float4 zoe_text_fragment(
-  struct data_vertex data_vertex [[stage_in]],
-  metal::texture2d<half> texture [[ texture(0) ]]
+  struct data_vertex data_vertex [[
+    stage_in
+  ]],
+  metal::texture2d<float> texture [[
+    texture(
+      0x00
+    )
+  ]]
 ) {
   constexpr metal::sampler sampler_texture(
     metal::filter::linear,
     metal::mip_filter::linear
   );
 
-  float4 texture_colour = float4(
+  float4 texture_colour = (
     texture.sample(
       sampler_texture,
       data_vertex.position_texture
@@ -100,25 +129,33 @@ struct data_vertex {
 
   return float4(
     (
-      texture_colour[0] *
+      texture_colour[
+        0x00
+      ] *
       data_vertex.colour.r *
       data_vertex.noise *
       data_vertex.brightness
     ),
     (
-      texture_colour[1] *
+      texture_colour[
+        0x01
+      ] *
       data_vertex.colour.g *
       data_vertex.noise *
       data_vertex.brightness
     ),
     (
-      texture_colour[2] *
+      texture_colour[
+        0x02
+      ] *
       data_vertex.colour.b *
       data_vertex.noise *
       data_vertex.brightness
     ),
     (
-      texture_colour[3] *
+      texture_colour[
+        0x03
+      ] *
       data_vertex.colour.a
     )
   );

@@ -6,7 +6,9 @@
 #include <metal_texture>
 
 struct data_vertex {
-  float4 position [[position]];
+  float4 position [[
+    position
+  ]];
   float2 position_texture;
   float brightness;
 };
@@ -27,7 +29,9 @@ struct data_vertex {
       metil_renderer_vertex_index_parameter_data_object
     )
   ]],
-  unsigned int index_vertex [[vertex_id]]
+  unsigned int index_vertex [[
+    vertex_id
+  ]]
 ) {
   struct data_vertex data_vertex;
 
@@ -58,8 +62,14 @@ struct data_vertex {
 }
 
 fragment float4 zoe_default_fragment(
-  struct data_vertex data_vertex [[ stage_in ]],
-  metal::texture2d<float> texture [[ texture(0x00) ]]
+  struct data_vertex data_vertex [[
+    stage_in
+  ]],
+  metal::texture2d<float> texture [[
+    texture(
+      0x00
+    )
+  ]]
 ) {
   constexpr metal::sampler sampler_texture(
     metal::filter::linear,

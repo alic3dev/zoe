@@ -16,7 +16,9 @@
 #include <metil_rendering/metil_renderer_vertex_index_parameter.h>
 
 struct data_vertex {
-  float4 position [[position]];
+  float4 position [[
+    position
+  ]];
 
   unsigned int index_vertex;
 
@@ -48,7 +50,9 @@ struct data_vertex {
       zoe_data_enemy_buffer_index_default_object
     )
   ]],
-  unsigned int index_vertex [[vertex_id]]
+  unsigned int index_vertex [[
+    vertex_id
+  ]]
 ) {
   struct data_vertex data_vertex;
 
@@ -87,7 +91,7 @@ struct data_vertex {
           positions[
             index_vertex
           ].y <=
-          2.0f
+          0x02
         )
         ? (
           1.0f -
@@ -105,13 +109,13 @@ struct data_vertex {
             (float)
             (
               index_vertex %
-              5
+              0x05
             ) /
             5.0f
           )
         )
       )
-      : 1.0f
+      : 0x01
     )
   );
 
@@ -169,7 +173,9 @@ struct data_vertex {
 }
 
 fragment float4 zoe_auop_fragment(
-  struct data_vertex data_vertex [[stage_in]]
+  struct data_vertex data_vertex [[
+    stage_in
+  ]]
 ) {
   float brightness = (
     math_c_bound_float(
@@ -206,8 +212,7 @@ fragment float4 zoe_auop_fragment(
         zoe_mesh_auop_length_segment_vertices_radial
       ) <
       0x0a
-    )
- &&
+    ) &&
     (
       (
         (

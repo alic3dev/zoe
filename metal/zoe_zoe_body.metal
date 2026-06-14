@@ -10,7 +10,9 @@
 #include <metal_texture>
 
 struct data_vertex {
-  float4 position [[position]];
+  float4 position [[
+    position
+  ]];
   float2 position_texture;
   float4 colour;
   float brightness;

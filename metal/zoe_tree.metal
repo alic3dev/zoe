@@ -13,7 +13,9 @@
 #include <metil_rendering/metil_renderer_vertex_index_parameter.h>
 
 struct data_vertex {
-  float4 position [[position]];
+  float4 position [[
+    position
+  ]];
   float2 position_texture;
   float distance;
   float brightness;
@@ -35,7 +37,9 @@ struct data_vertex {
       metil_renderer_vertex_index_parameter_data_object
     )
   ]],
-  unsigned int index_vertex [[vertex_id]]
+  unsigned int index_vertex [[
+    vertex_id
+  ]]
 ) {
   struct data_vertex data_vertex;
 
@@ -52,15 +56,15 @@ struct data_vertex {
             data_frame->time_elapsed,
             (
               index_vertex *
-              3 +
+              0x03 +
               data_object->noise
             ),
             (
               (float)
               (
                 index_vertex %
-                5 +
-                1
+                0x05 +
+                0x01
               ) /
               5.0f *
               1050.0f
@@ -69,8 +73,8 @@ struct data_vertex {
               (float)
               (
                 index_vertex %
-                5 +
-                1
+                0x05 +
+                0x01
               ) /
               5.0f *
               0.76
@@ -90,7 +94,8 @@ struct data_vertex {
               index_vertex /
               (float)
               zoe_mesh_tree_length_vertices_trunk
-            ) * 0.464
+            ) *
+            0.464
           )
         )
       )
@@ -130,13 +135,13 @@ struct data_vertex {
             (float)
             (
               index_vertex %
-              5
+              0x05
             ) /
             5.0f
           )
         )
       )
-      : 1.0f
+      : 0x01
     )
   );
 
@@ -219,7 +224,9 @@ struct data_vertex {
 }
 
 fragment float4 zoe_tree_fragment(
-  struct data_vertex data_vertex [[stage_in]]
+  struct data_vertex data_vertex [[
+    stage_in
+  ]]
 ) {
   float brightness = (
     math_c_bound_float(

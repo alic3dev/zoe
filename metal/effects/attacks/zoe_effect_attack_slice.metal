@@ -27,7 +27,9 @@
       zoe_data_attack_effect_buffer_index
     )
   ]],
-  unsigned int index_vertex [[vertex_id]]
+  unsigned int index_vertex [[
+    vertex_id
+  ]]
 ) {
   struct data_vertex_basic_coloured data_vertex_basic_coloured;
 
@@ -59,7 +61,8 @@
       index_vertex
     ].w +
     0.25f *
-    percentage  );
+    percentage
+  );
 
   data_vertex_basic_coloured.position = (
     data_object->view_model_matrix_projection *
@@ -113,10 +116,10 @@
     percentage *
     1.75f
   ) {
-  
- data_vertex_basic_coloured.colour.w = (
+    data_vertex_basic_coloured.colour.w = (
       0x00
-    );  }
+    );
+  }
  
   return (
     data_vertex_basic_coloured
@@ -124,7 +127,9 @@
 }
 
 [[fragment]] float4 zoe_effect_attack_slice_fragment(
-  struct data_vertex_basic_coloured data_vertex_basic_coloured [[stage_in]]
+  struct data_vertex_basic_coloured data_vertex_basic_coloured [[
+    stage_in
+  ]]
 ) {
   metil_metal_colours_float4_brightness_apply(
     &data_vertex_basic_coloured.colour,

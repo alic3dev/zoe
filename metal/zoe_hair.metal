@@ -8,7 +8,9 @@
 #include <metal_texture>
 
 struct data_vertex {
-  float4 position [[position]];
+  float4 position [[
+    position
+  ]];
   float2 position_texture;
   float4 colour;
   float brightness;
@@ -40,7 +42,9 @@ struct data_vertex {
       metil_renderer_vertex_index_parameter_joints
     )
   ]],
-  unsigned int index_vertex [[vertex_id]]
+  unsigned int index_vertex [[
+    vertex_id
+  ]]
 ) {
   struct data_vertex data_vertex;
 
@@ -62,18 +66,38 @@ struct data_vertex {
   );
 
   data_vertex.colour.x = (
-0.001f +
-    (float) (
-    (index_vertex * 0xb) % 0xf) / 0xf * 0.003f
-+
-    (float) ((index_vertex / 0x03) %0xa0) / 0xa0 * 0.002f  );
+    0.001f +
+    (float)
+    (
+      (
+        index_vertex *
+        0x0b
+      ) %
+      0x0f
+    ) /
+    0x0f *
+    0.003f +
+    (float)
+    (
+      (
+        index_vertex /
+        0x03
+      ) %
+      0xa0
+    ) /
+    0xa0 *
+    0.002f
+  );
 
   data_vertex.colour.y = (
-    0.001f + (float)(
+    0.001f +
+    (float)
     (
-      index_vertex) %
+      index_vertex %
       0x0a
-    ) / 0x0a * 0.002f
+    ) /
+    0x0a * 
+    0.002f
   );
 
   data_vertex.colour.z = (
@@ -81,12 +105,28 @@ struct data_vertex {
     (
       (float)
       (
-        (index_vertex * 0x03) %
-        0x8
+        (
+          index_vertex *
+          0x03
+        ) %
+        0x08
       ) /
       0x07
-    ) *    0.007f +
-    (1.0f - (float) ((index_vertex / 0x03) % 0xa0) / 0xa0) * 0.002f
+    ) *
+    0.007f +
+    (
+      1.0f - 
+      (float)
+      (
+        (
+          index_vertex /
+          0x03
+        ) %
+        0xa0
+      ) /
+      0xa0
+    ) *
+    0.002f
   );
 
   data_vertex.colour.w = (
@@ -103,7 +143,9 @@ struct data_vertex {
 }
 
 fragment float4 zoe_zoe_hair_fragment(
-  struct data_vertex data_vertex [[stage_in]]
+  struct data_vertex data_vertex [[
+    stage_in
+  ]]
 ) {
   return (
     data_vertex.colour

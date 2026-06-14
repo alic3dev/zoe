@@ -12,17 +12,18 @@ float4 zoe_metal_effect_shakiness_get(
       speed +
       offset
     ) %
-    100
+    0x64
   );
 
   if (
     (
       value %
-      2
-    ) == 0
+      0x02
+    ) ==
+    0x00
   ) {
-    amount = (
-      -amount
+    amount = -(
+      amount
     );
   }
 
@@ -39,9 +40,10 @@ float4 zoe_metal_effect_shakiness_get(
 
   value = (
     (
-      value + 13
+      value +
+      0x0d
     ) %
-    100
+    0x64
   );
 
   position_vertex_shaken.y = (
@@ -55,9 +57,10 @@ float4 zoe_metal_effect_shakiness_get(
 
   value = (
     (
-      value + 31
+      value +
+      0x1f
     ) %
-    100
+    0x64
   );
 
   position_vertex_shaken.z = (
@@ -70,7 +73,7 @@ float4 zoe_metal_effect_shakiness_get(
   );
 
   position_vertex_shaken.w = (
-    0.0f
+    0x00
   );
 
   return (

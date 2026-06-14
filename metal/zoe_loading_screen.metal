@@ -3,7 +3,9 @@
 #include <metil_rendering/metil_renderer_vertex_index_parameter.h>
 
 struct data_vertex {
-  float4 position [[position]];
+  float4 position [[
+    position
+  ]];
   float4 colour;
   float brightness;
 };
@@ -24,14 +26,16 @@ struct data_vertex {
       metil_renderer_vertex_index_parameter_data_object
     )
   ]],
-  unsigned int id_vertex [[vertex_id]]
+  unsigned int index_vertex [[
+    vertex_id
+  ]]
 ) {
   struct data_vertex data_vertex;
 
   data_vertex.position = (
     data_object->view_model_matrix_projection *
     positions[
-      id_vertex
+      index_vertex
     ]
   );
 
@@ -40,43 +44,66 @@ struct data_vertex {
   );
 
   float progress = (
-    (float) data_object->noise /
+    (float)
+    data_object->noise /
     10000.0f
   );
 
   data_vertex.colour.x = (
     (
-      progress < 0.3f
+      (
+        progress <
+        0.3f
+      )
       ? progress
       : 0.0f
-    ) / 0.3f
+    ) /
+    0.3f
   );
 
   data_vertex.colour.y = (
     (
-      (progress < 0.6f)
-      ? progress - 0.3f
+      (
+        progress <
+        0.6f
+      )
+      ? (
+        progress -
+        0.3f
+      )
       : 0.0f
-    ) / 0.3f
+    ) /
+    0.3f
   );
 
   data_vertex.colour.z = (
     (
-      (progress >= 0.6f)
-      ? progress - 0.6f
+      (
+        progress >=
+        0.6f
+      )
+      ? (
+        progress -
+        0.6f
+      )
       : 0.0f
-    ) / 0.4f
+    ) /
+    0.4f
   );
 
   data_vertex.colour.w = (
-    1.0f
+    0x01
   );
 
-  return data_vertex;
+  return (
+    data_vertex
+  );
 }
 
 [[fragment]] float4 zoe_loading_screen_fragment(
-  struct data_vertex data_vertex [[stage_in]]
+  struct data_vertex data_vertex [[
+    stage_in
+  ]]
 ) {
   return float4(
     (

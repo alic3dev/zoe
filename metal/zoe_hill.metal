@@ -13,7 +13,9 @@
 #include <metal_texture>
 
 struct data_vertex {
-  float4 position [[position]];
+  float4 position [[
+    position
+  ]];
   float2 position_texture;
   float2 position_lighting;
   float distance;
@@ -36,7 +38,9 @@ struct data_vertex {
       metil_renderer_vertex_index_parameter_data_object
     )
   ]],
-  unsigned int index_vertex [[vertex_id]]
+  unsigned int index_vertex [[
+    vertex_id
+  ]]
 ) {
   struct data_vertex data_vertex;
 
@@ -57,7 +61,7 @@ struct data_vertex {
         data_object->position.x,
         data_object->position.y,
         data_object->position.z,
-        1.0f
+        0x01
       ) +
       positions[
         index_vertex
@@ -67,7 +71,7 @@ struct data_vertex {
       data_frame->position_player.x,
       data_frame->position_player.y,
       data_frame->position_player.z,
-      1.0f
+      0x01
     )
   );
 
@@ -97,7 +101,6 @@ struct data_vertex {
   );
 
   data_vertex.position_lighting.x = (
-    0.0f +
     (
       positions[
         index_vertex
@@ -108,7 +111,6 @@ struct data_vertex {
   );
 
   data_vertex.position_lighting.y = (
-    0.0f +
     (
       positions[
         index_vertex
@@ -124,10 +126,24 @@ struct data_vertex {
 }
 
 fragment float4 zoe_hill_fragment(
-  struct data_vertex data_vertex [[stage_in]],
-  metal::texture2d<float> texture [[ texture(0x00) ]],
-  metal::texture2d<float> texture_secondary [[ texture(0x01) ]],
-  metal::texture2d<float> texture_lighting [[ texture(0x02) ]]
+  struct data_vertex data_vertex [[
+    stage_in
+  ]],
+  metal::texture2d<float> texture [[
+    texture(
+      0x00
+    )
+  ]],
+  metal::texture2d<float> texture_secondary [[
+    texture(
+      0x01
+    )
+  ]],
+  metal::texture2d<float> texture_lighting [[
+    texture(
+      0x02
+    )
+  ]]
 ) {
   constexpr metal::sampler sampler_texture(
     metal::t_address::repeat,
@@ -177,8 +193,8 @@ fragment float4 zoe_hill_fragment(
                   data_vertex.distance /
                   1000.0f
                 ),
-                1.0f,
-                0.0f
+                0x01,
+                0x00
               ) *
               math_c_pi_half
             ),

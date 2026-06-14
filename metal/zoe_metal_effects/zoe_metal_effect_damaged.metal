@@ -19,8 +19,10 @@ void zoe_metal_effect_damaged_apply_colours(
 
   if (
     time_elapsed >
-    0x64 *
-    0x0a
+    (
+      0x64 *
+      0x0a
+    )
   ) {
     return;
   }
