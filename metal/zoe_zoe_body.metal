@@ -48,7 +48,9 @@ struct data_vertex {
       0x01
     )
   ]],
-  unsigned int index_vertex [[vertex_id]]
+  unsigned int index_vertex [[
+    vertex_id
+  ]]
 ) {
   struct data_vertex data_vertex;
 
@@ -83,15 +85,21 @@ struct data_vertex {
       )
     ) /
     (float)
-    zoe_data_metal_player->health_maximum
+    zoe_data_metal_player->health_maximum *
+    0.9f +
+    0.1f
   );
 
   data_vertex.colour.x = (
-    (      (        0x03 +
+    (
+      (
+        0x03 +
         index_vertex
       ) %
-      0x04    ) <
-    0x02  );
+      0x04
+    ) <
+    0x02
+  );
 
   data_vertex.colour.y = (
     data_vertex.colour.x *
@@ -100,7 +108,11 @@ struct data_vertex {
 
   data_vertex.colour.z = (
     data_vertex.colour.y *
-    percentage_health
+    (
+      percentage_health *
+      0.5f +
+      0.5f
+    )
   );
 
   data_vertex.colour.w = (
@@ -117,7 +129,9 @@ struct data_vertex {
 }
 
 fragment float4 zoe_zoe_body_fragment(
-  struct data_vertex data_vertex [[stage_in]]
+  struct data_vertex data_vertex [[
+    stage_in
+  ]]
 ) {
   return (
     data_vertex.colour
