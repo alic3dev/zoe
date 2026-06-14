@@ -3,7 +3,9 @@
 #include <metil_rendering/metil_renderer_vertex_index_parameter.h>
 
 struct data_vertex {
-  float4 position [[position]];
+  float4 position [[
+    position
+  ]];
   float3 colour;
   float brightness;
 };
@@ -24,14 +26,16 @@ struct data_vertex {
       metil_renderer_vertex_index_parameter_data_object
     )
   ]],
-  unsigned int id_vertex [[vertex_id]]
+  unsigned int index_vertex [[
+    vertex_id
+  ]]
 ) {
   struct data_vertex data_vertex;
 
   data_vertex.position = (
     data_object->view_model_matrix_projection *
     positions[
-      id_vertex
+      index_vertex
     ]
   );
 
@@ -40,24 +44,58 @@ struct data_vertex {
   );
 
   if (
-    id_vertex <= 5000
+    index_vertex <=
+    0x1388
   ) {
-    data_vertex.colour.r = 1.0f;
-    data_vertex.colour.g = 1.0f;
-    data_vertex.colour.b = 1.0f;
+    data_vertex.colour.x = (
+      0x01
+    );
+    
+    data_vertex.colour.y = (
+      0x01
+    );
+    
+    data_vertex.colour.z = (
+      0x01
+    );
 
     if (
-      id_vertex % 32 == 0 &&
-      id_vertex >= 100
+      (
+        (
+          index_vertex %
+          0x20
+        ) ==
+        0x00
+      ) &&
+      (
+        index_vertex >=
+        0x64
+      )
     ) {
-      data_vertex.colour.x = 0.0f;
-      data_vertex.colour.g = 0.0f;
-      data_vertex.colour.b = 0.0f;
+      data_vertex.colour.x = (
+        0x00
+      );
+      
+      data_vertex.colour.y = (
+        0x00
+      );
+      
+      data_vertex.colour.z = (
+        0x00
+      );
     }
   } else {
-    data_vertex.colour.r = 0.0f;
-    data_vertex.colour.g = 0.0f;
-    data_vertex.colour.b = 0.0f;
+    data_vertex.colour.z = (
+      0x00
+    );
+    
+    data_vertex.colour.y = (
+      0x00
+    );
+    
+    data_vertex.colour.z = (
+      0x00
+    );
   }
 
   return (
@@ -66,12 +104,23 @@ struct data_vertex {
 }
 
 fragment float4 zoe_mushroom_fragment(
-  struct data_vertex data_vertex [[stage_in]]
+  struct data_vertex data_vertex [[
+    stage_in
+  ]]
 ) {
   return float4(
-    data_vertex.colour.r * data_vertex.brightness,
-    data_vertex.colour.g * data_vertex.brightness,
-    data_vertex.colour.b * data_vertex.brightness,
-    1.0f
+    (
+      data_vertex.colour.r *
+      data_vertex.brightness
+    ),
+    (
+      data_vertex.colour.g *
+      data_vertex.brightness
+    ),
+    (
+      data_vertex.colour.b *
+      data_vertex.brightness
+    ),
+    0x01
   );
 }
