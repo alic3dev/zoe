@@ -43,12 +43,22 @@ id<MTLTexture> zoe_texture_hill_lighting_generate(
 
   texture = [
     metal_device
-    newTextureWithDescriptor: texture_descriptor
+    newTextureWithDescriptor: (
+      texture_descriptor
+    )
   ];
 
   MTLRegion region = {
-    {0x00, 0x00, 0x00},
-    {texture_descriptor.width, texture_descriptor.height, 0x01}
+    {
+      0x00,
+      0x00, 
+      0x00
+    },
+    {
+      texture_descriptor.width,
+      texture_descriptor.height,
+      0x01
+    }
   };
 
   unsigned int length_bytes_texture_row = (
@@ -72,13 +82,23 @@ id<MTLTexture> zoe_texture_hill_lighting_generate(
   );
 
   for (
-    unsigned int index_x = 0;
-    index_x < texture_descriptor.width;
+    unsigned int index_x = (
+      0x00
+    );
+    (
+      index_x <
+      texture_descriptor.width
+    );
     ++index_x
   ) {
     for (
-      unsigned int index_y = 0;
-      index_y < texture_descriptor.height;
+      unsigned int index_y = (
+        0x00
+      );
+      (
+        index_y <
+        texture_descriptor.height
+      );
       ++index_y
     ) {
       unsigned int index_pixel = (
@@ -189,11 +209,12 @@ id<MTLTexture> zoe_texture_hill_lighting_generate(
         unsigned char value = (
           (
             1.0f -
-           // math_c_sine(
               math_c_sine(
-                (                  math_c_sine(
+                (
+                  math_c_sine(
                     (
-                      (                        (float)
+                      (
+                        (float)
                         (
                           math_c_absolute_char(
                             offset_y
@@ -285,10 +306,18 @@ id<MTLTexture> zoe_texture_hill_lighting_generate(
 
   [
     texture
-    replaceRegion: region
-    mipmapLevel: 0
-    withBytes: pixel_bytes
-    bytesPerRow: length_bytes_texture_row
+    replaceRegion: (
+      region
+    )
+    mipmapLevel: (
+      0x00
+    )
+    withBytes: (
+      pixel_bytes
+    )
+    bytesPerRow: (
+      length_bytes_texture_row
+    )
   ];
 
   [
