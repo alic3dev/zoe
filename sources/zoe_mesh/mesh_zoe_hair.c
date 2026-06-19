@@ -2,6 +2,7 @@
 
 #include <clic3_memory.h>
 
+#include <math_c_absolute.h>
 #include <math_c_pi.h>
 #include <math_c_sine.h>
 #include <math_c_vector.h>
@@ -29,8 +30,8 @@ void mesh_zoe_hair_initialize(
   );
 
   metil_mesh_zoe_hair->length_vertices = (
-    0x3 *
-    length_segments
+    length_segments *
+    0x03
   );
 
   metil_mesh_zoe_hair->length_indices = (
@@ -58,11 +59,14 @@ void mesh_zoe_hair_initialize(
   );
 
   float height_lower = (
-    -1.0f
+    -1.75f *
+    1.5
   );
 
   float height_upper = (
-    2.0f
+    1.75f *
+    1.5 -
+    0.5f
   );
 
   float distance_height = (
@@ -71,7 +75,8 @@ void mesh_zoe_hair_initialize(
   );
 
   float height_top = (
-    2.5f
+    1.75f *
+    1.5f
   );
 
   for (
@@ -98,20 +103,22 @@ void mesh_zoe_hair_initialize(
       index_segment /
       length_segments_radial
     );
+    
+    float percentage_segment = (
+      (float)
+      (
+        index_segment %
+        length_segments_radial
+      ) /
+      (float)
+      (
+        length_segments_radial -
+        0x01
+      )
+    );
 
     float angle = (
-      -(
-        (float)
-        (
-          index_segment %
-          length_segments_radial
-        ) /
-        (float)
-        (
-          length_segments_radial -
-          0x01
-        )
-      ) *
+      -percentage_segment *
       1.5f +
       math_c_pi_half *
       1.175f
@@ -119,19 +126,23 @@ void mesh_zoe_hair_initialize(
 
     float percentage_section = (
       (float)
-      (index_section - 0x01) /
+      index_section /
       (float)
-      length_segment_sections
+      (
+        length_segment_sections -
+        0x01
+      )
     );
 
     float percentage_section_end = (
+      0x01 -
+      (float)
+      index_section /
       (float)
       (
-        index_section +
-        0x00
-      ) /
-      (float)
-      length_segment_sections
+        length_segment_sections -
+        0x01
+      )
     );
 
     float radius = (
@@ -149,6 +160,29 @@ void mesh_zoe_hair_initialize(
       ) *
       0.2f
     );
+    
+    float variation = (
+      (float)
+      (
+        (
+          offset_index_vertex *
+          0x05 +
+          offset_index_vertex +
+          index_segment +
+          (
+            (
+              offset_index_vertex *
+              0x03
+            ) %
+            0x04
+          )
+        ) %
+        0x0a
+      ) /
+      0x09 *
+      0.25f *
+      percentage_section
+    );
 
     metil_mesh_zoe_hair->vertices[
       offset_index_vertex
@@ -160,21 +194,103 @@ void mesh_zoe_hair_initialize(
         ),
         math_c_pi
       ) *
-      radius
+      (
+        radius +
+        variation
+      )
+    );
+    
+    variation = (
+      (float)
+      (
+        (
+          offset_index_vertex *
+          0x03 +
+          offset_index_vertex *
+          0x02 +
+          index_segment *
+          0x03 +
+          (
+            (
+              offset_index_vertex *
+              0x06
+            ) %
+            0x07
+          )
+        ) %
+        0x0b
+      ) /
+      0x0a *
+      0.25f *
+      percentage_section
     );
 
     metil_mesh_zoe_hair->vertices[
       offset_index_vertex
     ].y = (
-      lower
+      (
+        index_segment >=
+        length_segments_radial *
+        0x02
+      )
       ? (
         height_upper -
         (
-          percentage_section_end *
+          (
+            percentage_section_end *
+            0.9f +
+            0.1f
+          ) *
           distance_height
-        )
+        ) -
+        (
+          math_c_absolute_float(
+            math_c_cosine(
+              angle *
+              math_c_pi,
+              math_c_pi
+            )
+          )
+        ) *
+        distance_height *
+        (
+          percentage_section_end *
+          0.9f +
+          0.1f
+        ) *
+        math_c_sine(
+          percentage_segment *
+          math_c_pi,
+          math_c_pi
+        ) +
+        variation
       )
       : height_upper
+    );
+    
+    variation = (
+      (float)
+      (
+        (
+          offset_index_vertex *
+          0x02 +
+          offset_index_vertex *
+          0x08 +
+          index_segment *
+          0x02 +
+          (
+            (
+              offset_index_vertex *
+              0x05
+            ) %
+            0x06
+          )
+        ) %
+        0x09
+      ) /
+      0x08 *
+      0.125f *
+      percentage_section
     );
 
     metil_mesh_zoe_hair->vertices[
@@ -187,12 +303,39 @@ void mesh_zoe_hair_initialize(
         ),
         math_c_pi
       ) *
-      radius
+      (
+        radius +
+        variation
+      )
     );
 
     angle = (
       angle -
       0.05f
+    );
+    
+    variation = (
+      (float)
+      (
+        (
+          offset_index_vertex +
+          offset_index_vertex *
+          0x07 +
+          index_segment *
+          0x09 +
+          (
+            (
+              offset_index_vertex *
+              0x02
+            ) %
+            0x03
+          )
+        ) %
+        0x0c
+      ) /
+      0x0b *
+      0.25f *
+      percentage_section
     );
 
     metil_mesh_zoe_hair->vertices[
@@ -200,16 +343,56 @@ void mesh_zoe_hair_initialize(
       0x01
     ].x = (
       lower
-      ?
-math_c_sine(
-        (
-          angle *
+      ? (
+        math_c_sine(
+          (
+            angle *
+            math_c_pi
+          ),
           math_c_pi
-        ),
-        math_c_pi
-      ) * radius * 0.9f      : (
-        index_segment % 2 == 0x00
-      ) ? -0.1f : 0.1f
+        ) *
+        (
+          variation +
+          radius
+        ) *
+        0.9f
+      )
+      : (
+        (
+          (
+            index_segment %
+            0x02
+          ) ==
+          0x00
+        )
+        ? -0.1f
+        : 0.1f
+      )
+    );
+    
+    variation = (
+      (float)
+      (
+        (
+          offset_index_vertex *
+          0x04 +
+          offset_index_vertex +
+          0x05 +
+          index_segment *
+          0x02 +
+          (
+            (
+              offset_index_vertex *
+              0x09
+            ) %
+            0x05
+          )
+        ) %
+        0x0e
+      ) /
+      0x0d *
+      0.25f *
+      percentage_section
     );
 
     metil_mesh_zoe_hair->vertices[
@@ -218,13 +401,42 @@ math_c_sine(
     ].y = (
       lower
       ? (
-        height_upper + 0.25f -
+        height_upper +
+        0.25f -
         (
-          percentage_section *
-          distance_height
+          (
+            percentage_section *
+            0.9f +
+            0.1f
+          ) *
+          (
+            distance_height +
+            variation
+          )
         )
       )
       : height_top
+    );
+    
+    variation = (
+      (float)
+      (
+        (
+          offset_index_vertex +
+          offset_index_vertex *
+          0x03 +
+          index_segment *
+          0x04 +
+          (
+            offset_index_vertex %
+            0x02
+          )
+        ) %
+        0x04
+      ) /
+      0x05 *
+      0.125f *
+      percentage_section
     );
 
     metil_mesh_zoe_hair->vertices[
@@ -239,16 +451,49 @@ math_c_sine(
         math_c_pi
       ) *
       (
-        lower
-        ? radius * 0.9f
-        : (
-          0.8f        )
+        (
+          lower !=
+          0x00
+        )
+        ? (
+          (
+            radius +
+            variation
+          ) *
+          0.9f
+        )
+        : 0.8f
       )
     );
 
     angle = (
       angle -
       0.05f
+    );
+    
+    variation = (
+      (float)
+      (
+        (
+          offset_index_vertex *
+          0x05 +
+          offset_index_vertex +
+          0x0a +
+          index_segment *
+          0x08 +
+          (
+            (
+              offset_index_vertex *
+              0x04
+            ) %
+            0x09
+          )
+        ) %
+        0x0a
+      ) /
+      0x09 *
+      0.25f *
+      percentage_section
     );
 
     metil_mesh_zoe_hair->vertices[
@@ -262,7 +507,35 @@ math_c_sine(
         ),
         math_c_pi
       ) *
-      radius
+      (
+        radius +
+        variation
+      )
+    );
+    
+    variation = (
+      (float)
+      (
+        (
+          offset_index_vertex *
+          0x05 +
+          offset_index_vertex +
+          0x02 +
+          index_segment *
+          0x05 +
+          (
+            (
+              offset_index_vertex *
+              0x05
+            ) %
+            0x05
+          )
+        ) %
+        0x08
+      ) /
+      0x07 *
+      0.125f *
+      percentage_section
     );
 
     metil_mesh_zoe_hair->vertices[
@@ -271,7 +544,34 @@ math_c_sine(
     ].y = (
       metil_mesh_zoe_hair->vertices[
         offset_index_vertex
-      ].y    );
+      ].y +
+      variation
+    );
+    
+    variation = (
+      (float)
+      (
+        (
+          offset_index_vertex *
+          0x03 +
+          offset_index_vertex +
+          0x06 +
+          index_segment *
+          0x05 +
+          (
+            (
+              offset_index_vertex *
+              0x04
+            ) %
+            0x03
+          )
+        ) %
+        0x0e
+      ) /
+      0x0d *
+      0.125f *
+      percentage_section
+    );
 
     metil_mesh_zoe_hair->vertices[
       offset_index_vertex +
@@ -284,10 +584,40 @@ math_c_sine(
         ),
         math_c_pi
       ) *
-      radius
+      (
+        radius +
+        variation
+      )
     );
   }
-
+  
+  struct math_c_vector2_float minimum_maximum_x = {
+    .x = (
+      0xff
+    ),
+    .y = (
+      -0xff
+    )
+  };
+  
+  struct math_c_vector2_float minimum_maximum_y = {
+    .x = (
+      0xff
+    ),
+    .y = (
+      -0xff
+    )
+  };
+  
+  struct math_c_vector2_float minimum_maximum_z = {
+    .x = (
+      0xff
+    ),
+    .y = (
+      -0xff
+    )
+  };
+  
   for (
     unsigned int index_indices = (
       0x00
@@ -298,6 +628,84 @@ math_c_sine(
     );
     ++index_indices
   ) {
+    if (
+      metil_mesh_zoe_hair->vertices[
+        index_indices
+      ].x <
+      minimum_maximum_x.x
+    ) {
+      minimum_maximum_x.x = (
+        metil_mesh_zoe_hair->vertices[
+          index_indices
+        ].x
+      );
+    }
+    
+    if (
+      metil_mesh_zoe_hair->vertices[
+        index_indices
+      ].x >
+      minimum_maximum_x.y
+    ) {
+      minimum_maximum_x.y = (
+        metil_mesh_zoe_hair->vertices[
+          index_indices
+        ].x
+      );
+    }
+    
+    if (
+      metil_mesh_zoe_hair->vertices[
+        index_indices
+      ].y <
+      minimum_maximum_y.x
+    ) {
+      minimum_maximum_y.x = (
+        metil_mesh_zoe_hair->vertices[
+          index_indices
+        ].y
+      );
+    }
+    
+    if (
+      metil_mesh_zoe_hair->vertices[
+        index_indices
+      ].y >
+      minimum_maximum_y.y
+    ) {
+      minimum_maximum_y.y = (
+        metil_mesh_zoe_hair->vertices[
+          index_indices
+        ].y
+      );
+    }
+    
+    if (
+      metil_mesh_zoe_hair->vertices[
+        index_indices
+      ].z <
+      minimum_maximum_z.x
+    ) {
+      minimum_maximum_z.x = (
+        metil_mesh_zoe_hair->vertices[
+          index_indices
+        ].z
+      );
+    }
+    
+    if (
+      metil_mesh_zoe_hair->vertices[
+        index_indices
+      ].z >
+      minimum_maximum_z.y
+    ) {
+      minimum_maximum_z.y = (
+        metil_mesh_zoe_hair->vertices[
+          index_indices
+        ].z
+      );
+    }
+  
     metil_mesh_zoe_hair->vertices[
       index_indices
     ].w = (
@@ -310,4 +718,28 @@ math_c_sine(
       index_indices
     );
   }
+  
+  metil_mesh_zoe_hair->size.x = (
+    (
+      minimum_maximum_x.y -
+      minimum_maximum_x.x
+    ) /
+    0x02
+  );
+  
+  metil_mesh_zoe_hair->size.y = (
+    (
+      minimum_maximum_y.y -
+      minimum_maximum_y.x
+    ) /
+    0x02
+  );
+  
+  metil_mesh_zoe_hair->size.z = (
+    (
+      minimum_maximum_z.y -
+      minimum_maximum_z.x
+    ) /
+    0x02
+  );
 }
