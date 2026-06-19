@@ -19,6 +19,41 @@
   mesh_zoe_body_length_segments_foot_radial\
 )
 
+#define mesh_zoe_body_length_segments_toe_big mesh_zoe_body_length_segments_multiplied
+#define mesh_zoe_body_length_segments_toe_big_radial mesh_zoe_body_length_segments_multiplied
+#define mesh_zoe_body_length_vertices_toe_big (\
+  mesh_zoe_body_length_segments_toe_big *\
+  mesh_zoe_body_length_segments_toe_big_radial\
+)  
+
+#define mesh_zoe_body_length_segments_toe_index mesh_zoe_body_length_segments_multiplied
+#define mesh_zoe_body_length_segments_toe_index_radial mesh_zoe_body_length_segments_multiplied
+#define mesh_zoe_body_length_vertices_toe_index (\
+  mesh_zoe_body_length_segments_toe_index *\
+  mesh_zoe_body_length_segments_toe_index_radial\
+)
+
+#define mesh_zoe_body_length_segments_toe_middle mesh_zoe_body_length_segments_multiplied
+#define mesh_zoe_body_length_segments_toe_middle_radial mesh_zoe_body_length_segments_multiplied
+#define mesh_zoe_body_length_vertices_toe_middle (\
+  mesh_zoe_body_length_segments_toe_middle *\
+  mesh_zoe_body_length_segments_toe_middle_radial\
+)
+
+#define mesh_zoe_body_length_segments_toe_ring mesh_zoe_body_length_segments_multiplied
+#define mesh_zoe_body_length_segments_toe_ring_radial mesh_zoe_body_length_segments_multiplied
+#define mesh_zoe_body_length_vertices_toe_ring (\
+  mesh_zoe_body_length_segments_toe_ring *\
+  mesh_zoe_body_length_segments_toe_ring_radial\
+)
+
+#define mesh_zoe_body_length_segments_toe_pinky mesh_zoe_body_length_segments_multiplied
+#define mesh_zoe_body_length_segments_toe_pinky_radial mesh_zoe_body_length_segments_multiplied
+#define mesh_zoe_body_length_vertices_toe_pinky (\
+  mesh_zoe_body_length_segments_toe_pinky *\
+  mesh_zoe_body_length_segments_toe_pinky_radial\
+)
+
 #define mesh_zoe_body_length_segments_leg mesh_zoe_body_length_segments_multiplied
 #define mesh_zoe_body_length_segments_leg_radial mesh_zoe_body_length_segments_multiplied
 #define mesh_zoe_body_length_vertices_leg (\
@@ -118,7 +153,15 @@
 )
 
 #define mesh_zoe_body_length_vertices (\
-  mesh_zoe_body_length_vertices_leg *\
+  (\
+    mesh_zoe_body_length_vertices_leg +\
+    mesh_zoe_body_length_vertices_foot +\
+    mesh_zoe_body_length_vertices_toe_big +\
+    mesh_zoe_body_length_vertices_toe_index +\
+    mesh_zoe_body_length_vertices_toe_middle +\
+    mesh_zoe_body_length_vertices_toe_ring +\
+    mesh_zoe_body_length_vertices_toe_pinky\
+  ) *\
   0x02 +\
   mesh_zoe_body_length_vertices_hips +\
   mesh_zoe_body_length_vertices_torso +\
@@ -135,8 +178,22 @@
   0x02\
 )
 
-#define mesh_zoe_body_index_vertex_leg_right_start 0x00
-#define mesh_zoe_body_index_vertex_leg_right_end mesh_zoe_body_length_vertices_leg
+#define mesh_zoe_body_index_vertex_foot_right_start 0x00
+#define mesh_zoe_body_index_vertex_foot_right_end (\
+  mesh_zoe_body_index_vertex_foot_right_start +\
+  mesh_zoe_body_length_vertices_foot +\
+  mesh_zoe_body_length_vertices_toe_big +\
+  mesh_zoe_body_length_vertices_toe_index +\
+  mesh_zoe_body_length_vertices_toe_middle +\
+  mesh_zoe_body_length_vertices_toe_ring +\
+  mesh_zoe_body_length_vertices_toe_pinky\
+)
+
+#define mesh_zoe_body_index_vertex_leg_right_start mesh_zoe_body_index_vertex_foot_right_end
+#define mesh_zoe_body_index_vertex_leg_right_end (\
+  mesh_zoe_body_index_vertex_foot_right_start +\
+  mesh_zoe_body_length_vertices_leg\
+)
 
 #define mesh_zoe_body_index_vertex_calf_right_start mesh_zoe_body_index_vertex_leg_right_start
 #define mesh_zoe_body_index_vertex_calf_right_end (\
@@ -156,7 +213,18 @@
   )\
 )
 
-#define mesh_zoe_body_index_vertex_leg_left_start mesh_zoe_body_index_vertex_leg_right_end
+#define mesh_zoe_body_index_vertex_foot_left_start mesh_zoe_body_index_vertex_thigh_right_end
+#define mesh_zoe_body_index_vertex_foot_left_end (\
+  mesh_zoe_body_index_vertex_foot_left_start +\
+  mesh_zoe_body_length_vertices_foot +\
+  mesh_zoe_body_length_vertices_toe_big +\
+  mesh_zoe_body_length_vertices_toe_index +\
+  mesh_zoe_body_length_vertices_toe_middle +\
+  mesh_zoe_body_length_vertices_toe_ring +\
+  mesh_zoe_body_length_vertices_toe_pinky\
+)
+
+#define mesh_zoe_body_index_vertex_leg_left_start mesh_zoe_body_index_vertex_foot_left_end
 #define mesh_zoe_body_index_vertex_leg_left_end (\
   mesh_zoe_body_index_vertex_leg_left_start +\
   mesh_zoe_body_length_vertices_leg\

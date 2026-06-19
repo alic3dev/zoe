@@ -84,7 +84,8 @@ void zoe_model_zoe_initialize(
 
   metil_object_zoe_head->position.y = (
     metil_object_zoe_body->mesh.size.y +
-    metil_object_zoe_head->mesh.size.y
+    metil_object_zoe_head->mesh.size.y /
+    0x02
   );
 
   metil_object_zoe_hair->position.y = (
@@ -266,7 +267,9 @@ void zoe_model_zoe_initialize(
   );
 
   metil_joint_shoulder_left->position.y = (
-    metil_object_zoe_body->mesh.size.y
+    metil_object_zoe_body->mesh.vertices[
+      mesh_zoe_body_index_vertex_upper_arm_right_start
+    ].y
   );
 
   metil_joint_shoulder_left->position.x = (
@@ -274,7 +277,9 @@ void zoe_model_zoe_initialize(
   );
 
   metil_joint_shoulder_right->position.y = (
-    metil_object_zoe_body->mesh.size.y
+    metil_object_zoe_body->mesh.vertices[
+      mesh_zoe_body_index_vertex_upper_arm_left_start
+    ].y
   );
 
   metil_joint_shoulder_right->position.x = (
@@ -286,8 +291,9 @@ void zoe_model_zoe_initialize(
   );
 
   metil_joint_elbow_left->position.y = (
-    metil_object_zoe_body->mesh.size.y *
-    0.80f
+    metil_object_zoe_body->mesh.vertices[
+      mesh_zoe_body_index_vertex_forearm_left_start
+    ].y
   );
 
   metil_joint_elbow_right->position.x = (
@@ -295,13 +301,15 @@ void zoe_model_zoe_initialize(
   );
 
   metil_joint_elbow_right->position.y = (
-    metil_object_zoe_body->mesh.size.y *
-    0.80f
+    metil_object_zoe_body->mesh.vertices[
+      mesh_zoe_body_index_vertex_forearm_right_start
+    ].y
   );
 
   metil_joint_hips->position.y = (
-    metil_object_zoe_body->mesh.size.y *
-    0.6125f
+    metil_object_zoe_body->mesh.vertices[
+      mesh_zoe_body_index_vertex_hips_start
+    ].y
   );
 
   metil_joint_hip_left->position.x = (
@@ -309,8 +317,9 @@ void zoe_model_zoe_initialize(
   );
 
   metil_joint_hip_left->position.y = (
-    metil_object_zoe_body->mesh.size.y *
-    0.6f
+    metil_object_zoe_body->mesh.vertices[
+      mesh_zoe_body_index_vertex_hips_start
+    ].y
   );
 
   metil_joint_hip_right->position.x = (
@@ -318,8 +327,9 @@ void zoe_model_zoe_initialize(
   );
 
   metil_joint_hip_right->position.y = (
-    metil_object_zoe_body->mesh.size.y *
-    0.6f
+    metil_object_zoe_body->mesh.vertices[
+      mesh_zoe_body_index_vertex_hips_start
+    ].y
   );
 
   metil_joint_knee_left->position.x = (
@@ -327,8 +337,9 @@ void zoe_model_zoe_initialize(
   );
 
   metil_joint_knee_left->position.y = (
-    metil_object_zoe_body->mesh.size.y *
-    0.29f
+    metil_object_zoe_body->mesh.vertices[
+      mesh_zoe_body_index_vertex_calf_left_end
+    ].y
   );
 
   metil_joint_knee_right->position.x = (
@@ -336,8 +347,9 @@ void zoe_model_zoe_initialize(
   );
 
   metil_joint_knee_right->position.y = (
-    metil_object_zoe_body->mesh.size.y *
-    0.29f
+    metil_object_zoe_body->mesh.vertices[
+      mesh_zoe_body_index_vertex_calf_right_end
+    ].y
   );
 
   unsigned char index_joint;

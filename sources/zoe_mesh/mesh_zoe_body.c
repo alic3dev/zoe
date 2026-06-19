@@ -30,10 +30,6 @@ void mesh_zoe_body_initialize(
     math_c_pi
   );
 
-  float length_foot = (
-    circumference_ankle
-  );
-
   float diameter_foot = (
     diameter_ankle
   );
@@ -219,6 +215,48 @@ void mesh_zoe_body_initialize(
     length_finger_index *
     0.80f
   );
+  
+  float height_foot = (
+    length_finger_index
+  );
+  
+  float length_foot = (
+    length_hand +
+    length_finger_index
+  );
+  
+  float radius_toe_big = (
+    radius_thumb
+  );
+  
+  float radius_toe = (
+    radius_finger
+  );
+  
+  float length_toe_big = (
+    length_finger_index /
+    0x02
+  );
+  
+  float length_toe_index = (
+    length_toe_big *
+    1.05f
+  );
+  
+  float length_toe_middle = (
+    length_toe_index *
+    0.9f
+  );
+  
+  float length_toe_ring = (
+    length_toe_index *
+    0.85f
+  );
+  
+  float length_toe_pinky = (
+    length_toe_index *
+    0.8f
+  );
 
   metil_mesh_zoe_body->size.x = (
     (
@@ -230,6 +268,7 @@ void mesh_zoe_body_initialize(
   );
 
   metil_mesh_zoe_body->size.y = (
+    length_foot +
     length_leg +
     length_hips +
     length_torso
@@ -253,6 +292,74 @@ void mesh_zoe_body_initialize(
 
   unsigned int length_vertices_foot = (
     mesh_zoe_body_length_vertices_foot
+  );
+  
+  unsigned int length_segments_toe_big = (
+    mesh_zoe_body_length_segments_toe_big
+  );
+
+  unsigned int length_segments_toe_big_radial = (
+    mesh_zoe_body_length_segments_toe_big_radial
+  );
+
+  unsigned int length_vertices_toe_big = (
+    mesh_zoe_body_length_vertices_toe_big
+  );
+  
+  unsigned int length_segments_toe_index = (
+    mesh_zoe_body_length_segments_toe_index
+  );
+
+  unsigned int length_segments_toe_index_radial = (
+    mesh_zoe_body_length_segments_toe_index_radial
+  );
+
+  unsigned int length_vertices_toe_index = (
+    mesh_zoe_body_length_vertices_toe_index
+  );
+  
+  unsigned int length_segments_toe_middle = (
+    mesh_zoe_body_length_segments_toe_middle
+  );
+
+  unsigned int length_segments_toe_middle_radial = (
+    mesh_zoe_body_length_segments_toe_middle_radial
+  );
+
+  unsigned int length_vertices_toe_middle = (
+    mesh_zoe_body_length_vertices_toe_middle
+  );
+
+  unsigned int length_segments_toe_ring = (
+    mesh_zoe_body_length_segments_toe_ring
+  );
+
+  unsigned int length_segments_toe_ring_radial = (
+    mesh_zoe_body_length_segments_toe_ring_radial
+  );
+
+  unsigned int length_vertices_toe_ring = (
+    mesh_zoe_body_length_vertices_toe_ring
+  );
+  
+  unsigned int length_segments_toe_pinky = (
+    mesh_zoe_body_length_segments_toe_pinky
+  );
+
+  unsigned int length_segments_toe_pinky_radial = (
+    mesh_zoe_body_length_segments_toe_pinky_radial
+  );
+
+  unsigned int length_vertices_toe_pinky = (
+    mesh_zoe_body_length_vertices_toe_pinky
+  );
+  
+  unsigned int length_vertices_toes = (
+    length_vertices_toe_big +
+    length_vertices_toe_index +
+    length_vertices_toe_middle +
+    length_vertices_toe_ring +
+    length_vertices_toe_pinky
   );
 
   unsigned int length_segments_leg = (
@@ -413,7 +520,11 @@ void mesh_zoe_body_initialize(
 
   metil_mesh_zoe_body->length_indices = (
     (
-      length_vertices_leg *
+      (
+        length_vertices_leg +
+        length_vertices_foot +
+        length_vertices_toes
+      ) *
       0x02 +
       length_vertices_hips +
       length_vertices_torso +
@@ -460,18 +571,297 @@ void mesh_zoe_body_initialize(
     0.0f
   );
 
-  offset_height = (
-    radius_foot
-  );
-
   for (
-    unsigned char index_leg = 0;
-    index_leg < 2;
+    unsigned char index_leg = (
+      0x00
+    );
+    (
+      index_leg <
+      0x02
+    );
     ++index_leg
   ) {
+    offset_height = (
+      0x00
+    );
+    
     for (
-      unsigned int index_vertex_leg = 0;
-      index_vertex_leg < length_vertices_leg;
+      unsigned int index_vertex_foot = (
+        0x00
+      );
+      (
+        index_vertex_foot <
+        length_vertices_foot
+      );
+      ++index_vertex_foot
+    ) {
+      unsigned int index_segment_foot = (
+        index_vertex_foot /
+        length_segments_foot_radial
+      );
+
+      unsigned int index_segment_radial_foot = (
+        index_vertex_foot %
+        length_segments_foot_radial
+      );
+
+      float percentage_segment_foot = (
+        (float)
+        index_segment_foot /
+        (float)
+        (
+          length_segments_foot -
+          0x01
+        )
+      );
+
+      float percentage_segment_radial_foot = (
+        (float)
+        index_segment_radial_foot /
+        (float)
+        (
+          length_segments_foot_radial -
+          0x01
+        )
+      );
+      
+      metil_mesh_zoe_body->vertices[
+        index_vertex
+      ].x = (
+        0x00
+      );
+      
+      metil_mesh_zoe_body->vertices[
+        index_vertex
+      ].y = (
+        0x00
+      );
+      
+      metil_mesh_zoe_body->vertices[
+        index_vertex
+      ].z = (
+        0x00
+      );
+      
+      metil_mesh_zoe_body->vertices[
+        index_vertex
+      ].w = (
+        0x01
+      );
+      
+      index_vertex = (
+        index_vertex +
+        0x01
+      );
+    }
+    
+    for (
+      unsigned char index_toe = (
+        0x00
+      );
+      (
+        index_toe <
+        0x05
+      );
+      ++index_toe
+    ) {
+      unsigned int* length_vertices_toe;
+      unsigned int* length_segments_toe;
+      unsigned int* length_segments_toe_radial;
+      
+      float* radius_toe_current = &(
+        radius_toe
+      );
+      
+      float* length_toe;
+      
+      switch (
+        index_toe
+      ) {
+        case 0x00: {
+          length_vertices_toe = &(
+            length_vertices_toe_big
+          );
+          
+          length_segments_toe = &(
+            length_segments_toe_big
+          );
+          
+          length_segments_toe_radial = &(
+            length_segments_toe_big_radial
+          );
+          
+          radius_toe_current = &(
+            radius_toe_big
+          );
+          
+          length_toe = &(
+            length_toe_big
+          );
+        
+          break;
+        }        
+        case 0x01: {
+          length_vertices_toe = &(
+            length_vertices_toe_index
+          );
+          
+          length_segments_toe = &(
+            length_segments_toe_index
+          );
+          
+          length_segments_toe_radial = &(
+            length_segments_toe_index_radial
+          );
+          
+          length_toe = &(
+            length_toe_index
+          );
+        
+          break;
+        }
+        case 0x02: {
+          length_vertices_toe = &(
+            length_vertices_toe_middle
+          );
+          
+          length_segments_toe = &(
+            length_segments_toe_middle
+          );
+          
+          length_segments_toe_radial = &(
+            length_segments_toe_middle_radial
+          );
+          
+          length_toe = &(
+            length_toe_middle
+          );
+        
+          break;
+        }
+        case 0x03: {
+          length_vertices_toe = &(
+            length_vertices_toe_ring
+          );
+          
+          length_segments_toe = &(
+            length_segments_toe_ring
+          );
+          
+          length_segments_toe_radial = &(
+            length_segments_toe_ring_radial
+          );
+          
+          length_toe = &(
+            length_toe_ring
+          );
+        
+          break;
+        }
+        case 0x04: {
+          length_vertices_toe = &(
+            length_vertices_toe_pinky
+          );
+          
+          length_segments_toe = &(
+            length_segments_toe_pinky
+          );
+          
+          length_segments_toe_radial = &(
+            length_segments_toe_pinky_radial
+          );
+          
+          length_toe = &(
+            length_toe_pinky
+          );
+        
+          break;
+        }
+      }
+      
+      for (
+        unsigned int index_vertex_toe = (
+          0x00
+        );
+        (
+          index_vertex_toe <
+          *length_vertices_toe
+        );
+        ++index_vertex_toe
+      ) {
+        unsigned int index_segment_toe = (
+          index_vertex_toe /
+          *length_segments_toe_radial
+        );
+
+        unsigned int index_segment_radial_toe = (
+          index_vertex_toe %
+          *length_segments_toe_radial
+        );
+
+        float percentage_segment_toe = (
+          (float)
+          index_segment_toe /
+          (float)
+          (
+            *length_segments_toe -
+            0x01
+          )
+        );
+
+        float percentage_segment_radial_toe = (
+          (float)
+          index_segment_radial_toe /
+          (float)
+          (
+            *length_segments_toe_radial -
+            0x01
+          )
+        );
+      
+        metil_mesh_zoe_body->vertices[
+          index_vertex
+        ].x = (
+          0x00
+        );
+      
+        metil_mesh_zoe_body->vertices[
+          index_vertex
+        ].y = (
+          0x00
+        );
+      
+        metil_mesh_zoe_body->vertices[
+          index_vertex
+        ].z = (
+          0x00
+        );
+      
+        metil_mesh_zoe_body->vertices[
+          index_vertex
+        ].w = (
+          0x01
+        );
+      
+        index_vertex = (
+          index_vertex +
+          0x01
+        );
+      }
+    }
+  
+    offset_height = (
+      height_foot
+    );
+  
+    for (
+      unsigned int index_vertex_leg = (
+        0x00
+      );
+      (
+        index_vertex_leg <
+        length_vertices_leg
+      );
       ++index_vertex_leg
     ) {
       unsigned int index_segment_leg = (
@@ -609,7 +999,13 @@ void mesh_zoe_body_initialize(
         radius_x = (
           radius_x +
           radius_x *
-          (0.1f - (1.0f - percentage_thigh)) *
+          (
+            0.1f -
+            (
+              1.0f -
+              percentage_thigh
+            )
+          ) *
           0.04f
         );
 
