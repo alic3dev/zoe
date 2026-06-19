@@ -18,11 +18,11 @@ void zoe_animation_zoe_idle_initialize(
   );
 
   metil_animation->length = (
-    0x0fa0
+    0x1f40
   );
 
   metil_animation->loops = (
-    metil_animation_loop_loops_mirrored
+    metil_animation_loop_loops
   );
 
   metil_animation->start = (
@@ -68,7 +68,8 @@ void zoe_animation_zoe_idle_poll(
     math_c_sine(
       (
         progress *
-        math_c_pi_half
+        math_c_pi *
+        0x04
       ),
       math_c_pi
     )
@@ -79,10 +80,9 @@ void zoe_animation_zoe_idle_poll(
   ].rotation.x = (
     (
       progress_sine *
-      2.0f -
-      1.0f
+      2.0f
     ) *
-    0.05f
+    0.025f
   );
 
   metil_model->joints[
@@ -92,12 +92,22 @@ void zoe_animation_zoe_idle_poll(
       zoe_model_joint_index_shoulder_right
     ].rotation.x
   );
+  
+  progress_sine = (
+    math_c_sine(
+      (
+        progress *
+        math_c_pi
+      ),
+      math_c_pi
+    )
+  );
 
   metil_model->joints[
     zoe_model_joint_index_elbow_right
   ].rotation.x = (
     -progress_sine *
-    0.2f
+    0.1f
   );
 
   metil_model->joints[
