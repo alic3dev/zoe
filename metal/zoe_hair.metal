@@ -66,7 +66,7 @@ struct data_vertex {
   );
 
   data_vertex.colour.x = (
-    0.001f +
+    0.0005f +
     (float)
     (
       (
@@ -86,7 +86,7 @@ struct data_vertex {
       0xa0
     ) /
     0xa0 *
-    0.002f
+    0.001f
   );
 
   data_vertex.colour.y = (
@@ -130,7 +130,17 @@ struct data_vertex {
   );
 
   data_vertex.colour.w = (
-    0.99f
+    0x01 -
+    (float)
+    (
+      (
+        index_vertex *
+        0x03
+      ) %
+      0x0f
+    ) /
+    0x0e * 
+    0.003f
   );
 
   data_vertex.brightness = (
