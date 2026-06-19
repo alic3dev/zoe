@@ -5,6 +5,7 @@
 #include <math_c_absolute.h>
 #include <math_c_minimum.h>
 #include <math_c_maximum.h>
+#include <math_c_modulus.h>
 #include <math_c_pi.h>
 #include <math_c_sine.h>
 #include <math_c_vector.h>
@@ -188,12 +189,16 @@ void mesh_zoe_body_initialize(
 
   float radius_thumb = (
     radius_finger *
-    1.25f
+    1.125f
   );
 
   float length_hand = (
     length_forearm /
     3.0f
+  );
+  
+  float length_thumb = (
+    length_hand
   );
 
   float length_finger_index = (
@@ -207,12 +212,12 @@ void mesh_zoe_body_initialize(
 
   float length_finger_ring = (
     length_finger_index *
-    0.9875f
+    0.9475f
   );
 
   float length_finger_pinky = (
     length_finger_index *
-    0.98f
+    0.80f
   );
 
   metil_mesh_zoe_body->size.x = (
@@ -309,6 +314,86 @@ void mesh_zoe_body_initialize(
   unsigned int length_vertices_forearm = (
     mesh_zoe_body_length_vertices_forearm
   );
+  
+  unsigned int length_segments_hand = (
+    mesh_zoe_body_length_segments_hand
+  );
+
+  unsigned int length_segments_hand_radial = (
+    mesh_zoe_body_length_segments_hand_radial
+  );
+
+  unsigned int length_vertices_hand = (
+    mesh_zoe_body_length_vertices_hand
+  );
+  
+   unsigned int length_segments_thumb = (
+    mesh_zoe_body_length_segments_thumb
+  );
+
+  unsigned int length_segments_thumb_radial = (
+    mesh_zoe_body_length_segments_thumb_radial
+  );
+
+  unsigned int length_vertices_thumb = (
+    mesh_zoe_body_length_vertices_thumb
+  );
+  
+  unsigned int length_segments_finger_index = (
+    mesh_zoe_body_length_segments_finger_index
+  );
+
+  unsigned int length_segments_finger_index_radial = (
+    mesh_zoe_body_length_segments_finger_index_radial
+  );
+
+  unsigned int length_vertices_finger_index = (
+    mesh_zoe_body_length_vertices_finger_index
+  );
+  
+  unsigned int length_segments_finger_middle = (
+    mesh_zoe_body_length_segments_finger_index
+  );
+
+  unsigned int length_segments_finger_middle_radial = (
+    mesh_zoe_body_length_segments_finger_middle_radial
+  );
+
+  unsigned int length_vertices_finger_middle = (
+    mesh_zoe_body_length_vertices_finger_middle
+  );
+
+  unsigned int length_segments_finger_ring = (
+    mesh_zoe_body_length_segments_finger_ring
+  );
+
+  unsigned int length_segments_finger_ring_radial = (
+    mesh_zoe_body_length_segments_finger_ring_radial
+  );
+
+  unsigned int length_vertices_finger_ring = (
+    mesh_zoe_body_length_vertices_finger_ring
+  );
+  
+  unsigned int length_segments_finger_pinky = (
+    mesh_zoe_body_length_segments_finger_index
+  );
+
+  unsigned int length_segments_finger_pinky_radial = (
+    mesh_zoe_body_length_segments_finger_pinky_radial
+  );
+
+  unsigned int length_vertices_finger_pinky = (
+    mesh_zoe_body_length_vertices_finger_pinky
+  );
+      
+  unsigned int length_vertices_fingers = (
+    length_vertices_thumb +
+    length_vertices_finger_index +
+    length_vertices_finger_middle +
+    length_vertices_finger_ring +
+    length_vertices_finger_pinky
+  );
 
   unsigned int length_segments_shoulder = (
     mesh_zoe_body_length_segments_shoulder
@@ -334,7 +419,9 @@ void mesh_zoe_body_initialize(
       length_vertices_torso +
       (
         length_vertices_shoulder +
-        length_vertices_arm
+        length_vertices_arm +
+        length_vertices_hand +
+        length_vertices_fingers
       ) *
       0x02
     ) *
@@ -1771,7 +1858,8 @@ void mesh_zoe_body_initialize(
       );
 
       if (
-        index_arm == 0
+        index_arm ==
+        0x00
       ) {
         metil_mesh_zoe_body->vertices[
           index_vertex
@@ -1784,14 +1872,606 @@ void mesh_zoe_body_initialize(
 
       index_vertex = (
         index_vertex +
-        1
+        0x01
       );
+    }
+    
+    for (
+      unsigned int index_vertex_hand = (
+        0x00
+      );
+      (
+        index_vertex_hand <
+        length_vertices_hand
+      );
+      ++index_vertex_hand
+    ) {
+      unsigned int index_segment_hand = (
+        index_vertex_hand /
+        length_segments_hand_radial
+      );
+
+      unsigned int index_segment_hand_radial = (
+        index_vertex_hand %
+        length_segments_hand_radial
+      );
+
+      float angle = (
+        (float) index_segment_hand_radial /
+        (
+          (float) length_segments_hand_radial -
+          1
+        ) *
+        math_c_pi_doubled
+      );
+
+      float percentage_segment_hand = (
+        (float)
+        index_segment_hand /
+        (
+          (float)
+          length_segments_hand -
+          0x01
+        )
+      );
+
+      float radius = (
+        math_c_sine(
+          (
+            percentage_segment_hand *
+            math_c_pi_half
+          ),
+          math_c_pi
+        )
+      );
+      
+      float percentage_segment_hand_smoothed = (
+        math_c_sine(
+          (
+            math_c_sine(
+              (
+                percentage_segment_hand *
+                math_c_pi_half
+              ),
+              math_c_pi
+            ) *
+            math_c_pi_half
+          ),
+          math_c_pi
+        )
+      );
+      
+      radius = (
+        (
+          0x01 -
+          percentage_segment_hand_smoothed
+        ) *
+        radius_wrist +
+        
+        percentage_segment_hand_smoothed *
+        radius_hand
+      );
+
+      metil_mesh_zoe_body->vertices[
+        index_vertex
+      ].x = (
+        radius_hips +
+        radius_upperarm +
+        math_c_sine(
+          angle,
+          math_c_pi
+        ) *
+        (
+          (
+            percentage_segment_hand_smoothed >=
+            0.9f
+          )
+          ? (
+            radius -
+            (
+              percentage_segment_hand_smoothed *
+              radius /
+              0x02
+            )    
+          ) * (
+            0x01 -
+            (
+              percentage_segment_hand_smoothed -
+              0.9f
+            ) /
+            0.2f
+          ) +
+          (
+            percentage_segment_hand_smoothed *
+            radius_finger    
+          ) * (
+            (
+              percentage_segment_hand_smoothed -
+              0.9f
+            ) /
+            0.2f
+          )
+          : (
+            radius -
+            (
+              percentage_segment_hand_smoothed *
+              radius /
+              0x02
+            )    
+          )
+        ) +
+        (
+          (
+            math_c_minimum_float(
+              (
+                percentage_segment_hand_smoothed *
+                1.5f
+              ),
+              0x01
+            ) *
+            radius /
+            0x06
+          )
+        )
+      );
+
+      metil_mesh_zoe_body->vertices[
+        index_vertex
+      ].y = (
+        offset_height -
+        length_upper_arm -
+        length_forearm -
+        (
+          radius_shoulder /
+          4.0f
+        ) -
+        (
+          length_hand *
+          percentage_segment_hand
+        )
+      );
+
+      metil_mesh_zoe_body->vertices[
+        index_vertex
+      ].z = (
+        math_c_cosine(
+          angle,
+          math_c_pi
+        ) *
+        radius
+      );
+
+      metil_mesh_zoe_body->vertices[
+        index_vertex
+      ].w = (
+        1.0f
+      );
+
+      if (
+        index_arm ==
+        0x00
+      ) {
+        metil_mesh_zoe_body->vertices[
+          index_vertex
+        ].x = -(
+          metil_mesh_zoe_body->vertices[
+            index_vertex
+          ].x
+        );
+      }
+
+      index_vertex = (
+        index_vertex +
+        0x01
+      );
+    }
+    
+    for (
+      unsigned int index_vertex_thumb = (
+        0x00
+      );
+      (
+        index_vertex_thumb <
+        length_vertices_thumb
+      );
+      ++index_vertex_thumb
+    ) {
+      unsigned int index_segment_thumb = (
+        index_vertex_thumb /
+        length_segments_thumb_radial
+      );
+
+      unsigned int index_segment_thumb_radial = (
+        index_vertex_thumb %
+        length_segments_thumb_radial
+      );
+
+      float angle = (
+        (float)
+        index_segment_thumb_radial /
+        (
+          (float)
+          length_segments_thumb_radial -
+          0x01
+        ) *
+        math_c_pi_doubled
+      );
+
+      float percentage_segment_thumb = (
+        (float)
+        index_segment_thumb /
+        (
+          (float)
+          length_segments_thumb -
+          0x01
+        )
+      );
+
+      float radius = (
+        (
+          (
+            percentage_segment_thumb >=
+            0.9f
+          )
+          ? (
+            math_c_sine(
+              (
+                (
+                  0x01 -
+                  (
+                    percentage_segment_thumb -
+                    0.9f
+                  ) /
+                  0.1f
+                ) *
+                math_c_pi_half
+              ),
+              math_c_pi
+            ) *
+            radius_thumb
+          )
+          : radius_thumb
+        ) *
+        0.6f +
+        radius_thumb *
+        0.4f
+      );
+
+      metil_mesh_zoe_body->vertices[
+        index_vertex
+      ].x = (
+        radius_hips +
+        radius_upperarm +
+        math_c_sine(
+          angle,
+          math_c_pi
+        ) *
+        radius
+      );
+
+      metil_mesh_zoe_body->vertices[
+        index_vertex
+      ].y = (
+        offset_height -
+        length_upper_arm -
+        length_forearm -
+        radius_shoulder /
+        0x04 -
+        length_hand /
+        0x03 -
+        (
+          length_thumb *
+          percentage_segment_thumb
+        )
+      );
+
+      metil_mesh_zoe_body->vertices[
+        index_vertex
+      ].z = (
+        math_c_cosine(
+          angle,
+          math_c_pi
+        ) *
+        radius +
+        radius_hand
+      );
+
+      metil_mesh_zoe_body->vertices[
+        index_vertex
+      ].w = (
+        1.0f
+      );
+
+      if (
+        index_arm ==
+        0x00
+      ) {
+        metil_mesh_zoe_body->vertices[
+          index_vertex
+        ].x = -(
+          metil_mesh_zoe_body->vertices[
+            index_vertex
+          ].x
+        );
+      }
+
+      index_vertex = (
+        index_vertex +
+        0x01
+      );
+    }
+    
+    for (
+      unsigned char index_finger = (
+        0x00
+      );
+      (
+        index_finger <
+        0x04
+      );
+      ++index_finger
+    ) {
+      unsigned int* length_segments_finger;
+      unsigned int* length_segments_finger_radial;
+      unsigned int* length_vertices_finger;
+    
+      float* length_finger;
+      
+      float percentage_fingers = (
+        (float)
+        index_finger /
+        0x03
+      );
+      
+      switch (
+        index_finger
+      ) {
+        case 0x03: {
+          length_segments_finger = &(
+            length_segments_finger_index
+          );
+          
+          length_segments_finger_radial = &(
+            length_segments_finger_index_radial
+          );
+          
+          length_vertices_finger = &(
+            length_vertices_finger_index
+          );
+          
+          length_finger = &(
+            length_finger_index
+          );
+          
+          break;
+        }
+        case 0x02: {
+          length_segments_finger = &(
+            length_segments_finger_middle
+          );
+          
+          length_segments_finger_radial = &(
+            length_segments_finger_middle_radial
+          );
+          
+          length_vertices_finger = &(
+            length_vertices_finger_middle
+          );
+          
+          length_finger = &(
+            length_finger_middle
+          );    
+                 
+          break;
+        }
+        case 0x01: {
+          length_segments_finger = &(
+            length_segments_finger_ring
+          );
+          
+          length_segments_finger_radial = &(
+            length_segments_finger_ring_radial
+          );
+          
+          length_vertices_finger = &(
+            length_vertices_finger_ring
+          );
+          
+          length_finger = &(
+            length_finger_ring
+          );
+          
+          break;
+        }
+        case 0x00: {
+          length_segments_finger = &(
+            length_segments_finger_pinky
+          );
+          
+          length_segments_finger_radial = &(
+            length_segments_finger_pinky_radial
+          );
+          
+          length_vertices_finger = &(
+            length_vertices_finger_pinky
+          );
+          
+          length_finger = &(
+            length_finger_pinky
+          );
+          
+          break;
+        }
+      }
+    
+      for (
+        unsigned int index_vertex_finger = (
+          0x00
+        );
+        (
+          index_vertex_finger <
+          *length_vertices_finger
+        );
+        ++index_vertex_finger
+      ) {
+        unsigned int index_segment_finger = (
+          index_vertex_finger /
+          *length_segments_finger_radial
+        );
+
+        unsigned int index_segment_finger_radial = (
+          index_vertex_finger %
+          *length_segments_finger_radial
+        );
+
+        float angle = (
+          (float)
+          index_segment_finger_radial /
+          (
+            (float)
+            *length_segments_finger_radial -
+            0x01
+          ) *
+          math_c_pi_doubled
+        );
+
+        float percentage_segment_finger = (
+          (float)
+          index_segment_finger /
+          (
+            (float)
+            *length_segments_finger -
+            0x01
+          )
+        );
+
+        float radius = (
+          (
+            (
+              percentage_segment_finger >=
+              0.9f
+            )
+            ? (
+              math_c_sine(
+                (
+                  (
+                    0x01 -
+                    (
+                      percentage_segment_finger -
+                      0.9f
+                    ) /
+                    0.1f
+                  ) *
+                  math_c_pi_half
+                ),
+                math_c_pi
+              ) *
+              radius_finger
+            )
+            : radius_finger
+          ) *
+          0.6f +
+          radius_finger *
+          0.4f
+        );
+        
+        radius = (
+          radius -
+          radius *
+          0.05f *
+          math_c_sine(
+            (
+              percentage_segment_finger *
+              math_c_pi * 
+              0x04
+            ),
+            math_c_pi
+          )
+        );
+
+        metil_mesh_zoe_body->vertices[
+          index_vertex
+        ].x = (
+          radius_hips +
+          radius_upperarm +
+          math_c_sine(
+            angle,
+            math_c_pi
+          ) *
+          radius
+        );
+
+        metil_mesh_zoe_body->vertices[
+          index_vertex
+        ].y = (
+          offset_height -
+          length_upper_arm -
+          length_forearm -
+          (
+            radius_shoulder /
+            4.0f
+          ) -
+          length_hand -
+          (
+            *length_finger *
+            percentage_segment_finger
+          )
+        );
+
+        metil_mesh_zoe_body->vertices[
+          index_vertex
+        ].z = (
+          math_c_cosine(
+            angle,
+            math_c_pi
+          ) *
+          radius -
+          radius_hand +
+          (
+            radius_hand -
+            radius_finger *
+            1.5f
+          ) *
+          percentage_fingers *
+          0x02 +
+          radius_finger
+        );
+
+        metil_mesh_zoe_body->vertices[
+          index_vertex
+        ].w = (
+          1.0f
+        );
+
+        if (
+          index_arm ==
+          0x00
+        ) {
+          metil_mesh_zoe_body->vertices[
+            index_vertex
+          ].x = -(
+            metil_mesh_zoe_body->vertices[
+              index_vertex
+            ].x
+          );
+        }
+
+        index_vertex = (
+          index_vertex +
+          0x01
+        );
+      }
     }
   }
 
   for (
-    unsigned int index_indices = 0;
-    index_indices < metil_mesh_zoe_body->length_indices;
+    unsigned int index_indices = (
+      0x00
+    );
+    (
+      index_indices <
+      metil_mesh_zoe_body->length_indices
+    );
     ++index_indices
   ) {
     switch (

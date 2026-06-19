@@ -59,6 +59,48 @@
   mesh_zoe_body_length_segments_forearm_radial\
 )
 
+#define mesh_zoe_body_length_segments_hand mesh_zoe_body_length_segments_multiplied
+#define mesh_zoe_body_length_segments_hand_radial mesh_zoe_body_length_segments_multiplied
+#define mesh_zoe_body_length_vertices_hand (\
+  mesh_zoe_body_length_segments_hand *\
+  mesh_zoe_body_length_segments_hand_radial\
+)
+
+#define mesh_zoe_body_length_segments_thumb mesh_zoe_body_length_segments_multiplied
+#define mesh_zoe_body_length_segments_thumb_radial mesh_zoe_body_length_segments_multiplied
+#define mesh_zoe_body_length_vertices_thumb (\
+  mesh_zoe_body_length_segments_thumb *\
+  mesh_zoe_body_length_segments_thumb_radial\
+)
+
+#define mesh_zoe_body_length_segments_finger_index mesh_zoe_body_length_segments_multiplied
+#define mesh_zoe_body_length_segments_finger_index_radial mesh_zoe_body_length_segments_multiplied
+#define mesh_zoe_body_length_vertices_finger_index (\
+  mesh_zoe_body_length_segments_finger_index *\
+  mesh_zoe_body_length_segments_finger_index_radial\
+)
+
+#define mesh_zoe_body_length_segments_finger_middle mesh_zoe_body_length_segments_multiplied
+#define mesh_zoe_body_length_segments_finger_middle_radial mesh_zoe_body_length_segments_multiplied
+#define mesh_zoe_body_length_vertices_finger_middle (\
+  mesh_zoe_body_length_segments_finger_middle *\
+  mesh_zoe_body_length_segments_finger_middle_radial\
+)
+
+#define mesh_zoe_body_length_segments_finger_ring mesh_zoe_body_length_segments_multiplied
+#define mesh_zoe_body_length_segments_finger_ring_radial mesh_zoe_body_length_segments_multiplied
+#define mesh_zoe_body_length_vertices_finger_ring (\
+  mesh_zoe_body_length_segments_finger_ring *\
+  mesh_zoe_body_length_segments_finger_ring_radial\
+)
+
+#define mesh_zoe_body_length_segments_finger_pinky mesh_zoe_body_length_segments_multiplied
+#define mesh_zoe_body_length_segments_finger_pinky_radial mesh_zoe_body_length_segments_multiplied
+#define mesh_zoe_body_length_vertices_finger_pinky (\
+  mesh_zoe_body_length_segments_finger_pinky *\
+  mesh_zoe_body_length_segments_finger_pinky_radial\
+)
+
 #define mesh_zoe_body_length_segments_shoulder (\
   mesh_zoe_body_length_segments /\
   0x06 *\
@@ -82,7 +124,13 @@
   mesh_zoe_body_length_vertices_torso +\
   (\
     mesh_zoe_body_length_vertices_shoulder +\
-    mesh_zoe_body_length_vertices_arm\
+    mesh_zoe_body_length_vertices_arm +\
+    mesh_zoe_body_length_vertices_hand +\
+    mesh_zoe_body_length_vertices_thumb +\
+    mesh_zoe_body_length_vertices_finger_index +\
+    mesh_zoe_body_length_vertices_finger_middle +\
+    mesh_zoe_body_length_vertices_finger_ring +\
+    mesh_zoe_body_length_vertices_finger_pinky\
   ) *\
   0x02\
 )
@@ -148,7 +196,13 @@
 #define mesh_zoe_body_index_vertex_arm_left_end (\
   mesh_zoe_body_index_vertex_arm_left_start +\
   mesh_zoe_body_length_vertices_arm +\
-  mesh_zoe_body_length_vertices_shoulder\
+  mesh_zoe_body_length_vertices_shoulder +\
+  mesh_zoe_body_length_vertices_hand +\
+  mesh_zoe_body_length_vertices_thumb +\
+  mesh_zoe_body_length_vertices_finger_index +\
+  mesh_zoe_body_length_vertices_finger_middle +\
+  mesh_zoe_body_length_vertices_finger_ring +\
+  mesh_zoe_body_length_vertices_finger_pinky\
 )
 
 #define mesh_zoe_body_index_vertex_upper_arm_left_start mesh_zoe_body_index_vertex_arm_left_start
@@ -161,14 +215,26 @@
 #define mesh_zoe_body_index_vertex_forearm_left_start mesh_zoe_body_index_vertex_upper_arm_left_end
 #define mesh_zoe_body_index_vertex_forearm_left_end (\
   mesh_zoe_body_index_vertex_forearm_left_start +\
-  mesh_zoe_body_length_vertices_upper_arm\
+  mesh_zoe_body_length_vertices_upper_arm +\
+  mesh_zoe_body_length_vertices_hand +\
+  mesh_zoe_body_length_vertices_thumb +\
+  mesh_zoe_body_length_vertices_finger_index +\
+  mesh_zoe_body_length_vertices_finger_middle +\
+  mesh_zoe_body_length_vertices_finger_ring +\
+  mesh_zoe_body_length_vertices_finger_pinky\
 )
 
 #define mesh_zoe_body_index_vertex_arm_right_start mesh_zoe_body_index_vertex_arm_left_end
 #define mesh_zoe_body_index_vertex_arm_right_end (\
-  mesh_zoe_body_index_vertex_arm_right_end +\
+  mesh_zoe_body_index_vertex_arm_right_start +\
   mesh_zoe_body_length_vertices_arm +\
-  mesh_zoe_body_length_vertices_shoulder\
+  mesh_zoe_body_length_vertices_shoulder +\
+  mesh_zoe_body_length_vertices_hand +\
+  mesh_zoe_body_length_vertices_thumb +\
+  mesh_zoe_body_length_vertices_finger_index +\
+  mesh_zoe_body_length_vertices_finger_middle +\
+  mesh_zoe_body_length_vertices_finger_ring +\
+  mesh_zoe_body_length_vertices_finger_pinky\
 )
 
 #define mesh_zoe_body_index_vertex_upper_arm_right_start mesh_zoe_body_index_vertex_arm_right_start
@@ -181,7 +247,13 @@
 #define mesh_zoe_body_index_vertex_forearm_right_start mesh_zoe_body_index_vertex_upper_arm_right_end
 #define mesh_zoe_body_index_vertex_forearm_right_end (\
   mesh_zoe_body_index_vertex_forearm_right_start +\
-  mesh_zoe_body_length_vertices_forearm\
+  mesh_zoe_body_length_vertices_forearm +\
+  mesh_zoe_body_length_vertices_hand +\
+  mesh_zoe_body_length_vertices_thumb +\
+  mesh_zoe_body_length_vertices_finger_index +\
+  mesh_zoe_body_length_vertices_finger_middle +\
+  mesh_zoe_body_length_vertices_finger_ring +\
+  mesh_zoe_body_length_vertices_finger_pinky\
 )
 
 void mesh_zoe_body_initialize(
