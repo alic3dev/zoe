@@ -141,18 +141,18 @@ struct data_vertex {
   ) * 0.8 + 0.2f;
 
   data_vertex.colour.x = (
-    0.96 *
+    1.0f *
     brightness
   );
 
   data_vertex.colour.y = (
-    0.94 *
+    0.98f *
     percentage_health *
     brightness
   );
 
   data_vertex.colour.z = (
-    0.82 *
+    0.86 *
     (
       percentage_health *
       0.5f +
