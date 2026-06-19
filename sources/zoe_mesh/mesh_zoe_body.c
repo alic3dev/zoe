@@ -1246,7 +1246,7 @@ void mesh_zoe_body_initialize(
       ) /
       (
         radius *
-        2.0f
+        0x02
       )
     );
 
@@ -1281,10 +1281,10 @@ void mesh_zoe_body_initialize(
               index_vertex
             ].z *
             math_c_minimum_float(
-              1.0f,
+              0x01,
               (
                 (
-                  1.0f -
+                  0x01 -
                   (
                     percentage_segment_hips /
                     0.25f
@@ -1304,7 +1304,7 @@ void mesh_zoe_body_initialize(
                   )
                 )
               ) /
-              8.0f
+              0x08
             ) *
             (
               (
@@ -1399,7 +1399,7 @@ void mesh_zoe_body_initialize(
           math_c_minimum_float(
             0x01,
             (
-              1.0f -
+              0x01 -
               math_c_sine(
                 (
                   percentage_segment_hips *
@@ -1421,10 +1421,10 @@ void mesh_zoe_body_initialize(
                 math_c_pi
               )
             ) /
-            8.0f
+            0x08
           ) *
           (
-            1.0f -
+            0x01 -
             percentage_segment_hips
           )
         );
@@ -2915,7 +2915,9 @@ void mesh_zoe_body_initialize(
             angle,
             math_c_pi
           ) *
-          radius
+          radius +
+          radius_finger /
+          0x01
         );
 
         metil_mesh_zoe_body->vertices[
@@ -2947,7 +2949,8 @@ void mesh_zoe_body_initialize(
           ) *
           percentage_fingers *
           0x02 +
-          radius_finger
+          radius_finger *
+          1.25f
         );
 
         metil_mesh_zoe_body->vertices[
