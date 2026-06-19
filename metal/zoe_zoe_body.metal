@@ -7,6 +7,10 @@
 #include <metil_rendering/metil_renderer_data_model_object.h>
 #include <metil_rendering/metil_renderer_vertex_index_parameter.h>
 
+#include <math_c_absolute.h>
+#include <math_c_pi.h>
+#include <math_c_sine.h>
+
 #include <metal_texture>
 
 struct data_vertex {
@@ -91,30 +95,70 @@ struct data_vertex {
     0.9f +
     0.1f
   );
+  
+  float brightness = (
+    ((
+      0x01 -
+      math_c_absolute_float(
+        math_c_sine(
+          (
+            position_vertex.z *
+            math_c_pi
+          ),
+          math_c_pi
+        )
+      )
+    ) *
+    0.2f +
+    0.8f) *
+    ((
+      math_c_absolute_float(
+        math_c_sine(
+          (
+            position_vertex.x *
+            math_c_pi *
+            0x03
+          ),
+          math_c_pi
+        )
+      )
+    ) *
+    0.2f +
+    0.8f) *
+    (math_c_absolute_float(
+      math_c_sine(
+        (
+          (float)
+          index_vertex *
+          0x05 *
+          math_c_pi
+        ),
+        math_c_pi
+      )
+    ) *
+    0.2f +
+    0.8f)
+  ) * 0.8 + 0.2f;
 
   data_vertex.colour.x = (
-    (
-      (
-        0x03 +
-        index_vertex
-      ) %
-      0x04
-    ) <
-    0x02
+    0.96 *
+    brightness
   );
 
   data_vertex.colour.y = (
-    data_vertex.colour.x *
-    percentage_health
+    0.94 *
+    percentage_health *
+    brightness
   );
 
   data_vertex.colour.z = (
-    data_vertex.colour.y *
+    0.82 *
     (
       percentage_health *
       0.5f +
       0.5f
-    )
+    ) *
+    brightness
   );
 
   data_vertex.colour.w = (
