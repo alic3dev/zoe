@@ -156,7 +156,7 @@ void zoe_animation_zoe_walking_poll(
   );
 
   metil_model->joints[
-    zoe_model_joint_index_elbow_left
+    zoe_model_joint_index_elbow_right
   ].rotation.x = (
     math_c_absolute_float(
       progress_sine
